@@ -1,11 +1,6 @@
-
-expit <- function(x) {1/(1+exp(-x))}
-logit <- function(p) {log(p)-log(1-p)}
-erf <- function(x) {2 * pnorm(x * sqrt(2)) - 1}
-
 set.seed(1)
-setwd('~/Dropbox/work/CHL5209H_2015/slides')
-getwd()
+#setwd('~/Dropbox/work/CHL5209H_2015/slides')
+#getwd()
 
 N <- 10000
 a1 <- 1
@@ -93,7 +88,7 @@ text(8.5, 4250, expression(N[MI](t)==1), cex=1.5)
 text(2, 2500, expression(Z(t)==1), cex=1.5)
 text(2, 7500, expression(Z(t)==0), cex=1.5)
 op <- par(lwd=3)
-legend(0.1, 100, legend=c('Non-smoking person-time','Smoking person-time'), lty=c('solid','solid'), 
+legend(0.1, 100, legend=c('Non-smoking person-time','Smoking person-time'), lty=c('solid','solid'),
 col=c('lightblue','yellow2'), bg='white', xjust=0, yjust=0, box.lwd=1)
 par(op)
 dev.off()
@@ -103,7 +98,7 @@ for (i in 1:N) {
     if (z[i] == 1)
         ycoord[i] <- runif(1, 0, sum(mi >= st[i] & z == z[i]))
     else if (z[i] == 0)
-        ycoord[i] <- runif(1, sum(z == 1), sum(z == 1) + sum(mi >= st[i] & z == z[i]))        
+        ycoord[i] <- runif(1, sum(z == 1), sum(z == 1) + sum(mi >= st[i] & z == z[i]))
 }
 plot(st, ycoord)
 
@@ -167,11 +162,11 @@ for (i in 1:N) {
     if (z[i] == 1 & x[i] == 1)
         ycoord[i] <- runif(1, 0, sum(mi >= st[i] & z == z[i] & x == x[i]))
     else if (z[i] == 1 & x[i] == 0)
-        ycoord[i] <- runif(1, sum(z == 1 & x == 1), sum(z == 1 & x == 1) + sum(mi >= st[i] & z == z[i] & x == x[i]))        
+        ycoord[i] <- runif(1, sum(z == 1 & x == 1), sum(z == 1 & x == 1) + sum(mi >= st[i] & z == z[i] & x == x[i]))
     else if (z[i] == 0 & x[i] == 1)
-        ycoord[i] <- runif(1, sum(z == 1), sum(z == 1) + sum(mi >= st[i] & z == z[i] & x == x[i]))        
+        ycoord[i] <- runif(1, sum(z == 1), sum(z == 1) + sum(mi >= st[i] & z == z[i] & x == x[i]))
     else if (z[i] == 0 & x[i] == 0)
-        ycoord[i] <- runif(1, sum(!(z == 0 & x == 0)), sum(!(z == 0 & x == 0)) + sum(mi >= st[i] & z == z[i] & x == x[i]))        
+        ycoord[i] <- runif(1, sum(!(z == 0 & x == 0)), sum(!(z == 0 & x == 0)) + sum(mi >= st[i] & z == z[i] & x == x[i]))
 }
 plot(st, ycoord)
 
