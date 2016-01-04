@@ -22,6 +22,7 @@ absoluteRisk <- function(fit, time, method = c("quadrature", "montecarlo"), nsam
     method <- match.arg(method)
     # Create hazard function
     lambda <- function(x, pred, beta) {
+        # Note: we don't include the offset in the estimation
         return(as.numeric(exp(beta[1] + beta[2] * x + crossprod(beta[3:length(beta)], pred))))
     }
     modelMat <- fit$x[,-c(1, 2)]
