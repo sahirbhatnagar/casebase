@@ -1,10 +1,18 @@
 Package: casebase
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1
-Date: 2015-03-13
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Title: Smooth-in-time fitting of parametric hazard functions
+Version: 0.0.9000
+Authors@R: c(
+  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@mail.mcgill.ca",
+  role = c("aut", "cre")),
+  person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
+  role = c("aut", "cre")))
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Depends: R (>= 3.0.0)
+Imports: survival, stats
+License: GPL (>=2)
 LazyData: TRUE
+Suggests: knitr
+VignetteBuilder: knitr
+URL: https://github.com/sahirbhatnagar/casebase
+BugReports: https://github.com/sahirbhatnagar/casebase/issues
