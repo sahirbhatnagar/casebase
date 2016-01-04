@@ -1,66 +1,79 @@
-# This is where all functions related to sampling should appear
-expit <- function(x) 1/(1 + exp(-x))
-logit <- function(p) log(p)-log(1-p)
-erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+#' Create case-base dataset for use in fitting parametric hazard functions
+#'
+#' This function implements the case-base sampling approach described in Hanley
+#' and Miettinen, Int J Biostatistics 2009. It can be used to fit smooth-in-time
+#' parametric functions easily, via logistic regression.
+#'
+#' It is assumed that \code{data} contains two columns named \code{time} and
+#' \code{event} (see the function \link{\code{Surv}} in the package
+#' \code{survival}).
+#'
+#' @param data The source dataset; see Details.
+#' @param ratio Integer, giving the ratio of the size of the base series to that
+#'   of the case series. Defaults to 10.
+#' @param type There are currently two sampling procedures available:
+#'   \code{uniform}, where person-moments are sampled uniformly across
+#'   individuals and follow-up time; and \code{multinomial}, where individuals
+#'   are sampled proportionally to their follow-up time.
+#' @return The function returns a dataset, with the same format as the source
+#'   dataset, and where each row corresponds to a person-moment sampled from the
+#'   case or the base series. otherwise)
+sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial")) {
 
-# R function to create case-base dataset for use in fitting
-# parametric hazard functions via logistic regression
-# see Hanley and Miettinen, Int J Biostatistics 2009
+    type <- match.arg(type)
+    # Create survival object from dataset
+    if (! all(c("time", "event") %in% colnames(data))) {
+        stop("data should contain two columns named time and event, respectively.")
+    }
+    survObj <- with(data, survival::Surv(time, event))
 
-#' @param ds source dataset
-#' @param event.var event variable (1=event)
-#' @param t.var event (or censoring) time
-#' @param i.var intervention (tx) variable
-#' @param id.var patient identifier
-#' @param x.vars vector of names of regressor variables
-#' @param b.c.ratio (integer) ratio, size of base series : case series
-#' @param random if TRUE,
-#' @return returns dataset with b+c rows of person-moments (p.m), x.vars,
-#'   offset, and an indicator variable y (1 if p.m represents an event, 0
-#'   otherwise)
-
-sampleCaseBase <- function(ds, event.var, t.var,
-                           i.var, id.var, x.vars,
-                           b.c.ratio, random = TRUE) {
-
-    n.subjects <- length(ds[,t.var]) # no. of subjects
-    B <- sum(ds[,t.var])             # total person-time in base
-    c <- sum(ds[,event.var])          # no. of cases (events)
-    b <- b.c.ratio * c               # size of base series
+    n <- nrow(survObj) # no. of subjects
+    B <- sum(survObj[, "time"])             # total person-time in base
+    c <- sum(survObj[, "status"])          # no. of cases (events)
+    b <- ratio * c               # size of base series
     offset <- log(B / b)            # offset so intercept = log(ID | x, t = 0 )
 
-    if (random) {
-        p <- ds[,t.var]/B
-        who <- sample(n.subjects, b, replace = TRUE, prob = p)
-        b.series <- ds[who,]
-        b.series <- b.series[,c(i.var,id.var,x.vars,t.var)]
-        b.series$y <- 0
-        b.series[,t.var] <- runif(b)*b.series[,t.var]
-        b.series$o <- offset
+    if (type == "uniform") {
+        # The idea here is to sample b individuals, with replacement, and then
+        # to sample uniformly a time point for each of them. The sampled time
+        # point must lie between the beginning and the end of follow-up
+        p <- survObj[, "time"]/B
+        who <- sample(n, b, replace = TRUE, prob = p)
+        bSeries <- survObj[who, ]
+        bSeries[, "status"] <- 0
+        bSeries[, "time"] <- runif(b) * bSeries[, "time"]
+        bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
+        bSeries$o <- offset
     }
 
-    if (!random) {
-        d.t <- B/(b+1)
-        p.sum <- c(0) #Allocate memory first!!
-        for (i in 1:n.subjects) {
-            p.sum <- c(p.sum, p.sum[i] + ds[i,t.var])
-        }
-        every.d.t <- B*(1:b)/(b+1)
-        who <- findInterval(every.d.t, p.sum)
-        #print(who)
-        b.series <- ds[who,]
-        b.series <- b.series[, c(i.var,id.var,x.vars, t.var)]
-        b.series$y <- 0
-        b.series[,t.var] <- every.d.t - p.sum[who]
-        b.series$o <- offset
+    if (type == "multinomial") {
+        # Multinomial sampling: probability of individual contributing a
+        # person-moment to base series is proportional to time variable
+        # dt <- B/(b+1)
+        # pSum <- c(0) #Allocate memory first!!
+        # for (i in 1:n) {
+        #     pSum <- c(pSum, pSum[i] + survObj[i, "time"])
+        # }
+        pSum <- c(0, cumSum(survObj[, "time"]))
+        everyDt <- B*(1:b)/(b+1)
+        who <- findInterval(everyDt, pSum)
+        bSeries <- survObj[who, ]
+        bSeries[, "status"] <- 0
+        bSeries[, "time"] <- everyDt - pSum[who]
+        bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
+        bSeries$o <- offset
     }
 
-    c.series <- ds[ ds[event.var]==1, ]
-    c.series <- c.series[,c(i.var, id.var, x.vars, t.var)]
-    c.series$y <- 1
-    c.series[, t.var] <- c.series[, t.var]
-    c.series$o <- offset
-    c.b.series <- rbind(c.series, b.series)
+    cSeries <- data[data$event == 1,]
+    # cSeries <- survObj[survObj[, "status"] == 1, ]
+    # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
+    # cSeries$y <- 1
+    # cSeries[, time] <- cSeries[, time]
+    cSeries$o <- offset
 
-    return(c.b.series)
+    # Combine case and base series
+    cbSeries <- rbind(cSeries, bSeries)
+
+    class(cbSeries) <- c("cbData", class(cbSeries))
+    return(cbSeries)
 }

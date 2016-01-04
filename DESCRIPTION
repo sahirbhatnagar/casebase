@@ -6,7 +6,7 @@ Authors@R: c(
   person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@mail.mcgill.ca",
   role = c("aut", "cre")),
   person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
-  role = c("aut", "cre")))
+  role = c("aut")))
 Description: More about what it does (maybe more than one line)
 Depends: R (>= 3.0.0)
 Imports: survival, stats
