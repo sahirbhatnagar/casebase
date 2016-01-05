@@ -29,7 +29,7 @@ parametric functions easily, via logistic regression.
 }
 \details{
 It is assumed that \code{data} contains two columns named \code{time} and
-\code{event} (see the function \link{\code{Surv}} in the package
+\code{event} (see the function \code{\link{Surv}} in the package
 \code{survival}).
 }
 

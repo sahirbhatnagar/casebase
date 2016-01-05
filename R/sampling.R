@@ -5,7 +5,7 @@
 #' parametric functions easily, via logistic regression.
 #'
 #' It is assumed that \code{data} contains two columns named \code{time} and
-#' \code{event} (see the function \link{\code{Surv}} in the package
+#' \code{event} (see the function \code{\link{Surv}} in the package
 #' \code{survival}).
 #'
 #' @param data The source dataset; see Details.
@@ -39,7 +39,7 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
         # point must lie between the beginning and the end of follow-up
         p <- survObj[, "time"]/B
         who <- sample(n, b, replace = TRUE, prob = p)
-        bSeries <- survObj[who, ]
+        bSeries <- as.matrix(survObj[who, ])
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- runif(b) * bSeries[, "time"]
     }
@@ -52,10 +52,10 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
         # for (i in 1:n) {
         #     pSum <- c(pSum, pSum[i] + survObj[i, "time"])
         # }
-        pSum <- c(0, cumSum(survObj[, "time"]))
+        pSum <- c(0, cumsum(survObj[, "time"]))
         everyDt <- B*(1:b)/(b+1)
         who <- findInterval(everyDt, pSum)
-        bSeries <- survObj[who, ]
+        bSeries <- as.matrix(survObj[who, ])
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- everyDt - pSum[who]
     }
@@ -63,17 +63,17 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
     bSeries <- cbind(bSeries, subset(data, select = (colnames(data) != c("time", "event")))[who,])
-    bSeries$o <- offset
+    names(bSeries)[names(bSeries) == "status"] <- "event"
 
     cSeries <- data[data$event == 1,]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1
     # cSeries[, time] <- cSeries[, time]
-    cSeries$o <- offset
 
     # Combine case and base series
     cbSeries <- rbind(cSeries, bSeries)
+    cbSeries <- data.table::data.table(cbSeries, offset = rep_len(offset, nrow(cbSeries)))
 
     class(cbSeries) <- c("cbData", class(cbSeries))
     return(cbSeries)
