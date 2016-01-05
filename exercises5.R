@@ -1,11 +1,10 @@
 
 # 1-3:
 
-library(survival) 
+library(survival)
 
 data(veteran)
 str(veteran)
-?veteran
 
 table(veteran$status)
 evtimes <- veteran$time[veteran$status == 1]
@@ -59,10 +58,10 @@ moments <- c(moments, ftime[cases])
 persons <- c(persons, (1:nobs)[cases])
 offset <- rep(log(sum(ftime)/m), length(d))
 
-model4 <- glm(d ~ moments + karno[persons] + diagtime[persons] + age[persons] + prior[persons] + 
+model4 <- glm(d ~ moments + karno[persons] + diagtime[persons] + age[persons] + prior[persons] +
              celltype[persons] + trt[persons] + offset(offset), family=binomial(link=logit))
 summary(model4)
-round(cbind(coef(model3), sqrt(diag(vcov(model3))), 
+round(cbind(coef(model3), sqrt(diag(vcov(model3))),
             coef(model4)[3:length(coef(model4))], sqrt(diag(vcov(model4)))[3:length(coef(model4))]), 4)
 
 lambda <- function(x, pred, beta) {
@@ -80,15 +79,15 @@ plot(1.0 - surv, ftime, xlim=c(0,1))
 # Fit a spline for time:
 
 basis <- bs(moments)
-model5 <- glm(d ~ basis + karno[persons] + diagtime[persons] + age[persons] + prior[persons] + 
+model5 <- glm(d ~ basis + karno[persons] + diagtime[persons] + age[persons] + prior[persons] +
              celltype[persons] + trt[persons] + offset(offset), family=binomial(link=logit))
 summary(model5)
-round(cbind(coef(model3), sqrt(diag(vcov(model3))), 
-            coef(model5)[(2 + ncol(basis)):length(coef(model5))], 
+round(cbind(coef(model3), sqrt(diag(vcov(model3))),
+            coef(model5)[(2 + ncol(basis)):length(coef(model5))],
             sqrt(diag(vcov(model5)))[(2 + ncol(basis)):length(coef(model5))]), 4)
 
 lambda <- function(x, pred, beta) {
-    return(as.numeric(exp(beta[1] + as.numeric(predict(basis, x) %*% beta[2:(1 + ncol(basis))]) + 
+    return(as.numeric(exp(beta[1] + as.numeric(predict(basis, x) %*% beta[2:(1 + ncol(basis))]) +
                           crossprod(beta[(2 + ncol(basis)):length(beta)], pred))))
 }
 
@@ -122,7 +121,7 @@ sample.ctls = function(x) sample(1:popsize, x, FALSE)
 
 ctl.case.ratio = 1
 n.ctls = n.cases * ctl.case.ratio
-denom.sample = lapply(n.ctls, sample.ctls) 
+denom.sample = lapply(n.ctls, sample.ctls)
 nctls = sum(n.ctls)
 n.exposed.ctls <- rep(NA, ncases)
 
@@ -153,7 +152,7 @@ postscript(file.path(inpath, 'studybase.eps'), width=8, height=6, paper='special
 op <- par(mar = c(4.25,4.25,1,1))
 plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population')
 rect(0,0,maxage,popsize, col="gray80",border=NA)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Pop.-time'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Pop.-time'),
        pch=c(15), col=c('gray80'), pt.bg=c('gray80'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -167,7 +166,7 @@ op <- par(mar = c(4.25,4.25,1,1))
 plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population')
 rect(0,0,maxage,popsize, col="lightblue",border=NA)
 segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2')
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time'),
        pch=c(15,15), col=c('lightblue','yellow2'), pt.bg=c('lightblue','yellow2'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -183,7 +182,7 @@ plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', yl
 rect(0,0,maxage,popsize, col="lightblue",border=NA)
 segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2')
 points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'),
        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -197,7 +196,7 @@ rect(0,0,maxage,popsize, col="lightblue",border=NA)
 segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2')
 points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75)
 points(etimes[matched[casestatus==0],2]/7, vtimes[unlist(denom.sample),1], pch=20, col='blue', cex=0.75)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'),
        pch=c(15,15,20,20), col=c('lightblue','yellow2','red','blue'), pt.bg=c('lightblue','yellow2','red','blue'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -260,7 +259,7 @@ plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', yl
 rect(0,0,maxage,popsize, col="lightblue",border=NA)
 segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2')
 points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.n-time','Exposed pop.-time','Case series'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.n-time','Exposed pop.-time','Case series'),
        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -274,7 +273,7 @@ rect(0,0,maxage,popsize, col="white",border=NA)
 segments(rep(minday/7, ncases), caseidx, rep(maxday/7, ncases), caseidx, col='lightblue')
 segments(vtc[vidx]/7, caseidx, (vtc[vidx]+7)/7, caseidx, col='yellow2')
 points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'),
        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'),
        cex=1, bg='white', box.col='white')
 par(op)
@@ -289,7 +288,7 @@ segments(rep(minday/7, ncases), caseidx, rep(maxday/7, ncases), caseidx, col='li
 segments(vtc[vidx]/7, caseidx, (vtc[vidx]+7)/7, caseidx, col='yellow2')
 points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75)
 points(times[casestatus==0]/7, caseidx[matched[casestatus==0]], pch=20, col='blue', cex=0.75)
-legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'), 
+legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'),
        pch=c(15,15,20,20), col=c('lightblue','yellow2','red','blue'), pt.bg=c('lightblue','yellow2','red','blue'),
        cex=1, bg='white', box.col='white')
 par(op)

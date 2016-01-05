@@ -4,22 +4,30 @@
 \alias{absoluteRisk}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
-absoluteRisk(fit, time, method = c("quadrature", "montecarlo"), nsamp = 100)
+absoluteRisk(object, time, newdata = NULL, method = c("quadrature",
+  "montecarlo"), nsamp = 100)
 }
 \arguments{
-\item{fit}{Output of function \link{\code{fitSmoothHazard}}}
+\item{object}{Output of function \link{\code{fitSmoothHazard}}.}
 
 \item{time}{Upper bound of the interval over which to compute the absolute
 risk. It is assumed that \code{time} is given in the same units as the time
 variable in the dataset used to fit the hazard function.}
 
-\item{method}{Method used for integration. Defaults to \code{"quadrature"},
-which simply calls the function \link{\code{integrate}}. The only other option is \code{"montecarlo"}, which implements Monte-Carlo integration.}
+\item{newdata}{Optionally, a data frame in which to look for variables with
+which to predict. If omitted, the mean absolute risk is returned.}
 
-\item{nsamp}{Maximal number of subdivisions (if \code{method = "quadrature"}) or number of sampled points (if \code{method = "montecarlo}).}
+\item{method}{Method used for integration. Defaults to \code{"quadrature"},
+which simply calls the function \link{\code{integrate}}. The only other
+option is \code{"montecarlo"}, which implements Monte-Carlo integration.}
+
+\item{nsamp}{Maximal number of subdivisions (if \code{method = "quadrature"})
+or number of sampled points (if \code{method = "montecarlo}).}
 }
 \value{
-Returns the mean absolute risk at the user-supplied time.
+Returns the mean absolute risk at the user-supplied time, if
+  \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
+  covariate profiles.
 }
 \description{
 Using the output of the function \link{\code{fitSmoothHazard}}, we can

@@ -21,32 +21,43 @@
 #'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "quadrature"})
 #'   or number of sampled points (if \code{method = "montecarlo}).
-#' @return Returns the mean absolute risk at the user-supplied time.
+#' @return Returns the mean absolute risk at the user-supplied time, if
+#'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
+#'   covariate profiles.
 absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     method <- match.arg(method)
     # Create hazard function
-    lambda <- function(x, pred, beta) {
-        # Note: we don't include the offset in the estimation
-        return(as.numeric(exp(beta[1] + beta[2] * x + crossprod(beta[3:length(beta)], pred))))
-    }
-    modelMat <- object$x[,-c(1, 2)]
-
-    surv <- rep(NA, nobs)
-    if (method == "quadrature") {
-        for (i in 1:nobs) {
-            surv[i] <- exp(-integrate(lambda, lower=0, upper=time, pred=modelMat[i,], beta=coefficients(object),
-                                      subdivisions = nsamp)$value)
-        }
-    }
-    if (method == "montecarlo") {
-        sampledPoints <- runif(nsamp) * time
-        for (i in 1:nobs) {
-            surv[i] <- exp(-mean(lambda(sampledPoints, pred=modelMat[i,], beta=coefficients(object))))
-        }
+    lambda <- function(x, fit, newdata) {
+        # Note: the offset should be set to zero when estimating the hazard.
+        newdata2 <- data.frame(time = x, newdata, offset = rep_len(0, length(x)),
+                               row.names = as.character(1:length(x)))
+        return(as.numeric(exp(predict(fit, newdata2))))
     }
 
-    absRisk <- mean(1.0 - surv)
-    return(absRisk)
+    if (is.null(newdata)) {
+        # Should we use the whole case-base dataset or the original one?
+        # absRisk <- mean(1.0 - surv)
+        # return(absRisk)
+        return(NULL)
+    } else {
+        surv <- rep(NA, nrow(newdata))
+        if (method == "quadrature") {
+            for (i in 1:nrow(newdata)) {
+                surv[i] <- exp(-integrate(lambda, lower=0, upper=time, fit=object, newdata=newdata[i,],
+                                          subdivisions = nsamp)$value)
+            }
+        }
+        if (method == "montecarlo") {
+            sampledPoints <- runif(nsamp) * time
+            for (i in 1:nrow(newdata)) {
+                surv[i] <- exp(-mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
+            }
+        }
+
+        absRisk <- 1.0 - surv
+        names(absRisk) <- rownames(newdata)
+        return(absRisk)
+    }
 }
 
 
