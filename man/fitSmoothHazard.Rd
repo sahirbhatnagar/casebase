@@ -35,6 +35,8 @@ person-moments, which may or may not correspond to an event, and then fit the
 hazard using logistic regression.
 }
 \details{
-The object \code{data} should either be the output of the function \link{\code{sampleCaseBase}}, or should contain two columns named "time" and "event".
+The object \code{data} should either be the output of the function
+\link{\code{sampleCaseBase}}, or should contain two columns named "time" and
+"event".
 }
 

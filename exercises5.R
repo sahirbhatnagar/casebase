@@ -77,7 +77,7 @@ sum(ftime <= 90)/nobs
 plot(1.0 - surv, ftime, xlim=c(0,1))
 
 # Fit a spline for time:
-
+library(splines)
 basis <- bs(moments)
 model5 <- glm(d ~ basis + karno[persons] + diagtime[persons] + age[persons] + prior[persons] +
              celltype[persons] + trt[persons] + offset(offset), family=binomial(link=logit))

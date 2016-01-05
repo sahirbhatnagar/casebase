@@ -35,8 +35,12 @@ compute absolute risks by integrating the fitted hazard function over a time
 period and then coverting this to an estimated survival for each individual.
 }
 \details{
-It is currently assumed that the time variable corresponds to the second, and
-only the second, column of the design matrix. In particular, splines may not
-be used at this time to fit a semi-parametric hazard function.
+In order to compute the mean absolute risk, the function \code{absoluteRisk}
+needs the original dataset, i.e. the dataset before case-base sampling was
+performed. This can be retrieved from the parameter \code{object} only if the
+function \link{\code{fitSmoothHazard}} was run on the source dataset (and not
+the output of \link{\code{sampleCaseBase}}). On the other hand, if the user
+supplies the original dataset through the parameter \code{newdata}, the mean
+absolute risk can be computed as the average of the output vector.
 }
 

@@ -6,9 +6,13 @@
 #' compute absolute risks by integrating the fitted hazard function over a time
 #' period and then coverting this to an estimated survival for each individual.
 #'
-#' It is currently assumed that the time variable corresponds to the second, and
-#' only the second, column of the design matrix. In particular, splines may not
-#' be used at this time to fit a semi-parametric hazard function.
+#' In order to compute the mean absolute risk, the function \code{absoluteRisk}
+#' needs the original dataset, i.e. the dataset before case-base sampling was
+#' performed. This can be retrieved from the parameter \code{object} only if the
+#' function \link{\code{fitSmoothHazard}} was run on the source dataset (and not
+#' the output of \link{\code{sampleCaseBase}}). On the other hand, if the user
+#' supplies the original dataset through the parameter \code{newdata}, the mean
+#' absolute risk can be computed as the average of the output vector.
 #'
 #' @param object Output of function \link{\code{fitSmoothHazard}}.
 #' @param time Upper bound of the interval over which to compute the absolute
@@ -36,24 +40,34 @@ absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", 
 
     if (is.null(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        # absRisk <- mean(1.0 - surv)
-        # return(absRisk)
-        return(NULL)
-    } else {
-        surv <- rep(NA, nrow(newdata))
-        if (method == "quadrature") {
-            for (i in 1:nrow(newdata)) {
-                surv[i] <- exp(-integrate(lambda, lower=0, upper=time, fit=object, newdata=newdata[i,],
-                                          subdivisions = nsamp)$value)
-            }
+        if(is.null(object$originalData)) {
+            stop("Can't estimate the mean absolute risk without the original data. See documentation.")
         }
-        if (method == "montecarlo") {
-            sampledPoints <- runif(nsamp) * time
-            for (i in 1:nrow(newdata)) {
-                surv[i] <- exp(-mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
-            }
-        }
+        newdata <- object$originalData
+        colnames(data)[colnames(data) == "event"] <- "status"
+        # Next line will break on data.table
+        newdata <- newdata[,colnames(newdata) != "time"]
+        meanAR <- TRUE
+    }
 
+    surv <- rep(NA, nrow(newdata))
+    if (method == "quadrature") {
+        for (i in 1:nrow(newdata)) {
+            surv[i] <- exp(-integrate(lambda, lower=0, upper=time, fit=object, newdata=newdata[i,],
+                                      subdivisions = nsamp)$value)
+        }
+    }
+    if (method == "montecarlo") {
+        sampledPoints <- runif(nsamp) * time
+        for (i in 1:nrow(newdata)) {
+            surv[i] <- exp(-mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
+        }
+    }
+
+    if (meanAR) {
+        absRisk <- mean(1.0 - surv)
+        return(absRisk)
+    } else {
         absRisk <- 1.0 - surv
         names(absRisk) <- rownames(newdata)
         return(absRisk)
