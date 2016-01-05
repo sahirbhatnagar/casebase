@@ -30,6 +30,7 @@
 #'   covariate profiles.
 absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     method <- match.arg(method)
+    meanAR <- FALSE
     # Create hazard function
     lambda <- function(x, fit, newdata) {
         # Note: the offset should be set to zero when estimating the hazard.
@@ -45,8 +46,9 @@ absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", 
         }
         newdata <- object$originalData
         colnames(data)[colnames(data) == "event"] <- "status"
-        # Next line will break on data.table
-        newdata <- newdata[,colnames(newdata) != "time"]
+        # Next commented line will break on data.table
+        # newdata <- newdata[, colnames(newdata) != "time"]
+        newdata <- subset(newdata, select = (colnames(newdata) != "time"))
         meanAR <- TRUE
     }
 
