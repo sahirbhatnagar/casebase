@@ -18,6 +18,7 @@
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
+#' @export
 sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial")) {
 
     type <- match.arg(type)

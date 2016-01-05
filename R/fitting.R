@@ -26,6 +26,7 @@
 #' @return An object of class \code{caseBase}, which inherits from the classes
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
+#' @export
 fitSmoothHazard <- function(formula, data, link = "logit", ...) {
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {

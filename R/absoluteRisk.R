@@ -28,6 +28,7 @@
 #' @return Returns the mean absolute risk at the user-supplied time, if
 #'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
 #'   covariate profiles.
+#' @export
 absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     method <- match.arg(method)
     meanAR <- FALSE
