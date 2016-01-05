@@ -7,7 +7,9 @@
 #' person-moments, which may or may not correspond to an event, and then fit the
 #' hazard using logistic regression.
 #'
-#' The object \code{data} should either be the output of the function \link{\code{sampleCaseBase}}, or should contain two columns named "time" and "event".
+#' The object \code{data} should either be the output of the function
+#' \link{\code{sampleCaseBase}}, or should contain two columns named "time" and
+#' "event".
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
@@ -27,16 +29,19 @@
 fitSmoothHazard <- function(formula, data, link = "logit", ...) {
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
-        originalData <- data
-        data <- sampleCaseBase(data, ...)
+        originalData <- as.data.frame(data)
+        data <- sampleCaseBase(originalData, ...)
         if (length(list(...)) != 5) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
         }
+    } else {
+        originalData <- NULL
     }
 
     # Update formula to add offset term
     formula <- update(formula, ~ . + offset(offset))
     model <- glm(formula, data = data, family = binomial(link=link))
+    model$originalData <- originalData
 
     class(model) <- c("caseBase", class(model))
 

@@ -42,6 +42,7 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
         bSeries <- survObj[who, ]
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- runif(b) * bSeries[, "time"]
+        # Next line will break on data.table
         bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
         bSeries$o <- offset
     }
@@ -60,6 +61,7 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
         bSeries <- survObj[who, ]
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- everyDt - pSum[who]
+        # Next line will break on data.table
         bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
         bSeries$o <- offset
     }
