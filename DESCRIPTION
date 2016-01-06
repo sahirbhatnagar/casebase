@@ -9,9 +9,9 @@ Authors@R: c(
   role = c("aut")))
 Description: More about what it does (maybe more than one line)
 Depends:
-    data.table,
     R (>= 3.0.0)
 Imports:
+    data.table,
     stats,
     survival
 License: GPL (>=2)
