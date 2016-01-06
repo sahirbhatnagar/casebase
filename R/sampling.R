@@ -4,11 +4,16 @@
 #' and Miettinen, Int J Biostatistics 2009. It can be used to fit smooth-in-time
 #' parametric functions easily, via logistic regression.
 #'
-#' It is assumed that \code{data} contains two columns named \code{time} and
-#' \code{event} (see the function \link{\code{Surv}} in the package
-#' \code{survival}).
+#' It is assumed that \code{data} contains the two columns corresponding to the
+#' supplied time and event variables. If either the \code{time} or \code{event}
+#' argument is missing, the function looks for columns named \code{"time"},
+#' \code{"event"}, or \code{"status"}.
 #'
-#' @param data The source dataset; see Details.
+#' @param data a data.frame or data.table containing the source dataset.
+#' @param time a character string giving the name of the time variable. See
+#'   Details.
+#' @param event a character string giving the name of the event variable. See
+#'   Details.
 #' @param ratio Integer, giving the ratio of the size of the base series to that
 #'   of the case series. Defaults to 10.
 #' @param type There are currently two sampling procedures available:
@@ -18,14 +23,32 @@
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
-sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial")) {
-
+sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial")) {
+    if (missing(time)) {
+        if ("time" %in% colnames(data)) {
+            time <- "time"
+        } else {
+            stop("data does not contain time variable")
+        }
+    }
+    if (missing(event)) {
+        if ("event" %in% colnames(data)) {
+            event <- "event"
+        } else {
+            if ("status" %in% colnames(data)) {
+                event <- "status"
+            } else {
+                stop("data does not contain event or status variable")
+            }
+        }
+    }
+    if (!all(c(time, event) %in% colnames(data))) {
+        stop("data does not contain supplied time and event variables")
+    }
     type <- match.arg(type)
     # Create survival object from dataset
-    if (! all(c("time", "event") %in% colnames(data))) {
-        stop("data should contain two columns named time and event, respectively.")
-    }
-    survObj <- with(data, survival::Surv(time, event))
+    survObj <- survival::Surv(subset(data, select=(names(data) == time)),
+                              subset(data, select=(names(data) == event)))
 
     n <- nrow(survObj) # no. of subjects
     B <- sum(survObj[, "time"])             # total person-time in base
@@ -62,18 +85,19 @@ sampleCaseBase <- function(data, ratio = 10, type = c("uniform", "multinomial"))
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
-    bSeries <- cbind(bSeries, subset(data, select = (colnames(data) != c("time", "event")))[who,])
-    bSeries$o <- offset
+    bSeries <- cbind(bSeries, subset(data, select = (colnames(data) != c(time, event)))[who,])
+    names(bSeries)[names(bSeries) == "status"] <- event
 
-    cSeries <- data[data$event == 1,]
+    cSeries <- data[which(subset(data, select=(names(data) == event)) == 1),]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1
     # cSeries[, time] <- cSeries[, time]
-    cSeries$o <- offset
 
     # Combine case and base series
     cbSeries <- rbind(cSeries, bSeries)
+    cbSeries <- cbind(cbSeries, rep_len(offset, nrow(cbSeries)))
+    names(cbSeries)[ncol(cbSeries)] <- "offset"
 
     class(cbSeries) <- c("cbData", class(cbSeries))
     return(cbSeries)

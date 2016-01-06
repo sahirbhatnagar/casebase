@@ -4,10 +4,17 @@
 \alias{sampleCaseBase}
 \title{Create case-base dataset for use in fitting parametric hazard functions}
 \usage{
-sampleCaseBase(data, ratio = 10, type = c("uniform", "multinomial"))
+sampleCaseBase(data, time, event, ratio = 10, type = c("uniform",
+  "multinomial"))
 }
 \arguments{
-\item{data}{The source dataset; see Details.}
+\item{data}{a data.frame or data.table containing the source dataset.}
+
+\item{time}{a character string giving the name of the time variable. See
+Details.}
+
+\item{event}{a character string giving the name of the event variable. See
+Details.}
 
 \item{ratio}{Integer, giving the ratio of the size of the base series to that
 of the case series. Defaults to 10.}
@@ -28,8 +35,9 @@ and Miettinen, Int J Biostatistics 2009. It can be used to fit smooth-in-time
 parametric functions easily, via logistic regression.
 }
 \details{
-It is assumed that \code{data} contains two columns named \code{time} and
-\code{event} (see the function \link{\code{Surv}} in the package
-\code{survival}).
+It is assumed that \code{data} contains the two columns corresponding to the
+supplied time and event variables. If either the \code{time} or \code{event}
+argument is missing, the function looks for columns named \code{"time"},
+\code{"event"}, or \code{"status"}.
 }
 
