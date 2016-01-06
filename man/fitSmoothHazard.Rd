@@ -4,7 +4,7 @@
 \alias{fitSmoothHazard}
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
-fitSmoothHazard(formula, data, link = "logit", ...)
+fitSmoothHazard(formula, data, time, event, link = "logit", ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to
@@ -15,6 +15,12 @@ of model specification are given under ‘Details’.}
 model. If not found in data, the variables are taken from
 \code{environment(formula)}, typically the environment from which
 \code{fitSmoothHazard} is called.}
+
+\item{time}{a character string giving the name of the time variable. See
+Details.}
+
+\item{event}{a character string giving the name of the event variable. See
+Details.}
 
 \item{link}{A character string, which gives the specification for the model
 link function. Default is the \code{logit} link.}
@@ -36,7 +42,11 @@ hazard using logistic regression.
 }
 \details{
 The object \code{data} should either be the output of the function
-\link{\code{sampleCaseBase}}, or should contain two columns named "time" and
-"event".
+\link{\code{sampleCaseBase}} or the source dataset on which case-base
+sampling will be performed. In the latter case, it is assumed that
+\code{data} contains the two columns corresponding to the supplied time and
+event variables. If either the \code{time} or \code{event} argument is
+missing, the function looks for columns named \code{"time"}, \code{"event"},
+or \code{"status"}.
 }
 

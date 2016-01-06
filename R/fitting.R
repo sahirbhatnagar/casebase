@@ -8,8 +8,12 @@
 #' hazard using logistic regression.
 #'
 #' The object \code{data} should either be the output of the function
-#' \link{\code{sampleCaseBase}}, or should contain two columns named "time" and
-#' "event".
+#' \link{\code{sampleCaseBase}} or the source dataset on which case-base
+#' sampling will be performed. In the latter case, it is assumed that
+#' \code{data} contains the two columns corresponding to the supplied time and
+#' event variables. If either the \code{time} or \code{event} argument is
+#' missing, the function looks for columns named \code{"time"}, \code{"event"},
+#' or \code{"status"}.
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
@@ -18,6 +22,10 @@
 #'   model. If not found in data, the variables are taken from
 #'   \code{environment(formula)}, typically the environment from which
 #'   \code{fitSmoothHazard} is called.
+#' @param time a character string giving the name of the time variable. See
+#'   Details.
+#' @param event a character string giving the name of the event variable. See
+#'   Details.
 #' @param link A character string, which gives the specification for the model
 #'   link function. Default is the \code{logit} link.
 #' @param ... Additional parameters passed to \link{\code{sampleCaseBase}}. If
@@ -26,7 +34,7 @@
 #' @return An object of class \code{caseBase}, which inherits from the classes
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
-fitSmoothHazard <- function(formula, data, link = "logit", ...) {
+fitSmoothHazard <- function(formula, data, time, event, link = "logit", ...) {
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
