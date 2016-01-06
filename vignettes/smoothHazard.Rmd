@@ -1,0 +1,375 @@
+---
+title: "Fitting smooth-in-time parametric hazard functions"
+author: "Maxime Turgeon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: reference.bib
+---
+
+## Methodological details
+
+Case-base sampling was proposed by Hanley & Miettinen [-@hanley2009fitting] as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel [-@mantel1973synthetic] and then later developped by Efron [-@efron1977efficiency], is to sample person-moments, i.e. discrete time points along an subject's follow-up time, in order to construct a base series against which the case series can be compared. 
+
+This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time *logarithmically* recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.
+
+The theoretical properties of this approach have been studied in Saarela & Arjas [-@saarela2015non] and Saarela [-@saarela2015case].
+
+## First example
+
+The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
+
+```{r eval=TRUE, fig.width=7, fig.height=7, fig.align='center'}
+library(survival)
+data(veteran)
+table(veteran$status)
+
+evtimes <- veteran$time[veteran$status == 1]
+hist(evtimes, nclass=30, main='', xlab='Survival time (days)', col='gray90', probability=TRUE)
+tgrid <- seq(0, 1000, by=10)
+lines(tgrid, dexp(tgrid, rate=1.0/mean(evtimes)), 
+      lwd=2, lty=2, col='red')
+```
+
+As we can see, the empirical survival function ressembles an exponential distribution.
+
+We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.
+
+```{r eval=TRUE}
+veteran$prior <- factor(veteran$prior, levels = c(0, 10))
+veteran$celltype <- factor(veteran$celltype, 
+                           levels = c('large', 'squamous', 'smallcell', 'adeno'))
+veteran$trt <- factor(veteran$trt, levels = c(1, 2))
+```
+
+Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For $shape = 1$, we get an exponential distribution:
+
+```{r eval=TRUE}
+library(eha)
+y <- with(veteran, Surv(time, status))
+
+model1 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
+                  data = veteran, shape = 1)
+summary(model1)
+```
+
+If we take $shape = 0$, the shape parameter is estimated along with the regression coefficients:
+
+```{r eval=TRUE}
+model2 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
+                  data = veteran, shape = 0)
+summary(model2)
+```
+
+Finally, we can also fit a Cox proportional hazard:
+
+```{r eval=TRUE}
+model3 <- coxph(y ~ karno + diagtime + age + prior + celltype + trt, 
+                data = veteran)
+summary(model3)
+```
+
+As we can see, all three models are significant, and they give similar information: ```karno``` and ```celltype``` are significant predictors, both treatment is not.
+
+The method available in this package makes use of *case-base sampling*. That is, person-moments are randomly sampled across the entire follow-up time, with some moments corresponding to cases and others to controls. By sampling person-moments instead of individuals, we can then use logistic regression to fit smooth-in-time parametric hazard functions. See the previous section for more details.
+
+First, we will look at the follow-up time by using population-time plots:
+
+```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
+nobs <- nrow(y)
+ftime <- veteran$time
+ord <- order(ftime, decreasing=TRUE)
+plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
+     xlab='Follow-up time', ylab='Population')
+segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+cases <- veteran$status == 1
+points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch=20, col='red', cex=0.5)
+```
+
+Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual's follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.
+
+Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.
+
+```{r eval=TRUE}
+library(casebase)
+library(data.table)
+names(veteran)[names(veteran) == "status"] <- "event"
+model4 <- fitSmoothHazard(event ~ time + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model4)
+```
+
+Since the output object from ```fitSmoothHazard``` inherits from the ```glm``` class, we see a familiar result when using the function ```summary```.
+
+The main purpose of fitting smooth hazard functions is that it is then relatively easy to compute absolute risks. For example, we can use the function ```absoluteRisk``` to compute the mean absolute risk at 90 days, which can then be compared to the empirical measure.
+
+```{r eval=TRUE}
+absoluteRisk(object = model4, time = 90)
+mean(ftime <= 90)
+```
+
+We can also fit a Weibull hazard by using a logarithmic term for time:
+
+```{r eval=TRUE}
+model5 <- fitSmoothHazard(event ~ log(time) + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model5)
+```
+
+With case-base sampling, it is straightforward to fit a semi-parametric hazard function using splines, which can then be used to estimate the mean absolute risk.
+
+```{r eval=TRUE}
+# Fit a spline for time
+library(splines)
+model6 <- fitSmoothHazard(event ~ bs(time) + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model6)
+
+absoluteRisk(object = model6, time = 90)
+```
+
+As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
+
+```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
+splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
+
+plot(linearRisk, splineRisk,
+     xlab="Linear", ylab = "Splines", pch=19)
+abline(a=0, b=1, lty=2, lwd=2, col='red')
+```
+
+These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.
+
+<!-- ## Vaccination example -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- inpath <- '~/git_repositories/casebase/data/' -->
+<!-- etimes <- read.csv(file.path(inpath, 'etimes.csv'), header=TRUE) -->
+<!-- vtimes <- read.csv(file.path(inpath, 'vtimes.csv'), header=TRUE) -->
+<!-- vtc <- vtimes[etimes[,1],2] -->
+<!-- exposed <- (vtc < etimes[,2]) & (vtc >= etimes[,2] - 7.0) -->
+
+<!-- popsize <- nrow(vtimes) -->
+<!-- ncases <- nrow(etimes) -->
+<!-- n.cases <- rep(1, ncases) -->
+<!-- n.exposed.cases <- as.numeric(exposed) -->
+<!-- n.unexposed.cases <- as.numeric(!exposed) -->
+
+<!-- # Time-matched sampling: -->
+
+<!-- sample.ctls = function(x) sample(1:popsize, x, FALSE) -->
+
+<!-- ctl.case.ratio = 1 -->
+<!-- n.ctls = n.cases * ctl.case.ratio -->
+<!-- denom.sample = lapply(n.ctls, sample.ctls) -->
+<!-- nctls = sum(n.ctls) -->
+<!-- n.exposed.ctls <- rep(NA, ncases) -->
+
+<!-- set.seed(1) -->
+<!-- cc <- 0 -->
+<!-- casestatus <- NULL -->
+<!-- exposure <- NULL -->
+<!-- matched <- NULL -->
+<!-- for (i in 1:ncases) { -->
+<!--     cc <- cc + 1 -->
+<!--     exstatus <- (vtimes[denom.sample[[i]],2] < etimes[i,2]) & (vtimes[denom.sample[[i]],2] >= etimes[i,2] - 7.0) -->
+<!--     n.exposed.ctls[i] = sum(exstatus) -->
+<!--     casestatus <- c(casestatus, rep(1, n.cases[i]), rep(0, n.ctls[i])) -->
+<!--     exposure <- c(exposure, rep(0, n.unexposed.cases[i]), rep(1, n.exposed.cases[i]), as.numeric(exstatus)) -->
+<!--     matched <- c(matched, rep(cc, n.cases[i] + n.cases[i] * ctl.case.ratio)) -->
+<!-- } -->
+<!-- # cbind(casestatus, exposure, matched) -->
+
+<!-- n.unexposed.ctls <- n.ctls - n.exposed.ctls -->
+
+<!-- model1 <- clogit(casestatus ~ exposure + strata(as.factor(matched))) -->
+<!-- summary(model1) -->
+
+<!-- maxage <- 140/7 -->
+
+<!-- # pdf(file.path(inpath, 'studybase.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'studybase.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="gray80",border=NA) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Pop.-time'), -->
+<!--        pch=c(15), col=c('gray80'), pt.bg=c('gray80'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- idx <- order(vtimes[,2]) -->
+
+<!-- # pdf(file.path(inpath, 'studybaseexposure.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'studybaseexposure.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="lightblue",border=NA) -->
+<!-- segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2') -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time'), -->
+<!--        pch=c(15,15), col=c('lightblue','yellow2'), pt.bg=c('lightblue','yellow2'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+
+<!-- vidx <- order(vtc) -->
+<!-- caseidx <- (1:popsize)[vtimes[idx,1] %in% etimes[,1]] -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'caseseries.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'caseseries.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="lightblue",border=NA) -->
+<!-- segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'), -->
+<!--        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'baseseries.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'baseseries.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="lightblue",border=NA) -->
+<!-- segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- points(etimes[matched[casestatus==0],2]/7, vtimes[unlist(denom.sample),1], pch=20, col='blue', cex=0.75) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'), -->
+<!--        pch=c(15,15,20,20), col=c('lightblue','yellow2','red','blue'), pt.bg=c('lightblue','yellow2','red','blue'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # Self-matched sampling: -->
+
+<!-- minday <- 0 -->
+<!-- maxday <- 140 -->
+
+<!-- nbase <- 1 -->
+<!-- times <- rep(NA, 2 * (ncases + nbase * ncases)) -->
+<!-- casestatus <- rep(NA, 2 * (ncases + nbase * ncases)) -->
+<!-- exposure <- rep(NA, 2 * (ncases + nbase * ncases)) -->
+<!-- matched <- rep(NA, 2 * (ncases + nbase * ncases)) -->
+
+<!-- set.seed(1) -->
+<!-- counter <- 0 -->
+<!-- casecounter <- 0 -->
+<!-- for (i in 1:ncases) { -->
+<!--     if (is.finite(etimes[i,2]) & etimes[i,2] > minday & etimes[i,2] <= maxday) { -->
+<!--         counter <- counter + 1 -->
+<!--         casecounter <- casecounter + 1 -->
+<!--         times[counter] <- etimes[i,2] -->
+<!--         casestatus[counter] <- 1 -->
+<!--         exposure[counter] <- (etimes[i,2] - vtc[i]) > 0.0 & (etimes[i,2] - vtc[i]) < 7.0 -->
+<!--         matched[counter] <- casecounter -->
+<!--         # n <- rpois(1, nbase) -->
+<!--         n <- nbase -->
+<!--         for (j in 1:n) { -->
+<!--             counter <- counter + 1 -->
+<!--             u <- runif(1, 0.0, nbase) -->
+<!--             times[counter] <- runif(1, min=minday, max=maxday) -->
+<!--             casestatus[counter] <- 0 -->
+<!--             exposure[counter] <- (times[counter] - vtc[i]) > 0.0 & (times[counter] - vtc[i]) < 7.0 -->
+<!--             matched[counter] <- casecounter -->
+<!--         } -->
+<!--     } -->
+<!--     # if (i %% 1000 == 0) -->
+<!--     #     print(i) -->
+<!-- } -->
+<!-- # counter -->
+<!-- # casecounter -->
+<!-- times <- times[1:counter] -->
+<!-- casestatus <- casestatus[1:counter] -->
+<!-- exposure <- exposure[1:counter] -->
+<!-- matched <- matched[1:counter] -->
+
+<!-- times2 <- times^2 -->
+<!-- model2 <- clogit(casestatus ~ exposure + times + times2 + strata(as.factor(matched))) -->
+<!-- summary(model2) -->
+
+<!-- model3 <- clogit(casestatus ~ exposure + bs(times) + strata(as.factor(matched))) -->
+<!-- summary(model3) -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'caseseries2.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'caseseries2.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="lightblue",border=NA) -->
+<!-- segments(vtimes[idx,2]/7, (1:popsize), (vtimes[idx,2]+7)/7, (1:popsize), col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.n-time','Exposed pop.-time','Case series'), -->
+<!--        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'selfmatched.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'selfmatched.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="white",border=NA) -->
+<!-- segments(rep(minday/7, ncases), caseidx, rep(maxday/7, ncases), caseidx, col='lightblue') -->
+<!-- segments(vtc[vidx]/7, caseidx, (vtc[vidx]+7)/7, caseidx, col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series'), -->
+<!--        pch=c(15,15,20), col=c('lightblue','yellow2','red'), pt.bg=c('lightblue','yellow2','red'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'baseseries2.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'baseseries2.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,popsize), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="white",border=NA) -->
+<!-- segments(rep(minday/7, ncases), caseidx, rep(maxday/7, ncases), caseidx, col='lightblue') -->
+<!-- segments(vtc[vidx]/7, caseidx, (vtc[vidx]+7)/7, caseidx, col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- points(times[casestatus==0]/7, caseidx[matched[casestatus==0]], pch=20, col='blue', cex=0.75) -->
+<!-- legend(0.025 * maxage, 0.975 * popsize, legend=c('Unexposed pop.-time','Exposed pop.-time','Case series','Base series'), -->
+<!--        pch=c(15,15,20,20), col=c('lightblue','yellow2','red','blue'), pt.bg=c('lightblue','yellow2','red','blue'), -->
+<!--        cex=1, bg='white', box.col='white') -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # pdf(file.path(inpath, 'baseseries3.pdf'), width=8, height=6, paper='special') -->
+<!-- postscript(file.path(inpath, 'baseseries3.eps'), width=8, height=6, paper='special', horizontal=FALSE) -->
+<!-- op <- par(mar = c(4.25,4.25,1,1)) -->
+<!-- plot(1, 1, xlim=c(0,maxage), ylim=c(0,1000), type='n', xlab='Age (weeks)', ylab='Population') -->
+<!-- rect(0,0,maxage,popsize, col="white",border=NA) -->
+<!-- segments(rep(minday/7, ncases), caseidx, rep(maxday/7, ncases), caseidx, col='lightblue') -->
+<!-- segments(vtc[vidx]/7, caseidx, (vtc[vidx]+7)/7, caseidx, col='yellow2') -->
+<!-- points(etimes[vidx,2]/7, caseidx, pch=20, col='red', cex=0.75) -->
+<!-- points(times[casestatus==0]/7, caseidx[matched[casestatus==0]], pch=20, col='blue', cex=0.75) -->
+<!-- par(op) -->
+<!-- dev.off() -->
+<!-- ``` -->
+
+## Session information
+
+```{r echo=FALSE, eval=TRUE}
+sessionInfo()
+```
+## References

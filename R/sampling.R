@@ -23,6 +23,7 @@
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
+#' @export
 sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial")) {
     if (missing(time)) {
         if ("time" %in% colnames(data)) {
@@ -62,7 +63,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
         # point must lie between the beginning and the end of follow-up
         p <- survObj[, "time"]/B
         who <- sample(n, b, replace = TRUE, prob = p)
-        bSeries <- survObj[who, ]
+        bSeries <- as.matrix(survObj[who, ])
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- runif(b) * bSeries[, "time"]
     }
@@ -75,10 +76,10 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
         # for (i in 1:n) {
         #     pSum <- c(pSum, pSum[i] + survObj[i, "time"])
         # }
-        pSum <- c(0, cumSum(survObj[, "time"]))
+        pSum <- c(0, cumsum(survObj[, "time"]))
         everyDt <- B*(1:b)/(b+1)
         who <- findInterval(everyDt, pSum)
-        bSeries <- survObj[who, ]
+        bSeries <- as.matrix(survObj[who, ])
         bSeries[, "status"] <- 0
         bSeries[, "time"] <- everyDt - pSum[who]
     }
@@ -96,6 +97,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     # Combine case and base series
     cbSeries <- rbind(cSeries, bSeries)
+    # Add offset to dataset
     cbSeries <- cbind(cbSeries, rep_len(offset, nrow(cbSeries)))
     names(cbSeries)[ncol(cbSeries)] <- "offset"
 

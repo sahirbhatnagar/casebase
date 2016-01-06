@@ -17,7 +17,7 @@
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
-#'   of model specification are given under ‘Details’.
+#'   of model specification are given under Details.
 #' @param data a data frame, list or environment containing the variables in the
 #'   model. If not found in data, the variables are taken from
 #'   \code{environment(formula)}, typically the environment from which
@@ -28,18 +28,20 @@
 #'   Details.
 #' @param link A character string, which gives the specification for the model
 #'   link function. Default is the \code{logit} link.
-#' @param ... Additional parameters passed to \link{\code{sampleCaseBase}}. If
+#' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
 #'   \code{data} inherits from the class \code{cbData}, then these parameters
 #'   are ignored.
 #' @return An object of class \code{caseBase}, which inherits from the classes
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
+#' @export
 fitSmoothHazard <- function(formula, data, time, event, link = "logit", ...) {
+
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
         data <- sampleCaseBase(originalData, ...)
-        if (length(list(...)) != 5) {
+        if (length(list(...)) != 2) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
         }
     } else {
