@@ -95,9 +95,7 @@ Next, we use case-base sampling to fit a parametric hazard function via logistic
 
 ```{r eval=TRUE}
 library(casebase)
-library(data.table)
-names(veteran)[names(veteran) == "status"] <- "event"
-model4 <- fitSmoothHazard(event ~ time + karno + diagtime + age + prior +
+model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio=100, type = "uniform")
 summary(model4)
 ```
@@ -114,7 +112,7 @@ mean(ftime <= 90)
 We can also fit a Weibull hazard by using a logarithmic term for time:
 
 ```{r eval=TRUE}
-model5 <- fitSmoothHazard(event ~ log(time) + karno + diagtime + age + prior +
+model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio=100, type = "uniform")
 summary(model5)
 ```
@@ -124,7 +122,7 @@ With case-base sampling, it is straightforward to fit a semi-parametric hazard f
 ```{r eval=TRUE}
 # Fit a spline for time
 library(splines)
-model6 <- fitSmoothHazard(event ~ bs(time) + karno + diagtime + age + prior +
+model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio=100, type = "uniform")
 summary(model6)
 
