@@ -26,18 +26,18 @@
 #' @export
 sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial")) {
     if (missing(time)) {
-        if ("time" %in% colnames(data)) {
-            time <- "time"
+        if (any(grepl("^time", names(data), ignore.case = TRUE))) {
+            time <- grep("^time", names(data), ignore.case = TRUE, value = TRUE)
         } else {
             stop("data does not contain time variable")
         }
     }
     if (missing(event)) {
-        if ("event" %in% colnames(data)) {
-            event <- "event"
+        if (any(grepl("^event", names(data), ignore.case = TRUE))) {
+            event <- grep("^event", names(data), ignore.case = TRUE, value = TRUE)
         } else {
-            if ("status" %in% colnames(data)) {
-                event <- "status"
+            if (any(grepl("^status", names(data), ignore.case = TRUE))) {
+                event <- grep("^status", names(data), ignore.case = TRUE, value = TRUE)
             } else {
                 stop("data does not contain event or status variable")
             }
@@ -49,8 +49,8 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     type <- match.arg(type)
     # Create survival object from dataset
     selectTime <- (names(data) == time)
-    survObj <- survival::Surv(subset(data, select=selectTime),
-                              subset(data, select=(names(data) == event)))
+    survObj <- survival::Surv(subset(data, select=selectTime, drop = TRUE),
+                              subset(data, select=(names(data) == event), drop = TRUE))
 
     n <- nrow(survObj) # no. of subjects
     B <- sum(survObj[, "time"])             # total person-time in base
@@ -87,7 +87,8 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
-    bSeries <- cbind(bSeries, subset(data, select = (colnames(data) != c(time, event)))[who,])
+    selectTimeEvent <- (colnames(data) != c(time, event))
+    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,])
     names(bSeries)[names(bSeries) == "status"] <- event
 
     cSeries <- data[which(subset(data, select=(names(data) == event)) == 1),]
