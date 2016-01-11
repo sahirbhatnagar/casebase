@@ -48,7 +48,8 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     }
     type <- match.arg(type)
     # Create survival object from dataset
-    survObj <- survival::Surv(subset(data, select=(names(data) == time)),
+    selectTime <- (names(data) == time)
+    survObj <- survival::Surv(subset(data, select=selectTime),
                               subset(data, select=(names(data) == event)))
 
     n <- nrow(survObj) # no. of subjects
