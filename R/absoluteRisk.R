@@ -29,7 +29,16 @@
 #'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
 #'   covariate profiles.
 #' @export
-absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
+absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
+
+#' @rdname absoluteRisk
+absoluteRisk.default <- function (object, ...) {
+    stop("This function should be used with an object of class glm of vglm",
+         call. = FALSE)
+}
+
+#' @rdname absoluteRisk
+absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     method <- match.arg(method)
     meanAR <- FALSE
     # Create hazard function
@@ -77,7 +86,11 @@ absoluteRisk <- function(object, time, newdata = NULL, method = c("quadrature", 
     }
 }
 
-
+#' @rdname absoluteRisk
+absoluteRisk.vglm <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
+    stop("absoluteRisk is not currently implemented for competing risks",
+         call. = FALSE)
+}
 
 
 
