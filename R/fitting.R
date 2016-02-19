@@ -11,9 +11,9 @@
 #' \link{\code{sampleCaseBase}} or the source dataset on which case-base
 #' sampling will be performed. In the latter case, it is assumed that
 #' \code{data} contains the two columns corresponding to the supplied time and
-#' event variables. If either the \code{time} or \code{event} argument is
-#' missing, the function looks for columns named \code{"time"}, \code{"event"},
-#' or \code{"status"}.
+#' event variables. If \code{time} is missing, the function looks for a column
+#' named \code{"time"} in the data. Note that the event variable is inferred
+#' from \code{formula}, since it is the left hand side.
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
@@ -24,8 +24,6 @@
 #'   \code{fitSmoothHazard} is called.
 #' @param time a character string giving the name of the time variable. See
 #'   Details.
-#' @param event a character string giving the name of the event variable. See
-#'   Details.
 #' @param link A character string, which gives the specification for the model
 #'   link function. Default is the \code{logit} link.
 #' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
@@ -35,12 +33,21 @@
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
 #' @export
-fitSmoothHazard <- function(formula, data, time, event, link = "logit", ...) {
+fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
+    # Infer name of event variable from LHS of formula
+    event <- as.character(attr(terms(formula), "variables")[[2]])
 
+    if (missing(time)) {
+        if (any(grepl("^time", names(data), ignore.case = TRUE))) {
+            time <- grep("^time", names(data), ignore.case = TRUE, value = TRUE)
+        } else {
+            stop("data does not contain time variable")
+        }
+    }
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
-        data <- sampleCaseBase(originalData, ...)
+        data <- sampleCaseBase(originalData, time, event, ...)
         if (length(list(...)) != 2) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
         }
@@ -50,8 +57,26 @@ fitSmoothHazard <- function(formula, data, time, event, link = "logit", ...) {
 
     # Update formula to add offset term
     formula <- update(formula, ~ . + offset(offset))
-    model <- glm(formula, data = data, family = binomial(link=link))
-    model$originalData <- originalData
+
+    # Fit a binomial model is there are no competing risks
+    typeEvents <- unique(subset(data, select=(names(data) == event), drop = TRUE))
+    if (length(typeEvents) == 2) {
+        model <- glm(formula, data = data, family = binomial(link=link))
+        model$originalData <- originalData
+    } else {
+        # If we have competing risks, we need to reformat the response
+        multiData_mat <- c()
+        for (type in typeEvents[typeEvents != 0]) {
+            multiData_mat <- cbind(multiData_mat, as.numeric(subset(data, select=(names(data) == event), drop = TRUE) == type))
+        }
+        # Base series should correspond to last column
+        multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
+
+        formula <- update(formula, multiData ~ .)
+
+        model <- vglm(formula, data = data, family = multinomial)
+        model$originalData <- originalData
+    }
 
     class(model) <- c("caseBase", class(model))
 
