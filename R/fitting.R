@@ -44,41 +44,56 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
             stop("data does not contain time variable")
         }
     }
+    typeEvents <- sort(unique(subset(data, select=(names(data) == event), drop = TRUE)))
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
-        data <- sampleCaseBase(originalData, time, event, ...)
+        sampleData <- sampleCaseBase(originalData, time, event,
+                                     cmprisk = (length(typeEvents) > 2), ...)
         if (length(list(...)) != 2) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
         }
     } else {
         originalData <- NULL
+        sampleData <- data
     }
 
     # Update formula to add offset term
     formula <- update(formula, ~ . + offset(offset))
 
     # Fit a binomial model is there are no competing risks
-    typeEvents <- unique(subset(data, select=(names(data) == event), drop = TRUE))
     if (length(typeEvents) == 2) {
-        model <- glm(formula, data = data, family = binomial(link=link))
-        model$originalData <- originalData
+        model <- glm(formula, data = sampleData, family = binomial(link=link))
+        # model$originalData <- originalData
+        # model$typeEvents <- typeEvents
+        class(model) <- c("caseBase", class(model))
     } else {
         # If we have competing risks, we need to reformat the response
         multiData_mat <- c()
         for (type in typeEvents[typeEvents != 0]) {
-            multiData_mat <- cbind(multiData_mat, as.numeric(subset(data, select=(names(data) == event), drop = TRUE) == type))
+            multiData_mat <- cbind(multiData_mat, as.numeric(subset(sampleData, select=(names(sampleData) == event), drop = TRUE) == type))
         }
         # Base series should correspond to last column
         multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
+        multiData_mat <- as.data.frame(multiData_mat)
+        colnames(multiData_mat) <- paste0("EventType", c(typeEvents[typeEvents != 0], 0))
 
-        formula <- update(formula, multiData ~ .)
+        formula <- do.call(update,
+                           list(formula,
+                                as.formula(paste(paste0("cbind(",
+                                                        paste(names(multiData_mat),
+                                                              collapse = ", "), ")"),
+                                                 "~ ."))))
 
-        model <- vglm(formula, data = data, family = multinomial)
-        model$originalData <- originalData
+        combData <- cbind(sampleData, multiData_mat)
+        model <- VGAM::vglm(formula, family = VGAM::multinomial,
+                            data = combData)
+        # Output of vglm is an S4 object
+        # model@originalData <- originalData
+        # model@typeEvents <- typeEvents
     }
 
-    class(model) <- c("caseBase", class(model))
-
-    return(model)
+    return(list(model = model,
+                originalData = originalData,
+                typeEvents = typeEvents))
 }

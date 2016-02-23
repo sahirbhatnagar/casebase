@@ -40,9 +40,9 @@ Returns the mean absolute risk at the user-supplied time, if
   covariate profiles.
 }
 \description{
-Using the output of the function \code{fitSmoothHazard}, we can
-compute absolute risks by integrating the fitted hazard function over a time
-period and then coverting this to an estimated survival for each individual.
+Using the output of the function \code{fitSmoothHazard}, we can compute
+absolute risks by integrating the fitted hazard function over a time period
+and then coverting this to an estimated survival for each individual.
 }
 \details{
 In order to compute the mean absolute risk, the function \code{absoluteRisk}
@@ -52,5 +52,9 @@ function \code{\link{fitSmoothHazard}} was run on the source dataset (and not
 the output of \code{\link{sampleCaseBase}}). On the other hand, if the user
 supplies the original dataset through the parameter \code{newdata}, the mean
 absolute risk can be computed as the average of the output vector.
+
+The quadrature should be good enough in most situation, but Monte Carlo
+integration can give more accurate results when the estimated hazard function
+is not smooth (e.g. when modeling with time-varying covariates).
 }
 

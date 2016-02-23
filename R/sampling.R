@@ -20,11 +20,13 @@
 #'   \code{uniform}, where person-moments are sampled uniformly across
 #'   individuals and follow-up time; and \code{multinomial}, where individuals
 #'   are sampled proportionally to their follow-up time.
+#' @param cmprisk Logical. Indicates whether we have multiple even types that we
+#'   want to consider as competing risks.
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
 #' @export
-sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial")) {
+sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), cmprisk = FALSE) {
     if (missing(time)) {
         if (any(grepl("^time", names(data), ignore.case = TRUE))) {
             time <- grep("^time", names(data), ignore.case = TRUE, value = TRUE)
@@ -48,13 +50,15 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     }
     type <- match.arg(type)
     # Create survival object from dataset
+    if (cmprisk) surv_type <- "mstate" else surv_type <- "right"
     selectTime <- (names(data) == time)
     survObj <- survival::Surv(subset(data, select=selectTime, drop = TRUE),
-                              subset(data, select=(names(data) == event), drop = TRUE))
+                              subset(data, select=(names(data) == event), drop = TRUE),
+                              type = surv_type)
 
     n <- nrow(survObj) # no. of subjects
     B <- sum(survObj[, "time"])             # total person-time in base
-    c <- sum(survObj[, "status"])          # no. of cases (events)
+    c <- sum(survObj[, "status"] != 0)          # no. of cases (events)
     b <- ratio * c               # size of base series
     offset <- log(B / b)            # offset so intercept = log(ID | x, t = 0 )
 
@@ -87,11 +91,12 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
-    selectTimeEvent <- (colnames(data) != c(time, event))
+    selectTimeEvent <- !(colnames(data) %in% c(time, event))
     bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,])
     names(bSeries)[names(bSeries) == "status"] <- event
+    names(bSeries)[names(bSeries) == "time"] <- time
 
-    cSeries <- data[which(subset(data, select=(names(data) == event)) == 1),]
+    cSeries <- data[which(subset(data, select=(names(data) == event)) != 0),]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1
