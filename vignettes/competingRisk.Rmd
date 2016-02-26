@@ -47,7 +47,8 @@ ftime <- DT$ftime
 ord <- order(ftime, decreasing=TRUE)
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+#segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+polygon(c(0, max(ftime), ftime[ord], 0), c(0, 0, 1:nobs, nobs), col = "gray90")
 cases <- DT$Status %in% c(1, 2)
 colour <- c("red", "blue")[DT$Status[cases]]
 
@@ -62,10 +63,27 @@ legend("topright", legend=c("Relapse", "Competing event"), col=c("red", "blue"),
 
 ```{r eval=TRUE}
 library(casebase)
+library(VGAM)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=100, type = "uniform", time="ftime")
 summary(model1)
 
+```
+
+```{r eval=TRUE}
+model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
+                          data = DT, ratio=100, type = "uniform", time="ftime")
+summary(model2)
+
+```
+
+```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+linearRisk <- casebase:::absoluteRisk.compRisk(object = model1, time = 60)
+logRisk <- casebase:::absoluteRisk.compRisk(object = model2, time = 60)
+
+plot(linearRisk, logRisk,
+     xlab="Linear", ylab = "Splines", pch=19)
+abline(a=0, b=1, lty=2, lwd=2, col='red')
 ```
 
 ## Session information

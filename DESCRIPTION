@@ -14,7 +14,8 @@ Imports:
     data.table,
     stats,
     survival,
-    VGAM
+    VGAM,
+    pryr
 License: GPL (>=2)
 LazyData: TRUE
 Suggests:

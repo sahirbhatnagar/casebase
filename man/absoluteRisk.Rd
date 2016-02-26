@@ -2,9 +2,9 @@
 % Please edit documentation in R/absoluteRisk.R
 \name{absoluteRisk}
 \alias{absoluteRisk}
+\alias{absoluteRisk.compRisk}
 \alias{absoluteRisk.default}
 \alias{absoluteRisk.glm}
-\alias{absoluteRisk.vglm}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
 absoluteRisk(object, ...)
@@ -14,7 +14,7 @@ absoluteRisk(object, ...)
 \method{absoluteRisk}{glm}(object, time, newdata = NULL,
   method = c("quadrature", "montecarlo"), nsamp = 100)
 
-\method{absoluteRisk}{vglm}(object, time, newdata = NULL,
+\method{absoluteRisk}{compRisk}(object, time, newdata = NULL,
   method = c("quadrature", "montecarlo"), nsamp = 100)
 }
 \arguments{

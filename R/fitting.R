@@ -61,12 +61,14 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Update formula to add offset term
     formula <- update(formula, ~ . + offset(offset))
 
-    # Fit a binomial model is there are no competing risks
+    # Fit a binomial model if there are no competing risks
     if (length(typeEvents) == 2) {
-        model <- glm(formula, data = sampleData, family = binomial(link=link))
-        # model$originalData <- originalData
-        # model$typeEvents <- typeEvents
-        class(model) <- c("caseBase", class(model))
+        out <- glm(formula, data = sampleData, family = binomial(link=link))
+        out$originalData <- originalData
+        out$typeEvents <- typeEvents
+        out$timeVar <- time
+        out$eventVar <- event
+
     } else {
         # If we have competing risks, we need to reformat the response
         multiData_mat <- c()
@@ -91,9 +93,13 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         # Output of vglm is an S4 object
         # model@originalData <- originalData
         # model@typeEvents <- typeEvents
+        out <- list(model = model,
+                    originalData = originalData,
+                    typeEvents = typeEvents,
+                    timeVar = time,
+                    eventVar = event)
+        class(out) <- c("compRisk", class(model))
     }
 
-    return(list(model = model,
-                originalData = originalData,
-                typeEvents = typeEvents))
+    return(out)
 }
