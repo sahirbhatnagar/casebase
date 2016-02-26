@@ -36,12 +36,14 @@
 absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 
 #' @rdname absoluteRisk
+#' @export
 absoluteRisk.default <- function (object, ...) {
     stop("This function should be used with an object of class glm of compRisk",
          call. = FALSE)
 }
 
 #' @rdname absoluteRisk
+#' @export
 absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     method <- match.arg(method)
     meanAR <- FALSE
@@ -94,6 +96,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadratur
 }
 
 #' @rdname absoluteRisk
+#' @export
 absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
@@ -132,40 +135,32 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
         # predictvglm doesn't like offset = 0
         old_warn <- options(warn = -1)
         pred <- predictvglm(fit, newdata2)
-        options(warn = old_warn)
+        options(warn = old_warn$warn)
         return(as.numeric(exp(rowSums(pred))))
     }
+
     if (method == "quadrature") {
         overallSurv <- function(time, fit, newdata) {
             exp(-integrate(overallLambda, lower=0, upper=time, fit=fit, newdata=newdata,
                            subdivisions = nsamp)$value)
         }
-    }
-    if (method == "montecarlo") {
-        overallSurv <- function(time, fit, newdata) {
-            sampledPoints <- runif(nsamp) * time
-            exp(-mean(overallLambda(sampledPoints, fit=fit, newdata=newdata)))
+        # 2. Compute individual subdensities f_j
+        subdensities <- vector("list", length = J)
+        subdensity_template <- function(x, object, newdata, index) {
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[object$timeVar] <- x
+            # predictvglm doesn't like offset = 0
+            old_warn <- options(warn = -1)
+            lambdas <- predictvglm(object$model, newdata2)
+            options(warn = old_warn$warn)
+            exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
         }
-    }
+        for (j in 1:J) {
+            subdensities[[j]] <- pryr::partial(subdensity_template, index = j, .lazy = FALSE)
+        }
 
-    # 2. Compute individual subdensities f_j
-    subdensities <- vector("list", length = J)
-    subdensity_template <- function(x, object, newdata, index) {
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[object$timeVar] <- x
-        # predictvglm doesn't like offset = 0
-        old_warn <- options(warn = -1)
-        lambdas <- predictvglm(object$model, newdata2)
-        options(warn = old_warn)
-        exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
-    }
-    for (j in 1:J) {
-        subdensities[[j]] <- pryr::partial(subdensity_template, index = j, .lazy = FALSE)
-    }
-
-    # 3. Compute cumulative incidence functions F_j
-    if (method == "quadrature") {
+        # 3. Compute cumulative incidence functions F_j
         for (i in 1:nrow(newdata)) {
             for (j in 1:J) {
                 cumInc[i,j] <- integrate(subdensities[[j]], lower = 0, upper = time,
@@ -173,6 +168,28 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                          subdivisions = nsamp)$value
             }
         }
+    }
+
+    if (method == "montecarlo") {
+        overallSurv <- function(time, fit, newdata) {
+            sampledPoints <- runif(nsamp) * time
+            exp(-mean(overallLambda(sampledPoints, fit=fit, newdata=newdata)))
+        }
+        subdensity_mat <- function(x, object, newdata) {
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[object$timeVar] <- x
+            # predictvglm doesn't like offset = 0
+            old_warn <- options(warn = -1)
+            lambdas <- predictvglm(object$model, newdata2)
+            options(warn = old_warn$warn)
+            exp(lambdas) * overallSurv(x, fit = object$model, newdata2)
+        }
+        sampledPoints <- runif(nsamp) * time
+        for (i in 1:nrow(newdata)) {
+            cumInc[i, ] <- colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
+        }
+
     }
 
     return(cumInc)

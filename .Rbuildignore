@@ -9,3 +9,4 @@
 ^exercises5\.R$
 ^riskset\.R$
 ^vignettes/bmtcrr\.csv$
+^inst/

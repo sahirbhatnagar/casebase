@@ -67,22 +67,22 @@ library(VGAM)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=100, type = "uniform", time="ftime")
 summary(model1)
-
 ```
 
 ```{r eval=TRUE}
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=100, type = "uniform", time="ftime")
 summary(model2)
-
 ```
 
 ```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
-linearRisk <- casebase:::absoluteRisk.compRisk(object = model1, time = 60)
-logRisk <- casebase:::absoluteRisk.compRisk(object = model2, time = 60)
+linearRisk <- absoluteRisk(object = model1, time = 60, method = "montecarlo")
+logRisk <- absoluteRisk(object = model2, time = 60, method = "montecarlo")
 
-plot(linearRisk, logRisk,
-     xlab="Linear", ylab = "Splines", pch=19)
+plot(linearRisk[,1], logRisk[,1],
+     xlab="Linear", ylab = "Log", pch=19, cex=0.5)
+points(linearRisk[,2], logRisk[,2],
+       col = 'blue', pch=19, cex=0.5)
 abline(a=0, b=1, lty=2, lwd=2, col='red')
 ```
 
