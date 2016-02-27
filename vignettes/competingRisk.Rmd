@@ -66,13 +66,13 @@ library(casebase)
 library(VGAM)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=100, type = "uniform", time="ftime")
-summary(model1)
+summary(model1$model)
 ```
 
 ```{r eval=TRUE}
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=100, type = "uniform", time="ftime")
-summary(model2)
+summary(model2$model)
 ```
 
 ```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
