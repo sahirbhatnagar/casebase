@@ -1,0 +1,94 @@
+---
+title: "Competing risk analysis using case-base sampling"
+author: "Maxime Turgeon"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: reference.bib
+---
+
+We will use the same data that was used in Scrucca *et al* [-@scrucca2010regression]. The data is available on the main author's [website](http://www.stat.unipg.it/luca/R/).
+
+```{r echo=TRUE, eval=TRUE}
+DT <- read.csv("bmtcrr.csv")
+head(DT)
+```
+
+We will perform a competing risk analysis on data from 177 patients who received a stem cell transplant for acute leukemia. The event of interest in relapse, but other competing causes (e.g. transplant-related death) need to be taken into account. We also want to take into account the effect of several covariates such as Sex, Disease (lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively), Phase at transplant (Relapse, CR1, CR2, CR3), Source of stem cells (bone marrow and peripheral blood, coded as BM+PB, or peripheral blood, coded as PB), and Age. Below, we reproduce their Table 1:
+
+| Variable | Description            | Statistical summary    |
+| -------- | ---------------------- | ---------------------- |
+| Sex      | Sex                    | M=Male (100) <br> F=Female (77) |
+| D        | Disease                | ALL (73) <br> AML (104) |
+| Phase    | Phase                  | CR1 (47) <br> CR2 (45) <br> CR3 (12) <br> Relapse (73) |
+| Source   | Type of transplant     | BM+PB (21) <br> PB (156) |
+| Age      | Age of patient (years) | 4–62 <br> 30.47 (13.04) |
+| Ftime    | Failure time (months)  | 0.13–131.77 <br> 20.28 (30.78) |
+| Status   | Status indicator       | 0=censored (46) <br> 1=relapse (56) <br> 2=competing event (75) |
+
+The statistical summary is generated differently for continuous and categorical variables: 
+
+ - For continuous variables, we are given the range, followed by the mean and standard deviation.
+ 
+ - For categorical variables, we are given the counts for each category.
+ 
+Note that failure time can also correspond to censoring.
+
+## Population-time plot
+
+In order to try and visualize the incidence density of each event, we can look at a population-time plot: on the Y axis, we order the failure times from shortest (at the top) to longest (at the bottom). Then each line corresponds to the follow-up time of one individual. Failure times associated to the event of interest or a competing event can then be highlighted on the plot using coloured dots.
+
+```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
+nobs <- nrow(DT)
+ftime <- DT$ftime
+ord <- order(ftime, decreasing=TRUE)
+plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
+     xlab='Follow-up time', ylab='Population')
+#segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+polygon(c(0, max(ftime), ftime[ord], 0), c(0, 0, 1:nobs, nobs), col = "gray90")
+cases <- DT$Status %in% c(1, 2)
+colour <- c("red", "blue")[DT$Status[cases]]
+
+# randomly move the cases vertically
+moved_cases <- sapply((1:nobs)[cases[ord]], sample, size=1)
+points((ftime[ord])[cases[ord]], moved_cases, pch=20, col=colour, cex=0.5)
+legend("topright", legend=c("Relapse", "Competing event"), col=c("red", "blue"),
+       pch=20)
+```
+
+## Analysis
+
+```{r eval=TRUE}
+library(casebase)
+library(VGAM)
+model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
+                          data = DT, ratio=100, type = "uniform", time="ftime")
+summary(model1$model)
+```
+
+```{r eval=TRUE}
+model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
+                          data = DT, ratio=100, type = "uniform", time="ftime")
+summary(model2$model)
+```
+
+```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+linearRisk <- absoluteRisk(object = model1, time = 60, method = "montecarlo")
+logRisk <- absoluteRisk(object = model2, time = 60, method = "montecarlo")
+
+plot(linearRisk[,1], logRisk[,1],
+     xlab="Linear", ylab = "Log", pch=19, cex=0.5)
+points(linearRisk[,2], logRisk[,2],
+       col = 'blue', pch=19, cex=0.5)
+abline(a=0, b=1, lty=2, lwd=2, col='red')
+```
+
+## Session information
+
+```{r echo=FALSE, eval=TRUE}
+sessionInfo()
+```
+## References

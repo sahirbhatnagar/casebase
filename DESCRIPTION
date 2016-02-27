@@ -13,7 +13,9 @@ Depends:
 Imports:
     data.table,
     stats,
-    survival
+    survival,
+    VGAM,
+    pryr
 License: GPL (>=2)
 LazyData: TRUE
 Suggests:
@@ -24,3 +26,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/sahirbhatnagar/casebase
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
+RoxygenNote: 5.0.1
