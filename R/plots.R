@@ -139,9 +139,10 @@ with(DTv, Surv(time, status))
 #'   Details.
 #' @param event a character string giving the name of the event variable. See
 #'   Details.
-#' @param title plot title. By default there is no title
-#' @param xlab x-axis label. Default is \code{"Follow-up years"}
-#' @param ylab y-axis label. Default is \code{"Population"}
+#' @param exposure a character string giving the name of the exposure variable
+#'   which must be contained in \code{data}. Default is \code{NULL}. This is
+#'   used to produced exposure stratified plots
+#'
 #' @details It is assumed that \code{data} contains the two columns
 #'   corresponding to the supplied time and event variables. If either the
 #'   \code{time} or \code{event} argument is missing, the function looks for
@@ -154,11 +155,10 @@ with(DTv, Surv(time, status))
 #'   variable and remove this as a possibility from subsequent searches of the
 #'   event variable.
 #'
-#'   The following regular expressions are used for the time and event variables:
-#'   \describe{
-#'   \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
+#'   The following regular expressions are used for the time and event
+#'   variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
 #'   \item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
-#'   }
+#'    }
 #'
 #'   This allows for \code{"time"} to be preceded or followed by one or more
 #'   white space characters, one or more non-word characters or one or more
@@ -168,31 +168,32 @@ with(DTv, Surv(time, status))
 #'   But the following will not be recognized: \code{"diagtime","eventtime",
 #'   "Timediag"}
 #'
+#' @return an object of class \code{data.table} and \code{data.frame} which can
+#'   be subsequently used for population time plots
 #'
 #' @import data.table
 #' @export
 
 rm(list = ls())
-popTimePlot <- function(data, time, event, title = NULL, xlab = NULL, ylab = NULL){
+popTime <- function(data, time, event, censored.indicator = NULL,
+                    exposure = NULL){
 
-    ##### Change the code so that you modify the column names of the data.table,
-    # then you wont have to deal with variables in Data.table expressions
-
-    # data = veteran;
-    # names(veteran)
-    # colnames(data)[grep("^time", colnames(data))] <- "time of death"
-    # colnames(data)[grep("^status", colnames(data))] <- "death status"
-    # colnames(data)[grep("^diagtime", colnames(data))] <- "time status"
-
+    data <- veteran
     # names(data)
     varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
+    varNames <- checkArgsTimeEvent(data)
 
     DT <- as.data.table(data)
+
+    if (is.null(exposure)) {
+
     nobs <- nrow(DT)
 
     # names(veteran)
     setnames(DT,varNames$time, "time")
     setnames(DT,varNames$event, "event")
+
+    DT[, event:=verify_d(DT[["event"]])]
 
     # people with
     # short values of t at the top
@@ -212,19 +213,9 @@ popTimePlot <- function(data, time, event, title = NULL, xlab = NULL, ylab = NUL
         yc := sapply(time,
                      function(i)
                          sample(DT[time >= i,ycoord],1) )]
+    }
 
-    p <- ggplot(DT, aes(x=0, xend=time, y=ycoord, yend=ycoord))
-
-    p +
-        # if(is.null(xlab)) xlab("Follow-up years") else xlab(xlab) +
-        # if(is.null(ylab)) ylab("Population") else ylab(ylab) +
-        # if(!is.null(title)) labs(title=title) +
-        # xlab("Follow-up years") +
-        # ylab("Population") +
-        theme_classic() +
-        geom_segment(size=3, colour="grey90") +
-        geom_point(aes(x=time, y=yc), data = DT[event==1], size=1, colour="red") +
-        theme(axis.text=element_text(size=12, face='bold'))
+    return(DT)
 
 }
 
@@ -274,62 +265,163 @@ checkArgsTimeEvent <- function(data, time, event) {
     return(list(time = time[1], event = event[1]))
 }
 
-dev.off()
-popTimePlot(veteran)
 
 
 
-StatLm <- ggproto("StatLm", Stat,
-            required_aes = c("x", "y"),
-            compute_group = function(data, scales, params, n = 100, formula = y ~ x) {
-                rng <- range(data$x, na.rm = TRUE)
-                grid <- data.frame(x = seq(rng[1], rng[2], length = n))
+#' Check that Event is in Correct Format
+#'
+#' Checks for event categories and gives a warning message indicating which
+#' level is assumed to be the reference level.
+#'
+#' @param data a data.frame or data.table containing the source dataset.
+#' @param event a character string giving the name of the event variable.
+#' @param censored.indicator character string indicating the level of the
+#'   censored observation
+#'
+#' @return A list of length two. The first element is the factored event, and
+#'   the second element is the numeric representation of the event
+#'
+#' @export
+#' @examples
+#'
+#' \dontrun{
+#' library(survival) # for veteran data
+#' checkArgsEventIndicator(data = veteran, event = "celltype", censored.indicator = "smallcell")
+#' checkArgsEventIndicator(data = veteran, event = "status")
+#' checkArgsEventIndicator(data = veteran, event = "trt") # returns error
+#'
+#' bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
+#' checkArgsEventIndicator(data = bmt, event = "Sex", censored.indicator = "M")
+#' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AML")
+#' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AMLL") #returns error
+#' checkArgsEventIndicator(data = bmt, event = "Source")
+#' checkArgsEventIndicator(data = bmt, event = "Status")
+#' checkArgsEventIndicator(data = bmt, event = "Status", censored.indicator = 3)
+#' }
+#'
+checkArgsEventIndicator <- function(data, event, censored.indicator = NULL) {
 
-                mod <- lm(formula, data = data)
-                grid$y <- predict(mod, newdata = grid)
+    isFactor <- is.factor(data[,event])
+    isNumeric <- is.numeric(data[,event])
+    isCharacter <- is.character(data[,event])
 
-                grid
-            }
-)
+    if (!any(isFactor, isNumeric, isCharacter))
+        stop(strwrap("event variable must be either a factor,
+                     numeric or character variable", width = 60))
 
-StatLm <- ggproto("StatLm", Stat,
-                  required_aes = c("x", "y"),
-                  compute_group = function(data, scales, params, n = 100, formula = y ~ x) {
-                      rng <- range(data$x, na.rm = TRUE)
-                      grid <- data.frame(x = seq(rng[1], rng[2], length = n))
+    nlevels <- length(levels(as.factor(data[,event])))
+    if (nlevels < 2) stop(strwrap("event variable must have at least two unique values"))
 
-                      mod <- lm(formula, data = data)
-                      grid$y <- predict(mod, newdata = grid)
+    if (is.null(censored.indicator)) {
 
-                      grid
-                  }
-)
+        if (isFactor) {
+            slev <- levels(data[,event])
+            warning(paste0("censor.indicator not specified. assuming ",
+                           slev[1], " represents a censored observation"))
+            event.factored <- data[,event]
+        }
 
+        if (isCharacter) {
+            event.factored <- factor(data[,event])
+            slev <- levels(event.factored)
+            warning(paste0("censor.indicator not specified. assuming ",
+                           slev[1], " represents a censored observation"))
+        }
 
-stat_lm <- function(mapping = NULL, data = NULL, geom = "line",
-                    position = "identity", na.rm = FALSE, show.legend = NA,
-                    inherit.aes = TRUE, n = 50, formula = y ~ x,
-                    ...) {
-    layer(
-        stat = StatLm, data = data, mapping = mapping, geom = geom,
-        position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-        params = list(n = n, formula = formula, na.rm = na.rm, ...)
-    )
+        if (isNumeric) {
+
+            slev <- sort(unique(data[,event]))
+            if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
+                                        doesn't contain 0. if event is a numeric
+                                        it must contain some 0's
+                                        to indicate censored observations"))
+            event.factored <- factor(data[,event])
+        }
+
+    } else {
+
+        if (!(censored.indicator %in% data[,event]) & any(isCharacter, isFactor))
+            stop(strwrap("censored.indicator not found in event variable of data"))
+
+        if (isNumeric) {
+            warning(strwrap("censored.indicator specified but ignored because
+                                event is a numeric variable"))
+            slev <- sort(unique(data[,event]))
+            if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
+                                        doesn't contain 0. if event is a numeric
+                                        it must contain some 0's
+                                        to indicate censored observations"))
+            event.factored <- factor(data[,event])
+
+        }
+
+        if (isFactor | isCharacter) {
+
+            event.factored <- relevel(factor(data[,event]), censored.indicator)
+        }
+    }
+
+    return(list(event.factored=event.factored, event.numeric = as.numeric((event.factored))-1))
+
 }
 
 
 
 
-ggplot(mpg, aes(displ, hwy)) +
-    geom_point() +
-    stat_lm(formula = y ~ poly(x, 10)) +
-    stat_lm(formula = y ~ poly(x, 10), geom = "point", colour = "red", n = 20)
+
+
+
+str(veteran)
+
+Surv()
+
+
+popTimeData <- popTime(data = veteran)
+
+
+popTimeData <- popTime(data = bmt, time = "ftime", event = "Status")
+
+
+p1 <- ggplot(popTimeData, aes(x=0, xend=time, y=ycoord, yend=ycoord)) +
+    geom_segment(size=3, colour="grey80") +
+    xlab("Follow-up years") +
+    ylab("Population") +
+    theme_classic() +
+    theme(axis.text=element_text(size=12, face='bold'))
+
+p1 + geom_point(aes(x=time, y=yc), data = popTimeData[event==1],
+                size=1, colour="red")
+
+
+DT <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
+nobs <- nrow(DT)
+ftime <- DT$ftime
+ord <- order(ftime, decreasing=TRUE)
+plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs),
+     xlab='Follow-up time', ylab='Population')
+#segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+polygon(c(0, max(ftime), ftime[ord], 0), c(0, 0, 1:nobs, nobs), col = "gray90")
+cases <- DT$Status %in% c(1, 2)
+colour <- c("red", "blue")[DT$Status[cases]]
 
 
 
 
 
 
+
+
+
+head(veteran)
+names(veteran)
+dev.off()
+data = as.data.table(veteran)
+str(data)
+
+ggplot(veteran, aes(time = time, event = status)) +
+    stat_poptime(na.rm = FALSE)
+
+veteran$status
 
 
 
