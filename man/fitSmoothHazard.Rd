@@ -39,7 +39,7 @@ hazard using logistic regression.
 }
 \details{
 The object \code{data} should either be the output of the function
-\link{\code{sampleCaseBase}} or the source dataset on which case-base
+\code{\link{sampleCaseBase}} or the source dataset on which case-base
 sampling will be performed. In the latter case, it is assumed that
 \code{data} contains the two columns corresponding to the supplied time and
 event variables. If \code{time} is missing, the function looks for a column

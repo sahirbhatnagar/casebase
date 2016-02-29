@@ -20,6 +20,8 @@ absoluteRisk(object, ...)
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
 
+\item{...}{Extra parameters. Currently these are simply ignored.}
+
 \item{time}{Upper bound of the interval over which to compute the absolute
 risk. It is assumed that \code{time} is given in the same units as the time
 variable in the dataset used to fit the hazard function.}

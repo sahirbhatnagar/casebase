@@ -7,6 +7,7 @@
 ^\.travis\.yml$     # Used for continuous integration testing with travis
 ^cr\.R$
 ^exercises5\.R$
-^riskset\.R$
-^vignettes/bmtcrr\.csv$
-^inst/
+^risksets\.R$
+^vignettes\/bmtcrr\.csv$
+^inst\/doc\/.*R
+^casebase\.Rproj$

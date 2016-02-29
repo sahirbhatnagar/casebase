@@ -29,6 +29,7 @@
 #'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "quadrature"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
+#' @param ... Extra parameters. Currently these are simply ignored.
 #' @return Returns the mean absolute risk at the user-supplied time, if
 #'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
 #'   covariate profiles.
@@ -133,7 +134,7 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                row.names = as.character(1:length(x)))
         newdata2[object$timeVar] <- x
         # predictvglm doesn't like offset = 0
-        withCallingHandlers(pred <- predictvglm(fit, newdata2),
+        withCallingHandlers(pred <- VGAM::predictvglm(fit, newdata2),
                             warning = handler_offset)
         return(as.numeric(exp(rowSums(pred))))
     }
@@ -150,7 +151,7 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                    row.names = as.character(1:length(x)))
             newdata2[object$timeVar] <- x
             # predictvglm doesn't like offset = 0
-            withCallingHandlers(lambdas <- predictvglm(object$model, newdata2),
+            withCallingHandlers(lambdas <- VGAM::predictvglm(object$model, newdata2),
                                 warning = handler_offset)
             exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
         }
@@ -178,7 +179,7 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                    row.names = as.character(1:length(x)))
             newdata2[object$timeVar] <- x
             # predictvglm doesn't like offset = 0
-            withCallingHandlers(lambdas <- predictvglm(object$model, newdata2),
+            withCallingHandlers(lambdas <- VGAM::predictvglm(object$model, newdata2),
                                 warning = handler_offset)
             exp(lambdas) * overallSurv(x, fit = object$model, newdata2)
         }
