@@ -155,7 +155,7 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
             exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
         }
         for (j in 1:J) {
-            subdensities[[j]] <- pryr::partial(subdensity_template, index = j, .lazy = FALSE)
+            subdensities[[j]] <- partialize(subdensity_template, index = j, .lazy = FALSE)
         }
 
         # 3. Compute cumulative incidence functions F_j

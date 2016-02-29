@@ -24,8 +24,8 @@ of the case series. Defaults to 10.}
 individuals and follow-up time; and \code{multinomial}, where individuals
 are sampled proportionally to their follow-up time.}
 
-\item{cmprisk}{Logical. Indicates whether we have multiple even types that we
-want to consider as competing risks.}
+\item{cmprisk}{Logical. Indicates whether we have multiple event types and
+that we want to consider some of them as competing risks.}
 }
 \value{
 The function returns a dataset, with the same format as the source

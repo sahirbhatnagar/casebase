@@ -15,8 +15,7 @@ Imports:
     stats,
     methods,
     survival,
-    VGAM,
-    pryr
+    VGAM
 License: GPL (>=2)
 LazyData: TRUE
 Suggests:

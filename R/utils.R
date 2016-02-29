@@ -22,9 +22,8 @@ checkArgsTimeEvent <- function(data, time, event) {
                 warning(paste0("The following variables for time were found in
                               the data: ",paste0(time, collapse = ", "),". '", time[1],
                                "' will be used as the time variable" )) else
-                                   print(paste0("'",time,"'",
-                                                " will be used as the time variable"),
-                                         quote = FALSE)
+                                   message(paste0("'",time,"'",
+                                                  " will be used as the time variable"))
         } else {
             stop("data does not contain time variable")
         }
@@ -41,9 +40,8 @@ checkArgsTimeEvent <- function(data, time, event) {
                 warning(paste0("The following variables for event were found in
                               the data: ",paste0(event, collapse = ", "),". '", event[1],
                                "' will be used as the event variable" )) else
-                                   print(paste0("'",event,"'",
-                                                " will be used as the event variable"),
-                                         quote = FALSE)
+                                   message(paste0("'",event,"'",
+                                                " will be used as the event variable"))
         } else {
             stop("data does not contain event or status variable")
         }
@@ -54,4 +52,15 @@ checkArgsTimeEvent <- function(data, time, event) {
     }
 
     return(list(time = time[1], event = event[1]))
+}
+
+# Fill in a templated function with default parameter values
+# This is pryr::partial almost verbatim
+partialize <- function (`_f`, ...) {
+    stopifnot(is.function(`_f`))
+    fcall <- make_call(substitute(`_f`), .args = list(...))
+    fcall[[length(fcall) + 1]] <- quote(...)
+    args <- as.pairlist(list(... = quote(expr = )))
+    stopifnot(is.language(fcall))
+    eval(call("function", args, fcall), parent.frame())
 }
