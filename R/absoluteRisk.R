@@ -133,9 +133,8 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                row.names = as.character(1:length(x)))
         newdata2[object$timeVar] <- x
         # predictvglm doesn't like offset = 0
-        old_warn <- options(warn = -1)
-        pred <- predictvglm(fit, newdata2)
-        options(warn = old_warn$warn)
+        withCallingHandlers(pred <- predictvglm(fit, newdata2),
+                            warning = handler_offset)
         return(as.numeric(exp(rowSums(pred))))
     }
 
@@ -151,9 +150,8 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                    row.names = as.character(1:length(x)))
             newdata2[object$timeVar] <- x
             # predictvglm doesn't like offset = 0
-            old_warn <- options(warn = -1)
-            lambdas <- predictvglm(object$model, newdata2)
-            options(warn = old_warn$warn)
+            withCallingHandlers(lambdas <- predictvglm(object$model, newdata2),
+                                warning = handler_offset)
             exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
         }
         for (j in 1:J) {
@@ -180,9 +178,8 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
                                    row.names = as.character(1:length(x)))
             newdata2[object$timeVar] <- x
             # predictvglm doesn't like offset = 0
-            old_warn <- options(warn = -1)
-            lambdas <- predictvglm(object$model, newdata2)
-            options(warn = old_warn$warn)
+            withCallingHandlers(lambdas <- predictvglm(object$model, newdata2),
+                                warning = handler_offset)
             exp(lambdas) * overallSurv(x, fit = object$model, newdata2)
         }
         sampledPoints <- runif(nsamp) * time
