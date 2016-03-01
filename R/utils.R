@@ -58,7 +58,7 @@ checkArgsTimeEvent <- function(data, time, event) {
 # This is pryr::partial almost verbatim
 partialize <- function (`_f`, ...) {
     stopifnot(is.function(`_f`))
-    fcall <- make_call(substitute(`_f`), .args = list(...))
+    fcall <- as.call(c(substitute(`_f`), list(...)))
     fcall[[length(fcall) + 1]] <- quote(...)
     args <- as.pairlist(list(... = quote(expr = )))
     stopifnot(is.language(fcall))
