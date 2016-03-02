@@ -11,3 +11,4 @@
 ^vignettes\/bmtcrr\.csv$
 ^inst\/doc\/.*R
 ^casebase\.Rproj$
+^plot_examples\.R$

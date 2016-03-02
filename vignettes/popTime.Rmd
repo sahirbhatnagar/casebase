@@ -1,0 +1,27 @@
+---
+title: "Eclust Vignette"
+author: "Sahir R. Bhatnagar"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_height: 8
+    fig_width: 11
+    keep_md: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: no
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+# Load Required Packages
+
+```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
+library(knitr)
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(survival)
+```
