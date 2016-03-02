@@ -8,12 +8,12 @@
 #' hazard using logistic regression.
 #'
 #' The object \code{data} should either be the output of the function
-#' \link{\code{sampleCaseBase}} or the source dataset on which case-base
+#' \code{\link{sampleCaseBase}} or the source dataset on which case-base
 #' sampling will be performed. In the latter case, it is assumed that
 #' \code{data} contains the two columns corresponding to the supplied time and
-#' event variables. If either the \code{time} or \code{event} argument is
-#' missing, the function looks for columns named \code{"time"}, \code{"event"},
-#' or \code{"status"}.
+#' event variables. If \code{time} is missing, the function looks for a column
+#' named \code{"time"} in the data. Note that the event variable is inferred
+#' from \code{formula}, since it is the left hand side.
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
@@ -24,8 +24,6 @@
 #'   \code{fitSmoothHazard} is called.
 #' @param time a character string giving the name of the time variable. See
 #'   Details.
-#' @param event a character string giving the name of the event variable. See
-#'   Details.
 #' @param link A character string, which gives the specification for the model
 #'   link function. Default is the \code{logit} link.
 #' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
@@ -35,25 +33,69 @@
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
 #' @export
-fitSmoothHazard <- function(formula, data, time, event, link = "logit", ...) {
+fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
+    # Infer name of event variable from LHS of formula
+    eventVar <- as.character(attr(terms(formula), "variables")[[2]])
 
+    varNames <- checkArgsTimeEvent(data = data, time = time, event = eventVar)
+    timeVar <- varNames$time
+
+    typeEvents <- sort(unique(subset(data, select=(names(data) == eventVar), drop = TRUE)))
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
-        data <- sampleCaseBase(originalData, ...)
+        sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+                                     cmprisk = (length(typeEvents) > 2), ...)
         if (length(list(...)) != 2) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
         }
     } else {
         originalData <- NULL
+        sampleData <- data
     }
 
     # Update formula to add offset term
     formula <- update(formula, ~ . + offset(offset))
-    model <- glm(formula, data = data, family = binomial(link=link))
-    model$originalData <- originalData
 
-    class(model) <- c("caseBase", class(model))
+    # Fit a binomial model if there are no competing risks
+    if (length(typeEvents) == 2) {
+        out <- glm(formula, data = sampleData, family = binomial(link=link))
+        out$originalData <- originalData
+        out$typeEvents <- typeEvents
+        out$timeVar <- timeVar
+        out$eventVar <- eventVar
 
-    return(model)
+    } else {
+        # If we have competing risks, we need to reformat the response
+        multiData_mat <- c()
+        for (type in typeEvents[typeEvents != 0]) {
+            multiData_mat <- cbind(multiData_mat, as.numeric(subset(sampleData, select=(names(sampleData) == eventVar), drop = TRUE) == type))
+        }
+        # Base series should correspond to last column
+        multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
+        multiData_mat <- as.data.frame(multiData_mat)
+        colnames(multiData_mat) <- paste0("EventType", c(typeEvents[typeEvents != 0], 0))
+
+        formula <- do.call(update,
+                           list(formula,
+                                as.formula(paste(paste0("cbind(",
+                                                        paste(names(multiData_mat),
+                                                              collapse = ", "), ")"),
+                                                 "~ ."))))
+
+        combData <- cbind(sampleData, multiData_mat)
+        model <- VGAM::vglm(formula, family = VGAM::multinomial,
+                            data = combData)
+        # Output of vglm is an S4 object
+        # model@originalData <- originalData
+        # model@typeEvents <- typeEvents
+        out <- new("CompRisk", model,
+                   originalData = originalData,
+                   typeEvents = typeEvents,
+                   timeVar = timeVar,
+                   eventVar = eventVar)
+        # class(out) <- c("compRisk", class(model))
+    }
+
+    return(out)
 }

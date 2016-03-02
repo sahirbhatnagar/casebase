@@ -1,4 +1,8 @@
 .Rproj.user
 .Rhistory
 .RData
-inst/doc
+inst/doc/*
+!inst/doc/*.html
+vignettes/*
+!vignettes/*.Rmd
+!vignettes/*.knit.md
