@@ -1,5 +1,11 @@
 # casebase package
 
-[Have a look at the vignette.](http://htmlpreview.github.io/?https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/doc/smoothHazard.html)
+Examples of how to use the package are available at [http://sahirbhatnagar.com/casebase/](http://sahirbhatnagar.com/casebase/)
 
-There is also a vignette on [competing risks](http://htmlpreview.github.io/?https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/doc/competingRisk.html)
+This includes
+
+1. [Fitting Smooth Hazard Functions](http://sahirbhatnagar.com/casebase/smoothhazard/)
+2. [Competing Risks Analysis](http://sahirbhatnagar.com/casebase/competingRisk/)
+3. [Population Time Plots](http://sahirbhatnagar.com/casebase/popTime/)
+
+
