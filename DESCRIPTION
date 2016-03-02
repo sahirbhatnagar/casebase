@@ -13,9 +13,9 @@ Depends:
 Imports:
     data.table,
     stats,
+    methods,
     survival,
-    VGAM,
-    pryr
+    VGAM
 License: GPL (>=2)
 LazyData: TRUE
 Suggests:

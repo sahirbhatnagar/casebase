@@ -20,40 +20,24 @@
 #'   \code{uniform}, where person-moments are sampled uniformly across
 #'   individuals and follow-up time; and \code{multinomial}, where individuals
 #'   are sampled proportionally to their follow-up time.
-#' @param cmprisk Logical. Indicates whether we have multiple even types that we
-#'   want to consider as competing risks.
+#' @param cmprisk Logical. Indicates whether we have multiple event types and
+#'   that we want to consider some of them as competing risks.
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
 #' @export
 sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), cmprisk = FALSE) {
-    if (missing(time)) {
-        if (any(grepl("^time", names(data), ignore.case = TRUE))) {
-            time <- grep("^time", names(data), ignore.case = TRUE, value = TRUE)
-        } else {
-            stop("data does not contain time variable")
-        }
-    }
-    if (missing(event)) {
-        if (any(grepl("^event", names(data), ignore.case = TRUE))) {
-            event <- grep("^event", names(data), ignore.case = TRUE, value = TRUE)
-        } else {
-            if (any(grepl("^status", names(data), ignore.case = TRUE))) {
-                event <- grep("^status", names(data), ignore.case = TRUE, value = TRUE)
-            } else {
-                stop("data does not contain event or status variable")
-            }
-        }
-    }
-    if (!all(c(time, event) %in% colnames(data))) {
-        stop("data does not contain supplied time and event variables")
-    }
+
+    varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
+    timeVar <- varNames$time
+    eventVar <- varNames$event
+
     type <- match.arg(type)
     # Create survival object from dataset
     if (cmprisk) surv_type <- "mstate" else surv_type <- "right"
-    selectTime <- (names(data) == time)
+    selectTime <- (names(data) == timeVar)
     survObj <- survival::Surv(subset(data, select=selectTime, drop = TRUE),
-                              subset(data, select=(names(data) == event), drop = TRUE),
+                              subset(data, select=(names(data) == eventVar), drop = TRUE),
                               type = surv_type)
 
     n <- nrow(survObj) # no. of subjects
@@ -91,12 +75,12 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
-    selectTimeEvent <- !(colnames(data) %in% c(time, event))
+    selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventVar))
     bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,])
-    names(bSeries)[names(bSeries) == "status"] <- event
-    names(bSeries)[names(bSeries) == "time"] <- time
+    names(bSeries)[names(bSeries) == "status"] <- eventVar
+    names(bSeries)[names(bSeries) == "time"] <- timeVar
 
-    cSeries <- data[which(subset(data, select=(names(data) == event)) != 0),]
+    cSeries <- data[which(subset(data, select=(names(data) == eventVar)) != 0),]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1

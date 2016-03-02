@@ -8,7 +8,7 @@
 #' hazard using logistic regression.
 #'
 #' The object \code{data} should either be the output of the function
-#' \link{\code{sampleCaseBase}} or the source dataset on which case-base
+#' \code{\link{sampleCaseBase}} or the source dataset on which case-base
 #' sampling will be performed. In the latter case, it is assumed that
 #' \code{data} contains the two columns corresponding to the supplied time and
 #' event variables. If \code{time} is missing, the function looks for a column
@@ -35,20 +35,16 @@
 #' @export
 fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Infer name of event variable from LHS of formula
-    event <- as.character(attr(terms(formula), "variables")[[2]])
+    eventVar <- as.character(attr(terms(formula), "variables")[[2]])
 
-    if (missing(time)) {
-        if (any(grepl("^time", names(data), ignore.case = TRUE))) {
-            time <- grep("^time", names(data), ignore.case = TRUE, value = TRUE)
-        } else {
-            stop("data does not contain time variable")
-        }
-    }
-    typeEvents <- sort(unique(subset(data, select=(names(data) == event), drop = TRUE)))
+    varNames <- checkArgsTimeEvent(data = data, time = time, event = eventVar)
+    timeVar <- varNames$time
+
+    typeEvents <- sort(unique(subset(data, select=(names(data) == eventVar), drop = TRUE)))
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
-        sampleData <- sampleCaseBase(originalData, time, event,
+        sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
                                      cmprisk = (length(typeEvents) > 2), ...)
         if (length(list(...)) != 2) {
             warning("sampleCaseBase is using some default values; see documentation for more details.")
@@ -66,14 +62,14 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         out <- glm(formula, data = sampleData, family = binomial(link=link))
         out$originalData <- originalData
         out$typeEvents <- typeEvents
-        out$timeVar <- time
-        out$eventVar <- event
+        out$timeVar <- timeVar
+        out$eventVar <- eventVar
 
     } else {
         # If we have competing risks, we need to reformat the response
         multiData_mat <- c()
         for (type in typeEvents[typeEvents != 0]) {
-            multiData_mat <- cbind(multiData_mat, as.numeric(subset(sampleData, select=(names(sampleData) == event), drop = TRUE) == type))
+            multiData_mat <- cbind(multiData_mat, as.numeric(subset(sampleData, select=(names(sampleData) == eventVar), drop = TRUE) == type))
         }
         # Base series should correspond to last column
         multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
@@ -93,12 +89,12 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         # Output of vglm is an S4 object
         # model@originalData <- originalData
         # model@typeEvents <- typeEvents
-        out <- list(model = model,
-                    originalData = originalData,
-                    typeEvents = typeEvents,
-                    timeVar = time,
-                    eventVar = event)
-        class(out) <- c("compRisk", class(model))
+        out <- new("CompRisk", model,
+                   originalData = originalData,
+                   typeEvents = typeEvents,
+                   timeVar = timeVar,
+                   eventVar = eventVar)
+        # class(out) <- c("compRisk", class(model))
     }
 
     return(out)

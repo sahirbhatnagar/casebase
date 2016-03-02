@@ -29,6 +29,7 @@
 #'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "quadrature"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
+#' @param ... Extra parameters. Currently these are simply ignored.
 #' @return Returns the mean absolute risk at the user-supplied time, if
 #'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
 #'   covariate profiles.
@@ -97,7 +98,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadratur
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
+absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
@@ -105,15 +106,15 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
 
     if (is.null(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if(is.null(object$originalData)) {
+        if(is.null(object@originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
                  call. = FALSE)
         }
-        newdata <- object$originalData
+        newdata <- object@originalData
         # colnames(data)[colnames(data) == "event"] <- "status"
         # Next commented line will break on data.table
         # newdata <- newdata[, colnames(newdata) != "time"]
-        unselectTime <- (names(newdata) != object$timeVar)
+        unselectTime <- (names(newdata) != object@timeVar)
         newdata <- subset(newdata, select = unselectTime)
         meanAR <- TRUE
     }
@@ -123,25 +124,24 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
     # f_j = lambda_j * Survival
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
-    J <- length(object$typeEvents) - 1
+    J <- length(object@typeEvents) - 1
     cumInc <- matrix(NA, nrow = nrow(newdata), ncol = J)
 
     # 1. Compute overall survival
-    overallLambda <- function(x, fit, newdata) {
+    overallLambda <- function(x, object, newdata) {
         # Note: the offset should be set to zero when estimating the hazard.
         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
-        newdata2[object$timeVar] <- x
+        newdata2[object@timeVar] <- x
         # predictvglm doesn't like offset = 0
-        old_warn <- options(warn = -1)
-        pred <- predictvglm(fit, newdata2)
-        options(warn = old_warn$warn)
+        withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
+                            warning = handler_offset)
         return(as.numeric(exp(rowSums(pred))))
     }
 
     if (method == "quadrature") {
-        overallSurv <- function(time, fit, newdata) {
-            exp(-integrate(overallLambda, lower=0, upper=time, fit=fit, newdata=newdata,
+        overallSurv <- function(time, object, newdata) {
+            exp(-integrate(overallLambda, lower=0, upper=time, object=object, newdata=newdata,
                            subdivisions = nsamp)$value)
         }
         # 2. Compute individual subdensities f_j
@@ -149,15 +149,14 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
         subdensity_template <- function(x, object, newdata, index) {
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                    row.names = as.character(1:length(x)))
-            newdata2[object$timeVar] <- x
+            newdata2[object@timeVar] <- x
             # predictvglm doesn't like offset = 0
-            old_warn <- options(warn = -1)
-            lambdas <- predictvglm(object$model, newdata2)
-            options(warn = old_warn$warn)
-            exp(lambdas[,index]) * overallSurv(x, fit = object$model, newdata2)
+            withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
+                                warning = handler_offset)
+            exp(lambdas[,index]) * overallSurv(x, object = object, newdata2)
         }
         for (j in 1:J) {
-            subdensities[[j]] <- pryr::partial(subdensity_template, index = j, .lazy = FALSE)
+            subdensities[[j]] <- partialize(subdensity_template, index = j)
         }
 
         # 3. Compute cumulative incidence functions F_j
@@ -171,19 +170,18 @@ absoluteRisk.compRisk <- function(object, time, newdata = NULL, method = c("quad
     }
 
     if (method == "montecarlo") {
-        overallSurv <- function(time, fit, newdata) {
+        overallSurv <- function(time, object, newdata) {
             sampledPoints <- runif(nsamp) * time
-            exp(-mean(overallLambda(sampledPoints, fit=fit, newdata=newdata)))
+            exp(-mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
         }
         subdensity_mat <- function(x, object, newdata) {
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                    row.names = as.character(1:length(x)))
-            newdata2[object$timeVar] <- x
+            newdata2[object@timeVar] <- x
             # predictvglm doesn't like offset = 0
-            old_warn <- options(warn = -1)
-            lambdas <- predictvglm(object$model, newdata2)
-            options(warn = old_warn$warn)
-            exp(lambdas) * overallSurv(x, fit = object$model, newdata2)
+            withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
+                                warning = handler_offset)
+            exp(lambdas) * overallSurv(x, object = object, newdata2)
         }
         sampledPoints <- runif(nsamp) * time
         for (i in 1:nrow(newdata)) {

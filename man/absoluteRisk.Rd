@@ -2,7 +2,7 @@
 % Please edit documentation in R/absoluteRisk.R
 \name{absoluteRisk}
 \alias{absoluteRisk}
-\alias{absoluteRisk.compRisk}
+\alias{absoluteRisk.CompRisk}
 \alias{absoluteRisk.default}
 \alias{absoluteRisk.glm}
 \title{Compute absolute risks using the fitted hazard function.}
@@ -14,11 +14,13 @@ absoluteRisk(object, ...)
 \method{absoluteRisk}{glm}(object, time, newdata = NULL,
   method = c("quadrature", "montecarlo"), nsamp = 100)
 
-\method{absoluteRisk}{compRisk}(object, time, newdata = NULL,
+\method{absoluteRisk}{CompRisk}(object, time, newdata = NULL,
   method = c("quadrature", "montecarlo"), nsamp = 100)
 }
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
+
+\item{...}{Extra parameters. Currently these are simply ignored.}
 
 \item{time}{Upper bound of the interval over which to compute the absolute
 risk. It is assumed that \code{time} is given in the same units as the time
