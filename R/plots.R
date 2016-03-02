@@ -36,12 +36,10 @@
 #'   indicator"}. This function will first (automatically) find the time
 #'   variable and remove this as a possibility from subsequent searches of the
 #'   event variable.
-#'
 #'   The following regular expressions are used for the time and event
 #'   variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
 #'   \item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
 #'    }
-#'
 #'   This allows for \code{"time"} to be preceded or followed by one or more
 #'   white space characters, one or more non-word characters or one or more
 #'   underscores. For example, the following column names would be recognized by
@@ -49,7 +47,6 @@
 #'   "death_time", "Time", "time", "diagnosis_time", "time.diag", "diag__time"}.
 #'   But the following will not be recognized: \code{"diagtime","eventtime",
 #'   "Timediag"}
-#'
 #' @return an object of class \code{popTime} (or \code{popTimeExposure} if
 #'   exposure is specified), \code{data.table} and \code{data.frame} in this
 #'   order! The output of this function is to be used with the plot method for
@@ -59,8 +56,6 @@
 #'
 #' @import data.table
 #' @export
-
-
 popTime <- function(data, time, event, censored.indicator = NULL,
                     exposure = NULL){
 
