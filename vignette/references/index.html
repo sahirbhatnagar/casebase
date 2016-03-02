@@ -7,14 +7,14 @@
         
         
         
-        <link rel="shortcut icon" href="./img/favicon.ico">
+        <link rel="shortcut icon" href="../img/favicon.ico">
 
-	<title>casebase</title>
+	<title>References - casebase</title>
 
-        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
-        <link href="./css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="./css/highlight.css">
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -25,7 +25,7 @@
         
     </head>
 
-    <body class="homepage">
+    <body>
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
@@ -43,7 +43,7 @@
             
 
             <!-- Main title -->
-            <a class="navbar-brand" href=".">casebase</a>
+            <a class="navbar-brand" href="..">casebase</a>
         </div>
 
         <!-- Expanded navigation -->
@@ -53,32 +53,32 @@
                 <ul class="nav navbar-nav">
                 
                 
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../smoothhazard/">Smooth Hazard</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../competingRisk/">Competing Risk</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../popTime/">Population Time Plots</a>
+                    </li>
+                
+                
+                
                     <li class="active">
-                        <a href=".">Home</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="smoothhazard/">Smooth Hazard</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="competingRisk/">Competing Risk</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="popTime/">Population Time Plots</a>
-                    </li>
-                
-                
-                
-                    <li >
-                        <a href="references/">References</a>
+                        <a href="./">References</a>
                     </li>
                 
                 
@@ -92,13 +92,13 @@
                     </a>
                 </li>
                 
-                    <li class="disabled">
-                        <a rel="next" >
+                    <li >
+                        <a rel="next" href="../popTime/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
-                    <li >
-                        <a rel="prev" href="smoothhazard/">
+                    <li class="disabled">
+                        <a rel="prev" >
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -114,25 +114,34 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#casebase-a-statistical-software-tool-for-survival-analysis">casebase: A Statistical Software Tool for Survival Analysis</a></li>
-        
-            <li><a href="#installation">Installation</a></li>
+        <li class="main active"><a href="#references">References</a></li>
         
     
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="casebase-a-statistical-software-tool-for-survival-analysis">casebase: A Statistical Software Tool for Survival Analysis</h1>
-<p>This software is written in the open source software environment <a href="https://cran.r-project.org/">R</a>. It's main functionality is to fit smooth-in-time parametric hazard functions using case-base sampling <a href="http://sahirbhatnagar.com/casebase/references/">Hanley &amp; Miettinen (2009)</a>. </p>
-<p>This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time logarithmically recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.</p>
-<p>The theoretical properties of this approach have been studied in <a href="http://sahirbhatnagar.com/casebase/references/">Saarela &amp; Arjas (2015) and Saarela (2015)</a>.</p>
-<p>The software is still in development mode.</p>
-<h2 id="installation">Installation</h2>
-<p>The software package is available on <a href="https://github.com/sahirbhatnagar/eclust">Github</a> and can be installed directly from within <code>R</code> using the following commands (note: you will need the <a href="https://cran.r-project.org/web/packages/devtools/index.html"><code>devtools</code></a> package prior to installing the <code>casebase</code> package)</p>
-<pre><code class="r">library(devtools)
-install_github('sahirbhatnagar/casebase')
-</code></pre></div>
+<h1 id="references">References</h1>
+<ol>
+<li>
+<p>Efron, Bradley. 1977. "The Efficiency of Cox's Likelihood Function for Censored Data." <em>Journal of the American Statistical Association</em> 72 (359). Taylor &amp; Francis Group: 557–65.</p>
+</li>
+<li>
+<p>Hanley, James A, and Olli S Miettinen. 2009. "Fitting Smooth-in-Time Prognostic Risk Functions via Logistic Regression." <em>The International Journal of Biostatistics</em> 5 (1).</p>
+</li>
+<li>
+<p>Mantel, Nathan. 1973. "Synthetic Retrospective Studies and Related Topics." <em>Biometrics</em>. JSTOR, 479–86.</p>
+</li>
+<li>
+<p>Saarela, Olli. 2015. "A Case-Base Sampling Method for Estimating Recurrent Event Intensities." <em>Lifetime Data Analysis</em>. Springer, 1–17.</p>
+</li>
+<li>
+<p>Saarela, Olli, and Elja Arjas. 2015. "Non-Parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment." <em>Scandinavian Journal of Statistics</em> 42 (2). Wiley Online Library: 609–26.</p>
+</li>
+<li>
+<p>Scrucca, L, A Santucci, and F Aversa. 2010. "Regression Modeling of Competing Risk Using R: An in Depth Guide for Clinicians." <em>Bone Marrow Transplantation</em> 45 (9). Nature Publishing Group: 1388–95.</p>
+</li>
+</ol></div>
             
         </div>
 
@@ -142,12 +151,12 @@ install_github('sahirbhatnagar/casebase')
             <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
 
-        <script src="./js/jquery-1.10.2.min.js"></script>
-        <script src="./js/bootstrap-3.0.3.min.js"></script>
-        <script src="./js/highlight.pack.js"></script>
-        <script>var base_url = '.';</script>
-        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
-        <script src="./js/base.js"></script>
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
         <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
         <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
@@ -177,8 +186,3 @@ install_github('sahirbhatnagar/casebase')
 
     </body>
 </html>
-
-<!--
-MkDocs version : 0.14.0
-Build Date UTC : 2016-03-02 07:46:33.972823
--->

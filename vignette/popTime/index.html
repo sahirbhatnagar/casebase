@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>Population Time Plots - casebase</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">casebase</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../smoothhazard/">Smooth Hazard</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../competingRisk/">Competing Risk</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">Population Time Plots</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../references/">References</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../competingRisk/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../references/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#load-required-packages">Load Required Packages</a></li>
+        
+    
+        <li class="main "><a href="#veteran-data">Veteran Data</a></li>
+        
+            <li><a href="#stratified-by-treatment-population-time-plot">Stratified by treatment population time plot</a></li>
+        
+    
+        <li class="main "><a href="#stem-cell-data">Stem Cell Data</a></li>
+        
+            <li><a href="#stratified-by-disease">Stratified by Disease</a></li>
+        
+    
+        <li class="main "><a href="#stanford-heart-transplant-data">Stanford Heart Transplant Data</a></li>
+        
+    
+        <li class="main "><a href="#ncctg-lung-cancer-data">NCCTG Lung Cancer Data</a></li>
+        
+            <li><a href="#stratified-by-gender">Stratified by gender</a></li>
+        
+    
+        <li class="main "><a href="#simulated-data-example">Simulated Data Example</a></li>
+        
+            <li><a href="#simulate-the-data">Simulate the data</a></li>
+        
+            <li><a href="#population-time-plot">Population Time Plot</a></li>
+        
+            <li><a href="#stratified-by-binary-covariate-z">Stratified by Binary Covariate z</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="load-required-packages">Load Required Packages</h1>
+<pre><code class="r">library(knitr)
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(survival)
+library(casebase)
+</code></pre>
+
+<h1 id="veteran-data">Veteran Data</h1>
+<pre><code class="r"># veteran data in library(survival)
+data(&quot;veteran&quot;)
+str(veteran)
+</code></pre>
+
+<pre><code>## 'data.frame':    137 obs. of  8 variables:
+##  $ trt     : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ celltype: Factor w/ 4 levels &quot;squamous&quot;,&quot;smallcell&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ time    : num  72 411 228 126 118 10 82 110 314 100 ...
+##  $ status  : num  1 1 1 1 1 1 1 1 1 0 ...
+##  $ karno   : num  60 70 60 60 70 20 40 80 50 70 ...
+##  $ diagtime: num  7 5 3 9 11 5 10 29 18 6 ...
+##  $ age     : num  69 64 38 63 65 49 69 68 43 70 ...
+##  $ prior   : num  0 10 0 10 10 0 10 0 0 0 ...
+</code></pre>
+
+<pre><code class="r"># create 'popTime' object
+popTimeData &lt;- popTime(data = veteran)
+</code></pre>
+
+<pre><code>## [1] 'time' will be used as the time variable
+## [1] 'status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># object of class 'popTime'
+class(popTimeData)
+</code></pre>
+
+<pre><code>## [1] &quot;popTime&quot;    &quot;data.table&quot; &quot;data.frame&quot;
+</code></pre>
+
+<pre><code class="r"># plot method for objects of class 'popTime'
+plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-1-1.png" /> </p>
+<h2 id="stratified-by-treatment-population-time-plot">Stratified by treatment population time plot</h2>
+<pre><code class="r"># stratified by treatment population time plot
+veteran &lt;- transform(veteran, trt = factor(trt, levels = 1:2,
+                                           labels = c(&quot;standard&quot;, &quot;test&quot;)))
+
+# create 'popTimeExposure' object
+popTimeData &lt;- popTime(data = veteran, exposure = &quot;trt&quot;)
+</code></pre>
+
+<pre><code>## [1] 'time' will be used as the time variable
+## [1] 'status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># object of class 'popTimeExposure'
+class(popTimeData)
+</code></pre>
+
+<pre><code>## [1] &quot;popTimeExposure&quot; &quot;list&quot;
+</code></pre>
+
+<pre><code class="r"># plot method for objects of class 'popTimeExposure'
+plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-2-1.png" /> </p>
+<h1 id="stem-cell-data">Stem Cell Data</h1>
+<pre><code class="r">bmt &lt;- read.csv(&quot;https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv&quot;)
+str(bmt)
+</code></pre>
+
+<pre><code>## 'data.frame':    177 obs. of  7 variables:
+##  $ Sex   : Factor w/ 2 levels &quot;F&quot;,&quot;M&quot;: 2 1 2 1 1 2 2 1 2 1 ...
+##  $ D     : Factor w/ 2 levels &quot;ALL&quot;,&quot;AML&quot;: 1 2 1 1 1 1 1 1 1 1 ...
+##  $ Phase : Factor w/ 4 levels &quot;CR1&quot;,&quot;CR2&quot;,&quot;CR3&quot;,..: 4 2 3 2 2 4 1 1 1 4 ...
+##  $ Age   : int  48 23 7 26 36 17 7 17 26 8 ...
+##  $ Status: int  2 1 0 2 2 2 0 2 0 1 ...
+##  $ Source: Factor w/ 2 levels &quot;BM+PB&quot;,&quot;PB&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ ftime : num  0.67 9.5 131.77 24.03 1.47 ...
+</code></pre>
+
+<pre><code class="r"># create 'popTime' object
+popTimeData &lt;- popTime(data = bmt, time = &quot;ftime&quot;)
+</code></pre>
+
+<pre><code>## [1] 'Status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># object of class 'popTime'
+class(popTimeData)
+</code></pre>
+
+<pre><code>## [1] &quot;popTime&quot;    &quot;data.table&quot; &quot;data.frame&quot;
+</code></pre>
+
+<pre><code class="r"># plot method for objects of class 'popTime'
+plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-3-1.png" /> </p>
+<h2 id="stratified-by-disease">Stratified by Disease</h2>
+<pre><code class="r"># stratified by Disease population time plot
+# Disease (lymphoblastic or myeloblastic leukemia,
+# abbreviated as ALL and AML, respectively)
+
+# create 'popTimeExposure' object
+popTimeData &lt;- popTime(data = bmt, time = &quot;ftime&quot;, exposure = &quot;D&quot;)
+</code></pre>
+
+<pre><code>## [1] 'Status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># object of class 'popTimeExposure'
+class(popTimeData)
+</code></pre>
+
+<pre><code>## [1] &quot;popTimeExposure&quot; &quot;list&quot;
+</code></pre>
+
+<pre><code class="r"># plot method for objects of class 'popTimeExposure'
+plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-4-1.png" /> </p>
+<pre><code class="r"># stratify by gender
+popTimeData &lt;- popTime(data = bmt, time = &quot;ftime&quot;, exposure = &quot;Sex&quot;)
+</code></pre>
+
+<pre><code>## [1] 'Status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r">plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-4-2.png" /> </p>
+<h1 id="stanford-heart-transplant-data">Stanford Heart Transplant Data</h1>
+<pre><code class="r"># data from library(survival)
+data(&quot;heart&quot;)
+str(heart)
+</code></pre>
+
+<pre><code>## 'data.frame':    172 obs. of  8 variables:
+##  $ start     : num  0 0 0 1 0 36 0 0 0 51 ...
+##  $ stop      : num  50 6 1 16 36 39 18 3 51 675 ...
+##  $ event     : num  1 1 0 1 0 1 1 1 0 1 ...
+##  $ age       : num  -17.16 3.84 6.3 6.3 -7.74 ...
+##  $ year      : num  0.123 0.255 0.266 0.266 0.49 ...
+##  $ surgery   : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ transplant: Factor w/ 2 levels &quot;0&quot;,&quot;1&quot;: 1 1 1 2 1 2 1 1 1 2 ...
+##  $ id        : num  1 2 3 3 4 4 5 6 7 7 ...
+</code></pre>
+
+<pre><code class="r"># create time variable for time in study
+heart &lt;- transform(heart,
+                   time = stop - start,
+                   transplant = factor(transplant,
+                                       labels = c(&quot;no transplant&quot;, &quot;transplant&quot;)))
+
+# stratify by transplant indicator
+popTimeData &lt;- popTime(data = heart, exposure = &quot;transplant&quot;)
+</code></pre>
+
+<pre><code>## [1] 'time' will be used as the time variable
+## [1] 'event' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling only from individuals who never experienced
+##                     the event of interest
+</code></pre>
+
+<pre><code class="r"># can specify a legend
+plot(popTimeData, legend = TRUE)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-5-1.png" /> </p>
+<h1 id="ncctg-lung-cancer-data">NCCTG Lung Cancer Data</h1>
+<pre><code class="r"># data from library(survival)
+data(&quot;cancer&quot;)
+str(cancer)
+</code></pre>
+
+<pre><code>## 'data.frame':    228 obs. of  10 variables:
+##  $ inst     : num  3 3 3 5 1 12 7 11 1 7 ...
+##  $ time     : num  306 455 1010 210 883 ...
+##  $ status   : num  2 2 1 2 2 1 2 2 2 2 ...
+##  $ age      : num  74 68 56 57 60 74 68 71 53 61 ...
+##  $ sex      : num  1 1 1 1 1 1 2 2 1 1 ...
+##  $ ph.ecog  : num  1 0 0 1 0 1 2 2 1 2 ...
+##  $ ph.karno : num  90 90 90 90 100 50 70 60 70 70 ...
+##  $ pat.karno: num  100 90 90 60 90 80 60 80 80 70 ...
+##  $ meal.cal : num  1175 1225 NA 1150 NA ...
+##  $ wt.loss  : num  NA 15 15 11 0 0 10 1 16 34 ...
+</code></pre>
+
+<pre><code class="r"># since the event indicator 'status' is numeric, it must have
+# 0 for censored and 1 for event
+cancer &lt;- transform(cancer,
+                    status = status - 1,
+                    sex = factor(sex, levels = 1:2,
+                                 labels = c(&quot;Male&quot;, &quot;Female&quot;)))
+
+
+# population time plot
+# redistributing the red points among those who never experienced an event
+# because there are enough available at each time point
+popTimeData &lt;- popTime(data = cancer)
+</code></pre>
+
+<pre><code>## [1] 'time' will be used as the time variable
+## [1] 'status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling only from individuals who never experienced
+##                     the event of interest
+</code></pre>
+
+<pre><code class="r">plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-6-1.png" /> </p>
+<h2 id="stratified-by-gender">Stratified by gender</h2>
+<pre><code class="r">popTimeData &lt;- popTime(data = cancer, exposure = &quot;sex&quot;)
+</code></pre>
+
+<pre><code>## [1] 'time' will be used as the time variable
+## [1] 'status' will be used as the event variable
+</code></pre>
+
+<pre><code>## Sampling only from individuals who never experienced
+##                     the event of interest
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># can change the plot aesthetics
+plot(popTimeData,
+     line.width = 0.2, line.colour = &quot;black&quot;,
+     point.size = 1, point.colour = &quot;cyan&quot;)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-7-1.png" /> </p>
+<h1 id="simulated-data-example">Simulated Data Example</h1>
+<h2 id="simulate-the-data">Simulate the data</h2>
+<pre><code class="r">set.seed(1)
+nobs &lt;- 5000
+
+# simulation parameters
+a1 &lt;- 1.0
+b1 &lt;- 200
+a2 &lt;- 1.0
+b2 &lt;- 50
+c1 &lt;- 0.0
+c2 &lt;- 0.0
+
+# end of study time
+eost &lt;- 10
+
+# e event type 0-censored, 1-event of interest, 2-competing event
+# t observed time/endpoint
+# z is a binary covariate
+DTsim &lt;- data.table(ID = seq_len(nobs), z=rbinom(nobs, 1, 0.5))
+setkey(DTsim, ID)
+DTsim[,`:=` (event_time = rweibull(nobs, a1, b1 * exp(z * c1)^(-1/a1)),
+             competing_time = rweibull(nobs, a2, b2 * exp(z * c2)^(-1/a2)),
+             end_of_study_time = eost)]
+DTsim[,`:=`(event = 1 * (event_time &lt; competing_time) +
+                2 * (event_time &gt;= competing_time),
+            time = pmin(event_time, competing_time))]
+DTsim[time &gt;= end_of_study_time, event := 0]
+DTsim[time &gt;= end_of_study_time, time:=end_of_study_time]
+</code></pre>
+
+<h2 id="population-time-plot">Population Time Plot</h2>
+<pre><code class="r"># create 'popTime' object
+popTimeData &lt;- popTime(data = DTsim, time = &quot;time&quot;, event = &quot;event&quot;)
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r">plot(popTimeData)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-9-1.png" /> </p>
+<h2 id="stratified-by-binary-covariate-z">Stratified by Binary Covariate z</h2>
+<pre><code class="r"># stratified by binary covariate z
+popTimeData &lt;- popTime(data = DTsim, time = &quot;time&quot;, event = &quot;event&quot;, exposure = &quot;z&quot;)
+</code></pre>
+
+<pre><code>## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</code></pre>
+
+<pre><code class="r"># we can line up the plots side-by-side instead of one on top of the other
+plot(popTimeData, ncol = 2)
+</code></pre>
+
+<p><img alt="" src="../popTime_files/figure-html/unnamed-chunk-10-1.png" /> </p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+        <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

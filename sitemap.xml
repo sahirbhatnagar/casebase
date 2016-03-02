@@ -4,15 +4,39 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-01-11</lastmod>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>None/vignette/</loc>
-     <lastmod>2016-01-11</lastmod>
+     <loc>None/smoothhazard/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/competingRisk/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/popTime/</loc>
+     <lastmod>2016-03-02</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>None/references/</loc>
+     <lastmod>2016-03-02</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
