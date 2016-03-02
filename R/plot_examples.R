@@ -4,76 +4,120 @@ library(ggplot2)
 
 rm(list=ls())
 
+# Veteran Data ------------------------------------------------------------
+
+source("R/plots.R")
+source("R/methods.R")
+
+# veteran data in library(survival)
+data("veteran")
+str(veteran)
+
+# create 'popTime' object
 popTimeData <- popTime(data = veteran)
 
+# object of class 'popTime'
+class(popTimeData)
+
+# plot method for objects of class 'popTime'
+plot(popTimeData)
+
+# stratified by treatment population time plot
+veteran <- transform(veteran, trt = factor(trt, levels = 1:2,
+                                           labels = c("standard", "test")))
+
+# create 'popTimeExposure' object
+popTimeData <- popTime(data = veteran, exposure = "trt")
+
+# object of class 'popTimeExposure'
+class(popTimeData)
+
+# plot method for objects of class 'popTimeExposure'
+plot(popTimeData)
+
+
+
+# Stem Cell Data ----------------------------------------------------------
 
 bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
-
-head(bmt)
 str(bmt)
-popTimeData <- popTime(data = bmt, time = "ftime", event = "Phase")
-str(popTimeData)
-popTimeData[, table(`event status`)]
-popTimeData[, table(event)]
 
-popTimeData <- popTime(data = DT, time = "time")
+# create 'popTime' object
+popTimeData <- popTime(data = bmt, time = "ftime")
+
+# object of class 'popTime'
+class(popTimeData)
+
+# plot method for objects of class 'popTime'
+plot(popTimeData)
+
+# stratified by Disease population time plot
+# Disease (lymphoblastic or myeloblastic leukemia,
+# abbreviated as ALL and AML, respectively)
+
+# create 'popTimeExposure' object
+popTimeData <- popTime(data = bmt, time = "ftime", exposure = "D")
+
+# object of class 'popTimeExposure'
+class(popTimeData)
+
+# plot method for objects of class 'popTimeExposure'
+plot(popTimeData)
+
+# stratify by gender
+popTimeData <- popTime(data = bmt, time = "ftime", exposure = "Sex")
+plot(popTimeData)
 
 
 
+
+# Stanford Heart Transplant Data ------------------------------------------
+
+# data from library(survival)
 data("heart")
 str(heart)
-heart$time <- heart$stop - heart$start
-str(heart)
+
+# create time variable for time in study
+heart <- transform(heart,
+                   time = stop - start,
+                   transplant = factor(transplant,
+                                       labels = c("no transplant", "transplant")))
+
+# stratify by transplant indicator
 popTimeData <- popTime(data = heart, exposure = "transplant")
 
-data("stanford2")
-str(stanford2)
+# can specify a legend
+plot(popTimeData, legend = TRUE)
 
+
+
+# NCCTG Lung Cancer Data --------------------------------------------------
+
+# data from library(survival)
 data("cancer")
 str(cancer)
 
+# since the event indicator 'status' is numeric, it must have
+# 0 for censored and 1 for event
+cancer <- transform(cancer,
+                    status = status - 1,
+                    sex = factor(sex, levels = 1:2,
+                                 labels = c("Male", "Female")))
 
 
-
-cancer$status <- cancer$status - 1
-# error because not enough cases in subcategories
-popTimeData <- popTime(data = cancer, exposure = "ph.ecog")
-
-popTimeData <- popTime(data = cancer, exposure = "sex")
-xtabs(~ph.ecog+status, cancer)
-
-
-popTimeData <- popTime(data = DTsim, time = "time", event = "event", exposure = "z")
-popTimeData <- popTime(data = bmt, time = "ftime", exposure = "Sex")
-
-
-
-
-popTimeData <- popTime(data = stanford2)
-class(popTimeData)
+# population time plot
+# redistributing the red points among those who never experienced an event
+# because there are enough available at each time point
+popTimeData <- popTime(data = cancer)
 plot(popTimeData)
 
-popTimeData
+# stratified by sex
+popTimeData <- popTime(data = cancer, exposure = "sex")
 
-
-
-p1 <- ggplot(popTimeData, aes(x=0, xend=time, y=ycoord, yend=ycoord)) +
-    geom_segment(size=.5, colour="grey80") +
-    xlab("Follow-up years") +
-    ylab("Population") +
-    theme_bw() +
-    theme(axis.text=element_text(size=12, face='bold'), legend.position = "bottom",
-          legend.title=element_blank())
-
-p1 + facet_grid(~transplant)
-p1 + geom_point(aes(x=time, y=yc, colour = `event status`), data = popTimeData[event==1],
-                size=1) +
-    facet_grid(~transplant)
-#facet_wrap(~transplant, ncol = 1)
-
-p1 + geom_point(aes(x=time, y=yc), data = popTimeData[event==1],
-                size=1, color = "red") +
-    facet_grid(~transplant)
+# can change the plot aesthetics
+plot(popTimeData,
+     line.width = 0.2, line.colour = "black",
+     point.size = 1, point.colour = "cyan")
 
 
 
@@ -97,16 +141,29 @@ eost <- 10
 # t observed time/endpoint
 # z is a binary covariate
 DTsim <- data.table(ID = seq_len(nobs), z=rbinom(nobs, 1, 0.5))
-
 setkey(DTsim, ID)
-
 DTsim[,`:=` (event_time = rweibull(nobs, a1, b1 * exp(z * c1)^(-1/a1)),
              competing_time = rweibull(nobs, a2, b2 * exp(z * c2)^(-1/a2)),
              end_of_study_time = eost)]
-
-DTsim[,`:=`(event = 1 * (event_time < competing_time) + 2 * (event_time >= competing_time),
+DTsim[,`:=`(event = 1 * (event_time < competing_time) +
+                2 * (event_time >= competing_time),
             time = pmin(event_time, competing_time))]
-
 DTsim[time >= end_of_study_time, event := 0]
-
 DTsim[time >= end_of_study_time, time:=end_of_study_time]
+
+# create 'popTime' object
+popTimeData <- popTime(data = DTsim, time = "time")
+plot(popTimeData)
+
+# stratified by binary covariate z
+popTimeData <- popTime(data = DTsim, time = "time", exposure = "z")
+
+# we can line up the plots side-by-side instead of one on top of the other
+plot(popTimeData, ncol = 2)
+
+
+
+
+
+
+

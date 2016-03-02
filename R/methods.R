@@ -12,7 +12,7 @@
 #' @import ggplot2
 #' @export
 plot.popTime <- function(object,
-                         xlab = "Follow-up years", ylab = "Population",
+                         xlab = "Follow-up time", ylab = "Population",
                          line.width = 1, line.colour = "grey80",
                          point.size = 1, point.colour = "red",
                          legend = FALSE,
@@ -33,14 +33,18 @@ plot.popTime <- function(object,
                        data = object[event==1], size = point.size) +
             theme(axis.text=element_text(size=12, face='bold'),
                   legend.position = legend.position,
-                  legend.title=element_blank()) +
+                  legend.title=element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()) +
             scale_colour_manual(values = c("event" = point.colour))
     } else {
         p2 +
             geom_point(aes(x=time, y=yc),
                        data = object[event==1], colour = point.colour,
                        size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold'))
+            theme(axis.text=element_text(size=12, face='bold'),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank())
 
     }
 
@@ -61,8 +65,8 @@ plot.popTime <- function(object,
 #' @import ggplot2
 #' @export
 plot.popTimeExposure <- function(object,
-                                 ncol = 2,
-                                 xlab = "Follow-up years", ylab = "Population",
+                                 ncol = 1,
+                                 xlab = "Follow-up time", ylab = "Population",
                                  line.width = 1, line.colour = "grey80",
                                  point.size = 1, point.colour = "red",
                                  legend = FALSE,
@@ -83,7 +87,9 @@ plot.popTimeExposure <- function(object,
                        data = object$data[event==1], size = point.size) +
             theme(axis.text=element_text(size=12, face='bold'),
                   legend.position = legend.position,
-                  legend.title=element_blank()) +
+                  legend.title=element_blank(),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()) +
             scale_colour_manual(values = c("event" = point.colour)) +
             facet_wrap(object$exposure, ncol = ncol)
     } else {
@@ -91,7 +97,9 @@ plot.popTimeExposure <- function(object,
             geom_point(aes(x=time, y=yc),
                        data = object$data[event==1], colour = point.colour,
                        size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold')) +
+            theme(axis.text=element_text(size=12, face='bold'),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()) +
             facet_wrap(object$exposure, ncol = ncol)
 
     }
