@@ -152,11 +152,11 @@ DTsim[time >= end_of_study_time, event := 0]
 DTsim[time >= end_of_study_time, time:=end_of_study_time]
 
 # create 'popTime' object
-popTimeData <- popTime(data = DTsim, time = "time")
+popTimeData <- popTime(data = DTsim, time = "time", event = "event")
 plot(popTimeData)
 
 # stratified by binary covariate z
-popTimeData <- popTime(data = DTsim, time = "time", exposure = "z")
+popTimeData <- popTime(data = DTsim, time = "time", event = "event", exposure = "z")
 
 # we can line up the plots side-by-side instead of one on top of the other
 plot(popTimeData, ncol = 2)
