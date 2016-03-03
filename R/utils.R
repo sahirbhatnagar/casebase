@@ -24,9 +24,9 @@ checkArgsTimeEvent <- function(data, time, event) {
                 warning(paste0("The following variables for time were found in
                               the data: ",paste0(time, collapse = ", "),". '", time[1],
                                "' will be used as the time variable" )) else
-                                   print(paste0("'",time,"'",
-                                                " will be used as the time variable"),
-                                         quote = FALSE)
+                                   message(paste0("'",time,"'",
+                                                  " will be used as the time variable"),
+                                           quote = FALSE)
         } else {
             stop("data does not contain time variable")
         }
@@ -43,9 +43,9 @@ checkArgsTimeEvent <- function(data, time, event) {
                 warning(paste0("The following variables for event were found in
                               the data: ",paste0(event, collapse = ", "),". '", event[1],
                                "' will be used as the event variable" )) else
-                                   print(paste0("'",event,"'",
-                                                " will be used as the event variable"),
-                                         quote = FALSE)
+                                   message(paste0("'",event,"'",
+                                                  " will be used as the event variable"),
+                                           quote = FALSE)
         } else {
             stop("data does not contain event or status variable")
         }
