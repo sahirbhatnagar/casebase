@@ -6,8 +6,8 @@
 #'
 #' It is assumed that \code{data} contains the two columns corresponding to the
 #' supplied time and event variables. If either the \code{time} or \code{event}
-#' argument is missing, the function looks for columns named \code{"time"},
-#' \code{"event"}, or \code{"status"}.
+#' argument is missing, the function looks for columns with appropriate-looking
+#' names (see \code{\link{checkArgsTimeEvent}}).
 #'
 #' @param data a data.frame or data.table containing the source dataset.
 #' @param time a character string giving the name of the time variable. See
@@ -20,13 +20,35 @@
 #'   \code{uniform}, where person-moments are sampled uniformly across
 #'   individuals and follow-up time; and \code{multinomial}, where individuals
 #'   are sampled proportionally to their follow-up time.
-#' @param cmprisk Logical. Indicates whether we have multiple event types and
+#' @param comprisk Logical. Indicates whether we have multiple event types and
 #'   that we want to consider some of them as competing risks.
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
 #' @export
-sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), cmprisk = FALSE) {
+#' @examples
+#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' library(data.table)
+#' set.seed(12345)
+#' nobs <- 5000
+#' tlim <- 10
+#'
+#' # simulation parameters
+#' b1 <- 200
+#' b2 <- 50
+#'
+#' # event type 0-censored, 1-event of interest, 2-competing event
+#' # t observed time/endpoint
+#' # z is a binary covariate
+#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
+#' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
+#'           "t_comp" = rweibull(nobs, 1, b2))]
+#' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+#'          "time" = pmin(t_event, t_comp))]
+#' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
+#' out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
+
+sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), comprisk = FALSE) {
 
     varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
     timeVar <- varNames$time
@@ -34,10 +56,10 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     type <- match.arg(type)
     # Create survival object from dataset
-    if (cmprisk) surv_type <- "mstate" else surv_type <- "right"
+    if (comprisk) surv_type <- "mstate" else surv_type <- "right"
     selectTime <- (names(data) == timeVar)
-    survObj <- survival::Surv(subset(data, select=selectTime, drop = TRUE),
-                              subset(data, select=(names(data) == eventVar), drop = TRUE),
+    survObj <- survival::Surv(data[[timeVar]],
+                              data[[eventVar]],
                               type = surv_type)
 
     n <- nrow(survObj) # no. of subjects

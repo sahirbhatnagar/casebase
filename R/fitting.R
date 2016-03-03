@@ -33,21 +33,46 @@
 #'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
 #'   \code{coefficients} give familiar results.
 #' @export
+#' @examples
+#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' library(data.table)
+#' set.seed(12345)
+#' nobs <- 5000
+#' tlim <- 10
+#'
+#' # simulation parameters
+#' b1 <- 200
+#' b2 <- 50
+#'
+#' # event type 0-censored, 1-event of interest, 2-competing event
+#' # t observed time/endpoint
+#' # z is a binary covariate
+#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
+#' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
+#'           "t_comp" = rweibull(nobs, 1, b2))]
+#' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+#'          "time" = pmin(t_event, t_comp))]
+#' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
+#' out_linear <- fitSmoothHazard(event ~ time + z, DT)
+#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])
 
-    varNames <- checkArgsTimeEvent(data = data, time = time, event = eventVar)
-    timeVar <- varNames$time
+    if (missing(time)) {
+        varNames <- checkArgsTimeEvent(data = data, event = eventVar)
+        timeVar <- varNames$time
+    } else timeVar <- time
 
-    typeEvents <- sort(unique(subset(data, select=(names(data) == eventVar), drop = TRUE)))
+
+    typeEvents <- sort(unique(data[[eventVar]]))
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
         sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
-                                     cmprisk = (length(typeEvents) > 2), ...)
+                                     comprisk = (length(typeEvents) > 2), ...)
         if (length(list(...)) != 2) {
-            warning("sampleCaseBase is using some default values; see documentation for more details.")
+            message("sampleCaseBase is using some default values; see documentation for more details.")
         }
     } else {
         originalData <- NULL
@@ -69,7 +94,7 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         # If we have competing risks, we need to reformat the response
         multiData_mat <- c()
         for (type in typeEvents[typeEvents != 0]) {
-            multiData_mat <- cbind(multiData_mat, as.numeric(subset(sampleData, select=(names(sampleData) == eventVar), drop = TRUE) == type))
+            multiData_mat <- cbind(multiData_mat, as.numeric(sampleData[[eventVar]] == type))
         }
         # Base series should correspond to last column
         multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
