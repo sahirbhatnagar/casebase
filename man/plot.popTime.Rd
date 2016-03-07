@@ -4,7 +4,7 @@
 \alias{plot.popTime}
 \title{Population Time Plot}
 \usage{
-\method{plot}{popTime}(object, xlab = "Follow-up time", ylab = "Population",
+plot.popTime(object, xlab = "Follow-up time", ylab = "Population",
   line.width = 1, line.colour = "grey80", point.size = 1,
   point.colour = "red", legend = FALSE, legend.position = c("bottom",
   "top", "left", "right"))

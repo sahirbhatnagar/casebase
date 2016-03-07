@@ -4,7 +4,7 @@
 \alias{plot.popTimeExposure}
 \title{Population Time Plot Stratified by Exposure Status}
 \usage{
-\method{plot}{popTimeExposure}(object, ncol = 1, xlab = "Follow-up time",
+plot.popTimeExposure(object, ncol = 1, xlab = "Follow-up time",
   ylab = "Population", line.width = 1, line.colour = "grey80",
   point.size = 1, point.colour = "red", legend = FALSE,
   legend.position = c("bottom", "top", "left", "right"))

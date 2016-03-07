@@ -12,10 +12,10 @@ absoluteRisk(object, ...)
 \method{absoluteRisk}{default}(object, ...)
 
 \method{absoluteRisk}{glm}(object, time, newdata = NULL,
-  method = c("quadrature", "montecarlo"), nsamp = 100)
+  method = c("montecarlo", "quadrature"), nsamp = 1000)
 
 \method{absoluteRisk}{CompRisk}(object, time, newdata = NULL,
-  method = c("quadrature", "montecarlo"), nsamp = 100)
+  method = c("montecarlo", "quadrature"), nsamp = 1000)
 }
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
@@ -58,5 +58,32 @@ absolute risk can be computed as the average of the output vector.
 The quadrature should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
 is not smooth (e.g. when modeling with time-varying covariates).
+}
+\examples{
+# Simulate censored survival data for two outcome types from Weibull distributions
+library(data.table)
+set.seed(12345)
+nobs <- 5000
+tlim <- 20
+
+# simulation parameters
+b1 <- 200
+b2 <- 50
+
+# event type 0-censored, 1-event of interest, 2-competing event
+# t observed time/endpoint
+# z is a binary covariate
+DT <- data.table(z=rbinom(nobs, 1, 0.5))
+DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
+          "t_comp" = rweibull(nobs, 1, b2))]
+DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+         "time" = pmin(t_event, t_comp))]
+DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
+
+out_linear <- fitSmoothHazard(event ~ time + z, DT)
+out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+
+linear_risk <- absoluteRisk(out_linear, time = 10, , newdata = data.table("z"=c(0,1)))
+log_risk <- absoluteRisk(out_log, time = 10, , newdata = data.table("z"=c(0,1)))
 }
 

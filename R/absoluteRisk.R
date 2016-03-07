@@ -34,6 +34,32 @@
 #'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
 #'   covariate profiles.
 #' @export
+#' @examples
+#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' library(data.table)
+#' set.seed(12345)
+#' nobs <- 5000
+#' tlim <- 20
+#'
+#' # simulation parameters
+#' b1 <- 200
+#' b2 <- 50
+#'
+#' # event type 0-censored, 1-event of interest, 2-competing event
+#' # t observed time/endpoint
+#' # z is a binary covariate
+#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
+#' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
+#'           "t_comp" = rweibull(nobs, 1, b2))]
+#' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+#'          "time" = pmin(t_event, t_comp))]
+#' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
+#'
+#' out_linear <- fitSmoothHazard(event ~ time + z, DT)
+#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+#'
+#' linear_risk <- absoluteRisk(out_linear, time = 10, , newdata = data.table("z"=c(0,1)))
+#' log_risk <- absoluteRisk(out_log, time = 10, , newdata = data.table("z"=c(0,1)))
 absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 
 #' @rdname absoluteRisk
@@ -45,7 +71,7 @@ absoluteRisk.default <- function (object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
+absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
     method <- match.arg(method)
     meanAR <- FALSE
     # Create hazard function
@@ -98,7 +124,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("quadratur
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("quadrature", "montecarlo"), nsamp=100) {
+absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)

@@ -51,7 +51,7 @@ from \code{formula}, since it is the left hand side.
 library(data.table)
 set.seed(12345)
 nobs <- 5000
-tlim <- 10
+tlim <- 20
 
 # simulation parameters
 b1 <- 200
@@ -66,7 +66,8 @@ DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
 DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
          "time" = pmin(t_event, t_comp))]
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
-out_linear <- fitSmoothHazard(event ~ time + z, DT)
-out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+
+out_linear <- fitSmoothHazard(event ~ time + z, DT, newdata = data.table("z"=c(0,1)))
+out_log <- fitSmoothHazard(event ~ log(time) + z, DT, newdata = data.table("z"=c(0,1)))
 }
 
