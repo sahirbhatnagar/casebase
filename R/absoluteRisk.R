@@ -35,7 +35,7 @@
 #'   covariate profiles.
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 5000
@@ -58,15 +58,15 @@
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 #'
-#' linear_risk <- absoluteRisk(out_linear, time = 10, , newdata = data.table("z"=c(0,1)))
-#' log_risk <- absoluteRisk(out_log, time = 10, , newdata = data.table("z"=c(0,1)))
+#' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
+#' log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))
 absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.default <- function (object, ...) {
     stop("This function should be used with an object of class glm of compRisk",
-         call. = FALSE)
+         call. = TRUE)
 }
 
 #' @rdname absoluteRisk
@@ -108,7 +108,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarl
     if (method == "montecarlo") {
         sampledPoints <- runif(nsamp) * time
         for (i in 1:nrow(newdata)) {
-            surv[i] <- exp(-mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
+            surv[i] <- exp(-time * mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
         }
     }
 
@@ -198,7 +198,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
     if (method == "montecarlo") {
         overallSurv <- function(time, object, newdata) {
             sampledPoints <- runif(nsamp) * time
-            exp(-mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+            exp(-time * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
         }
         subdensity_mat <- function(x, object, newdata) {
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
@@ -211,7 +211,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
         }
         sampledPoints <- runif(nsamp) * time
         for (i in 1:nrow(newdata)) {
-            cumInc[i, ] <- colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
+            cumInc[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
         }
 
     }

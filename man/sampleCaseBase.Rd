@@ -50,7 +50,7 @@ argument is missing, the function looks for columns with appropriate-looking
 names (see \code{\link{checkArgsTimeEvent}}).
 }
 \examples{
-# Simulate censored survival data for two outcome types from Weibull distributions
+# Simulate censored survival data for two outcome types from exponential distributions
 library(data.table)
 set.seed(12345)
 nobs <- 5000

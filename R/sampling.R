@@ -32,7 +32,7 @@
 #'   case or the base series. otherwise)
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 5000
