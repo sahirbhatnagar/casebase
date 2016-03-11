@@ -4,7 +4,7 @@
 \alias{fitSmoothHazard}
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
-fitSmoothHazard(formula, data, time, link = "logit", ...)
+fitSmoothHazard(formula, data, time, censored.indicator, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to
@@ -19,8 +19,11 @@ model. If not found in data, the variables are taken from
 \item{time}{a character string giving the name of the time variable. See
 Details.}
 
-\item{link}{A character string, which gives the specification for the model
-link function. Default is the \code{logit} link.}
+\item{censored.indicator}{a character string of length 1 indicating which
+value in \code{event} is the censored. This function will use
+\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+reference level. This argument is ignored if the \code{event} variable is a
+numeric}
 
 \item{...}{Additional parameters passed to \code{\link{sampleCaseBase}}. If
 \code{data} inherits from the class \code{cbData}, then these parameters
@@ -67,7 +70,7 @@ DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
          "time" = pmin(t_event, t_comp))]
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
-out_linear <- fitSmoothHazard(event ~ time + z, DT, newdata = data.table("z"=c(0,1)))
-out_log <- fitSmoothHazard(event ~ log(time) + z, DT, newdata = data.table("z"=c(0,1)))
+out_linear <- fitSmoothHazard(event ~ time + z, DT)
+out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 }
 

@@ -5,7 +5,7 @@
 \alias{popTime}
 \title{Population Time Plot Data}
 \usage{
-popTime(data, time, event, censored.indicator = NULL, exposure = NULL)
+popTime(data, time, event, censored.indicator, exposure)
 
 checkArgsTimeEvent(data, time, event)
 }
