@@ -54,8 +54,8 @@
 #'          "time" = pmin(t_event, t_comp))]
 #' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 #'
-#' out_linear <- fitSmoothHazard(event ~ time + z, DT, newdata = data.table("z"=c(0,1)))
-#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT, newdata = data.table("z"=c(0,1)))
+#' out_linear <- fitSmoothHazard(event ~ time + z, DT)
+#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])
