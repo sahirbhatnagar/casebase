@@ -56,6 +56,7 @@
 #'
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+#' @importFrom VGAM vglm multinomial
 fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])
@@ -92,26 +93,29 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         out$eventVar <- eventVar
 
     } else {
-        # If we have competing risks, we need to reformat the response
-        multiData_mat <- c()
-        for (type in typeEvents[typeEvents != 0]) {
-            multiData_mat <- cbind(multiData_mat, as.numeric(sampleData[[eventVar]] == type))
-        }
-        # Base series should correspond to last column
-        multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
-        multiData_mat <- as.data.frame(multiData_mat)
-        colnames(multiData_mat) <- paste0("EventType", c(typeEvents[typeEvents != 0], 0))
+        # # If we have competing risks, we need to reformat the response
+        # multiData_mat <- c()
+        # for (type in typeEvents[typeEvents != 0]) {
+        #     multiData_mat <- cbind(multiData_mat, as.numeric(sampleData[[eventVar]] == type))
+        # }
+        # # Base series should correspond to last column
+        # multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
+        # multiData_mat <- as.data.frame(multiData_mat)
+        # colnames(multiData_mat) <- paste0("EventType", c(typeEvents[typeEvents != 0], 0))
+        #
+        # formula <- do.call(update,
+        #                    list(formula,
+        #                         as.formula(paste(paste0("cbind(",
+        #                                                 paste(names(multiData_mat),
+        #                                                       collapse = ", "), ")"),
+        #                                          "~ ."))))
+        #
+        # combData <- cbind(sampleData, multiData_mat)
+        # model <- VGAM::vglm(formula, family = VGAM::multinomial,
+        #                     data = combData)
+        model <- vglm(formula, family = multinomial(refLevel = 1),
+                      data = sampleData)
 
-        formula <- do.call(update,
-                           list(formula,
-                                as.formula(paste(paste0("cbind(",
-                                                        paste(names(multiData_mat),
-                                                              collapse = ", "), ")"),
-                                                 "~ ."))))
-
-        combData <- cbind(sampleData, multiData_mat)
-        model <- VGAM::vglm(formula, family = VGAM::multinomial,
-                            data = combData)
         # Output of vglm is an S4 object
         # model@originalData <- originalData
         # model@typeEvents <- typeEvents
