@@ -71,9 +71,10 @@ absoluteRisk.default <- function (object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
     method <- match.arg(method)
     meanAR <- FALSE
+
     # Create hazard function
     lambda <- function(x, fit, newdata) {
         # Note: the offset should be set to zero when estimating the hazard.
@@ -83,7 +84,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarl
         return(as.numeric(exp(predict(fit, newdata2))))
     }
 
-    if (is.null(newdata)) {
+    if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if(is.null(object$originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
@@ -98,39 +99,53 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarl
         meanAR <- TRUE
     }
 
-    surv <- rep(NA, nrow(newdata))
+    output <- matrix(NA, nrow = nrow(newdata), ncol=length(sort(unique(time))))
+    time_ordered <- c(0, sort(unique(time)))
+
     if (method == "quadrature") {
         for (i in 1:nrow(newdata)) {
-            surv[i] <- exp(-integrate(lambda, lower=0, upper=time, fit=object, newdata=newdata[i,],
-                                      subdivisions = nsamp)$value)
+            for (j in 1:ncol(output)) {
+                output[i, j] <- integrate(lambda, lower=time_ordered[j], upper=time_ordered[j+1],
+                                          fit=object, newdata=newdata[i,],
+                                          subdivisions = nsamp)$value
+            }
+            output[i,] <- cumsum(output[i,])
         }
+        output <- exp(-output)
     }
     if (method == "montecarlo") {
-        sampledPoints <- runif(nsamp) * time
+        sampledPoints <- runif(nsamp)
         for (i in 1:nrow(newdata)) {
-            surv[i] <- exp(-time * mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
+            for (j in 1:ncol(output)) {
+                output[i, j] <- (time_ordered[j + 1] - time_ordered[j]) * mean(lambda(sampledPoints * (time_ordered[j + 1] -
+                                                                                                           time_ordered[j]) +
+                                                                                          time_ordered[j], fit=object, newdata=newdata[i,]))
+            }
+            output[i,] <- cumsum(output[i,])
         }
+        output <- exp(-output)
     }
 
     if (meanAR) {
-        absRisk <- mean(1.0 - surv)
+        absRisk <- colMeans(1.0 - output)
         return(absRisk)
     } else {
-        absRisk <- 1.0 - surv
-        names(absRisk) <- rownames(newdata)
+        absRisk <- 1.0 - output
+        rownames(absRisk) <- rownames(newdata)
+        colnames(absRisk) <- time_ordered[-1]
         return(absRisk)
     }
 }
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
     meanAR <- FALSE
 
-    if (is.null(newdata)) {
+    if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if(is.null(object@originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
