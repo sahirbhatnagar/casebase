@@ -84,7 +84,7 @@ checkArgsTimeEvent <- function(data, time, event) {
 #' checkArgsEventIndicator(data = bmt, event = "Status", censored.indicator = 3)
 #' }
 #'
-checkArgsEventIndicator <- function(data, event, censored.indicator = NULL) {
+checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
     isFactor <- is.factor(data[,event])
     isNumeric <- is.numeric(data[,event])
@@ -97,7 +97,7 @@ checkArgsEventIndicator <- function(data, event, censored.indicator = NULL) {
     nLevels <- nlevels(factor(data[,event]))
     if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
 
-    if (is.null(censored.indicator)) {
+    if (missing(censored.indicator)) {
 
         if (isFactor) {
             slev <- levels(data[,event])

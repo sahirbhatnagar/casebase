@@ -4,7 +4,7 @@
 \alias{checkArgsEventIndicator}
 \title{Check that Event is in Correct Format}
 \usage{
-checkArgsEventIndicator(data, event, censored.indicator = NULL)
+checkArgsEventIndicator(data, event, censored.indicator)
 }
 \arguments{
 \item{data}{a \code{data.frame} or \code{data.table} containing the source

@@ -5,7 +5,7 @@
 \title{Create case-base dataset for use in fitting parametric hazard functions}
 \usage{
 sampleCaseBase(data, time, event, ratio = 10, type = c("uniform",
-  "multinomial"), comprisk = FALSE)
+  "multinomial"), comprisk = FALSE, censored.indicator)
 }
 \arguments{
 \item{data}{a data.frame or data.table containing the source dataset.}
@@ -26,6 +26,12 @@ are sampled proportionally to their follow-up time.}
 
 \item{comprisk}{Logical. Indicates whether we have multiple event types and
 that we want to consider some of them as competing risks.}
+
+\item{censored.indicator}{a character string of length 1 indicating which
+value in \code{event} is the censored. This function will use
+\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+reference level. This argument is ignored if the \code{event} variable is a
+numeric}
 }
 \value{
 The function returns a dataset, with the same format as the source

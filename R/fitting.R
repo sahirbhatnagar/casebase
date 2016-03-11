@@ -24,8 +24,11 @@
 #'   \code{fitSmoothHazard} is called.
 #' @param time a character string giving the name of the time variable. See
 #'   Details.
-#' @param link A character string, which gives the specification for the model
-#'   link function. Default is the \code{logit} link.
+#' @param censored.indicator a character string of length 1 indicating which
+#'   value in \code{event} is the censored. This function will use
+#'   \code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+#'   reference level. This argument is ignored if the \code{event} variable is a
+#'   numeric
 #' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
 #'   \code{data} inherits from the class \code{cbData}, then these parameters
 #'   are ignored.
@@ -56,8 +59,8 @@
 #'
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
-#' @importFrom VGAM vglm multinomial
-fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
+#' @import VGAM
+fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])
 
@@ -71,11 +74,17 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
     # Call sampleCaseBase
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
-        sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
-                                     comprisk = (length(typeEvents) > 2), ...)
-        if (length(list(...)) != 2) {
-            message("sampleCaseBase is using some default values; see documentation for more details.")
+        if (missing(censored.indicator)) {
+            sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+                                         comprisk = (length(typeEvents) > 2), ...)
+        } else {
+            sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+                                         comprisk = (length(typeEvents) > 2),
+                                         censored.indicator, ...)
         }
+        # if (length(list(...)) != 2) {
+        #     message("sampleCaseBase is using some default values; see documentation for more details.")
+        # }
     } else {
         originalData <- NULL
         sampleData <- data
@@ -116,15 +125,11 @@ fitSmoothHazard <- function(formula, data, time, link = "logit", ...) {
         model <- vglm(formula, family = multinomial(refLevel = 1),
                       data = sampleData)
 
-        # Output of vglm is an S4 object
-        # model@originalData <- originalData
-        # model@typeEvents <- typeEvents
         out <- new("CompRisk", model,
                    originalData = originalData,
                    typeEvents = typeEvents,
                    timeVar = timeVar,
                    eventVar = eventVar)
-        # class(out) <- c("compRisk", class(model))
     }
 
     return(out)

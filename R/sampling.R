@@ -22,6 +22,11 @@
 #'   are sampled proportionally to their follow-up time.
 #' @param comprisk Logical. Indicates whether we have multiple event types and
 #'   that we want to consider some of them as competing risks.
+#' @param censored.indicator a character string of length 1 indicating which
+#'   value in \code{event} is the censored. This function will use
+#'   \code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+#'   reference level. This argument is ignored if the \code{event} variable is a
+#'   numeric
 #' @return The function returns a dataset, with the same format as the source
 #'   dataset, and where each row corresponds to a person-moment sampled from the
 #'   case or the base series. otherwise)
@@ -49,18 +54,24 @@
 #'
 #' out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
 
-sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), comprisk = FALSE) {
+sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), comprisk = FALSE, censored.indicator) {
 
     varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
     timeVar <- varNames$time
-    eventVar <- varNames$event
+    eventName <- varNames$event
+    modifiedEvent <- checkArgsEventIndicator(data, eventName, censored.indicator)
+    eventVar <- modifiedEvent$event.numeric
 
     type <- match.arg(type)
     # Create survival object from dataset
+    if (!comprisk && modifiedEvent$nLevels > 2) {
+        stop("For more than one type event, you should either do a competing risk analysis, or reformat your data so that there is only one event of interest.",
+             call. = FALSE)
+    }
     if (comprisk) surv_type <- "mstate" else surv_type <- "right"
     selectTime <- (names(data) == timeVar)
     survObj <- survival::Surv(data[[timeVar]],
-                              data[[eventVar]],
+                              eventVar,
                               type = surv_type)
 
     n <- nrow(survObj) # no. of subjects
@@ -98,12 +109,12 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
-    selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventVar))
+    selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
     bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,])
-    names(bSeries)[names(bSeries) == "status"] <- eventVar
+    names(bSeries)[names(bSeries) == "status"] <- eventName
     names(bSeries)[names(bSeries) == "time"] <- timeVar
 
-    cSeries <- data[which(subset(data, select=(names(data) == eventVar)) != 0),]
+    cSeries <- data[which(subset(data, select=(names(data) == eventName)) != 0),]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1

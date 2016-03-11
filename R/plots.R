@@ -56,8 +56,8 @@
 #'
 #' @import data.table
 #' @export
-popTime <- function(data, time, event, censored.indicator = NULL,
-                    exposure = NULL){
+popTime <- function(data, time, event, censored.indicator,
+                    exposure){
 
     #data <- DTsim;censored.indicator = NULL;exposure = "z" ; time = "time"; event = "event"
     #names(data)
@@ -67,7 +67,7 @@ popTime <- function(data, time, event, censored.indicator = NULL,
 
     DT <- data.table::as.data.table(data)
 
-    if (is.null(exposure)) {
+    if (missing(exposure)) {
 
         nobs <- nrow(DT)
 
@@ -221,20 +221,3 @@ popTime <- function(data, time, event, censored.indicator = NULL,
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
