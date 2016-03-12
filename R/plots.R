@@ -66,7 +66,9 @@ popTime <- function(data, time, event, censored.indicator,
     #varNames <- checkArgsTimeEvent(data, time = time)
 
     DT <- data.table::as.data.table(data)
-
+    if (missing(censored.indicator)) {
+        censored.indicator <- NULL
+    }
     if (missing(exposure)) {
 
         nobs <- nrow(DT)
@@ -77,7 +79,6 @@ popTime <- function(data, time, event, censored.indicator,
 
         if (varNames$time != "time") setnames(DT,varNames$time, "time")
         if (varNames$event != "event") setnames(DT,varNames$event, "event")
-
         modifiedEvent <- checkArgsEventIndicator(data = data, event = varNames$event,
                                                  censored.indicator = censored.indicator)
 

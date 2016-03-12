@@ -95,7 +95,7 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
 
     # Fit a binomial model if there are no competing risks
     if (length(typeEvents) == 2) {
-        out <- glm(formula, data = sampleData, family = binomial(link=link))
+        out <- glm(formula, data = sampleData, family = binomial)
         out$originalData <- originalData
         out$typeEvents <- typeEvents
         out$timeVar <- timeVar

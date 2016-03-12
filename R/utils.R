@@ -97,7 +97,7 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
     nLevels <- nlevels(factor(data[,event]))
     if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
 
-    if (missing(censored.indicator)) {
+    if (missing(censored.indicator) || is.null(censored.indicator)) {
 
         if (isFactor) {
             slev <- levels(data[,event])
