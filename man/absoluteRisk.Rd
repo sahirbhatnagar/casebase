@@ -22,24 +22,24 @@ absoluteRisk(object, ...)
 
 \item{...}{Extra parameters. Currently these are simply ignored.}
 
-\item{time}{Upper bound of the interval over which to compute the absolute
-risk. It is assumed that \code{time} is given in the same units as the time
-variable in the dataset used to fit the hazard function.}
+\item{time}{A vector of time points at which we should compute the absolute
+risks.}
 
 \item{newdata}{Optionally, a data frame in which to look for variables with
 which to predict. If omitted, the mean absolute risk is returned.}
 
-\item{method}{Method used for integration. Defaults to \code{"quadrature"},
-which simply calls the function \code{\link{integrate}}. The only other
-option is \code{"montecarlo"}, which implements Monte-Carlo integration.}
+\item{method}{Method used for integration. Defaults to \code{"montecarlo"},
+which implements Monte-Carlo integration. The only other option is
+\code{"quadrature"}, which simply calls the function
+\code{\link{integrate}}.}
 
 \item{nsamp}{Maximal number of subdivisions (if \code{method = "quadrature"})
 or number of sampled points (if \code{method = "montecarlo"}).}
 }
 \value{
-Returns the mean absolute risk at the user-supplied time, if
-  \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
-  covariate profiles.
+Returns the estimated absolute risk for the user-supplied covariate
+  profiles. This will be stored in a 2- or 3-dimensional array, depending on
+  the input. See details.
 }
 \description{
 Using the output of the function \code{fitSmoothHazard}, we can compute
@@ -55,9 +55,20 @@ the output of \code{\link{sampleCaseBase}}). On the other hand, if the user
 supplies the original dataset through the parameter \code{newdata}, the mean
 absolute risk can be computed as the average of the output vector.
 
+If there is no competing risk, the output is a matrix where each row
+corresponds to the several covariate profiles, and where each column
+corresponds to a time point. If there are competing risks, the output will be
+a 3-dimensional array, with the third dimension corresponding to the
+different events, unless there is one time point, in which case the output is
+coerced to a matrix.
+
 The quadrature should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
-is not smooth (e.g. when modeling with time-varying covariates).
+is not smooth (e.g. when modeling with time-varying covariates). However, if
+there are competing risks, we strongly encourage the user to select
+Monte-Carlo integration, which is much faster than the Quadrature method.
+(This is due to the current implementation of the quadrature method, and it
+may be improved in future versions.)
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
