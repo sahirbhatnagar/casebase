@@ -32,12 +32,14 @@
 #' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
 #'   \code{data} inherits from the class \code{cbData}, then these parameters
 #'   are ignored.
-#' @return An object of class \code{caseBase}, which inherits from the classes
-#'   \code{glm} and \code{lm}. As such, functions like \code{summary} and
-#'   \code{coefficients} give familiar results.
+#' @return An object of \code{glm} and \code{lm} when there is only one event of
+#'   interest, or of class \code{\link{CompRisk}}, which inherits from
+#'   \code{vglm}, for a competing risk analysis. As such, functions like
+#'   \code{summary}, \code{deviance} and \code{coefficients} give familiar
+#'   results.
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 5000

@@ -14,28 +14,39 @@
 #' supplies the original dataset through the parameter \code{newdata}, the mean
 #' absolute risk can be computed as the average of the output vector.
 #'
+#' If there is no competing risk, the output is a matrix where each row
+#' corresponds to the several covariate profiles, and where each column
+#' corresponds to a time point. If there are competing risks, the output will be
+#' a 3-dimensional array, with the third dimension corresponding to the
+#' different events, unless there is one time point, in which case the output is
+#' coerced to a matrix.
+#'
 #' The quadrature should be good enough in most situation, but Monte Carlo
 #' integration can give more accurate results when the estimated hazard function
-#' is not smooth (e.g. when modeling with time-varying covariates).
+#' is not smooth (e.g. when modeling with time-varying covariates). However, if
+#' there are competing risks, we strongly encourage the user to select
+#' Monte-Carlo integration, which is much faster than the Quadrature method.
+#' (This is due to the current implementation of the quadrature method, and it
+#' may be improved in future versions.)
 #'
 #' @param object Output of function \code{\link{fitSmoothHazard}}.
-#' @param time Upper bound of the interval over which to compute the absolute
-#'   risk. It is assumed that \code{time} is given in the same units as the time
-#'   variable in the dataset used to fit the hazard function.
+#' @param time A vector of time points at which we should compute the absolute
+#'   risks.
 #' @param newdata Optionally, a data frame in which to look for variables with
 #'   which to predict. If omitted, the mean absolute risk is returned.
-#' @param method Method used for integration. Defaults to \code{"quadrature"},
-#'   which simply calls the function \code{\link{integrate}}. The only other
-#'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
+#' @param method Method used for integration. Defaults to \code{"montecarlo"},
+#'   which implements Monte-Carlo integration. The only other option is
+#'   \code{"quadrature"}, which simply calls the function
+#'   \code{\link{integrate}}.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "quadrature"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
 #' @param ... Extra parameters. Currently these are simply ignored.
-#' @return Returns the mean absolute risk at the user-supplied time, if
-#'   \code{newdata = NULL}, or the estimated absolute risk for the user-supplied
-#'   covariate profiles.
+#' @return Returns the estimated absolute risk for the user-supplied covariate
+#'   profiles. This will be stored in a 2- or 3-dimensional array, depending on
+#'   the input. See details.
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from Weibull distributions
+#' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 5000
@@ -58,22 +69,23 @@
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 #'
-#' linear_risk <- absoluteRisk(out_linear, time = 10, , newdata = data.table("z"=c(0,1)))
-#' log_risk <- absoluteRisk(out_log, time = 10, , newdata = data.table("z"=c(0,1)))
+#' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
+#' log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))
 absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.default <- function (object, ...) {
     stop("This function should be used with an object of class glm of compRisk",
-         call. = FALSE)
+         call. = TRUE)
 }
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
     method <- match.arg(method)
     meanAR <- FALSE
+
     # Create hazard function
     lambda <- function(x, fit, newdata) {
         # Note: the offset should be set to zero when estimating the hazard.
@@ -83,7 +95,7 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarl
         return(as.numeric(exp(predict(fit, newdata2))))
     }
 
-    if (is.null(newdata)) {
+    if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if(is.null(object$originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
@@ -98,39 +110,53 @@ absoluteRisk.glm <- function(object, time, newdata = NULL, method = c("montecarl
         meanAR <- TRUE
     }
 
-    surv <- rep(NA, nrow(newdata))
+    output <- matrix(NA, nrow = nrow(newdata), ncol=length(sort(unique(time))))
+    time_ordered <- c(0, sort(unique(time)))
+
     if (method == "quadrature") {
         for (i in 1:nrow(newdata)) {
-            surv[i] <- exp(-integrate(lambda, lower=0, upper=time, fit=object, newdata=newdata[i,],
-                                      subdivisions = nsamp)$value)
+            for (j in 1:ncol(output)) {
+                output[i, j] <- integrate(lambda, lower=time_ordered[j], upper=time_ordered[j+1],
+                                          fit=object, newdata=newdata[i,],
+                                          subdivisions = nsamp)$value
+            }
+            output[i,] <- cumsum(output[i,])
         }
+        output <- exp(-output)
     }
     if (method == "montecarlo") {
-        sampledPoints <- runif(nsamp) * time
+        sampledPoints <- runif(nsamp)
         for (i in 1:nrow(newdata)) {
-            surv[i] <- exp(-mean(lambda(sampledPoints, fit=object, newdata=newdata[i,])))
+            for (j in 1:ncol(output)) {
+                output[i, j] <- (time_ordered[j + 1] - time_ordered[j]) * mean(lambda(sampledPoints * (time_ordered[j + 1] -
+                                                                                                           time_ordered[j]) +
+                                                                                          time_ordered[j], fit=object, newdata=newdata[i,]))
+            }
+            output[i,] <- cumsum(output[i,])
         }
+        output <- exp(-output)
     }
 
     if (meanAR) {
-        absRisk <- mean(1.0 - surv)
+        absRisk <- colMeans(1.0 - output)
         return(absRisk)
     } else {
-        absRisk <- 1.0 - surv
-        names(absRisk) <- rownames(newdata)
+        absRisk <- 1.0 - output
+        rownames(absRisk) <- rownames(newdata)
+        colnames(absRisk) <- time_ordered[-1]
         return(absRisk)
     }
 }
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
     meanAR <- FALSE
 
-    if (is.null(newdata)) {
+    if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if(is.null(object@originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
@@ -151,7 +177,9 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
     J <- length(object@typeEvents) - 1
-    cumInc <- matrix(NA, nrow = nrow(newdata), ncol = J)
+    # cumInc <- matrix(NA, nrow = nrow(newdata), ncol = J)
+    output <- array(NA, dim=c(nrow(newdata), length(sort(unique(time))), J))
+    time_ordered <- c(0, sort(unique(time)))
 
     # 1. Compute overall survival
     overallLambda <- function(x, object, newdata) {
@@ -188,9 +216,12 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
         # 3. Compute cumulative incidence functions F_j
         for (i in 1:nrow(newdata)) {
             for (j in 1:J) {
-                cumInc[i,j] <- integrate(subdensities[[j]], lower = 0, upper = time,
-                                         object=object, newdata=newdata[i,],
-                                         subdivisions = nsamp)$value
+                for (k in 1:dim(output)[2]) {
+                    output[i,k,j] <- integrate(subdensities[[j]], lower=time_ordered[k], upper=time_ordered[k+1],
+                                               object=object, newdata=newdata[i,],
+                                               subdivisions = nsamp)$value
+                }
+                output[i, ,j] <- cumsum(output[i, ,j])
             }
         }
     }
@@ -198,7 +229,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
     if (method == "montecarlo") {
         overallSurv <- function(time, object, newdata) {
             sampledPoints <- runif(nsamp) * time
-            exp(-mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+            exp(-time * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
         }
         subdensity_mat <- function(x, object, newdata) {
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
@@ -209,12 +240,23 @@ absoluteRisk.CompRisk <- function(object, time, newdata = NULL, method = c("mont
                                 warning = handler_offset)
             exp(lambdas) * overallSurv(x, object = object, newdata2)
         }
-        sampledPoints <- runif(nsamp) * time
+        sampledPoints <- runif(nsamp)
         for (i in 1:nrow(newdata)) {
-            cumInc[i, ] <- colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
+            # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
+            for (k in 1:dim(output)[2]) {
+                output[i, k, ] <- (time_ordered[k + 1] - time_ordered[k]) * colMeans(subdensity_mat(sampledPoints * (time_ordered[k + 1] -
+                                                                                                                         time_ordered[k]) +
+                                                                                                        time_ordered[k],
+                                                                                                    object=object, newdata=newdata[i,]))
+            }
+            # if k==1, there was only one time point and we don't need to sum the contributions
+            if (k != 1) output[i,,] <- apply(output[i,,], 2, cumsum)
         }
 
     }
+    dimnames(output) <- list(rownames(newdata), time_ordered[-1])
+    # If there is only one time point, we should drop a dimension and return a matrix
+    output <- drop(output)
 
-    return(cumInc)
+    return(output)
 }
