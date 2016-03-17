@@ -3,6 +3,6 @@
 .RData
 inst/doc/*
 !inst/doc/*.html
-vignettes/*
-!vignettes/*.Rmd
-!vignettes/*.knit.md
+vignettes/*html
+vignettes/*utf8.md
+vignettes/*knit.md

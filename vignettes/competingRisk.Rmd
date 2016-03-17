@@ -2,7 +2,14 @@
 title: "Competing risk analysis using case-base sampling"
 author: "Maxime Turgeon"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_document:
+    fig_height: 8
+    fig_width: 11
+    keep_md: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -44,19 +51,35 @@ In order to try and visualize the incidence density of each event, we can look a
 ```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
 nobs <- nrow(DT)
 ftime <- DT$ftime
-ord <- order(ftime, decreasing=TRUE)
+ord <- order(ftime, decreasing=FALSE)
+#segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+yCoords <- cbind(cumsum(DT[ord, "Status"] == 2), 
+                 cumsum(DT[ord, "Status"] == 1),
+                 cumsum(DT[ord, "Status"] == 0))
+yCoords <- cbind(yCoords, nobs - rowSums(yCoords))
+
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-#segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
-polygon(c(0, max(ftime), ftime[ord], 0), c(0, 0, 1:nobs, nobs), col = "gray90")
-cases <- DT$Status %in% c(1, 2)
-colour <- c("red", "blue")[DT$Status[cases]]
+polygon(c(0, max(ftime), max(ftime), 0),
+        c(0, 0, nobs, nobs), col = "grey90")
+# Event of interest
+polygon(c(0,ftime[ord], max(ftime), 0), c(0, yCoords[,2], 0, 0), col = "firebrick3")
+# Censoring
+polygon(c(0, ftime[ord], max(ftime), 0), c(nobs, nobs - yCoords[,1], nobs, nobs), col = "dodgerblue2")
+# Competing event
+polygon(c(0, ftime[ord], max(ftime), max(ftime), ftime[rev(ord)], 0), 
+        c(nobs, nobs - yCoords[,1] - yCoords[,3], yCoords[nobs,1] + yCoords[nobs,3], yCoords[nobs,1],
+          nobs - rev(yCoords[,1]), nobs), 
+        col = "black")
+
+cases <- DT[, "Status"] == 1
 
 # randomly move the cases vertically
-moved_cases <- sapply((1:nobs)[cases[ord]], sample, size=1)
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col=colour, cex=0.5)
-legend("topright", legend=c("Relapse", "Competing event"), col=c("red", "blue"),
-       pch=20)
+moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
+points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
+legend("topright", legend=c("Relapse", "Competing event", "Censoring"), 
+       col=c("firebrick3", "dodgerblue2", "black"),
+       pch=15)
 ```
 
 ## Analysis

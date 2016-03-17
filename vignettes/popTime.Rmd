@@ -12,8 +12,9 @@ output:
     toc_float: no
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: reference.bib
 ---
 
 # Load Required Packages
