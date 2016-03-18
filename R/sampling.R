@@ -110,7 +110,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
     selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
-    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,])
+    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,,drop=FALSE])
     names(bSeries)[names(bSeries) == "status"] <- eventName
     names(bSeries)[names(bSeries) == "time"] <- timeVar
 
