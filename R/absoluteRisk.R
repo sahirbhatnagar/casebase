@@ -258,7 +258,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     x_vect <- seq(0, time, length.out = nsamp)
     surv <- x_vect
     for (i in 1:nrow(newdata)) {
-        for(k in 1:length(x)) {
+        for(k in 1:length(x_vect)) {
             surv[k] <- overallSurv(x_vect[k], object, newdata[i,])
         }
         newdata2 <- data.frame(newdata[i,], offset = rep_len(0, length(x_vect)),
