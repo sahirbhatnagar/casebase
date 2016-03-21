@@ -190,7 +190,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         # predictvglm doesn't like offset = 0
         withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
                             warning = handler_offset)
-        return(as.numeric(exp(rowSums(pred))))
+        return(as.numeric(rowSums(exp(pred))))
     }
 
     if (method == "quadrature") {
