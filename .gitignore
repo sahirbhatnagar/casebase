@@ -7,3 +7,4 @@ vignettes/*html
 vignettes/*utf8.md
 vignettes/*knit.md
 test.rds
+vignettes/*cache/
