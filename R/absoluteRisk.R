@@ -255,7 +255,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     }
     # Use trapezoidal rule
-    x_vect <- seq(0, time, length.out = nsamp)
+    x_vect <- time/(nsamp:1)
     surv <- x_vect
     for (i in 1:nrow(newdata)) {
         for(k in 1:length(x_vect)) {
