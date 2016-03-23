@@ -194,6 +194,7 @@ From this summary, we see that time is indeed significant, as is Phase (only rel
 Next, we include the logarithm of time in the model (which leads to a Weibull hazard):
 
 
+
 ```r
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=1000, type = "uniform", time="ftime")
