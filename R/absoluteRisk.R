@@ -177,8 +177,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
     J <- length(object@typeEvents) - 1
-    output <- matrix(NA, nrow = nrow(newdata), ncol = J)
-    # output <- array(NA, dim=c(nrow(newdata), length(sort(unique(time))), J))
+    # output <- matrix(NA, nrow = nrow(newdata), ncol = J)
+    output <- array(NA, dim=c(nrow(newdata), length(sort(unique(time))), J))
     time_ordered <- c(0, sort(unique(time)))
 
     # 1. Compute overall survival
@@ -198,77 +198,69 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
             exp(-integrate(overallLambda, lower=0, upper=time, object=object, newdata=newdata,
                            subdivisions = nsamp)$value)
         }
-        # # 2. Compute individual subdensities f_j
-        # subdensities <- vector("list", length = J)
-        # subdensity_template <- function(x, object, newdata, index) {
-        #     newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-        #                            row.names = as.character(1:length(x)))
-        #     newdata2[object@timeVar] <- x
-        #     # predictvglm doesn't like offset = 0
-        #     withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
-        #                         warning = handler_offset)
-        #     exp(lambdas[,index]) * overallSurv(x, object = object, newdata2)
-        # }
-        # for (j in 1:J) {
-        #     subdensities[[j]] <- partialize(subdensity_template, index = j)
-        # }
-        #
-        # # 3. Compute cumulative incidence functions F_j
-        # for (i in 1:nrow(newdata)) {
-        #     for (j in 1:J) {
-        #         for (k in 1:dim(output)[2]) {
-        #             output[i,k,j] <- integrate(subdensities[[j]], lower=time_ordered[k], upper=time_ordered[k+1],
-        #                                        object=object, newdata=newdata[i,],
-        #                                        subdivisions = nsamp)$value
-        #         }
-        #         output[i, ,j] <- cumsum(output[i, ,j])
-        #     }
-        # }
+        # 2. Compute individual subdensities f_j
+        subdensities <- vector("list", length = J)
+        subdensity_template <- function(x, object, newdata, index) {
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[object@timeVar] <- x
+            # predictvglm doesn't like offset = 0
+            withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
+                                warning = handler_offset)
+            exp(lambdas[,index]) * overallSurv(x, object = object, newdata2)
+        }
+        for (j in 1:J) {
+            subdensities[[j]] <- partialize(subdensity_template, index = j)
+        }
+
+        # 3. Compute cumulative incidence functions F_j
+        for (i in 1:nrow(newdata)) {
+            for (j in 1:J) {
+                for (k in 1:dim(output)[2]) {
+                    output[i,k,j] <- integrate(subdensities[[j]], lower=time_ordered[k], upper=time_ordered[k+1],
+                                               object=object, newdata=newdata[i,],
+                                               subdivisions = nsamp)$value
+                }
+                output[i, ,j] <- cumsum(output[i, ,j])
+            }
+        }
     }
 
     if (method == "montecarlo") {
-        overallSurv <- function(time, object, newdata) {
-            sampledPoints <- runif(nsamp) * time
-            exp(-time * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+        sampledPoints <- runif(nsamp)
+        for (i in 1:nrow(newdata)) {
+            # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
+            for (k in 1:dim(output)[2]) {
+                x_vect <- sampledPoints * (time_ordered[k + 1] - time_ordered[k]) + time_ordered[k]
+                surv <- overallSurv(x_vect, object, newdata[i,])
+                newdata2 <- data.frame(newdata[i,], offset = rep_len(0, length(x_vect)),
+                                       row.names = as.character(1:length(x_vect)))
+                newdata2[object@timeVar] <- x_vect
+                withCallingHandlers(pred <- exp(VGAM::predictvglm(object, newdata2)),
+                                    warning = handler_offset)
+
+                output[i, k, ] <- (time_ordered[k + 1] - time_ordered[k]) * colMeans(surv * pred)
+            }
+            # if k==1, there was only one time point and we don't need to sum the contributions
+            if (k != 1) output[i,,] <- apply(output[i,,], 2, cumsum)
         }
-        # subdensity_mat <- function(x, object, newdata) {
-        #     newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-        #                            row.names = as.character(1:length(x)))
-        #     newdata2[object@timeVar] <- x
-        #     # predictvglm doesn't like offset = 0
-        #     withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
-        #                         warning = handler_offset)
-        #     exp(lambdas) * overallSurv(x, object = object, newdata2)
-        # }
-        # sampledPoints <- runif(nsamp)
-        # for (i in 1:nrow(newdata)) {
-        #     # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
-        #     for (k in 1:dim(output)[2]) {
-        #         output[i, k, ] <- (time_ordered[k + 1] - time_ordered[k]) * colMeans(subdensity_mat(sampledPoints * (time_ordered[k + 1] -
-        #                                                                                                                  time_ordered[k]) +
-        #                                                                                                 time_ordered[k],
-        #                                                                                             object=object, newdata=newdata[i,]))
-        #     }
-        #     # if k==1, there was only one time point and we don't need to sum the contributions
-        #     if (k != 1) output[i,,] <- apply(output[i,,], 2, cumsum)
-        # }
 
     }
-    # Use trapezoidal rule
-    x_vect <- time/(nsamp:1)
-    surv <- x_vect
-    for (i in 1:nrow(newdata)) {
-        for(k in 1:length(x_vect)) {
-            surv[k] <- overallSurv(x_vect[k], object, newdata[i,])
-        }
-        newdata2 <- data.frame(newdata[i,], offset = rep_len(0, length(x_vect)),
-                               row.names = as.character(1:length(x_vect)))
-        newdata2[object@timeVar] <- x_vect
-        withCallingHandlers(pred <- exp(VGAM::predictvglm(object, newdata2)),
-                            warning = handler_offset)
-        output[i, ] <- 0.5 * colSums((x_vect[-1] - x_vect[-length(x_vect)]) *
-                                     (surv[-1] * pred[-1, ] + surv[-length(x_vect)] * pred[-length(x_vect), ]))
-    }
+    # # Use trapezoidal rule
+    # x_vect <- time/(nsamp:1)
+    # for (i in 1:nrow(newdata)) {
+    #     # for(k in 1:length(x_vect)) {
+    #     #     surv[k] <- overallSurv(x_vect[k], object, newdata[i,])
+    #     # }
+    #     surv <- overallSurv(x_vect, object, newdata[i,])
+    #     newdata2 <- data.frame(newdata[i,], offset = rep_len(0, length(x_vect)),
+    #                            row.names = as.character(1:length(x_vect)))
+    #     newdata2[object@timeVar] <- x_vect
+    #     withCallingHandlers(pred <- exp(VGAM::predictvglm(object, newdata2)),
+    #                         warning = handler_offset)
+    #     output[i, ] <- 0.5 * colSums((x_vect[-1] - x_vect[-length(x_vect)]) *
+    #                                  (surv[-1] * pred[-1, ] + surv[-length(x_vect)] * pred[-length(x_vect), ]))
+    # }
 
     dimnames(output) <- list(rownames(newdata))
     # If there is only one time point, we should drop a dimension and return a matrix
