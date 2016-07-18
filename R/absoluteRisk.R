@@ -228,6 +228,10 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     if (method == "montecarlo") {
         sampledPoints <- runif(nsamp)
+        overallSurv <- function(x, object, newdata) {
+            sampledPoints <- runif(nsamp) * x
+            exp(-x * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+        }
         for (i in 1:nrow(newdata)) {
             # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
             for (k in 1:dim(output)[2]) {
