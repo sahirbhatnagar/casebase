@@ -23,7 +23,8 @@ Suggests:
     eha,
     knitr,
     rmarkdown,
-    splines
+    splines,
+    testthat
 VignetteBuilder: knitr
 URL: https://github.com/sahirbhatnagar/casebase
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
