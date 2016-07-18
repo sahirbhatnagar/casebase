@@ -4,14 +4,21 @@
 \alias{plot.popTimeExposure}
 \title{Population Time Plot Stratified by Exposure Status}
 \usage{
-plot.popTimeExposure(object, ncol = 1, xlab = "Follow-up time",
+\method{plot}{popTimeExposure}(x, ..., ncol = 1, xlab = "Follow-up time",
   ylab = "Population", line.width = 1, line.colour = "grey80",
   point.size = 1, point.colour = "red", legend = FALSE,
   legend.position = c("bottom", "top", "left", "right"))
 }
 \arguments{
-\item{object}{an object of class \code{popTimeExposure}. See
-\code{\link{popTime}} for details}
+\item{x}{an object of class \code{popTimeExposure}. See
+\code{\link{popTime}} for details.}
+
+\item{...}{Ignored.}
+
+\item{ncol}{Number of columns.}
+
+\item{xlab, ylab, line.width, line.colour, point.size, point.colour, legend, legend.position}{See
+\code{\link{par}}.}
 }
 \value{
 a population time plot stratified by exposure status

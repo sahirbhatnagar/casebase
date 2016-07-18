@@ -82,7 +82,7 @@ absoluteRisk.default <- function (object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
     method <- match.arg(method)
     meanAR <- FALSE
 
@@ -150,7 +150,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
@@ -194,8 +194,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     }
 
     if (method == "quadrature") {
-        overallSurv <- function(time, object, newdata) {
-            exp(-integrate(overallLambda, lower=0, upper=time, object=object, newdata=newdata,
+        overallSurv <- function(x, object, newdata) {
+            exp(-integrate(overallLambda, lower=0, upper=x, object=object, newdata=newdata,
                            subdivisions = nsamp)$value)
         }
         # 2. Compute individual subdensities f_j

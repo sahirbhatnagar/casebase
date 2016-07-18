@@ -4,12 +4,14 @@
 #'
 #' \code{plot} method for objects of class \code{popTime}
 #'
-#' @param object an object of class \code{popTime}. See \code{\link{popTime}}
-#'   for details
+#' @param x an object of class \code{popTime}. See \code{\link{popTime}} for details.
+#' @param ... Ignored.
+#' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
+#'   \code{\link{par}}.
 #' @return a population time plot
 #' @import ggplot2
 #' @export
-plot.popTime <- function(object,
+plot.popTime <- function(x, ...,
                          xlab = "Follow-up time", ylab = "Population",
                          line.width = 1, line.colour = "grey80",
                          point.size = 1, point.colour = "red",
@@ -54,12 +56,16 @@ plot.popTime <- function(object,
 #'
 #' \code{plot} method for objects of class \code{popTimeExposure}
 #'
-#' @param object an object of class \code{popTimeExposure}. See
-#'   \code{\link{popTime}} for details
+#' @param x an object of class \code{popTimeExposure}. See
+#'   \code{\link{popTime}} for details.
+#' @param ... Ignored.
+#' @param ncol Number of columns.
+#' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
+#'   \code{\link{par}}.
 #' @return a population time plot stratified by exposure status
 #' @import ggplot2
 #' @export
-plot.popTimeExposure <- function(object,
+plot.popTimeExposure <- function(x, ...,
                                  ncol = 1,
                                  xlab = "Follow-up time", ylab = "Population",
                                  line.width = 1, line.colour = "grey80",
@@ -104,6 +110,7 @@ plot.popTimeExposure <- function(object,
 
 
 #' @import methods
+#' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update
 NULL
 
 #################

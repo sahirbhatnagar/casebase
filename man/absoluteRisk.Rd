@@ -12,10 +12,10 @@ absoluteRisk(object, ...)
 \method{absoluteRisk}{default}(object, ...)
 
 \method{absoluteRisk}{glm}(object, time, newdata, method = c("montecarlo",
-  "quadrature"), nsamp = 1000)
+  "quadrature"), nsamp = 1000, ...)
 
 \method{absoluteRisk}{CompRisk}(object, time, newdata,
-  method = c("montecarlo", "quadrature"), nsamp = 1000)
+  method = c("montecarlo", "quadrature"), nsamp = 1000, ...)
 }
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
