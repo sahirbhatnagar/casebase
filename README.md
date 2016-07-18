@@ -1,4 +1,5 @@
 # casebase package
+[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase)
 
 Examples of how to use the package are available at [http://sahirbhatnagar.com/casebase/](http://sahirbhatnagar.com/casebase/)
 

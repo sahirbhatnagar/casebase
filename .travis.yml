@@ -1,0 +1,10 @@
+language: r
+sudo: required
+
+r_binary_packages:
+  - knitr
+
+notifications:
+  email:
+    - maxime.turgeon@mail.mcgill.ca
+    - sahir.bhatnagar@gmail.com
