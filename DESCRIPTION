@@ -12,8 +12,7 @@ Authors@R: c(
   person("James", "Hanley", email = "james.hanley@mcgill.ca",
   role = c("aut", "cre"))
   )
-Description: Fit parametric survival models for single event type or competing risks data.
-Create population time plots to visualise incidence density.
+Description: Fit parametric survival models for single event type or competing risks data. Create population time plots to visualise incidence density.
 Depends:
     R (>= 3.3.1),
     VGAM,
