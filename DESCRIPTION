@@ -10,7 +10,8 @@ Authors@R: c(
 Description: More about what it does (maybe more than one line)
 Depends:
     R (>= 3.0.0),
-    VGAM
+    VGAM,
+    ggplot2
 Imports:
     data.table,
     stats,
