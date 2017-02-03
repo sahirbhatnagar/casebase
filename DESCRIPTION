@@ -1,15 +1,21 @@
 Package: casebase
 Type: Package
 Title: Smooth-in-time fitting of parametric hazard functions
-Version: 0.0.9000
+Version: 0.1.0
 Authors@R: c(
-  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@mail.mcgill.ca",
-  role = c("aut", "cre")),
+  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
+  role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
   person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
-  role = c("aut")))
-Description: More about what it does (maybe more than one line)
+  role = c("aut", "cre")),
+  person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
+  role = c("aut", "cre")),
+  person("James", "Hanley", email = "james.hanley@mcgill.ca",
+  role = c("aut", "cre"))
+  )
+Description: Fit parametric survival models for single event type or competing risks data.
+Create population time plots to visualise incidence density.
 Depends:
-    R (>= 3.0.0),
+    R (>= 3.3.1),
     VGAM,
     ggplot2
 Imports:
@@ -18,7 +24,7 @@ Imports:
     methods,
     survival,
     VGAM
-License: GPL (>=2)
+License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
     eha,
@@ -28,4 +34,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/sahirbhatnagar/casebase
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 5.0.1
