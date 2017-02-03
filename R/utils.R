@@ -3,6 +3,7 @@
 expit <- function(x) 1/(1 + exp(-x))
 logit <- function(p) log(p)-log(1-p)
 erf <- function(x) 2 * pnorm(x * sqrt(2)) - 1
+roundUp <- function(x) 10^ceiling(log10(x))
 
 # Handling warning messages coming from predictvglm when offset = 0
 handler_offset <- function(msg) {

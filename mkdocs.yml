@@ -1,0 +1,74 @@
+# Project information
+site_name: 'casebase'
+site_description: 'Smooth-in-time fitting of parametric hazard functions'
+site_author: 'Sahir Bhatnagar, Maxime Turgeon, Olli Saarela, James Hanley'
+site_url: 'https://sahirbhatnagar.github.io/casebase'
+
+# Repository
+repo_name: 'casebase'
+repo_url: 'https://github.com/sahirbhatnagar/casebase'
+
+# Copyright
+copyright: 'Copyright &copy; 2017 <a href="http://turgeonmaxime.github.io/">Maxime Turgeon</a>, <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>'
+
+# Documentation and theme
+theme: 'material'
+
+#extra_javascript:
+#  - 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML'
+
+extra_javascript:
+    - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+# Options
+extra:
+  logo: 'images/logo.png'
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  social:
+    - type: 'github'
+      link: 'https://github.com/sahirbhatnagar/casebase'
+    - type: 'twitter'
+      link: 'https://twitter.com/syfi_24'
+
+# Google Analytics
+#google_analytics:
+#  - 'UA-XXXXXXXX-X'
+#  - 'auto'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - codehilite(guess_lang=true)
+  - footnotes
+  - meta
+  - toc(permalink=true)
+  - mdx_math
+
+
+# Page tree
+pages:
+  - Home: index.md
+  - Smooth Hazard: smoothHazard.md
+  - Population Time Plots: popTime.md
+#  - Competing Risk: competingRisk.md
+  - References: references.md
+#  - Package Functions: overview.md
+#  - Real Data Analysis: rda.md
+#  - Simulations: simulation.md
+#  - Heatmaps: plots.md
+#  - Extensions:
+#    - Admonition: extensions/admonition.md
+#    - CodeHilite: extensions/codehilite.md
+#    - Footnotes: extensions/footnotes.md
+#    - Permalinks: extensions/permalinks.md
+#    - PyMdown: extensions/pymdown.md
+#  - Specimen: specimen.md
+#  - Customization: customization.md
+#  - Release notes: release-notes.md
+#  - Contributing: contributing.md
+#  - License: license.md

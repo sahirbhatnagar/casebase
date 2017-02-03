@@ -1,0 +1,148 @@
+---
+title: "data"
+author: "Maxime"
+date: "January 22, 2017"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+## Methodological details
+
+Case-base sampling was proposed by Hanley & Miettinen [-@hanley2009fitting] as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel [-@mantel1973synthetic] and then later developped by Efron [-@efron1977efficiency], is to sample person-moments, i.e. discrete time points along an subject's follow-up time, in order to construct a base series against which the case series can be compared. 
+
+This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time *logarithmically* recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.
+
+The theoretical properties of this approach have been studied in Saarela & Arjas [-@saarela2015non] and Saarela [-@saarela2015case].
+
+## First example
+
+The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
+
+```{r eval=TRUE, fig.width=7, fig.height=7, fig.align='center'}
+library(survival)
+data(veteran)
+table(veteran$status)
+
+evtimes <- veteran$time[veteran$status == 1]
+hist(evtimes, nclass=30, main='', xlab='Survival time (days)', col='gray90', probability=TRUE)
+tgrid <- seq(0, 1000, by=10)
+lines(tgrid, dexp(tgrid, rate=1.0/mean(evtimes)), 
+      lwd=2, lty=2, col='red')
+```
+
+As we can see, the empirical survival function ressembles an exponential distribution.
+
+We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.
+
+```{r eval=TRUE}
+veteran$prior <- factor(veteran$prior, levels = c(0, 10))
+veteran$celltype <- factor(veteran$celltype, 
+                           levels = c('large', 'squamous', 'smallcell', 'adeno'))
+veteran$trt <- factor(veteran$trt, levels = c(1, 2))
+```
+
+Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For $shape = 1$, we get an exponential distribution:
+
+```{r eval=TRUE}
+pacman::p_load(eha)
+y <- with(veteran, Surv(time, status))
+
+model1 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
+                  data = veteran, shape = 1)
+summary(model1)
+```
+
+If we take $shape = 0$, the shape parameter is estimated along with the regression coefficients:
+
+```{r eval=TRUE}
+model2 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
+                  data = veteran, shape = 0)
+summary(model2)
+```
+
+Finally, we can also fit a Cox proportional hazard:
+
+```{r eval=TRUE}
+model3 <- coxph(y ~ karno + diagtime + age + prior + celltype + trt, 
+                data = veteran)
+summary(model3)
+```
+
+As we can see, all three models are significant, and they give similar information: ```karno``` and ```celltype``` are significant predictors, both treatment is not.
+
+The method available in this package makes use of *case-base sampling*. That is, person-moments are randomly sampled across the entire follow-up time, with some moments corresponding to cases and others to controls. By sampling person-moments instead of individuals, we can then use logistic regression to fit smooth-in-time parametric hazard functions. See the previous section for more details.
+
+First, we will look at the follow-up time by using population-time plots:
+
+```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
+nobs <- nrow(y)
+ftime <- veteran$time
+ord <- order(ftime, decreasing=TRUE)
+plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
+     xlab='Follow-up time', ylab='Population')
+segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+cases <- veteran$status == 1
+points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch=20, col='red', cex=0.5)
+```
+
+Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual's follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.
+
+Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.
+
+```{r eval=TRUE}
+library(casebase)
+model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model4)
+```
+
+Since the output object from ```fitSmoothHazard``` inherits from the ```glm``` class, we see a familiar result when using the function ```summary```.
+
+The main purpose of fitting smooth hazard functions is that it is then relatively easy to compute absolute risks. For example, we can use the function ```absoluteRisk``` to compute the mean absolute risk at 90 days, which can then be compared to the empirical measure.
+
+```{r eval=TRUE}
+absoluteRisk(object = model4, time = 90)
+mean(ftime <= 90)
+```
+
+We can also fit a Weibull hazard by using a logarithmic term for time:
+
+```{r eval=TRUE}
+model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model5)
+```
+
+With case-base sampling, it is straightforward to fit a semi-parametric hazard function using splines, which can then be used to estimate the mean absolute risk.
+
+```{r eval=TRUE}
+# Fit a spline for time
+library(splines)
+model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
+             celltype + trt, data = veteran, ratio=100, type = "uniform")
+summary(model6)
+
+absoluteRisk(object = model6, time = 90)
+```
+
+As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
+
+```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
+splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
+
+plot(linearRisk, splineRisk,
+     xlab="Linear", ylab = "Splines", pch=19)
+abline(a=0, b=1, lty=2, lwd=2, col='red')
+```
+
+These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.
+
+## Session information
+
+```{r echo=FALSE, eval=TRUE}
+print(sessionInfo(), locale = F)
+```
+
+## References

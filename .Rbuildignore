@@ -12,3 +12,10 @@
 ^inst\/doc\/.*R
 ^casebase\.Rproj$
 
+^data-raw$
+^MKDOCS_HOWTO$
+^docs/$
+^images/$
+^docs/images/$
+^vignettes/$
+^site/$
