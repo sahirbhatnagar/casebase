@@ -1,23 +1,13 @@
 ---
-title: "Casebase Vignette"
-author: "Sahir R. Bhatnagar"
-date: "`r Sys.Date()`"
+title: "data"
+author: "Sahir"
+date: "January 22, 2017"
 output:
-  html_document:
-    fig_height: 8
-    fig_width: 11
-    keep_md: yes
-    toc: yes
-    toc_depth: 4
-    toc_float: no
-vignette: >
-  %\VignetteIndexEntry{Vignette Title}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-bibliography: reference.bib
+  md_document:
+    variant: markdown_github
 ---
 
-# Load Required Packages
+## Load Required Packages
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(knitr)
@@ -28,148 +18,7 @@ library(survival)
 library(casebase)
 ```
 
-
-# Introduction
-
-```{r, echo=FALSE}
-DT <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
-nobs <- nrow(DT)
-ftime <- DT$ftime
-ord <- order(ftime, decreasing=FALSE)
-
-# We split the person-moments in four categories:
-# 1) at-risk
-# 2) main event
-# 3) competing event
-# 4) censored
-yCoords <- cbind(cumsum(DT[ord, "Status"] == 2), 
-                 cumsum(DT[ord, "Status"] == 1),
-                 cumsum(DT[ord, "Status"] == 0))
-yCoords <- cbind(yCoords, nobs - rowSums(yCoords))
-
-# Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-rect(xleft = 0, ybottom = 0, xright=max(ftime), ytop = nobs, col = 'grey80')
-legend('topright', legend=c('Person-time'), lty=c('solid'), col=c('grey80'), bg='white', xjust=0, yjust=0, box.lwd=1, lwd = 5)
-```
-
-
-```{r, echo=FALSE}
-# Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-rect(xleft = 0, ybottom = 0, xright=max(ftime), ytop = nobs, col = 'grey80')
-
-polygon(c(0, ftime[ord], max(ftime), max(ftime)),
-        c(nobs, yCoords[,4], nobs, nobs), col = "dodgerblue3")
-
-legend('topright', legend=c('Time lost to event/censoring/competing event','At-risk person-time'), lty=c('solid','solid'), col=c('dodgerblue3','grey80'), bg='white', xjust=0, yjust=0, box.lwd=1, lwd = 5)
-```
-
-
-
-```{r, echo=FALSE}
-# Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-rect(xleft = 0, ybottom = 0, xright=max(ftime), ytop = nobs, col = 'grey80')
-
-polygon(c(0, ftime[ord], max(ftime), max(ftime)),
-        c(nobs, yCoords[,4], nobs, nobs), col = "dodgerblue3")
-
-cases <- DT[, "Status"] == 1
-
-# # randomly move the cases vertically
-# moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
-# points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-
-moved_cases <- yCoords[cases[ord], 4]
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-
-# legend(60,105, legend=c('Time lost to event/censoring','At-risk person-time'), lty=c('solid','solid'), col=c('dodgerblue3','grey80'), bg='white', xjust=0, yjust=0, box.lwd=1, lwd = 5)
-
-legend("topright", legend=c('Incident event','Time lost to event/censoring/competing event','At-risk person-time'), pch=c(20, NA, NA), lty=c(NA, 'solid','solid'), col=c('red','dodgerblue3','grey80'), bg='white',  pt.cex=c(1, NA,NA), xjust=0, yjust=0, box.lwd=1, lwd = c(5,5,5))
-```
-
-
-```{r, echo=FALSE}
-# Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-rect(xleft = 0, ybottom = 0, xright=max(ftime), ytop = nobs, col = 'grey80')
-
-polygon(c(0, ftime[ord], max(ftime), max(ftime)),
-        c(nobs, yCoords[,4], nobs, nobs), col = "dodgerblue3")
-
-cases <- DT[, "Status"] == 1
-
-# # randomly move the cases vertically
-# moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
-# points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-
-moved_cases <- yCoords[cases[ord], 4]* runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-
-# legend(60,105, legend=c('Time lost to event/censoring','At-risk person-time'), lty=c('solid','solid'), col=c('dodgerblue3','grey80'), bg='white', xjust=0, yjust=0, box.lwd=1, lwd = 5)
-
-legend("topright", legend=c('Incident event','Time lost to event/censoring/competing event','At-risk person-time'), pch=c(20, NA, NA), lty=c(NA, 'solid','solid'), col=c('red','dodgerblue3','grey80'), bg='white',  pt.cex=c(1, NA,NA), xjust=0, yjust=0, box.lwd=1, lwd = c(5,5,5))
-```
-
-# Sample Code
-
-```{r, fig.keep='all'}
-# set seed for reproducibility
-set.seed(123456)
-
-# read in the data. This is the data from 177 patients who received 
-# a stem cell transplant for acute leukemia. It is the same data show 
-# in Example 2 below
-DT <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
-
-# data structure
-str(DT)
-
-# follow-up time
-ftime <- DT$ftime
-
-# get the indices of the individuals in order such that
-# the ones with the shortest follow up time have a higher 
-# y-coordinate
-ord <- order(ftime, decreasing = FALSE)
-
-# We split the person-moments in four categories:
-# 1) at-risk
-# 2) main event
-# 3) competing event
-# 4) censored
-yCoords <- cbind(competing = cumsum(DT[ord, "Status"] == 2), 
-                 event = cumsum(DT[ord, "Status"] == 1),
-                 censored = cumsum(DT[ord, "Status"] == 0))
-
-yCoords <- cbind(yCoords, atRisk = nobs - rowSums(yCoords))
-
-head(yCoords, n = 20)
-
-# Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-
-polygon(c(0, 0, ftime[ord], max(ftime), 0),
-        c(0, nobs, yCoords[,"atRisk"], 0, 0), col = "grey90")
-
-cases <- DT[, "Status"] == 1
-
-# randomly move the cases vertically
-moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
-
-# only plot cases as red dots in proper order on the x-axis
-# but randomly on the y-axis from available risk set
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-```
-
-
-# 1. Veteran Data
+## Veteran Data
 
 ```{r}
 # veteran data in library(survival)
@@ -186,7 +35,7 @@ class(popTimeData)
 plot(popTimeData)
 ```
 
-## Stratified by treatment population time plot
+### Stratified by treatment population time plot
 
 ```{r}
 # stratified by treatment population time plot
@@ -205,7 +54,7 @@ plot(popTimeData)
 
 
 
-# 2. Stem Cell Data
+## Stem Cell Data
 
 ```{r}
 bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
@@ -222,8 +71,7 @@ plot(popTimeData)
 ```
 
 
-
-## Stratified by Disease
+### Stratified by Disease
 
 ```{r}
 # stratified by Disease population time plot
@@ -246,7 +94,7 @@ plot(popTimeData)
 
 
 
-# 3. Stanford Heart Transplant Data
+## Stanford Heart Transplant Data
 
 ```{r}
 # data from library(survival)
@@ -267,7 +115,7 @@ plot(popTimeData, legend = TRUE)
 ```
 
 
-# 4. NCCTG Lung Cancer Data
+## NCCTG Lung Cancer Data
 
 ```{r}
 # data from library(survival)
@@ -290,7 +138,7 @@ plot(popTimeData)
 ```
 
 
-## Stratified by gender
+### Stratified by gender
 
 ```{r}
 popTimeData <- popTime(data = cancer, exposure = "sex")
@@ -302,9 +150,9 @@ plot(popTimeData,
 ```
 
 
-# 5. Simulated Data Example
+## Simulated Data Example
 
-## Simulate the data
+### Simulate the data
 
 ```{r}
 set.seed(1)
@@ -336,7 +184,7 @@ DTsim[time >= end_of_study_time, event := 0]
 DTsim[time >= end_of_study_time, time:=end_of_study_time]
 ```
 
-## Population Time Plot
+### Population Time Plot
 
 ```{r}
 # create 'popTime' object
@@ -344,7 +192,7 @@ popTimeData <- popTime(data = DTsim, time = "time", event = "event")
 plot(popTimeData)
 ```
 
-## Stratified by Binary Covariate z
+### Stratified by Binary Covariate z
 
 ```{r}
 # stratified by binary covariate z
