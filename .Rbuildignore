@@ -14,3 +14,12 @@
 ^casebase\.Rproj$
 ^_config\.yml$
 ^test\.rds$
+
+^data-raw$
+^MKDOCS_HOWTO$
+^docs/$
+^images/$
+^docs/images/$
+^vignettes/$
+^site/$
+^CONDUCT\.md$

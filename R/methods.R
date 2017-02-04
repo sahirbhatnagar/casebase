@@ -73,13 +73,24 @@ plot.popTimeExposure <- function(x, ...,
                                  legend = FALSE,
                                  legend.position = c("bottom", "top", "left", "right")) {
 
+
+    # ds <- read.csv("data-raw/hanley/ERSPCindividualData.csv")
+    # DT_ds <- as.data.table(ds)
+    # DT_ds[, ScrArm:=factor(ScrArm, levels = 0:1, labels = c("No-Screening Arm","Screening Arm"))]
+    #
+    # object <- popTime(DT_ds, event = "DeadOfPrCa", exposure = "ScrArm")
+    # roundUp(object$data[, max(ycoord)])
+
+    # ===========================
+
     p1 <- ggplot(object$data, aes(x=0, xend=time, y=ycoord, yend=ycoord))
 
     p2 <- p1 +
         geom_segment(size = line.width, colour = line.colour) +
         xlab(xlab) +
         ylab(ylab) +
-        theme_bw()
+        theme_bw() +
+        scale_y_continuous(limits = c(0,roundUp(object$data[, max(ycoord)])))
 
     if (legend) {
         legend.position <- match.arg(legend.position)
@@ -93,6 +104,7 @@ plot.popTimeExposure <- function(x, ...,
                   panel.grid.minor = element_blank()) +
             scale_colour_manual(values = c("event" = point.colour)) +
             facet_wrap(object$exposure, ncol = ncol)
+
     } else {
         p2 +
             geom_point(aes(x=time, y=yc),
