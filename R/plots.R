@@ -55,6 +55,7 @@
 #' @seealso \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
 #'
 #' @import data.table
+#' @importFrom graphics plot
 #' @export
 popTime <- function(data, time, event, censored.indicator,
                     exposure){

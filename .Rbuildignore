@@ -9,14 +9,17 @@
 ^exercises5\.R$
 ^risksets\.R$
 ^vignettes\/bmtcrr\.csv$
-^inst\/doc\/.*R
+^inst\/doc\/.*R$
+^inst\/doc\/.*md$
 ^casebase\.Rproj$
+^_config\.yml$
+^test\.rds$
 
 ^data-raw$
 ^MKDOCS_HOWTO$
-^docs/$
+^docs/
 ^images/$
 ^docs/images/$
-^vignettes/$
-^site/$
+^site/
 ^CONDUCT\.md$
+^mkdocs\.yml$

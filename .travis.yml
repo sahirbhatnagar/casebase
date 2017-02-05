@@ -3,6 +3,8 @@ sudo: required
 
 r_binary_packages:
   - knitr
+  - ggplot2
+  - eha
 
 notifications:
   email:

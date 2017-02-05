@@ -76,7 +76,8 @@ checkArgsTimeEvent <- function(data, time, event) {
 #' checkArgsEventIndicator(data = veteran, event = "status")
 #' checkArgsEventIndicator(data = veteran, event = "trt") # returns error
 #'
-#' bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
+#' url <- "https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv"
+#' bmt <- read.csv(url)
 #' checkArgsEventIndicator(data = bmt, event = "Sex", censored.indicator = "M")
 #' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AML")
 #' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AMLL") #returns error

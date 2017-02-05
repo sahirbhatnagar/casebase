@@ -82,7 +82,7 @@ absoluteRisk.default <- function (object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
     method <- match.arg(method)
     meanAR <- FALSE
 
@@ -150,7 +150,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
@@ -194,8 +194,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     }
 
     if (method == "quadrature") {
-        overallSurv <- function(time, object, newdata) {
-            exp(-integrate(overallLambda, lower=0, upper=time, object=object, newdata=newdata,
+        overallSurv <- function(x, object, newdata) {
+            exp(-integrate(overallLambda, lower=0, upper=x, object=object, newdata=newdata,
                            subdivisions = nsamp)$value)
         }
         # 2. Compute individual subdensities f_j
@@ -228,6 +228,10 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     if (method == "montecarlo") {
         sampledPoints <- runif(nsamp)
+        overallSurv <- function(x, object, newdata) {
+            sampledPoints <- runif(nsamp) * x
+            exp(-x * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+        }
         for (i in 1:nrow(newdata)) {
             # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
             for (k in 1:dim(output)[2]) {
