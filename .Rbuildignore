@@ -17,9 +17,9 @@
 
 ^data-raw$
 ^MKDOCS_HOWTO$
-^docs/$
+^docs/
 ^images/$
 ^docs/images/$
-^vignettes/$
-^site/$
+^site/
 ^CONDUCT\.md$
+^mkdocs\.yml$

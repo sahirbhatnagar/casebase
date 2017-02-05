@@ -15,9 +15,7 @@ Authors@R: c(
 Description: Fit parametric survival models for single event type or competing risks data. 
     Create population time plots to visualise incidence density.
 Depends:
-    R (>= 3.3.1),
-    VGAM,
-    ggplot2
+    R (>= 3.3.1)
 Imports:
     data.table,
     ggplot2,
