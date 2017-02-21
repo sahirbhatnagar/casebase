@@ -55,7 +55,6 @@
 #' @seealso \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
 #'
 #' @import data.table
-#' @importFrom graphics plot
 #' @export
 popTime <- function(data, time, event, censored.indicator,
                     exposure){
@@ -65,6 +64,7 @@ popTime <- function(data, time, event, censored.indicator,
     varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
     #varNames <- checkArgsTimeEvent(data)
     #varNames <- checkArgsTimeEvent(data, time = time)
+    ycoord <- yc <- n_available <- NULL
 
     DT <- data.table::as.data.table(data)
     if (missing(censored.indicator)) {
@@ -85,11 +85,11 @@ popTime <- function(data, time, event, censored.indicator,
 
         DT[, event := modifiedEvent$event.numeric]
         DT[, "event status" := modifiedEvent$event.factored]
-        nLevels <- modifiedEvent$nLevels
+        # nLevels <- modifiedEvent$nLevels
 
         # people with
         # short values of t at the top
-        DT[ DT[,order(time)], ycoord:=(nobs:1)]
+        DT[ DT[,order(time)], ycoord := (nobs:1)]
 
         # sample y coordinates for each event, so that we can see the incidence density
         # on population-time plots. Sampling from people who have an
@@ -105,7 +105,7 @@ popTime <- function(data, time, event, censored.indicator,
         DT[, n_available := 0L]
 
         DT[event == 1, n_available := sapply(time,
-                                        function(i) DT[time >=i & event != 1, .N])]
+                                        function(i) DT[time >= i & event != 1, .N])]
 
         # if the 50th percentile number of available subjects at any given
         # point is less than 10, then sample regardless of case status
@@ -114,7 +114,7 @@ popTime <- function(data, time, event, censored.indicator,
                     regardless of event status")
             DT[event == 1,
                n_available := sapply(time,
-                                     function(i) DT[time >=i , .N ])]
+                                     function(i) DT[time >= i , .N ])]
 
             DT[event == 1 & n_available > 0,
                yc := sapply(time,
@@ -154,7 +154,7 @@ popTime <- function(data, time, event, censored.indicator,
                     transform(i,
                     event = checkArgsEventIndicator(data = i, event = varNames$event,
                           censored.indicator = censored.indicator)$event.numeric,
-                   `event status`= checkArgsEventIndicator(data = i, event = varNames$event,
+                   `event status` = checkArgsEventIndicator(data = i, event = varNames$event,
                               censored.indicator = censored.indicator)$event.factor
                         )
                     }
@@ -162,7 +162,7 @@ popTime <- function(data, time, event, censored.indicator,
 
         lapply(l, function(i) {
             nobs <- nrow(i)
-            i[ i[,order(time)], ycoord:=(nobs:1)]
+            i[ i[,order(time)], ycoord := (nobs:1)]
         })
 
         # sample y coordinates for each event, so that we can see the incidence density
@@ -179,7 +179,7 @@ popTime <- function(data, time, event, censored.indicator,
             K[, n_available := 0L]
 
             K[event == 1, n_available := sapply(time,
-                                                 function(i) K[time >=i & event != 1, .N])]
+                                                 function(i) K[time >= i & event != 1, .N])]
 
             # if the 50th percentile number of available subjects at any given
             # point is less than 10, then sample regardless of case status
@@ -188,7 +188,7 @@ popTime <- function(data, time, event, censored.indicator,
                     regardless of event status")
                 K[event == 1,
                    n_available := sapply(time,
-                                         function(i) K[time >=i , .N ])]
+                                         function(i) K[time >= i , .N ])]
 
                 K[event == 1 & n_available > 0,
                    yc := sapply(time,

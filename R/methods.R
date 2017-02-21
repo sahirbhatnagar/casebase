@@ -17,8 +17,9 @@ plot.popTime <- function(x, ...,
                          point.size = 1, point.colour = "red",
                          legend = FALSE,
                          legend.position = c("bottom", "top", "left", "right")) {
+    ycoord <- yc <- `event status` <- event <- NULL
 
-    p1 <- ggplot(x, aes(x=0, xend=time, y=ycoord, yend=ycoord))
+    p1 <- ggplot(x, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
 
     p2 <- p1 +
         geom_segment(size = line.width, colour = line.colour) +
@@ -29,20 +30,20 @@ plot.popTime <- function(x, ...,
     if (legend) {
         legend.position <- match.arg(legend.position)
         p2 +
-            geom_point(aes(x=time, y=yc, colour = `event status`),
-                       data = x[event==1], size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold'),
+            geom_point(aes(x = time, y = yc, colour = `event status`),
+                       data = x[event == 1], size = point.size) +
+            theme(axis.text = element_text(size = 12, face = 'bold'),
                   legend.position = legend.position,
-                  legend.title=element_blank(),
+                  legend.title = element_blank(),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()) +
             scale_colour_manual(values = c("event" = point.colour))
     } else {
         p2 +
-            geom_point(aes(x=time, y=yc),
-                       data = x[event==1], colour = point.colour,
+            geom_point(aes(x = time, y = yc),
+                       data = x[event == 1], colour = point.colour,
                        size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold'),
+            theme(axis.text = element_text(size = 12, face = 'bold'),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank())
 
@@ -82,8 +83,9 @@ plot.popTimeExposure <- function(x, ...,
     # roundUp(object$data[, max(ycoord)])
 
     # ===========================
+    ycoord <- yc <- `event status` <- event <- NULL
 
-    p1 <- ggplot(x$data, aes(x=0, xend=time, y=ycoord, yend=ycoord))
+    p1 <- ggplot(x$data, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
 
     p2 <- p1 +
         geom_segment(size = line.width, colour = line.colour) +
@@ -95,11 +97,11 @@ plot.popTimeExposure <- function(x, ...,
     if (legend) {
         legend.position <- match.arg(legend.position)
         p2 +
-            geom_point(aes(x=time, y=yc, colour = `event status`),
-                       data = x$data[event==1], size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold'),
+            geom_point(aes(x = time, y = yc, colour = `event status`),
+                       data = x$data[event == 1], size = point.size) +
+            theme(axis.text = element_text(size = 12, face = 'bold'),
                   legend.position = legend.position,
-                  legend.title=element_blank(),
+                  legend.title = element_blank(),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()) +
             scale_colour_manual(values = c("event" = point.colour)) +
@@ -107,10 +109,10 @@ plot.popTimeExposure <- function(x, ...,
 
     } else {
         p2 +
-            geom_point(aes(x=time, y=yc),
-                       data = x$data[event==1], colour = point.colour,
+            geom_point(aes(x = time, y = yc),
+                       data = x$data[event == 1], colour = point.colour,
                        size = point.size) +
-            theme(axis.text=element_text(size=12, face='bold'),
+            theme(axis.text = element_text(size = 12, face = 'bold'),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()) +
             facet_wrap(x$exposure, ncol = ncol)
@@ -122,7 +124,7 @@ plot.popTimeExposure <- function(x, ...,
 
 
 #' @import methods
-#' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update
+#' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms
 NULL
 
 #################
