@@ -23,4 +23,3 @@ a population time plot
 \description{
 \code{plot} method for objects of class \code{popTime}
 }
-

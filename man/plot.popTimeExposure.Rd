@@ -26,4 +26,14 @@ a population time plot stratified by exposure status
 \description{
 \code{plot} method for objects of class \code{popTimeExposure}
 }
-
+\examples{
+\dontrun{
+DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
+popTimeData <- popTime(data = DT, time = "ftime", exposure = "D")
+# p is an object of class gg and ggplot
+p <- plot(popTimeData)
+# you can further modify the object using all ggplot2 functions
+# here we modify the number of y-tick labels
+p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
+}
+}

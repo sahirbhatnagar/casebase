@@ -2,8 +2,8 @@
 % Please edit documentation in R/methods.R
 \docType{class}
 \name{CompRisk-class}
-\alias{CompRisk}
 \alias{CompRisk-class}
+\alias{CompRisk}
 \title{An S4 class to store the output of fitSmoothHazard}
 \description{
 This class inherits from \code{vglm-class}.
