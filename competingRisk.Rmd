@@ -40,7 +40,7 @@ Note that failure time can also correspond to censoring.
 
 In order to try and visualize the incidence density of relapse, we can look at a population-time plot: on the X-axis we have time, and on the Y-axis we have the size of the risk set at a particular time point. Failure times associated to the event of interest can then be highlighted on the plot using red dots.
 
-```{r poptime1, eval=TRUE, fig.align='center'}
+```{r poptime1, eval=TRUE}
 nobs <- nrow(DT)
 ftime <- DT$ftime
 ord <- order(ftime, decreasing=FALSE)
@@ -71,13 +71,16 @@ We can right away draw a few conclusions from this plot: first of all, we get a 
 
 To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:
 
-```{r poptime2, eval=TRUE, fig.align='center'}
+```{r poptime2, eval=TRUE}
 # Plot at-risk and events
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-polygon(c(0,ftime[ord], max(ftime), 0), c(0, yCoords[,2], 0, 0), col = "firebrick3")
-polygon(c(0, ftime[ord], ftime[rev(ord)], 0, 0),
-        c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), col = "grey90")
+polygon(x = c(0,ftime[ord], max(ftime), 0), 
+        y = c(0, yCoords[,2], 0, 0), 
+        col = "firebrick3")
+polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
+        y = c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), 
+        col = "grey90")
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
@@ -89,18 +92,23 @@ legend("topright", legend=c("Relapse", "At-risk"),
 
 Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:
 
-```{r poptime3, eval=TRUE, fig.align='center'}
+```{r poptime3, eval=TRUE}
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-polygon(c(0, max(ftime), max(ftime), 0),
-        c(0, 0, nobs, nobs), col = "white")
+polygon(x = c(0, max(ftime), max(ftime), 0),
+        y = c(0, 0, nobs, nobs), col = "white")
 # Event of interest
-polygon(c(0,ftime[ord], max(ftime), 0), c(0, yCoords[,2], 0, 0), col = "firebrick3")
+polygon(x = c(0,ftime[ord], max(ftime), 0), 
+        y = c(0, yCoords[,2], 0, 0), 
+        col = "firebrick3")
 # Risk set
-polygon(c(0, ftime[ord], ftime[rev(ord)], 0, 0),
-        c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), col = "grey90")
+polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
+        y = c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), 
+        col = "grey90")
 # Competing event
-polygon(c(0, ftime[ord], max(ftime), 0), c(nobs, nobs - yCoords[,1], nobs, nobs), col = "dodgerblue2")
+polygon(x = c(0, ftime[ord], max(ftime), 0), 
+        y = c(nobs, nobs - yCoords[,1], nobs, nobs), 
+        col = "dodgerblue2")
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
@@ -119,7 +127,10 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 ```{r eval=TRUE, warning=FALSE}
 library(casebase)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+                          data = DT, 
+                          ratio = 1000, 
+                          type = "uniform", 
+                          time = "ftime")
 summary(model1)
 ```
 
@@ -132,7 +143,10 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 
 ```{r eval=TRUE, warning=FALSE}
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+                          data = DT, 
+                          ratio = 1000, 
+                          type = "uniform", 
+                          time = "ftime")
 summary(model2)
 ```
 
@@ -141,8 +155,12 @@ As we can see, the results are similar to the ones with a Gompertz hazard, altho
 Finally, using splines, we can be quite flexible about the way the hazard depends on time:
 
 ```{r eval=TRUE, warning=FALSE}
-model3 <- fitSmoothHazard(Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+model3 <- fitSmoothHazard(
+    Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
+    data = DT, 
+    ratio = 1000, 
+    type = "uniform", 
+    time = "ftime")
 summary(model3)
 ```
 
@@ -158,7 +176,7 @@ logRisk <- absoluteRisk(object = model2, time = 24, newdata = DT[1:10,])
 splineRisk <- absoluteRisk(object = model3, time = 24, newdata = DT[1:10,])
 ```
 
-```{r absRiskPlot, eval=TRUE, fig.align='center'}
+```{r absRiskPlot, eval=TRUE}
 plot(linearRisk[,1], logRisk[,1],
      xlab="Linear", ylab = "Log/Spline", pch=19,
      xlim=c(0,1), ylim=c(0,1), col='red')
@@ -182,4 +200,5 @@ mean(splineRisk[,1])
 ```{r echo=FALSE, eval=TRUE}
 print(sessionInfo(), locale = FALSE)
 ```
+
 ## References
