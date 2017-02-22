@@ -490,15 +490,18 @@ points<span class="p">((</span>ftime<span class="p">[</span>ord<span class="p">]
 </pre></div>
 
 
-<p><img src="competingRisk_files/figure-markdown_github/poptime1-1.png" style="display: block; margin: auto;" /></p>
+<p><img alt="" src="../competingRisk_files/figure-markdown_github/poptime1-1.png" /></p>
 <p>We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.</p>
 <p>To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Plot at-risk and events</span>
 plot<span class="p">(</span><span class="m">0</span><span class="p">,</span> type<span class="o">=</span><span class="s">&#39;n&#39;</span><span class="p">,</span> xlim<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">)),</span> ylim<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> nobs<span class="p">),</span> 
      xlab<span class="o">=</span><span class="s">&#39;Follow-up time&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Population&#39;</span><span class="p">)</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span>ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;firebrick3&quot;</span><span class="p">)</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> ftime<span class="p">[</span><span class="kp">rev</span><span class="p">(</span>ord<span class="p">)],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
-        <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="kp">rev</span><span class="p">(</span>yCoords<span class="p">[,</span><span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[,</span><span class="m">4</span><span class="p">]),</span> nobs<span class="p">,</span> <span class="m">0</span><span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;grey90&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span>ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> 
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span> 
+        col <span class="o">=</span> <span class="s">&quot;firebrick3&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> ftime<span class="p">[</span><span class="kp">rev</span><span class="p">(</span>ord<span class="p">)],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="kp">rev</span><span class="p">(</span>yCoords<span class="p">[,</span><span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[,</span><span class="m">4</span><span class="p">]),</span> nobs<span class="p">,</span> <span class="m">0</span><span class="p">),</span> 
+        col <span class="o">=</span> <span class="s">&quot;grey90&quot;</span><span class="p">)</span>
 
 <span class="c1"># randomly move the cases vertically</span>
 moved_cases <span class="o">&lt;-</span> yCoords<span class="p">[</span>cases<span class="p">[</span>ord<span class="p">],</span> <span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[</span>cases<span class="p">[</span>ord<span class="p">],</span> <span class="m">4</span><span class="p">]</span> <span class="o">*</span> runif<span class="p">(</span><span class="kp">sum</span><span class="p">(</span>cases<span class="p">))</span>
@@ -509,19 +512,24 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 </pre></div>
 
 
-<p><img src="competingRisk_files/figure-markdown_github/poptime2-1.png" style="display: block; margin: auto;" /></p>
+<p><img alt="" src="../competingRisk_files/figure-markdown_github/poptime2-1.png" /></p>
 <p>Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:</p>
 <div class="codehilite"><pre><span></span>plot<span class="p">(</span><span class="m">0</span><span class="p">,</span> type<span class="o">=</span><span class="s">&#39;n&#39;</span><span class="p">,</span> xlim<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">)),</span> ylim<span class="o">=</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> nobs<span class="p">),</span> 
      xlab<span class="o">=</span><span class="s">&#39;Follow-up time&#39;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&#39;Population&#39;</span><span class="p">)</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span>
-        <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> nobs<span class="p">,</span> nobs<span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;white&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span>
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> nobs<span class="p">,</span> nobs<span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;white&quot;</span><span class="p">)</span>
 <span class="c1"># Event of interest</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span>ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;firebrick3&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span>ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> 
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span> 
+        col <span class="o">=</span> <span class="s">&quot;firebrick3&quot;</span><span class="p">)</span>
 <span class="c1"># Risk set</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> ftime<span class="p">[</span><span class="kp">rev</span><span class="p">(</span>ord<span class="p">)],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
-        <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="kp">rev</span><span class="p">(</span>yCoords<span class="p">[,</span><span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[,</span><span class="m">4</span><span class="p">]),</span> nobs<span class="p">,</span> <span class="m">0</span><span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;grey90&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> ftime<span class="p">[</span><span class="kp">rev</span><span class="p">(</span>ord<span class="p">)],</span> <span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">),</span>
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> yCoords<span class="p">[,</span><span class="m">2</span><span class="p">],</span> <span class="kp">rev</span><span class="p">(</span>yCoords<span class="p">[,</span><span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[,</span><span class="m">4</span><span class="p">]),</span> nobs<span class="p">,</span> <span class="m">0</span><span class="p">),</span> 
+        col <span class="o">=</span> <span class="s">&quot;grey90&quot;</span><span class="p">)</span>
 <span class="c1"># Competing event</span>
-polygon<span class="p">(</span><span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> <span class="kt">c</span><span class="p">(</span>nobs<span class="p">,</span> nobs <span class="o">-</span> yCoords<span class="p">[,</span><span class="m">1</span><span class="p">],</span> nobs<span class="p">,</span> nobs<span class="p">),</span> col <span class="o">=</span> <span class="s">&quot;dodgerblue2&quot;</span><span class="p">)</span>
+polygon<span class="p">(</span>x <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> ftime<span class="p">[</span>ord<span class="p">],</span> <span class="kp">max</span><span class="p">(</span>ftime<span class="p">),</span> <span class="m">0</span><span class="p">),</span> 
+        y <span class="o">=</span> <span class="kt">c</span><span class="p">(</span>nobs<span class="p">,</span> nobs <span class="o">-</span> yCoords<span class="p">[,</span><span class="m">1</span><span class="p">],</span> nobs<span class="p">,</span> nobs<span class="p">),</span> 
+        col <span class="o">=</span> <span class="s">&quot;dodgerblue2&quot;</span><span class="p">)</span>
 
 <span class="c1"># randomly move the cases vertically</span>
 moved_cases <span class="o">&lt;-</span> yCoords<span class="p">[</span>cases<span class="p">[</span>ord<span class="p">],</span> <span class="m">2</span><span class="p">]</span> <span class="o">+</span> yCoords<span class="p">[</span>cases<span class="p">[</span>ord<span class="p">],</span> <span class="m">4</span><span class="p">]</span> <span class="o">*</span> runif<span class="p">(</span><span class="kp">sum</span><span class="p">(</span>cases<span class="p">))</span>
@@ -532,13 +540,16 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 </pre></div>
 
 
-<p><img src="competingRisk_files/figure-markdown_github/poptime3-1.png" style="display: block; margin: auto;" /></p>
+<p><img alt="" src="../competingRisk_files/figure-markdown_github/poptime3-1.png" /></p>
 <p>From this last plot, we can see that there is no censoring during the first 10 months. Moreover, we see that the last competing event occurs around 20 months. Putting all this information together, we have evidence of two types of patients: very sick patients who either relapse or have a competing event early on, and healthier patients who are eventually lost to follow-up.</p>
 <h2 id="analysis">Analysis<a class="headerlink" href="#analysis" title="Permanent link">&para;</a></h2>
 <p>We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:</p>
 <div class="codehilite"><pre><span></span><span class="kn">library</span><span class="p">(</span>casebase<span class="p">)</span>
 model1 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Status <span class="o">~</span> ftime <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
-                          data <span class="o">=</span> DT<span class="p">,</span> ratio<span class="o">=</span><span class="m">1000</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> time<span class="o">=</span><span class="s">&quot;ftime&quot;</span><span class="p">)</span>
+                          data <span class="o">=</span> DT<span class="p">,</span> 
+                          ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
+                          type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+                          time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model1<span class="p">)</span>
 </pre></div>
 
@@ -552,7 +563,10 @@ model1 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Statu
 <p>From this summary, we see that time is indeed significant, as is Phase (only relapse vs. CR1). Interestingly, we see that the type of disease is only significant for the event of interest, whereas the type of transplant and the age of the patient are only significant for the competing event.</p>
 <p>Next, we include the logarithm of time in the model (which leads to a Weibull hazard):</p>
 <div class="codehilite"><pre><span></span>model2 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Status <span class="o">~</span> <span class="kp">log</span><span class="p">(</span>ftime<span class="p">)</span> <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
-                          data <span class="o">=</span> DT<span class="p">,</span> ratio<span class="o">=</span><span class="m">1000</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> time<span class="o">=</span><span class="s">&quot;ftime&quot;</span><span class="p">)</span>
+                          data <span class="o">=</span> DT<span class="p">,</span> 
+                          ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
+                          type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+                          time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model2<span class="p">)</span>
 </pre></div>
 
@@ -564,8 +578,12 @@ model1 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Statu
 
 <p>As we can see, the results are similar to the ones with a Gompertz hazard, although Sex is now significant for the competing event.</p>
 <p>Finally, using splines, we can be quite flexible about the way the hazard depends on time:</p>
-<div class="codehilite"><pre><span></span>model3 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Status <span class="o">~</span> splines<span class="o">::</span>bs<span class="p">(</span>ftime<span class="p">)</span> <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
-                          data <span class="o">=</span> DT<span class="p">,</span> ratio<span class="o">=</span><span class="m">1000</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> time<span class="o">=</span><span class="s">&quot;ftime&quot;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span>model3 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>
+    Status <span class="o">~</span> splines<span class="o">::</span>bs<span class="p">(</span>ftime<span class="p">)</span> <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
+    data <span class="o">=</span> DT<span class="p">,</span> 
+    ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
+    type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+    time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model3<span class="p">)</span>
 </pre></div>
 
@@ -595,7 +613,7 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 </pre></div>
 
 
-<p><img src="competingRisk_files/figure-markdown_github/absRiskPlot-1.png" style="display: block; margin: auto;" /></p>
+<p><img alt="" src="../competingRisk_files/figure-markdown_github/absRiskPlot-1.png" /></p>
 <p>As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:</p>
 <div class="codehilite"><pre><span></span><span class="c1"># The first column corresponds to the event of interest</span>
 <span class="kp">mean</span><span class="p">(</span>linearRisk<span class="p">[,</span><span class="m">1</span><span class="p">])</span>
@@ -641,10 +659,9 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 ## [13] gtable_0.2.0       htmltools_0.3.6    survival_2.40-1   
 ## [16] yaml_2.1.14        lazyeval_0.2.0     rprojroot_1.2     
 ## [19] digest_0.6.12      assertthat_0.1     tibble_1.2        
-## [22] Matrix_1.2-7.1     ggplot2_2.2.1      codetools_0.2-15  
-## [25] VGAM_1.0-3         evaluate_0.10      rmarkdown_1.3.9003
-## [28] stringi_1.1.2      scales_0.4.1       backports_1.0.5   
-## [31] stats4_3.3.2
+## [22] Matrix_1.2-7.1     ggplot2_2.2.1      VGAM_1.0-3        
+## [25] evaluate_0.10      rmarkdown_1.3.9003 stringi_1.1.2     
+## [28] scales_0.4.1       backports_1.0.5    stats4_3.3.2
 </pre></div>
 
 

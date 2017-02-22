@@ -203,6 +203,11 @@ plot(popTimeData, ncol = 2)
 ```
 
 
+## Session information
+
+```{r echo=FALSE, eval=TRUE}
+print(sessionInfo(), locale = FALSE)
+```
 
 
 
