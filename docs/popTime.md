@@ -447,7 +447,7 @@ Session information
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_0.12.9        splines_3.3.2      munsell_0.4.3     
-    ##  [4] lattice_0.20-34    colorspace_1.3-2   stringr_1.1.0     
+    ##  [4] lattice_0.20-34    colorspace_1.3-2   stringr_1.2.0     
     ##  [7] plyr_1.8.4         tools_3.3.2        grid_3.3.2        
     ## [10] gtable_0.2.0       htmltools_0.3.6    yaml_2.1.14       
     ## [13] lazyeval_0.2.0     rprojroot_1.2      digest_0.6.12     
