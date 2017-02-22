@@ -141,7 +141,7 @@ As we can see, the results are similar to the ones with a Gompertz hazard, altho
 Finally, using splines, we can be quite flexible about the way the hazard depends on time:
 
 ```{r eval=TRUE, warning=FALSE}
-model3 <- fitSmoothHazard(Status ~ bs(ftime) + Sex + D + Phase + Source + Age, 
+model3 <- fitSmoothHazard(Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
                           data = DT, ratio=1000, type = "uniform", time="ftime")
 summary(model3)
 ```
@@ -180,6 +180,6 @@ mean(splineRisk[,1])
 ## Session information
 
 ```{r echo=FALSE, eval=TRUE}
-print(sessionInfo(), locale = F)
+print(sessionInfo(), locale = FALSE)
 ```
 ## References
