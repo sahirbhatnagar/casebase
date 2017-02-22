@@ -65,6 +65,16 @@ plot.popTime <- function(x, ...,
 #'   \code{\link{par}}.
 #' @return a population time plot stratified by exposure status
 #' @import ggplot2
+#' @example
+#' \dontrun{
+#' DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
+#' popTimeData <- popTime(data = DT, time = "ftime", exposure = "D")
+#' # p is an object of class gg and ggplot
+#' p <- plot(popTimeData)
+#' # you can further modify the object using all ggplot2 functions
+#' # here we modify the number of y-tick labels
+#' p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
+#' }
 #' @export
 plot.popTimeExposure <- function(x, ...,
                                  ncol = 1,
@@ -91,8 +101,8 @@ plot.popTimeExposure <- function(x, ...,
         geom_segment(size = line.width, colour = line.colour) +
         xlab(xlab) +
         ylab(ylab) +
-        theme_bw() +
-        scale_y_continuous(limits = c(0,roundUp(x$data[, max(ycoord)])))
+        theme_bw() #+
+        # scale_y_continuous(limits = c(0,roundUp(x$data[, max(ycoord)])))
 
     if (legend) {
         legend.position <- match.arg(legend.position)

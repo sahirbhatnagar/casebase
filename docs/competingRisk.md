@@ -110,7 +110,7 @@ moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
 points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
 ```
 
-<img src="competingRisk_files/figure-markdown_github/poptime1-1.png" style="display: block; margin: auto;" />
+![](competingRisk_files/figure-markdown_github/poptime1-1.png)
 
 We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.
 
@@ -120,9 +120,12 @@ To get an idea of whether only relapse is responsible for the shrinking of the r
 # Plot at-risk and events
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-polygon(c(0,ftime[ord], max(ftime), 0), c(0, yCoords[,2], 0, 0), col = "firebrick3")
-polygon(c(0, ftime[ord], ftime[rev(ord)], 0, 0),
-        c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), col = "grey90")
+polygon(x = c(0,ftime[ord], max(ftime), 0), 
+        y = c(0, yCoords[,2], 0, 0), 
+        col = "firebrick3")
+polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
+        y = c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), 
+        col = "grey90")
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
@@ -132,22 +135,27 @@ legend("topright", legend=c("Relapse", "At-risk"),
        pch=15)
 ```
 
-<img src="competingRisk_files/figure-markdown_github/poptime2-1.png" style="display: block; margin: auto;" />
+![](competingRisk_files/figure-markdown_github/poptime2-1.png)
 
 Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:
 
 ``` r
 plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
      xlab='Follow-up time', ylab='Population')
-polygon(c(0, max(ftime), max(ftime), 0),
-        c(0, 0, nobs, nobs), col = "white")
+polygon(x = c(0, max(ftime), max(ftime), 0),
+        y = c(0, 0, nobs, nobs), col = "white")
 # Event of interest
-polygon(c(0,ftime[ord], max(ftime), 0), c(0, yCoords[,2], 0, 0), col = "firebrick3")
+polygon(x = c(0,ftime[ord], max(ftime), 0), 
+        y = c(0, yCoords[,2], 0, 0), 
+        col = "firebrick3")
 # Risk set
-polygon(c(0, ftime[ord], ftime[rev(ord)], 0, 0),
-        c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), col = "grey90")
+polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
+        y = c(0, yCoords[,2], rev(yCoords[,2] + yCoords[,4]), nobs, 0), 
+        col = "grey90")
 # Competing event
-polygon(c(0, ftime[ord], max(ftime), 0), c(nobs, nobs - yCoords[,1], nobs, nobs), col = "dodgerblue2")
+polygon(x = c(0, ftime[ord], max(ftime), 0), 
+        y = c(nobs, nobs - yCoords[,1], nobs, nobs), 
+        col = "dodgerblue2")
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
@@ -157,7 +165,7 @@ legend("topright", legend=c("Relapse", "Competing event", "At-risk"),
        pch=15)
 ```
 
-<img src="competingRisk_files/figure-markdown_github/poptime3-1.png" style="display: block; margin: auto;" />
+![](competingRisk_files/figure-markdown_github/poptime3-1.png)
 
 From this last plot, we can see that there is no censoring during the first 10 months. Moreover, we see that the last competing event occurs around 20 months. Putting all this information together, we have evidence of two types of patients: very sick patients who either relapse or have a competing event early on, and healthier patients who are eventually lost to follow-up.
 
@@ -169,7 +177,10 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 ``` r
 library(casebase)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+                          data = DT, 
+                          ratio = 1000, 
+                          type = "uniform", 
+                          time = "ftime")
 summary(model1)
 ```
 
@@ -184,7 +195,10 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 
 ``` r
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+                          data = DT, 
+                          ratio = 1000, 
+                          type = "uniform", 
+                          time = "ftime")
 summary(model2)
 ```
 
@@ -196,8 +210,12 @@ As we can see, the results are similar to the ones with a Gompertz hazard, altho
 Finally, using splines, we can be quite flexible about the way the hazard depends on time:
 
 ``` r
-model3 <- fitSmoothHazard(Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, ratio=1000, type = "uniform", time="ftime")
+model3 <- fitSmoothHazard(
+    Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
+    data = DT, 
+    ratio = 1000, 
+    type = "uniform", 
+    time = "ftime")
 summary(model3)
 ```
 
@@ -227,7 +245,7 @@ legend("topleft", legend=c("Log", "Spline"),
        pch=19, col=c("red", "blue"))
 ```
 
-<img src="competingRisk_files/figure-markdown_github/absRiskPlot-1.png" style="display: block; margin: auto;" />
+![](competingRisk_files/figure-markdown_github/absRiskPlot-1.png)
 
 As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:
 
@@ -271,10 +289,9 @@ Session information
     ## [13] gtable_0.2.0       htmltools_0.3.6    survival_2.40-1   
     ## [16] yaml_2.1.14        lazyeval_0.2.0     rprojroot_1.2     
     ## [19] digest_0.6.12      assertthat_0.1     tibble_1.2        
-    ## [22] Matrix_1.2-7.1     ggplot2_2.2.1      codetools_0.2-15  
-    ## [25] VGAM_1.0-3         evaluate_0.10      rmarkdown_1.3.9003
-    ## [28] stringi_1.1.2      scales_0.4.1       backports_1.0.5   
-    ## [31] stats4_3.3.2
+    ## [22] Matrix_1.2-7.1     ggplot2_2.2.1      VGAM_1.0-3        
+    ## [25] evaluate_0.10      rmarkdown_1.3.9003 stringi_1.1.2     
+    ## [28] scales_0.4.1       backports_1.0.5    stats4_3.3.2
 
 References
 ----------
