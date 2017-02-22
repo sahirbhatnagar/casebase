@@ -55,7 +55,7 @@ pages:
   - Home: index.md
   - Smooth Hazard: smoothHazard.md
   - Population Time Plots: popTime.md
-#  - Competing Risk: competingRisk.md
+  - Competing Risk: competingRisk.md
   - References: references.md
 #  - Package Functions: overview.md
 #  - Real Data Analysis: rda.md
