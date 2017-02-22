@@ -41,7 +41,7 @@
 #' @references Liu Z, Rich B, Hanley JA. Recovering the raw data behind a
 #'   non-parametric survival curve. Systematic Reviews 2014 Dec 30;3:151. doi:
 #'   10.1186/2046-4053-3-151.
-#' @references Schröder FH, et al., for the ERSPC Investigators.Screening and
+#' @references Schroder FH, et al., for the ERSPC Investigators.Screening and
 #'   Prostate-Cancer Mortality in a Randomized European Study. N Engl J Med
 #'   2009;360:1320-8.
 #' @examples
