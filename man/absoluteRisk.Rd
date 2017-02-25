@@ -2,9 +2,9 @@
 % Please edit documentation in R/absoluteRisk.R
 \name{absoluteRisk}
 \alias{absoluteRisk}
-\alias{absoluteRisk.CompRisk}
 \alias{absoluteRisk.default}
 \alias{absoluteRisk.glm}
+\alias{absoluteRisk.CompRisk}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
 absoluteRisk(object, ...)
@@ -97,4 +97,3 @@ out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
 log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))
 }
-

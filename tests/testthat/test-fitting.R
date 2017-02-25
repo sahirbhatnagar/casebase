@@ -1,0 +1,2 @@
+library(casebase)
+context("Fitting")

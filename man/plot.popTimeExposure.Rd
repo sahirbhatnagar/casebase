@@ -26,4 +26,3 @@ a population time plot stratified by exposure status
 \description{
 \code{plot} method for objects of class \code{popTimeExposure}
 }
-

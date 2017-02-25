@@ -24,8 +24,44 @@ test_that("no error in absolute risk", {
                      "event" = event_c,
                      "Z" = c(rep(0,n), rep(1,n)))
 
-    fit <- fitSmoothHazard(event ~ Z, data=DT, time="ftime")
+    fit <- fitSmoothHazard(event ~ Z, data = DT, time = "ftime")
     foo <- try(absoluteRisk(fit, time = 1, newdata = DT[1,]))
 
     expect_false(inherits(foo, "try-error"))
+})
+
+test_that("should output probabilities", {
+    n = 100; alpha = 0.05
+
+    lambda10 <- 1
+    lambda20 <- 2
+    lambda11 <- 4
+    lambda21 <- 5
+
+    lambda_t0 <- lambda10 + lambda20
+    lambda_t1 <- lambda11 + lambda21
+
+    times <- c(rexp(n = n, rate = lambda_t0),
+               rexp(n = n, rate = lambda_t1))
+    event <- c(rbinom(n, 1, prob = lambda10/lambda_t0),
+               rbinom(n, 1, prob = lambda11/lambda_t1)) + 1
+    censor <- rexp(n = 2*n, rate = -log(alpha))
+
+    times_c <- pmin(times, censor)
+    event_c <- event * (times < censor)
+    DT <- data.frame("ftime" = times_c,
+                     "event" = event_c,
+                     "Z" = c(rep(0,n), rep(1,n)))
+
+    fit <- fitSmoothHazard(event ~ Z, data = DT, time = "ftime")
+    absRiskMC <- absoluteRisk(fit, time = 1, newdata = DT[1,],
+                              method = "montecarlo")
+    absRiskNI <- absoluteRisk(fit, time = 1, newdata = DT[1,],
+                              method = "quadrature")
+
+
+    expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskNI >= 0))
+    expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskNI <= 1))
 })
