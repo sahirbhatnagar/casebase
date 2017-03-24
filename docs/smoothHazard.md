@@ -31,7 +31,7 @@ lines(tgrid, dexp(tgrid, rate = 1.0/mean(evtimes)),
       lwd = 2, lty = 2, col = 'red')
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-1-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 As we can see, the empirical survival function ressembles an exponential distribution.
 
@@ -183,7 +183,7 @@ cases <- veteran$status == 1
 points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch = 20, col = 'red', cex = 0.5)
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual's follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.
 
@@ -207,28 +207,28 @@ summary(model4)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.4446  -0.1505  -0.1197  -0.0986   3.4172  
+    ## -0.4076  -0.1506  -0.1205  -0.1012   3.3914  
     ## 
     ## Coefficients:
     ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.8670224  0.7116424  -4.029 5.61e-05 ***
-    ## time               0.0003465  0.0006494   0.534  0.59361    
-    ## karno             -0.0321467  0.0052818  -6.086 1.15e-09 ***
-    ## diagtime           0.0005638  0.0092514   0.061  0.95141    
-    ## age               -0.0042352  0.0093863  -0.451  0.65184    
-    ## prior10            0.0804793  0.2335061   0.345  0.73035    
-    ## celltypesquamous  -0.4130992  0.2841325  -1.454  0.14598    
-    ## celltypesmallcell  0.4297525  0.2636311   1.630  0.10307    
-    ## celltypeadeno      0.7845810  0.2968491   2.643  0.00822 ** 
-    ## trt2               0.2005978  0.1986860   1.010  0.31268    
+    ## (Intercept)       -2.8090170  0.7203905  -3.899 9.65e-05 ***
+    ## time               0.0003933  0.0006454   0.609   0.5422    
+    ## karno             -0.0302912  0.0052240  -5.798 6.69e-09 ***
+    ## diagtime           0.0023264  0.0091108   0.255   0.7985    
+    ## age               -0.0071628  0.0092697  -0.773   0.4397    
+    ## prior10           -0.0393741  0.2286357  -0.172   0.8633    
+    ## celltypesquamous  -0.4025799  0.2843369  -1.416   0.1568    
+    ## celltypesmallcell  0.4656078  0.2626241   1.773   0.0762 .  
+    ## celltypeadeno      0.7408300  0.3025105   2.449   0.0143 *  
+    ## trt2               0.2133287  0.2018410   1.057   0.2906    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1365.4  on 12918  degrees of freedom
-    ## AIC: 1385.4
+    ## Residual deviance: 1367.1  on 12918  degrees of freedom
+    ## AIC: 1387.1
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -240,7 +240,7 @@ The main purpose of fitting smooth hazard functions is that it is then relativel
 absoluteRisk(object = model4, time = 90)
 ```
 
-    ## [1] 0.5769655
+    ## [1] 0.5758602
 
 ``` r
 mean(ftime <= 90)
@@ -267,20 +267,20 @@ summary(model5)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.4488  -0.1514  -0.1200  -0.0965   3.4111  
+    ## -0.4374  -0.1525  -0.1211  -0.0974   3.4403  
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -3.027972   0.751706  -4.028 5.62e-05 ***
-    ## log(time)          0.084456   0.073074   1.156  0.24778    
-    ## karno             -0.032782   0.005481  -5.982 2.21e-09 ***
-    ## diagtime           0.001580   0.009269   0.170  0.86463    
-    ## age               -0.006733   0.009322  -0.722  0.47010    
-    ## prior10            0.051777   0.230722   0.224  0.82244    
-    ## celltypesquamous  -0.413111   0.277822  -1.487  0.13703    
-    ## celltypesmallcell  0.464346   0.264065   1.758  0.07867 .  
-    ## celltypeadeno      0.815158   0.301082   2.707  0.00678 ** 
-    ## trt2               0.244825   0.203568   1.203  0.22911    
+    ## (Intercept)       -2.869604   0.750754  -3.822 0.000132 ***
+    ## log(time)          0.062363   0.072533   0.860 0.389908    
+    ## karno             -0.032509   0.005475  -5.938 2.89e-09 ***
+    ## diagtime          -0.001032   0.009346  -0.110 0.912091    
+    ## age               -0.007281   0.009258  -0.786 0.431599    
+    ## prior10            0.089708   0.229979   0.390 0.696483    
+    ## celltypesquamous  -0.476523   0.279066  -1.708 0.087718 .  
+    ## celltypesmallcell  0.432164   0.264012   1.637 0.101650    
+    ## celltypeadeno      0.736092   0.302782   2.431 0.015053 *  
+    ## trt2               0.250236   0.203763   1.228 0.219420    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -313,30 +313,30 @@ summary(model6)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.4648  -0.1526  -0.1180  -0.0954   3.5360  
+    ## -0.4636  -0.1516  -0.1180  -0.0944   3.5296  
     ## 
     ## Coefficients:
-    ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.8302890  0.7228096  -3.916 9.02e-05 ***
-    ## bs(time)1          1.5464156  1.0182790   1.519   0.1288    
-    ## bs(time)2         -2.4865426  1.7866239  -1.392   0.1640    
-    ## bs(time)3          1.7587993  1.0226292   1.720   0.0855 .  
-    ## karno             -0.0338202  0.0054661  -6.187 6.12e-10 ***
-    ## diagtime           0.0006984  0.0092893   0.075   0.9401    
-    ## age               -0.0067778  0.0093565  -0.724   0.4688    
-    ## prior10            0.0583465  0.2353199   0.248   0.8042    
-    ## celltypesquamous  -0.4175652  0.2836135  -1.472   0.1409    
-    ## celltypesmallcell  0.4702381  0.2652270   1.773   0.0762 .  
-    ## celltypeadeno      0.8112066  0.3044052   2.665   0.0077 ** 
-    ## trt2               0.2840322  0.2067615   1.374   0.1695    
+    ##                    Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)       -2.843120   0.725929  -3.917 8.98e-05 ***
+    ## bs(time)1          1.617602   1.021959   1.583  0.11346    
+    ## bs(time)2         -2.553143   1.736336  -1.470  0.14145    
+    ## bs(time)3          1.806882   1.016930   1.777  0.07560 .  
+    ## karno             -0.033919   0.005392  -6.290 3.17e-10 ***
+    ## diagtime           0.004330   0.009963   0.435  0.66381    
+    ## age               -0.007121   0.009311  -0.765  0.44441    
+    ## prior10           -0.018463   0.234631  -0.079  0.93728    
+    ## celltypesquamous  -0.380942   0.283311  -1.345  0.17875    
+    ## celltypesmallcell  0.484411   0.264278   1.833  0.06681 .  
+    ## celltypeadeno      0.820671   0.302580   2.712  0.00668 ** 
+    ## trt2               0.296401   0.206425   1.436  0.15104    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1360.8  on 12916  degrees of freedom
-    ## AIC: 1384.8
+    ## Residual deviance: 1359.5  on 12916  degrees of freedom
+    ## AIC: 1383.5
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -344,7 +344,7 @@ summary(model6)
 absoluteRisk(object = model6, time = 90)
 ```
 
-    ## [1] 0.5752517
+    ## [1] 0.5755579
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
 
@@ -357,7 +357,7 @@ plot(linearRisk, splineRisk,
 abline(a = 0, b = 1, lty = 2, lwd = 2, col = 'red')
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 These last three models give similar information as the first three, i.e. the main predictors for the hazard are `karno` and `celltype`, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.
 
@@ -391,13 +391,13 @@ karno
 -0.0328
 </td>
 <td style="text-align:right;">
--0.0321
+-0.0303
 </td>
 <td style="text-align:right;">
--0.0328
+-0.0325
 </td>
 <td style="text-align:right;">
--0.0338
+-0.0339
 </td>
 </tr>
 <tr>
@@ -408,13 +408,13 @@ diagtime
 0.0001
 </td>
 <td style="text-align:right;">
-0.0006
+0.0023
 </td>
 <td style="text-align:right;">
-0.0016
+-0.0010
 </td>
 <td style="text-align:right;">
-0.0007
+0.0043
 </td>
 </tr>
 <tr>
@@ -425,13 +425,13 @@ age
 -0.0087
 </td>
 <td style="text-align:right;">
--0.0042
+-0.0072
 </td>
 <td style="text-align:right;">
--0.0067
+-0.0073
 </td>
 <td style="text-align:right;">
--0.0068
+-0.0071
 </td>
 </tr>
 <tr>
@@ -442,13 +442,13 @@ prior10
 0.0716
 </td>
 <td style="text-align:right;">
-0.0805
+-0.0394
 </td>
 <td style="text-align:right;">
-0.0518
+0.0897
 </td>
 <td style="text-align:right;">
-0.0583
+-0.0185
 </td>
 </tr>
 <tr>
@@ -459,13 +459,13 @@ celltypesquamous
 -0.4013
 </td>
 <td style="text-align:right;">
--0.4131
+-0.4026
 </td>
 <td style="text-align:right;">
--0.4131
+-0.4765
 </td>
 <td style="text-align:right;">
--0.4176
+-0.3809
 </td>
 </tr>
 <tr>
@@ -476,13 +476,13 @@ celltypesmallcell
 0.4603
 </td>
 <td style="text-align:right;">
-0.4298
+0.4656
 </td>
 <td style="text-align:right;">
-0.4643
+0.4322
 </td>
 <td style="text-align:right;">
-0.4702
+0.4844
 </td>
 </tr>
 <tr>
@@ -493,13 +493,13 @@ celltypeadeno
 0.7948
 </td>
 <td style="text-align:right;">
-0.7846
+0.7408
 </td>
 <td style="text-align:right;">
-0.8152
+0.7361
 </td>
 <td style="text-align:right;">
-0.8112
+0.8207
 </td>
 </tr>
 <tr>
@@ -510,13 +510,13 @@ trt2
 0.2946
 </td>
 <td style="text-align:right;">
-0.2006
+0.2133
 </td>
 <td style="text-align:right;">
-0.2448
+0.2502
 </td>
 <td style="text-align:right;">
-0.2840
+0.2964
 </td>
 </tr>
 </tbody>

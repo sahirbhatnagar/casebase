@@ -19,7 +19,7 @@ The theoretical properties of this approach have been studied in Saarela & Arjas
 
 The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
 
-```{r eval=TRUE, fig.width=7, fig.height=7, fig.align='center'}
+```{r eval=TRUE}
 library(survival)
 data(veteran)
 table(veteran$status)
@@ -76,7 +76,7 @@ The method available in this package makes use of *case-base sampling*. That is,
 
 First, we will look at the follow-up time by using population-time plots:
 
-```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
+```{r eval=TRUE}
 nobs <- nrow(y)
 ftime <- veteran$time
 ord <- order(ftime, decreasing = TRUE)
@@ -129,7 +129,7 @@ absoluteRisk(object = model6, time = 90)
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
 
-```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+```{r eval=TRUE}
 linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
 splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
 
