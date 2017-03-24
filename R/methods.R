@@ -2,15 +2,18 @@
 
 #' Population Time Plot
 #'
-#' \code{plot} method for objects of class \code{popTime}
+#' \code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
 #'
-#' @param x an object of class \code{popTime}. See \code{\link{popTime}} for details.
+#' @param x an object of class \code{popTime} or \code{popTimeExposure}.
 #' @param ... Ignored.
 #' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
 #'   \code{\link{par}}.
-#' @return a population time plot
+#' @return The methods for \code{plot} return a population time plot, stratified by exposure status
+#'   in the case of \code{popTimeExposure}.
 #' @import ggplot2
 #' @export
+#' @method plot popTime
+#' @rdname popTime
 plot.popTime <- function(x, ...,
                          xlab = "Follow-up time", ylab = "Population",
                          line.width = 1, line.colour = "grey80",
@@ -52,19 +55,7 @@ plot.popTime <- function(x, ...,
 
 }
 
-
-#' Population Time Plot Stratified by Exposure Status
-#'
-#' \code{plot} method for objects of class \code{popTimeExposure}
-#'
-#' @param x an object of class \code{popTimeExposure}. See
-#'   \code{\link{popTime}} for details.
-#' @param ... Ignored.
 #' @param ncol Number of columns.
-#' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
-#'   \code{\link{par}}.
-#' @return a population time plot stratified by exposure status
-#' @import ggplot2
 #' @examples
 #' \dontrun{
 #' DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
@@ -76,6 +67,8 @@ plot.popTime <- function(x, ...,
 #' p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
 #' }
 #' @export
+#' @method plot popTimeExposure
+#' @rdname popTime
 plot.popTimeExposure <- function(x, ...,
                                  ncol = 1,
                                  xlab = "Follow-up time", ylab = "Population",
@@ -169,8 +162,12 @@ CompRisk <- setClass("CompRisk",
                      )
 )
 
+#' @rdname CompRisk-class
+#' @param ... Extra parameters
 setGeneric("summary")
 #' @export
+#' @rdname CompRisk-class
+#' @param object Object of class \code{CompRisk}
 setMethod("summary",
           c(object = "CompRisk"),
           function(object) callNextMethod())
