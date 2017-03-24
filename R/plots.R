@@ -217,7 +217,7 @@ popTime <- function(data, time, event, censored.indicator,
         lk <- data.table::rbindlist(l)
         lkj <- list(data = lk, exposure = exposure)
         class(lkj) <- c("popTimeExposure", class(lkj))
-
+        attr(lkj, "call") <- match.call()
         return(lkj)
 
     }
