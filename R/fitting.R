@@ -62,7 +62,7 @@
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 #' @importMethodsFrom VGAM summary predict
-#' @importFrom VGAM vglm multinomial
+#' @importFrom VGAM vglm multinomial summaryvglm
 fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])

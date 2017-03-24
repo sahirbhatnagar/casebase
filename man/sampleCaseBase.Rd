@@ -72,4 +72,3 @@ DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
 out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
 }
-

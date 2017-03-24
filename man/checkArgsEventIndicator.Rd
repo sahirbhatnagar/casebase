@@ -51,4 +51,3 @@ checkArgsEventIndicator(data = bmt, event = "Status", censored.indicator = 3)
 }
 
 }
-

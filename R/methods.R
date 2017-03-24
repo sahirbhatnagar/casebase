@@ -65,7 +65,7 @@ plot.popTime <- function(x, ...,
 #'   \code{\link{par}}.
 #' @return a population time plot stratified by exposure status
 #' @import ggplot2
-#' @example
+#' @examples
 #' \dontrun{
 #' DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
 #' popTimeData <- popTime(data = DT, time = "ftime", exposure = "D")
@@ -169,3 +169,8 @@ CompRisk <- setClass("CompRisk",
                      )
 )
 
+setGeneric("summary")
+#' @export
+setMethod("summary",
+          c(object = "CompRisk"),
+          function(object) callNextMethod())

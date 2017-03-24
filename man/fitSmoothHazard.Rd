@@ -75,4 +75,3 @@ DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 out_linear <- fitSmoothHazard(event ~ time + z, DT)
 out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 }
-
