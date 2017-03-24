@@ -1,4 +1,11 @@
-This explains how to run the mkdocs
+# Mkdocs: HOW-TO
+
+This explains how to run the mkdocs. But first you need to install `mkdocs` and the third-party theme `material`.
+
+```
+pip install mkdocs
+pip install mkdocs-material
+```
 
 1. Create a .Rmd in the docs folder. The .Rmd should have this at the top:
 
@@ -11,55 +18,63 @@ output:
     variant: markdown
 ---
 
-see http://rmarkdown.rstudio.com/markdown_document_format.html for different variants
+See http://rmarkdown.rstudio.com/markdown_document_format.html for different variants
 
 For .Rmd documents with LaTeX in it (e.g. simulations.Rmd), I used
+---
 output:
   md_document:
     variant: markdown
+---
 
 For everything else I used
-
+---
 output:
   md_document:
     variant: markdown_github
-
-
+---
 
 2. click on knit. this will make an .md document in the docs/ folder
 
 3. Add the name of the page and the .md document to mkdocs.yml (which is located in the root folder)
 
-From the root folder (the one that has the YAML file for the site)
+To (re)generate the site, run the following command from the root folder (the one that has the YAML file for the site):
+
+```
 mkdocs build
 mkdocs gh-deploy
+```
 
 4. For mathjax:
 
 first make sure you have root permissions on the python folder:
 
+```
 which python
 python --version
 sudo chown -R $USER /usr/local/lib/python3.5
+```
 
-then install pthon markdown math extension:
+then install python markdown math extension (see http://stackoverflow.com/questions/27882261/mkdocs-and-mathjax):
 
-http://stackoverflow.com/questions/27882261/mkdocs-and-mathjax
-
+```
 pip install https://github.com/mitya57/python-markdown-math/archive/master.zip
-
+```
 
 add the folowing to the YAML file
 
+```
 extra_javascript:
     - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 markdown_extensions:
     - mdx_math
+```
 
+## Further comments
 
-used knitr::kable(format = "html") for tables, but still had to manually remove backslashes on underscores in the .md file
+    - used `knitr::kable(format = "html")` for tables, but still had to manually remove backslashes on underscores in the .md file
 
-also had to manually remove backslahes on exponents in the .md file
+    - also had to manually remove backslahes on exponents in the .md file
 
 
