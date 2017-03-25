@@ -24,13 +24,14 @@ table(veteran$status)
 
 ``` r
 evtimes <- veteran$time[veteran$status == 1]
-hist(evtimes, nclass=30, main='', xlab='Survival time (days)', col='gray90', probability=TRUE)
-tgrid <- seq(0, 1000, by=10)
-lines(tgrid, dexp(tgrid, rate=1.0/mean(evtimes)), 
-      lwd=2, lty=2, col='red')
+hist(evtimes, nclass = 30, main = '', xlab = 'Survival time (days)', 
+     col = 'gray90', probability = TRUE)
+tgrid <- seq(0, 1000, by = 10)
+lines(tgrid, dexp(tgrid, rate = 1.0/mean(evtimes)), 
+      lwd = 2, lty = 2, col = 'red')
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-1-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 As we can see, the empirical survival function ressembles an exponential distribution.
 
@@ -43,7 +44,7 @@ veteran$celltype <- factor(veteran$celltype,
 veteran$trt <- factor(veteran$trt, levels = c(1, 2))
 ```
 
-Using the `eha` package, we can fit a Weibull form, with different values of the shape parameter. For *s**h**a**p**e* = 1, we get an exponential distribution:
+Using the `eha` package, we can fit a Weibull form, with different values of the shape parameter. For `shape = 1`, we get an exponential distribution:
 
 ``` r
 pacman::p_load(eha)
@@ -85,7 +86,7 @@ summary(model1)
     ## Degrees of freedom        8 
     ## Overall p-value           4.64229e-12
 
-If we take *s**h**a**p**e* = 0, the shape parameter is estimated along with the regression coefficients:
+If we take `shape = 0`, the shape parameter is estimated along with the regression coefficients:
 
 ``` r
 model2 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
@@ -174,15 +175,15 @@ First, we will look at the follow-up time by using population-time plots:
 ``` r
 nobs <- nrow(y)
 ftime <- veteran$time
-ord <- order(ftime, decreasing=TRUE)
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+ord <- order(ftime, decreasing = TRUE)
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
+segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col = 'gray25')
 cases <- veteran$status == 1
-points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch=20, col='red', cex=0.5)
+points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch = 20, col = 'red', cex = 0.5)
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual's follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.
 
@@ -190,25 +191,8 @@ Next, we use case-base sampling to fit a parametric hazard function via logistic
 
 ``` r
 library(casebase)
-```
-
-    ## Loading required package: VGAM
-
-    ## Loading required package: stats4
-
-    ## Loading required package: splines
-
-    ## 
-    ## Attaching package: 'VGAM'
-
-    ## The following objects are masked from 'package:eha':
-    ## 
-    ##     dgompertz, dmakeham, pgompertz, pmakeham, qgompertz, qmakeham,
-    ##     rgompertz, rmakeham
-
-``` r
 model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 ```
 
     ## 'time' will be used as the time variable
@@ -223,28 +207,28 @@ summary(model4)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.3883  -0.1516  -0.1209  -0.1004   3.4010  
+    ## -0.4076  -0.1506  -0.1205  -0.1012   3.3914  
     ## 
     ## Coefficients:
     ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.6972916  0.7327516  -3.681 0.000232 ***
-    ## time               0.0003558  0.0006467   0.550 0.582226    
-    ## karno             -0.0299930  0.0052469  -5.716 1.09e-08 ***
-    ## diagtime           0.0020130  0.0090887   0.221 0.824717    
-    ## age               -0.0098983  0.0093166  -1.062 0.288037    
-    ## prior10            0.0193600  0.2335128   0.083 0.933925    
-    ## celltypesquamous  -0.3717107  0.2850600  -1.304 0.192243    
-    ## celltypesmallcell  0.4900360  0.2632186   1.862 0.062644 .  
-    ## celltypeadeno      0.7575487  0.3014872   2.513 0.011981 *  
-    ## trt2               0.2054208  0.2014424   1.020 0.307847    
+    ## (Intercept)       -2.8090170  0.7203905  -3.899 9.65e-05 ***
+    ## time               0.0003933  0.0006454   0.609   0.5422    
+    ## karno             -0.0302912  0.0052240  -5.798 6.69e-09 ***
+    ## diagtime           0.0023264  0.0091108   0.255   0.7985    
+    ## age               -0.0071628  0.0092697  -0.773   0.4397    
+    ## prior10           -0.0393741  0.2286357  -0.172   0.8633    
+    ## celltypesquamous  -0.4025799  0.2843369  -1.416   0.1568    
+    ## celltypesmallcell  0.4656078  0.2626241   1.773   0.0762 .  
+    ## celltypeadeno      0.7408300  0.3025105   2.449   0.0143 *  
+    ## trt2               0.2133287  0.2018410   1.057   0.2906    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1368.6  on 12918  degrees of freedom
-    ## AIC: 1388.6
+    ## Residual deviance: 1367.1  on 12918  degrees of freedom
+    ## AIC: 1387.1
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -256,7 +240,7 @@ The main purpose of fitting smooth hazard functions is that it is then relativel
 absoluteRisk(object = model4, time = 90)
 ```
 
-    ## [1] 0.5756621
+    ## [1] 0.5758602
 
 ``` r
 mean(ftime <= 90)
@@ -268,7 +252,7 @@ We can also fit a Weibull hazard by using a logarithmic term for time:
 
 ``` r
 model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 ```
 
     ## 'time' will be used as the time variable
@@ -283,28 +267,28 @@ summary(model5)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.4382  -0.1512  -0.1200  -0.0970   3.4049  
+    ## -0.4374  -0.1525  -0.1211  -0.0974   3.4403  
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -3.174679   0.744870  -4.262 2.03e-05 ***
-    ## log(time)          0.079176   0.071940   1.101   0.2711    
-    ## karno             -0.031588   0.005474  -5.770 7.91e-09 ***
-    ## diagtime           0.001787   0.009432   0.190   0.8497    
-    ## age               -0.004762   0.009241  -0.515   0.6063    
-    ## prior10            0.061890   0.232954   0.266   0.7905    
-    ## celltypesquamous  -0.455905   0.278424  -1.637   0.1015    
-    ## celltypesmallcell  0.451326   0.264522   1.706   0.0880 .  
-    ## celltypeadeno      0.758645   0.301447   2.517   0.0118 *  
-    ## trt2               0.245839   0.202616   1.213   0.2250    
+    ## (Intercept)       -2.869604   0.750754  -3.822 0.000132 ***
+    ## log(time)          0.062363   0.072533   0.860 0.389908    
+    ## karno             -0.032509   0.005475  -5.938 2.89e-09 ***
+    ## diagtime          -0.001032   0.009346  -0.110 0.912091    
+    ## age               -0.007281   0.009258  -0.786 0.431599    
+    ## prior10            0.089708   0.229979   0.390 0.696483    
+    ## celltypesquamous  -0.476523   0.279066  -1.708 0.087718 .  
+    ## celltypesmallcell  0.432164   0.264012   1.637 0.101650    
+    ## celltypeadeno      0.736092   0.302782   2.431 0.015053 *  
+    ## trt2               0.250236   0.203763   1.228 0.219420    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1367.2  on 12918  degrees of freedom
-    ## AIC: 1387.2
+    ## Residual deviance: 1365.9  on 12918  degrees of freedom
+    ## AIC: 1385.9
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -314,7 +298,7 @@ With case-base sampling, it is straightforward to fit a semi-parametric hazard f
 # Fit a spline for time
 library(splines)
 model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 ```
 
     ## 'time' will be used as the time variable
@@ -329,30 +313,30 @@ summary(model6)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.4419  -0.1524  -0.1188  -0.0962   3.5366  
+    ## -0.4636  -0.1516  -0.1180  -0.0944   3.5296  
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.802692   0.733669  -3.820 0.000133 ***
-    ## bs(time)1          1.462042   1.020984   1.432 0.152145    
-    ## bs(time)2         -2.563804   1.744367  -1.470 0.141626    
-    ## bs(time)3          1.761402   0.986614   1.785 0.074213 .  
-    ## karno             -0.033064   0.005477  -6.037 1.57e-09 ***
-    ## diagtime           0.002782   0.009481   0.293 0.769201    
-    ## age               -0.006766   0.009401  -0.720 0.471725    
-    ## prior10           -0.026913   0.233568  -0.115 0.908265    
-    ## celltypesquamous  -0.398003   0.282814  -1.407 0.159339    
-    ## celltypesmallcell  0.436973   0.265627   1.645 0.099957 .  
-    ## celltypeadeno      0.737056   0.304795   2.418 0.015597 *  
-    ## trt2               0.221856   0.206569   1.074 0.282820    
+    ## (Intercept)       -2.843120   0.725929  -3.917 8.98e-05 ***
+    ## bs(time)1          1.617602   1.021959   1.583  0.11346    
+    ## bs(time)2         -2.553143   1.736336  -1.470  0.14145    
+    ## bs(time)3          1.806882   1.016930   1.777  0.07560 .  
+    ## karno             -0.033919   0.005392  -6.290 3.17e-10 ***
+    ## diagtime           0.004330   0.009963   0.435  0.66381    
+    ## age               -0.007121   0.009311  -0.765  0.44441    
+    ## prior10           -0.018463   0.234631  -0.079  0.93728    
+    ## celltypesquamous  -0.380942   0.283311  -1.345  0.17875    
+    ## celltypesmallcell  0.484411   0.264278   1.833  0.06681 .  
+    ## celltypeadeno      0.820671   0.302580   2.712  0.00668 ** 
+    ## trt2               0.296401   0.206425   1.436  0.15104    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1362.6  on 12916  degrees of freedom
-    ## AIC: 1386.6
+    ## Residual deviance: 1359.5  on 12916  degrees of freedom
+    ## AIC: 1383.5
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -360,1145 +344,206 @@ summary(model6)
 absoluteRisk(object = model6, time = 90)
 ```
 
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## [1] 0.5769713
+    ## [1] 0.5755579
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
 
 ``` r
 linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
 splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
-```
 
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-    ## Warning in bs(time, degree = 3L, knots = numeric(0), Boundary.knots =
-    ## c(0.00457866885699332, : some 'x' values beyond boundary knots may cause
-    ## ill-conditioned bases
-
-``` r
 plot(linearRisk, splineRisk,
-     xlab="Linear", ylab = "Splines", pch=19)
-abline(a=0, b=1, lty=2, lwd=2, col='red')
+     xlab = "Linear", ylab = "Splines", pch = 19)
+abline(a = 0, b = 1, lty = 2, lwd = 2, col = 'red')
 ```
 
-<img src="smoothHazard_files/figure-markdown_github/unnamed-chunk-11-1.png" style="display: block; margin: auto;" />
+![](smoothHazard_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 These last three models give similar information as the first three, i.e. the main predictors for the hazard are `karno` and `celltype`, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.
 
+Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for "case-base"):
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Cox model
+</th>
+<th style="text-align:right;">
+CB linear
+</th>
+<th style="text-align:right;">
+CB log-linear
+</th>
+<th style="text-align:right;">
+CB splines
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+karno
+</td>
+<td style="text-align:right;">
+-0.0328
+</td>
+<td style="text-align:right;">
+-0.0303
+</td>
+<td style="text-align:right;">
+-0.0325
+</td>
+<td style="text-align:right;">
+-0.0339
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+diagtime
+</td>
+<td style="text-align:right;">
+0.0001
+</td>
+<td style="text-align:right;">
+0.0023
+</td>
+<td style="text-align:right;">
+-0.0010
+</td>
+<td style="text-align:right;">
+0.0043
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age
+</td>
+<td style="text-align:right;">
+-0.0087
+</td>
+<td style="text-align:right;">
+-0.0072
+</td>
+<td style="text-align:right;">
+-0.0073
+</td>
+<td style="text-align:right;">
+-0.0071
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prior10
+</td>
+<td style="text-align:right;">
+0.0716
+</td>
+<td style="text-align:right;">
+-0.0394
+</td>
+<td style="text-align:right;">
+0.0897
+</td>
+<td style="text-align:right;">
+-0.0185
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+celltypesquamous
+</td>
+<td style="text-align:right;">
+-0.4013
+</td>
+<td style="text-align:right;">
+-0.4026
+</td>
+<td style="text-align:right;">
+-0.4765
+</td>
+<td style="text-align:right;">
+-0.3809
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+celltypesmallcell
+</td>
+<td style="text-align:right;">
+0.4603
+</td>
+<td style="text-align:right;">
+0.4656
+</td>
+<td style="text-align:right;">
+0.4322
+</td>
+<td style="text-align:right;">
+0.4844
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+celltypeadeno
+</td>
+<td style="text-align:right;">
+0.7948
+</td>
+<td style="text-align:right;">
+0.7408
+</td>
+<td style="text-align:right;">
+0.7361
+</td>
+<td style="text-align:right;">
+0.8207
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+trt2
+</td>
+<td style="text-align:right;">
+0.2946
+</td>
+<td style="text-align:right;">
+0.2133
+</td>
+<td style="text-align:right;">
+0.2502
+</td>
+<td style="text-align:right;">
+0.2964
+</td>
+</tr>
+</tbody>
+</table>
 Session information
 -------------------
 
-    ## R version 3.3.2 (2016-10-31)
+    ## R version 3.3.1 (2016-06-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.1 LTS
+    ## Running under: Ubuntu 16.10
     ## 
     ## attached base packages:
-    ## [1] splines   stats4    stats     graphics  grDevices utils     datasets 
-    ## [8] methods   base     
+    ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
+    ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.0.9000 VGAM_1.0-3        eha_2.4-4         survival_2.40-1  
+    ## [1] casebase_0.1.0  eha_2.4-4       survival_2.39-5
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.9       knitr_1.15.1      magrittr_1.5     
-    ##  [4] munsell_0.4.3     colorspace_1.3-2  lattice_0.20-34  
-    ##  [7] plyr_1.8.4        stringr_1.1.0     tools_3.3.2      
-    ## [10] grid_3.3.2        data.table_1.10.0 gtable_0.2.0     
-    ## [13] pacman_0.4.1      htmltools_0.3.5   assertthat_0.1   
-    ## [16] lazyeval_0.2.0    yaml_2.1.14       rprojroot_1.2    
-    ## [19] digest_0.6.12     tibble_1.2        Matrix_1.2-7.1   
-    ## [22] ggplot2_2.2.1     evaluate_0.10     rmarkdown_1.3    
-    ## [25] stringi_1.1.2     scales_0.4.1      backports_1.0.5
+    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     munsell_0.4.3   
+    ##  [5] colorspace_1.3-1 lattice_0.20-33  highr_0.6        plyr_1.8.4      
+    ##  [9] stringr_1.2.0    tools_3.3.1      grid_3.3.1       data.table_1.9.6
+    ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
+    ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
+    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    scales_0.4.1    
+    ## [29] backports_1.0.5  stats4_3.3.1     chron_2.3-47
 
 References
 ----------

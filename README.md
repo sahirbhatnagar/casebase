@@ -6,7 +6,7 @@ An R package for smooth-in-time fitting of parametric hazard functions
 
 ## Installation
 
-You can install the development version of `eclust` from [GitHub](https://github.com/sahirbhatnagar/eclust) with:
+You can install the development version of `casebase` from [GitHub](https://github.com/sahirbhatnagar/casebase) with:
 
 ```R
 install.packages("pacman")

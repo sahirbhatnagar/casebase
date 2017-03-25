@@ -47,7 +47,7 @@
 #'   "death_time", "Time", "time", "diagnosis_time", "time.diag", "diag__time"}.
 #'   But the following will not be recognized: \code{"diagtime","eventtime",
 #'   "Timediag"}
-#' @return an object of class \code{popTime} (or \code{popTimeExposure} if
+#' @return An object of class \code{popTime} (or \code{popTimeExposure} if
 #'   exposure is specified), \code{data.table} and \code{data.frame} in this
 #'   order! The output of this function is to be used with the plot method for
 #'   objects of class \code{popTime} or of class \code{popTimeExposure}, which

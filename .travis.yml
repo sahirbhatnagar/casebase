@@ -1,4 +1,7 @@
 language: r
+r:
+  - release
+  - devel
 sudo: required
 
 r_binary_packages:

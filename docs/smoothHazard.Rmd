@@ -19,16 +19,17 @@ The theoretical properties of this approach have been studied in Saarela & Arjas
 
 The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
 
-```{r eval=TRUE, fig.width=7, fig.height=7, fig.align='center'}
+```{r eval=TRUE}
 library(survival)
 data(veteran)
 table(veteran$status)
 
 evtimes <- veteran$time[veteran$status == 1]
-hist(evtimes, nclass=30, main='', xlab='Survival time (days)', col='gray90', probability=TRUE)
-tgrid <- seq(0, 1000, by=10)
-lines(tgrid, dexp(tgrid, rate=1.0/mean(evtimes)), 
-      lwd=2, lty=2, col='red')
+hist(evtimes, nclass = 30, main = '', xlab = 'Survival time (days)', 
+     col = 'gray90', probability = TRUE)
+tgrid <- seq(0, 1000, by = 10)
+lines(tgrid, dexp(tgrid, rate = 1.0/mean(evtimes)), 
+      lwd = 2, lty = 2, col = 'red')
 ```
 
 As we can see, the empirical survival function ressembles an exponential distribution.
@@ -42,7 +43,7 @@ veteran$celltype <- factor(veteran$celltype,
 veteran$trt <- factor(veteran$trt, levels = c(1, 2))
 ```
 
-Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For $shape = 1$, we get an exponential distribution:
+Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For `shape = 1`, we get an exponential distribution:
 
 ```{r eval=TRUE}
 pacman::p_load(eha)
@@ -53,7 +54,7 @@ model1 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt,
 summary(model1)
 ```
 
-If we take $shape = 0$, the shape parameter is estimated along with the regression coefficients:
+If we take `shape = 0`, the shape parameter is estimated along with the regression coefficients:
 
 ```{r eval=TRUE}
 model2 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
@@ -75,15 +76,15 @@ The method available in this package makes use of *case-base sampling*. That is,
 
 First, we will look at the follow-up time by using population-time plots:
 
-```{r eval=TRUE, fig.align='center', fig.height=7, fig.width=7}
+```{r eval=TRUE}
 nobs <- nrow(y)
 ftime <- veteran$time
-ord <- order(ftime, decreasing=TRUE)
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
-segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col='gray25')
+ord <- order(ftime, decreasing = TRUE)
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
+segments(rep(0.0, nobs), 1:nobs, ftime[ord], 1:nobs, col = 'gray25')
 cases <- veteran$status == 1
-points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch=20, col='red', cex=0.5)
+points((ftime[ord])[cases[ord]], (1:nobs)[cases[ord]], pch = 20, col = 'red', cex = 0.5)
 ```
 
 Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual's follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.
@@ -93,7 +94,7 @@ Next, we use case-base sampling to fit a parametric hazard function via logistic
 ```{r eval=TRUE}
 library(casebase)
 model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 summary(model4)
 ```
 
@@ -110,7 +111,7 @@ We can also fit a Weibull hazard by using a logarithmic term for time:
 
 ```{r eval=TRUE}
 model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 summary(model5)
 ```
 
@@ -120,7 +121,7 @@ With case-base sampling, it is straightforward to fit a semi-parametric hazard f
 # Fit a spline for time
 library(splines)
 model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio=100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100, type = "uniform")
 summary(model6)
 
 absoluteRisk(object = model6, time = 90)
@@ -128,16 +129,31 @@ absoluteRisk(object = model6, time = 90)
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
 
-```{r eval=TRUE, fig.align='center', fig.height=5, fig.width=5}
+```{r eval=TRUE}
 linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
 splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
 
 plot(linearRisk, splineRisk,
-     xlab="Linear", ylab = "Splines", pch=19)
-abline(a=0, b=1, lty=2, lwd=2, col='red')
+     xlab = "Linear", ylab = "Splines", pch = 19)
+abline(a = 0, b = 1, lty = 2, lwd = 2, col = 'red')
 ```
 
-These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.
+These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential. 
+
+Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for "case-base"):
+
+```{r, echo = FALSE}
+table_coef <- cbind(coefficients(model3), 
+                    coefficients(model4)[-(1:2)], 
+                    coefficients(model5)[-(1:2)], 
+                    coefficients(model6)[-(1:4)])
+knitr::kable(table_coef, format = "html", digits = 4,
+             col.names = c("Cox model", 
+                           "CB linear",
+                           "CB log-linear",
+                           "CB splines"))
+```
+
 
 ## Session information
 

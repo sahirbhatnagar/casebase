@@ -75,8 +75,8 @@ absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.default <- function (object, ...) {
-    stop("This function should be used with an object of class glm of compRisk",
+absoluteRisk.default <- function(object, ...) {
+    stop("This function should be used with an object of class glm or CompRisk",
          call. = TRUE)
 }
 
@@ -92,12 +92,14 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
         newdata2[object$timeVar] <- x
-        return(as.numeric(exp(predict(fit, newdata2))))
+        withCallingHandlers(pred <- predict(fit, newdata2),
+                            warning = handler_bsplines)
+        return(as.numeric(exp(pred)))
     }
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if(is.null(object$originalData)) {
+        if (is.null(object$originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
                  call. = FALSE)
         }
@@ -110,14 +112,14 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
         meanAR <- TRUE
     }
 
-    output <- matrix(NA, nrow = nrow(newdata), ncol=length(sort(unique(time))))
+    output <- matrix(NA, nrow = nrow(newdata), ncol = length(sort(unique(time))))
     time_ordered <- c(0, sort(unique(time)))
 
     if (method == "quadrature") {
         for (i in 1:nrow(newdata)) {
             for (j in 1:ncol(output)) {
-                output[i, j] <- integrate(lambda, lower=time_ordered[j], upper=time_ordered[j+1],
-                                          fit=object, newdata=newdata[i,],
+                output[i, j] <- integrate(lambda, lower = time_ordered[j], upper = time_ordered[j + 1],
+                                          fit = object, newdata = newdata[i, ],
                                           subdivisions = nsamp)$value
             }
             output[i,] <- cumsum(output[i,])
@@ -130,7 +132,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
             for (j in 1:ncol(output)) {
                 output[i, j] <- (time_ordered[j + 1] - time_ordered[j]) * mean(lambda(sampledPoints * (time_ordered[j + 1] -
                                                                                                            time_ordered[j]) +
-                                                                                          time_ordered[j], fit=object, newdata=newdata[i,]))
+                                                                                          time_ordered[j], fit = object, newdata = newdata[i,]))
             }
             output[i,] <- cumsum(output[i,])
         }
@@ -158,7 +160,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if(is.null(object@originalData)) {
+        if (is.null(object@originalData)) {
             stop("Can't estimate the mean absolute risk without the original data. See documentation.",
                  call. = FALSE)
         }
@@ -178,7 +180,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     ###################################################
     J <- length(object@typeEvents) - 1
     # output <- matrix(NA, nrow = nrow(newdata), ncol = J)
-    output <- array(NA, dim=c(nrow(newdata), length(sort(unique(time))), J))
+    output <- array(NA, dim = c(nrow(newdata), length(sort(unique(time))), J))
     time_ordered <- c(0, sort(unique(time)))
 
     # 1. Compute overall survival
@@ -195,7 +197,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     if (method == "quadrature") {
         overallSurv <- function(x, object, newdata) {
-            exp(-integrate(overallLambda, lower=0, upper=x, object=object, newdata=newdata,
+            exp(-integrate(overallLambda, lower = 0, upper = x, object = object, newdata = newdata,
                            subdivisions = nsamp)$value)
         }
         # 2. Compute individual subdensities f_j
@@ -217,8 +219,9 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         for (i in 1:nrow(newdata)) {
             for (j in 1:J) {
                 for (k in 1:dim(output)[2]) {
-                    output[i,k,j] <- integrate(subdensities[[j]], lower=time_ordered[k], upper=time_ordered[k+1],
-                                               object=object, newdata=newdata[i,],
+                    output[i,k,j] <- integrate(subdensities[[j]], lower = time_ordered[k],
+                                               upper = time_ordered[k + 1],
+                                               object = object, newdata = newdata[i,],
                                                subdivisions = nsamp)$value
                 }
                 output[i, ,j] <- cumsum(output[i, ,j])
@@ -230,7 +233,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         sampledPoints <- runif(nsamp)
         overallSurv <- function(x, object, newdata) {
             sampledPoints <- runif(nsamp) * x
-            exp(-x * mean(overallLambda(sampledPoints, object=object, newdata=newdata)))
+            exp(-x * mean(overallLambda(sampledPoints, object = object, newdata = newdata)))
         }
         for (i in 1:nrow(newdata)) {
             # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))

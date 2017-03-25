@@ -4,7 +4,19 @@
 \name{CompRisk-class}
 \alias{CompRisk-class}
 \alias{CompRisk}
+\alias{summary}
+\alias{summary,CompRisk-method}
 \title{An S4 class to store the output of fitSmoothHazard}
+\usage{
+summary(object, ...)
+
+\S4method{summary}{CompRisk}(object)
+}
+\arguments{
+\item{object}{Object of class \code{CompRisk}}
+
+\item{...}{Extra parameters}
+}
 \description{
 This class inherits from \code{vglm-class}.
 }
