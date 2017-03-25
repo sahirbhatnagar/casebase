@@ -2,12 +2,12 @@
 
 #' Population Time Plot
 #'
-#' \code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
+#' @description \code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
 #'
 #' @param x an object of class \code{popTime} or \code{popTimeExposure}.
 #' @param ... Ignored.
 #' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
-#'   \code{\link{par}}.
+#'   \code{\link[graphics]{par}}.
 #' @return The methods for \code{plot} return a population time plot, stratified by exposure status
 #'   in the case of \code{popTimeExposure}.
 #' @import ggplot2
@@ -56,6 +56,10 @@ plot.popTime <- function(x, ...,
 }
 
 #' @param ncol Number of columns.
+#' @inheritParams plot.popTime
+#' @return The methods for \code{plot} return a population time plot, stratified by exposure status
+#'   in the case of \code{popTimeExposure}.
+#' @import ggplot2
 #' @examples
 #' \dontrun{
 #' DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))

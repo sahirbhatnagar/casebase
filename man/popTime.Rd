@@ -27,7 +27,7 @@ checkArgsTimeEvent(data, time, event)
 \item{...}{Ignored.}
 
 \item{xlab, ylab, line.width, line.colour, point.size, point.colour, legend, legend.position}{See
-\code{\link{par}}.}
+\code{\link[graphics]{par}}.}
 
 \item{ncol}{Number of columns.}
 
@@ -58,6 +58,9 @@ exposure variable which must be contained in \code{data}. Default is
 \code{popTimeExposure}}
 }
 \value{
+The methods for \code{plot} return a population time plot, stratified by exposure status
+  in the case of \code{popTimeExposure}.
+
 The methods for \code{plot} return a population time plot, stratified by exposure status
   in the case of \code{popTimeExposure}.
 
