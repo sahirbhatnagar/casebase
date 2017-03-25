@@ -1,38 +1,8 @@
 # This is where all methods (e.g. print, plot) should appear
 
-
-
-#' Population Time Plots
-#'
-#' @description \code{popTime} is a generic function used to produce population
-#'   time plots
-#' @param x an object of class \code{data.frame, data.table, popTimeData,
-#'   popTimeExposure}. See \code{\link{popTimeData}} for details.
-#' @param ... Ignored.
-#' @param
-#'   xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position
-#'   See \code{\link{par}}.
-#' @return a population time plot
-#' @import ggplot2
-#'
-# @export
-# popTime <- function(x) UseMethod("popTime")
-
-
-# @rdname popTime
-# popTime.default <- function(x, ...){
-#
-#     stop(strwrap(sprintf("popTime does not know how to handle object of class %s
-#                     and can only be used on classes data.frame, data.table,
-#                     popTimeData and popTimeExposureData",class(x))),
-#          call. = FALSE)
-#
-# }
-
-
 #' Population Time Plot
 #'
-#' \code{plot} method for objects of class \code{popTime}
+#' @description \code{plot} method for objects of class \code{popTime}
 #'
 #' @param x an object of class \code{popTime}. See \code{\link{popTime}} for details.
 #' @param ... Ignored.
