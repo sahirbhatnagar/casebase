@@ -9,4 +9,5 @@ vignettes/*knit.md
 test.rds
 vignettes/*cache/
 data-raw
+references
 
