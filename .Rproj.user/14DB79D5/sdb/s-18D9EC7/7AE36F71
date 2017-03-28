@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# jh july 27, 2016\n\n\n# setwd(\"/Users/jameshanley/Dropbox/work/osm/profileArticle\")\n\n# ds=read.csv(\"ERSPCindividualData.csv\")\nrm(list=ls())\n# ERSPC <- read.csv(\"data-raw/hanley/ERSPCindividualData.csv\")\n# devtools::use_data(ERSPC, overwrite = TRUE)\ndevtools::load_all()\ndata(\"ERSPC\")\n\n# load(file = \"data/ERSPC.rda\")\n\n# str(ds); head(ds)\n\nlibrary(survival)\nlibrary(casebase)\nlibrary(data.table)\n\n# DT_ds <- as.data.table(ds)\n# DT_ds[, ScrArm:=factor(ScrArm, levels = 0:1, labels = c(\"No-Screening Arm\",\"Screening Arm\"))]\n# popTimeData <- popTime(DT_ds, event = \"DeadOfPrCa\", exposure = \"ScrArm\")\n# plot(popTimeData)\n\n\n# cumulative incidence plots\nds <- ERSPC\nKM <- survfit(Surv(Follow.Up.Time,DeadOfPrCa) ~ ScrArm, data = ds)\nstr(KM)\n\npar(mfrow=c(1,1),mar = c(5,5,0.1,0.1))\nplot(KM$time[    1: 1501], 1-KM$surv[   1:1501], type=\"s\", col=\"red\" ,\n  ylab = \"Risk\", xlab=\"Years since Randomization\")\nlines(KM$time[1502: 2923], 1-KM$surv[1502: 2923], type=\"s\", col=\"green\" )\n\n\n#  PopulationTime plots\n\n\npar(mfrow=c(1,1),mar = c(0.01,0.01,0.1,0.1))\n\nplot(c(-0.5,15.75),c(-93000,80000), col=\"white\" )\nset.seed(7654321)\n\nOFF = 2000\n\n\nfor(i in 0:1) {\n\tt=seq(0.01,14.9,0.01)\n\tS = function(x) sum(ds$Follow.Up.Time[ds$ScrArm==i] >= x)\n\tn = unlist(lapply(t,\"S\"))\n\tif(i==1) yy =  c(0,n,0) + OFF\n\tif(i==0) yy =  c(0,-n,0) - OFF\n\tpolygon(c(0,t,14.9),yy,col=\"grey80\",border=NA)\n\n    t.d = ds$Follow.Up.Time[ds$ScrArm==i & ds$DeadOfPrCa==1]\n\n\tfor( j in 1:length(t.d) ) {\n\t\ttime.index =  ceiling(t.d[j]/0.01)\n\t\tnn   = n[ time.index ]\n\t\tif(i==1) h = runif(1,0.01*nn,0.99*nn)  + OFF\n\t\tif(i==0) h = runif(1,-0.99*nn,-0.01*nn) - OFF\n\t\tpoints(t.d[j],h, pch=19,cex=0.25,col=\"red\")\n\t}\n}\n\nfor (t in 1:15) text(t,0,toString(t), cex=0.75)\ntext(15.25,0,\"Year\", cex=0.75,adj=c(0,0.5))\n\nfor (n in seq(0,90000,10000)) {\n\tif(n> 0 & n < 80000) text(-0.1,n+OFF,format(n,big.mark=\",\"), cex=0.75,adj=c(1,0.5))\n\tif(n> 0) text(-0.1,-n-OFF,format(n,big.mark=\",\"), cex=0.75,adj=c(1,0.5))\n\tsegments(-0.05,  n+OFF, 0, n+OFF , lwd=0.5)\n\tsegments(-0.05, -n-OFF, 0, -n-OFF, lwd=0.5 )\n\n}\ntext(4, 70000+OFF,\"Screening Arm of ERSPC\", cex=1,adj=c(0,0.5))\ntext(4,-85000-OFF,\"No-Screening Arm\", cex=1,adj=c(0,0.5))\n\ntext(-0.75,78000+OFF,\"Number of\nMen being Followed\", cex=1,adj=c(0,0.5))\nh = 50000+OFF\npoints(9.5,h, pch=19,cex=0.25,col=\"red\")\ntext(9.6,h,\"Death from Prostate Cancer\", adj=c(0,0.5))\n\n\n\n",
+    "created" : 1487765877217.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3764053521",
+    "id" : "7AE36F71",
+    "lastKnownWriteTime" : 1487787011,
+    "last_content_update" : 1487787011630,
+    "path" : "~/git_repositories/casebase/data-raw/hanley/ERSPCpopulationTimePlot.R",
+    "project_path" : "data-raw/hanley/ERSPCpopulationTimePlot.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
