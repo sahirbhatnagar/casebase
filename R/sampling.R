@@ -69,7 +69,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
              call. = FALSE)
     }
     if (comprisk) surv_type <- "mstate" else surv_type <- "right"
-    selectTime <- (names(data) == timeVar)
+    # selectTime <- (names(data) == timeVar)
     survObj <- survival::Surv(data[[timeVar]],
                               eventVar,
                               type = surv_type)
@@ -84,37 +84,33 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
         # The idea here is to sample b individuals, with replacement, and then
         # to sample uniformly a time point for each of them. The sampled time
         # point must lie between the beginning and the end of follow-up
-        p <- survObj[, "time"]/B
-        who <- sample(n, b, replace = TRUE, prob = p)
-        bSeries <- as.matrix(survObj[who, ])
-        bSeries[, "status"] <- 0
-        bSeries[, "time"] <- runif(b) * bSeries[, "time"]
+        who <- sample(seq_len(n), b, replace = TRUE)
     }
 
     if (type == "multinomial") {
         # Multinomial sampling: probability of individual contributing a
         # person-moment to base series is proportional to time variable
-        # dt <- B/(b+1)
-        # pSum <- c(0) #Allocate memory first!!
-        # for (i in 1:n) {
-        #     pSum <- c(pSum, pSum[i] + survObj[i, "time"])
-        # }
-        pSum <- c(0, cumsum(survObj[, "time"]))
-        everyDt <- B*(1:b)/(b+1)
-        who <- findInterval(everyDt, pSum)
-        bSeries <- as.matrix(survObj[who, ])
-        bSeries[, "status"] <- 0
-        bSeries[, "time"] <- everyDt - pSum[who]
+        # pSum <- c(0, cumsum(survObj[, "time"]))
+        # everyDt <- B*(1:b)/(b+1)
+        # who <- findInterval(everyDt, pSum)
+        # bSeries <- as.matrix(survObj[who, ])
+        # bSeries[, "status"] <- 0
+        # bSeries[, "time"] <- everyDt - pSum[who]
+        p <- survObj[, "time"]/B
+        who <- sample(n, b, replace = TRUE, prob = p)
     }
+    bSeries <- as.matrix(survObj[who, ])
+    bSeries[, "status"] <- 0
+    bSeries[, "time"] <- runif(b) * bSeries[, "time"]
 
     # Next commented line will break on data.table
     # bSeries <- cbind(bSeries, data[who, colnames(data) != c("time", "event")])
     selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
-    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,,drop=FALSE])
+    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[who,,drop = FALSE])
     names(bSeries)[names(bSeries) == "status"] <- eventName
     names(bSeries)[names(bSeries) == "time"] <- timeVar
 
-    cSeries <- data[which(subset(data, select=(names(data) == eventName)) != 0),]
+    cSeries <- data[which(subset(data, select = (names(data) == eventName)) != 0),]
     # cSeries <- survObj[survObj[, "status"] == 1, ]
     # cSeries <- cSeries[, c(i.var, id.var, x.vars, time)]
     # cSeries$y <- 1
