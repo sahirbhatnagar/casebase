@@ -1,76 +1,82 @@
+---
+author: Sahir
+date: 'January 22, 2017'
+output:
+  md_document:
+    variant: markdown
+title: data
+---
+
 casebase: An Alternative Framework for Survival Analysis
 --------------------------------------------------------
 
-This vignette introduces the main functions in the `casebase` package. The methods implemented in this package are based on the theory developped in [Fitting Smooth-in-Time Prognostic Risk Functions via Logistic Regression (Hanley and Miettinen, 2009)](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf). The motivation for this work is nicely summarised by Cox:
+This vignette introduces the main functions in the `casebase` package.
+The methods implemented in this package are based on the theory
+developped in [Fitting Smooth-in-Time Prognostic Risk Functions via
+Logistic Regression (Hanley and Miettinen,
+2009)](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf).
+The motivation for this work is nicely summarised by Cox:
 
 ![](http://i.imgur.com/E674HYw.png)
 
-The purpose of the `casebase` package is to provide practitioners with an easy-to-use software tool to predict the risk (or cumulative incidence (CI)) of an event, for a particular patient. The following points should be noted:
+The purpose of the `casebase` package is to provide practitioners with
+an easy-to-use software tool to predict the risk (or cumulative
+incidence (CI)) of an event, for a particular patient. The following
+points should be noted:
 
-1.  Time matching/risk set sampling (including Cox partial likelihood) eliminates the baseline hazard from the likelihood expression for the hazard ratios
-2.  If, however, the absolute risks are of interest, they have to be recovered using the semi-parametric Breslow estimator
-3.  Alternative approaches for fitting flexible hazard models for estimating absolute risks, not requiring this two-step approach? Yes! [Hanley and Miettinen, 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf)
+1.  Time matching/risk set sampling (including Cox partial likelihood)
+    eliminates the baseline hazard from the likelihood expression for
+    the hazard ratios
+2.  If, however, the absolute risks are of interest, they have to be
+    recovered using the semi-parametric Breslow estimator
+3.  Alternative approaches for fitting flexible hazard models for
+    estimating absolute risks, not requiring this two-step approach?
+    Yes! [Hanley and Miettinen,
+    2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf)
 
-> [Hanley and Miettinen, 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf) propose a fully parametric hazard model that can be fit via logistic regression. From the fitted hazard function, cumulative incidence and, thus, risk functions of time, treatment and profile can be easily derived.
+> [Hanley and Miettinen,
+> 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf)
+> propose a fully parametric hazard model that can be fit via logistic
+> regression. From the fitted hazard function, cumulative incidence and,
+> thus, risk functions of time, treatment and profile can be easily
+> derived.
 
 Cox Model vs. Case-base Sampling
 --------------------------------
 
-In the following table we provide a comparison between the Cox model and case-base sampling:
+In the following table we provide a comparison between the Cox model and
+case-base sampling:
 
-<table>
-<colgroup>
-<col width="16%" />
-<col width="23%" />
-<col width="60%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th></th>
-<th>Cox</th>
-<th>Case Base Sampling</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>model type</td>
-<td>semi-parametric</td>
-<td>fully parametric (logistic/multinomial regression)</td>
-</tr>
-<tr class="even">
-<td>time</td>
-<td>left hand side of the equation</td>
-<td>right hand side - allows flexible modeling of time</td>
-</tr>
-<tr class="odd">
-<td>cumulative incidence</td>
-<td>step function</td>
-<td>smooth-in-time curve</td>
-</tr>
-<tr class="even">
-<td>non-proportional hazards</td>
-<td>interaction of covariates with time</td>
-<td>handled directly by modeling time as a covariate</td>
-</tr>
-<tr class="odd">
-<td>model testing</td>
-<td></td>
-<td>make use of GLM framework (LRT, AIC, BIC)</td>
-</tr>
-<tr class="even">
-<td>competing risks</td>
-<td>difficult</td>
-<td>cause-specific cumulative incidence functions (CIFs) directly obtained via multinomial regression</td>
-</tr>
-</tbody>
-</table>
+  ------------------------------------------------------------------------
+              Cox              Case Base Sampling
+  ----------- ---------------- -------------------------------------------
+  model type  semi-parametric  fully parametric (logistic/multinomial
+                               regression)
+
+  time        left hand side   right hand side - allows flexible modeling
+              of the equation  of time
+
+  cumulative  step function    smooth-in-time curve
+  incidence                    
+
+  non-proport interaction of   handled directly by modeling time as a
+  ional       covariates with  covariate
+  hazards     time             
+
+  model                        make use of GLM framework (LRT, AIC, BIC)
+  testing                      
+
+  competing   difficult        cause-specific cumulative incidence
+  risks                        functions (CIFs) directly obtained via
+                               multinomial regression
+  ------------------------------------------------------------------------
 
 Load Required Packages
 ----------------------
 
 We fist install and load the required packages:
 
-``` r
+``` {.r}
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
 pacman::p_load(survival)
 pacman::p_load(casebase)
@@ -80,9 +86,11 @@ pacman::p_load(splines)
 European Randomized Study of Prostate Cancer Screening Data
 -----------------------------------------------------------
 
-Throughout this vignette, we make use of the European Randomized Study of Prostate Cancer Screening data which ships with the `casebase` package:
+Throughout this vignette, we make use of the European Randomized Study
+of Prostate Cancer Screening data which ships with the `casebase`
+package:
 
-``` r
+``` {.r}
 data("ERSPC")
 head(ERSPC)
 ```
@@ -95,18 +103,29 @@ head(ERSPC)
     ## 5      0         0.0027          0
     ## 6      0         0.0027          0
 
-``` r
+``` {.r}
 ERSPC$ScrArm <- factor(ERSPC$ScrArm, levels = c(0,1), labels = c("Control group", "Screening group"))
 ```
 
-The results of this study were published by [Schroder FH, et al. N Engl J Med 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Schroder_et_al-2009-NEJM.pdf). There's a really interesting story on how this data was obtained. See `help(ERSPC)` and [Liu Z, Rich B, Hanley JA, Recovering the raw data behind a non-parametric survival curve. Systematic Reviews 2014](https://github.com/sahirbhatnagar/casebase/blob/master/references/Liu_et_al-2015-Systematic_Reviews.pdf) for further details.
+The results of this study were published by [Schroder FH, et al. N Engl
+J Med
+2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Schroder_et_al-2009-NEJM.pdf).
+There's a really interesting story on how this data was obtained. See
+`help(ERSPC)` and [Liu Z, Rich B, Hanley JA, Recovering the raw data
+behind a non-parametric survival curve. Systematic Reviews
+2014](https://github.com/sahirbhatnagar/casebase/blob/master/references/Liu_et_al-2015-Systematic_Reviews.pdf)
+for further details.
 
 Population Time Plot
 --------------------
 
-Population time plots can be extremely informative graphical displays of survival data. They should be the first step in your exploratory data analyses. We facilitate this task in the `casebase` package using the `popTime` function. We first create the necessary dataset for producing the population time plots:
+Population time plots can be extremely informative graphical displays of
+survival data. They should be the first step in your exploratory data
+analyses. We facilitate this task in the `casebase` package using the
+`popTime` function. We first create the necessary dataset for producing
+the population time plots:
 
-``` r
+``` {.r}
 pt_object <- casebase::popTime(ERSPC, event = "DeadOfPrCa")
 ```
 
@@ -117,7 +136,7 @@ pt_object <- casebase::popTime(ERSPC, event = "DeadOfPrCa")
 
 We can see its contents and its class:
 
-``` r
+``` {.r}
 head(pt_object)
 ```
 
@@ -136,28 +155,30 @@ head(pt_object)
     ## 5: 159889  0           0
     ## 6: 159888  0           0
 
-``` r
+``` {.r}
 class(pt_object)
 ```
 
     ## [1] "popTime"    "data.table" "data.frame"
 
-The `casebase` package has a `plot` method for objects of class `popTime` and `popTimeExposure`:
+The `casebase` package has a `plot` method for objects of class
+`popTime` and `popTimeExposure`:
 
-``` r
+``` {.r}
 plot(pt_object)
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-4-1.png)
 
 > Can you explain the distinct shape of the grey area?
 
 Exposure Stratified Population Time Plot
 ----------------------------------------
 
-We can also create exposure stratified plots by specifying the `exposure` argument in the `popTime` function:
+We can also create exposure stratified plots by specifying the
+`exposure` argument in the `popTime` function:
 
-``` r
+``` {.r}
 pt_object_strat <- casebase::popTime(ERSPC, event = "DeadOfPrCa", exposure = "ScrArm")
 ```
 
@@ -170,7 +191,7 @@ pt_object_strat <- casebase::popTime(ERSPC, event = "DeadOfPrCa", exposure = "Sc
 
 We can see its contents and its class:
 
-``` r
+``` {.r}
 head(pt_object_strat)
 ```
 
@@ -203,34 +224,37 @@ head(pt_object_strat)
     ## $exposure
     ## [1] "ScrArm"
 
-``` r
+``` {.r}
 class(pt_object_strat)
 ```
 
     ## [1] "popTimeExposure" "list"
 
-The `casebase` package has a `plot` method for objects of class `popTime` and `popTimeExposure`:
+The `casebase` package has a `plot` method for objects of class
+`popTime` and `popTimeExposure`:
 
-``` r
+``` {.r}
 plot(pt_object_strat)
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-7-1.png)
 
 We can also plot them side-by-side using the `ncol` argument:
 
-``` r
+``` {.r}
 plot(pt_object_strat, ncol = 2)
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-8-1.png)
 
 Cox Model
 ---------
 
-We first fit a Cox model, examine the hazard ratio for the screening group (relative to the control group), and plot the cumulative incidence function (CIF).
+We first fit a Cox model, examine the hazard ratio for the screening
+group (relative to the control group), and plot the cumulative incidence
+function (CIF).
 
-``` r
+``` {.r}
 cox_model <- survival::coxph( Surv(Follow.Up.Time, DeadOfPrCa) ~ ScrArm, data = ERSPC)
 (sum_cox_model <- summary(cox_model))
 ```
@@ -255,7 +279,7 @@ cox_model <- survival::coxph( Surv(Follow.Up.Time, DeadOfPrCa) ~ ScrArm, data = 
     ## Wald test            = 6.37  on 1 df,   p=0.0116
     ## Score (logrank) test = 6.39  on 1 df,   p=0.0115
 
-``` r
+``` {.r}
 sum_cox_model$coefficients[,"exp(coef)"]
 ```
 
@@ -263,7 +287,7 @@ sum_cox_model$coefficients[,"exp(coef)"]
 
 We can plot the CIF for each group:
 
-``` r
+``` {.r}
 new_data <- data.frame(ScrArm = c("Control group", "Screening group"),
                        ignore = 99)
 
@@ -281,16 +305,21 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-10-1.png)
 
 Case-base Sampling
 ------------------
 
-Next we fit several models using case-base sampling. The models we fit differ in how we choose to model time.
+Next we fit several models using case-base sampling. The models we fit
+differ in how we choose to model time.
 
-The `fitSmoothHazard` function provides an estimate of the hazard function \\( h(x, t) \\) is the hazard function, \\( t \\) denotes the numerical value (number of units) of a point in prognostic/prospective time and \\( x \\) is the realization of the vector \\( X \\) of variates based on the patient's profile and intervention (if any).
+The `fitSmoothHazard` function provides an estimate of the hazard
+function \\( h(x, t) \\) is the hazard function, \\( t \\) denotes the
+numerical value (number of units) of a point in prognostic/prospective
+time and \\( x \\) is the realization of the vector \\( X \\) of
+variates based on the patient's profile and intervention (if any).
 
-``` r
+``` {.r}
 casebase_exponential <- casebase::fitSmoothHazard(DeadOfPrCa ~ ScrArm, 
                                                   data = ERSPC, 
                                                   ratio = 100, 
@@ -299,7 +328,7 @@ casebase_exponential <- casebase::fitSmoothHazard(DeadOfPrCa ~ ScrArm,
 
     ## 'Follow.Up.Time' will be used as the time variable
 
-``` r
+``` {.r}
 summary(casebase_exponential)
 ```
 
@@ -313,8 +342,8 @@ summary(casebase_exponential)
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value            Pr(>|z|)    
-    ## (Intercept)            -7.7647     0.0557 -139.43 <0.0000000000000002 ***
-    ## ScrArmScreening group  -0.2173     0.0884   -2.46               0.014 *  
+    ## (Intercept)            -7.7642     0.0557 -139.42 <0.0000000000000002 ***
+    ## ScrArmScreening group  -0.2185     0.0884   -2.47               0.013 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -326,29 +355,32 @@ summary(casebase_exponential)
     ## 
     ## Number of Fisher Scoring iterations: 7
 
-``` r
+``` {.r}
 exp(casebase_exponential$coefficients[2])
 ```
 
     ## ScrArmScreening group 
     ##                   0.8
 
-``` r
+``` {.r}
 exp(confint(casebase_exponential)[2,])
 ```
 
     ## Waiting for profiling to be done...
 
     ##  2.5 % 97.5 % 
-    ##   0.68   0.96
+    ##   0.68   0.95
 
-The `absoluteRisk` function provides an estimate of the cumulative incidence curves for a specific risk profile using the following equation:
+The `absoluteRisk` function provides an estimate of the cumulative
+incidence curves for a specific risk profile using the following
+equation:
 
-*C**I*(*x*, *t*)=1 − *e**x**p*\[−∫<sub>0</sub><sup>*t*</sup>*h*(*x*,*u*)d*u*\]
+$$ CI(x, t) = 1 - exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] $$
 
-In the plot below, we overlay the estimated CIF from the casebase exponential model on the Cox model CIF:
+In the plot below, we overlay the estimated CIF from the casebase
+exponential model on the Cox model CIF:
 
-``` r
+``` {.r}
 smooth_risk_exp <- casebase::absoluteRisk(object = casebase_exponential, 
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
@@ -372,11 +404,11 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-12-1.png)
 
 ### Linear Time
 
-``` r
+``` {.r}
 casebase_time <- casebase::fitSmoothHazard(DeadOfPrCa ~ Follow.Up.Time + ScrArm, 
                                            data = ERSPC, 
                                            ratio = 100, 
@@ -385,7 +417,7 @@ casebase_time <- casebase::fitSmoothHazard(DeadOfPrCa ~ Follow.Up.Time + ScrArm,
 
     ## 'Follow.Up.Time' will be used as the time variable
 
-``` r
+``` {.r}
 summary(casebase_time)
 ```
 
@@ -395,43 +427,43 @@ summary(casebase_time)
     ## 
     ## Deviance Residuals: 
     ##    Min      1Q  Median      3Q     Max  
-    ## -0.390  -0.162  -0.122  -0.095   3.461  
+    ## -0.377  -0.162  -0.123  -0.095   3.465  
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value            Pr(>|z|)    
-    ## (Intercept)            -9.0289     0.1120  -80.64 <0.0000000000000002 ***
-    ## Follow.Up.Time          0.2202     0.0145   15.18 <0.0000000000000002 ***
-    ## ScrArmScreening group  -0.2159     0.0886   -2.44               0.015 *  
+    ## (Intercept)            -9.0201     0.1123  -80.33 <0.0000000000000002 ***
+    ## Follow.Up.Time          0.2202     0.0146   15.11 <0.0000000000000002 ***
+    ## ScrArmScreening group  -0.2384     0.0886   -2.69              0.0072 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 6059.0  on 54539  degrees of freedom
-    ## Residual deviance: 5815.9  on 54537  degrees of freedom
+    ## Residual deviance: 5816.2  on 54537  degrees of freedom
     ## AIC: 5822
     ## 
     ## Number of Fisher Scoring iterations: 8
 
-``` r
+``` {.r}
 exp(casebase_time$coefficients)
 ```
 
     ##           (Intercept)        Follow.Up.Time ScrArmScreening group 
-    ##               0.00012               1.24633               0.80581
+    ##               0.00012               1.24632               0.78791
 
-``` r
+``` {.r}
 exp(confint(casebase_time))
 ```
 
     ## Waiting for profiling to be done...
 
     ##                          2.5 %  97.5 %
-    ## (Intercept)           0.000096 0.00015
-    ## Follow.Up.Time        1.211511 1.28243
-    ## ScrArmScreening group 0.676552 0.95782
+    ## (Intercept)           0.000097 0.00015
+    ## Follow.Up.Time        1.211365 1.28258
+    ## ScrArmScreening group 0.661523 0.93653
 
-``` r
+``` {.r}
 smooth_risk_time <- casebase::absoluteRisk(object = casebase_time, 
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
@@ -454,11 +486,11 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-14-1.png)
 
 ### Flexible time using BSplines
 
-``` r
+``` {.r}
 casebase_splines <- casebase::fitSmoothHazard(DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm, 
                                            data = ERSPC, 
                                            ratio = 100, 
@@ -467,7 +499,7 @@ casebase_splines <- casebase::fitSmoothHazard(DeadOfPrCa ~ bs(Follow.Up.Time) + 
 
     ## 'Follow.Up.Time' will be used as the time variable
 
-``` r
+``` {.r}
 summary(casebase_splines)
 ```
 
@@ -477,49 +509,49 @@ summary(casebase_splines)
     ## 
     ## Deviance Residuals: 
     ##    Min      1Q  Median      3Q     Max  
-    ## -0.390  -0.173  -0.135  -0.085   3.797  
+    ## -0.459  -0.173  -0.135  -0.085   3.808  
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)           -10.2534     0.3155  -32.50 < 0.0000000000000002 ***
-    ## bs(Follow.Up.Time)1     4.2397     0.7966    5.32        0.00000010266 ***
-    ## bs(Follow.Up.Time)2     2.1808     0.4752    4.59        0.00000443878 ***
-    ## bs(Follow.Up.Time)3     4.4612     0.6940    6.43        0.00000000013 ***
-    ## ScrArmScreening group  -0.2317     0.0886   -2.61               0.0089 ** 
+    ## (Intercept)           -10.3189     0.3208  -32.17 < 0.0000000000000002 ***
+    ## bs(Follow.Up.Time)1     4.4814     0.8196    5.47       0.000000045552 ***
+    ## bs(Follow.Up.Time)2     1.9707     0.5026    3.92       0.000088251848 ***
+    ## bs(Follow.Up.Time)3     4.8713     0.7524    6.47       0.000000000095 ***
+    ## ScrArmScreening group  -0.2097     0.0886   -2.37                0.018 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 6059.0  on 54539  degrees of freedom
-    ## Residual deviance: 5788.3  on 54535  degrees of freedom
-    ## AIC: 5798
+    ## Residual deviance: 5785.2  on 54535  degrees of freedom
+    ## AIC: 5795
     ## 
-    ## Number of Fisher Scoring iterations: 8
+    ## Number of Fisher Scoring iterations: 9
 
-``` r
+``` {.r}
 exp(casebase_splines$coefficients)
 ```
 
     ##           (Intercept)   bs(Follow.Up.Time)1   bs(Follow.Up.Time)2 
-    ##              0.000035             69.385780              8.853417 
+    ##              0.000033             88.360482              7.175770 
     ##   bs(Follow.Up.Time)3 ScrArmScreening group 
-    ##             86.594551              0.793159
+    ##            130.489344              0.810828
 
-``` r
+``` {.r}
 exp(confint(casebase_splines))
 ```
 
     ## Waiting for profiling to be done...
 
-    ##                           2.5 %     97.5 %
-    ## (Intercept)            0.000018   0.000064
-    ## bs(Follow.Up.Time)1   15.038556 343.343977
-    ## bs(Follow.Up.Time)2    3.596089  23.269231
-    ## bs(Follow.Up.Time)3   21.056156 323.643381
-    ## ScrArmScreening group  0.665937   0.942765
+    ##                           2.5 %    97.5 %
+    ## (Intercept)            0.000017   0.00006
+    ## bs(Follow.Up.Time)1   18.326261 457.25128
+    ## bs(Follow.Up.Time)2    2.770128  19.97915
+    ## bs(Follow.Up.Time)3   28.092837 543.12946
+    ## ScrArmScreening group  0.680777   0.96376
 
-``` r
+``` {.r}
 smooth_risk_splines <- casebase::absoluteRisk(object = casebase_splines, 
                                               time = seq(0,15,0.1), 
                                               newdata = new_data)
@@ -542,12 +574,12 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-16-1.png)
 
 Comparing Models Using Likelihood Ratio Test
 --------------------------------------------
 
-``` r
+``` {.r}
 anova(casebase_time, casebase_splines, test = "LRT")
 ```
 
@@ -555,12 +587,12 @@ anova(casebase_time, casebase_splines, test = "LRT")
     ## 
     ## Model 1: DeadOfPrCa ~ Follow.Up.Time + ScrArm + offset(offset)
     ## Model 2: DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm + offset(offset)
-    ##   Resid. Df Resid. Dev Df Deviance Pr(>Chi)    
-    ## 1     54537       5816                         
-    ## 2     54535       5788  2     27.6 0.000001 ***
+    ##   Resid. Df Resid. Dev Df Deviance   Pr(>Chi)    
+    ## 1     54537       5816                           
+    ## 2     54535       5785  2       31 0.00000019 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-``` r
+``` {.r}
 knitr::knit_exit()
 ```
