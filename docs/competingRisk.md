@@ -5,9 +5,9 @@ We will use the same data that was used in Scrucca *et al* \[-@scrucca2010regres
 
 ``` r
 set.seed(12345)
-
-DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
-head(DT)
+library(casebase)
+data(bmtcrr)
+head(bmtcrr)
 ```
 
     ##   Sex   D   Phase Age Status Source  ftime
@@ -86,30 +86,31 @@ Population-time plots
 In order to try and visualize the incidence density of relapse, we can look at a population-time plot: on the X-axis we have time, and on the Y-axis we have the size of the risk set at a particular time point. Failure times associated to the event of interest can then be highlighted on the plot using red dots.
 
 ``` r
-nobs <- nrow(DT)
-ftime <- DT$ftime
-ord <- order(ftime, decreasing=FALSE)
+nobs <- nrow(bmtcrr)
+ftime <- bmtcrr$ftime
+ord <- order(ftime, decreasing = FALSE)
 
 # We split the person-moments in four categories:
 # 1) at-risk
 # 2) main event
 # 3) competing event
 # 4) censored
-yCoords <- cbind(cumsum(DT[ord, "Status"] == 2), 
-                 cumsum(DT[ord, "Status"] == 1),
-                 cumsum(DT[ord, "Status"] == 0))
+yCoords <- cbind(cumsum(bmtcrr[ord, "Status"] == 2), 
+                 cumsum(bmtcrr[ord, "Status"] == 1),
+                 cumsum(bmtcrr[ord, "Status"] == 0))
 yCoords <- cbind(yCoords, nobs - rowSums(yCoords))
 
 # Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(c(0, 0, ftime[ord], max(ftime), 0),
         c(0, nobs, yCoords[,4], 0, 0), col = "grey90")
-cases <- DT[, "Status"] == 1
+cases <- bmtcrr[, "Status"] == 1
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20, 
+       col = "red", cex = 1)
 ```
 
 ![](competingRisk_files/figure-markdown_github/poptime1-1.png)
@@ -120,8 +121,8 @@ To get an idea of whether only relapse is responsible for the shrinking of the r
 
 ``` r
 # Plot at-risk and events
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(x = c(0,ftime[ord], max(ftime), 0), 
         y = c(0, yCoords[,2], 0, 0), 
         col = "firebrick3")
@@ -131,10 +132,11 @@ polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-legend("topright", legend=c("Relapse", "At-risk"), 
-       col=c("firebrick3", "grey90"),
-       pch=15)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20,
+       col = "red", cex = 1)
+legend("topright", legend = c("Relapse", "At-risk"), 
+       col = c("firebrick3", "grey90"),
+       pch = 15)
 ```
 
 ![](competingRisk_files/figure-markdown_github/poptime2-1.png)
@@ -142,8 +144,8 @@ legend("topright", legend=c("Relapse", "At-risk"),
 Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:
 
 ``` r
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(x = c(0, max(ftime), max(ftime), 0),
         y = c(0, 0, nobs, nobs), col = "white")
 # Event of interest
@@ -161,10 +163,11 @@ polygon(x = c(0, ftime[ord], max(ftime), 0),
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-legend("topright", legend=c("Relapse", "Competing event", "At-risk"), 
-       col=c("firebrick3", "dodgerblue2", "grey90"),
-       pch=15)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20,
+       col = "red", cex = 1)
+legend("topright", legend = c("Relapse", "Competing event", "At-risk"), 
+       col = c("firebrick3", "dodgerblue2", "grey90"),
+       pch = 15)
 ```
 
 ![](competingRisk_files/figure-markdown_github/poptime3-1.png)
@@ -177,9 +180,8 @@ Analysis
 We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:
 
 ``` r
-library(casebase)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
-                          data = DT, 
+                          data = bmtcrr, 
                           ratio = 1000, 
                           type = "uniform", 
                           time = "ftime")
@@ -240,7 +242,7 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 
 ``` r
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, 
+                          data = bmtcrr, 
                           ratio = 1000, 
                           type = "uniform", 
                           time = "ftime")
@@ -300,7 +302,7 @@ Finally, using splines, we can be quite flexible about the way the hazard depend
 ``` r
 model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
-    data = DT, 
+    data = bmtcrr, 
     ratio = 1000, 
     type = "uniform", 
     time = "ftime")
@@ -364,20 +366,20 @@ Again, we see that the results are quite similar for this third model.
 We now look at the 2-year risk of relapse:
 
 ``` r
-linearRisk <- absoluteRisk(object = model1, time = 24, newdata = DT[1:10,])
-logRisk <- absoluteRisk(object = model2, time = 24, newdata = DT[1:10,])
-splineRisk <- absoluteRisk(object = model3, time = 24, newdata = DT[1:10,])
+linearRisk <- absoluteRisk(object = model1, time = 24, newdata = bmtcrr[1:10,])
+logRisk <- absoluteRisk(object = model2, time = 24, newdata = bmtcrr[1:10,])
+splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ``` r
 plot(linearRisk[,1], logRisk[,1],
-     xlab="Linear", ylab = "Log/Spline", pch=19,
-     xlim=c(0,1), ylim=c(0,1), col='red')
+     xlab = "Linear", ylab = "Log/Spline", pch = 19,
+     xlim = c(0,1), ylim = c(0,1), col = 'red')
 points(linearRisk[,1], splineRisk[,1],
-       col = 'blue', pch=19)
-abline(a=0, b=1, lty=2, lwd=2)
-legend("topleft", legend=c("Log", "Spline"),
-       pch=19, col=c("red", "blue"))
+       col = 'blue', pch = 19)
+abline(a = 0, b = 1, lty = 2, lwd = 2)
+legend("topleft", legend = c("Log", "Spline"),
+       pch = 19, col = c("red", "blue"))
 ```
 
 ![](competingRisk_files/figure-markdown_github/absRiskPlot-1.png)
@@ -389,19 +391,19 @@ As we can see, Model 1 and Model 2 give different absolute risk predictions, but
 mean(linearRisk[,1])
 ```
 
-    ## [1] 0.204129
+    ## [1] 0.1422626
 
 ``` r
 mean(logRisk[,1])
 ```
 
-    ## [1] 0.1506065
+    ## [1] 0.1816989
 
 ``` r
 mean(splineRisk[,1])
 ```
 
-    ## [1] 0.1136662
+    ## [1] 0.1393753
 
 Session information
 -------------------
@@ -422,9 +424,9 @@ Session information
     ##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
     ## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.39-5  yaml_2.1.14     
     ## [17] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
-    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
-    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    scales_0.4.1    
-    ## [29] backports_1.0.5  stats4_3.3.1     chron_2.3-47
+    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    codetools_0.2-14
+    ## [25] VGAM_1.0-2       evaluate_0.10    rmarkdown_1.3    stringi_1.1.2   
+    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
 
 References
 ----------
