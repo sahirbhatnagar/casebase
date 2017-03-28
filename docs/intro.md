@@ -71,6 +71,89 @@ case-base sampling:
                                multinomial regression
   ------------------------------------------------------------------------
 
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+feature
+</th>
+<th style="text-align:left;">
+Cox
+</th>
+<th style="text-align:left;">
+Case.Base.Sampling
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+model type
+</td>
+<td style="text-align:left;">
+semi-parametric
+</td>
+<td style="text-align:left;">
+fully parametric (logistic/multinomial regression)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+time
+</td>
+<td style="text-align:left;">
+left hand side of the equation
+</td>
+<td style="text-align:left;">
+right hand side - allows flexible modeling of time
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cumulative incidence
+</td>
+<td style="text-align:left;">
+step function
+</td>
+<td style="text-align:left;">
+smooth-in-time curve
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+non-proportional hazards
+</td>
+<td style="text-align:left;">
+interaction of covariates with time
+</td>
+<td style="text-align:left;">
+handled directly by modeling time as a covariate
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+model testing
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+make use of GLM framework (LRT, AIC, BIC)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+competing risks
+</td>
+<td style="text-align:left;">
+difficult
+</td>
+<td style="text-align:left;">
+cause-specific cumulative incidence functions (CIFs) directly obtained
+via multinomial regression
+</td>
+</tr>
+</tbody>
+</table>
 Load Required Packages
 ----------------------
 
@@ -168,7 +251,7 @@ The `casebase` package has a `plot` method for objects of class
 plot(pt_object)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-4-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-5-1.png)
 
 > Can you explain the distinct shape of the grey area?
 
@@ -237,7 +320,7 @@ The `casebase` package has a `plot` method for objects of class
 plot(pt_object_strat)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-7-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-8-1.png)
 
 We can also plot them side-by-side using the `ncol` argument:
 
@@ -245,7 +328,7 @@ We can also plot them side-by-side using the `ncol` argument:
 plot(pt_object_strat, ncol = 2)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-8-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-9-1.png)
 
 Cox Model
 ---------
@@ -305,7 +388,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-10-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-11-1.png)
 
 Case-base Sampling
 ------------------
@@ -338,19 +421,19 @@ summary(casebase_exponential)
     ## 
     ## Deviance Residuals: 
     ##    Min      1Q  Median      3Q     Max  
-    ## -0.148  -0.148  -0.148  -0.133   3.079  
+    ## -0.147  -0.147  -0.147  -0.133   3.077  
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value            Pr(>|z|)    
-    ## (Intercept)            -7.7642     0.0557 -139.42 <0.0000000000000002 ***
-    ## ScrArmScreening group  -0.2185     0.0884   -2.47               0.013 *  
+    ## (Intercept)            -7.7691     0.0557 -139.52 <0.0000000000000002 ***
+    ## ScrArmScreening group  -0.2074     0.0884   -2.35               0.019 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 6059.0  on 54539  degrees of freedom
-    ## Residual deviance: 6052.8  on 54538  degrees of freedom
+    ## Residual deviance: 6053.4  on 54538  degrees of freedom
     ## AIC: 6057
     ## 
     ## Number of Fisher Scoring iterations: 7
@@ -360,7 +443,7 @@ exp(casebase_exponential$coefficients[2])
 ```
 
     ## ScrArmScreening group 
-    ##                   0.8
+    ##                  0.81
 
 ``` {.r}
 exp(confint(casebase_exponential)[2,])
@@ -369,7 +452,7 @@ exp(confint(casebase_exponential)[2,])
     ## Waiting for profiling to be done...
 
     ##  2.5 % 97.5 % 
-    ##   0.68   0.95
+    ##   0.68   0.97
 
 The `absoluteRisk` function provides an estimate of the cumulative
 incidence curves for a specific risk profile using the following
@@ -404,7 +487,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-12-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-13-1.png)
 
 ### Linear Time
 
@@ -427,21 +510,21 @@ summary(casebase_time)
     ## 
     ## Deviance Residuals: 
     ##    Min      1Q  Median      3Q     Max  
-    ## -0.377  -0.162  -0.123  -0.095   3.465  
+    ## -0.385  -0.162  -0.123  -0.096   3.453  
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value            Pr(>|z|)    
-    ## (Intercept)            -9.0201     0.1123  -80.33 <0.0000000000000002 ***
-    ## Follow.Up.Time          0.2202     0.0146   15.11 <0.0000000000000002 ***
-    ## ScrArmScreening group  -0.2384     0.0886   -2.69              0.0072 ** 
+    ## (Intercept)            -9.0020     0.1114  -80.79 <0.0000000000000002 ***
+    ## Follow.Up.Time          0.2149     0.0144   14.92 <0.0000000000000002 ***
+    ## ScrArmScreening group  -0.2135     0.0886   -2.41               0.016 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 6059.0  on 54539  degrees of freedom
-    ## Residual deviance: 5816.2  on 54537  degrees of freedom
-    ## AIC: 5822
+    ## Residual deviance: 5824.7  on 54537  degrees of freedom
+    ## AIC: 5831
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -450,7 +533,7 @@ exp(casebase_time$coefficients)
 ```
 
     ##           (Intercept)        Follow.Up.Time ScrArmScreening group 
-    ##               0.00012               1.24632               0.78791
+    ##               0.00012               1.23969               0.80778
 
 ``` {.r}
 exp(confint(casebase_time))
@@ -459,9 +542,9 @@ exp(confint(casebase_time))
     ## Waiting for profiling to be done...
 
     ##                          2.5 %  97.5 %
-    ## (Intercept)           0.000097 0.00015
-    ## Follow.Up.Time        1.211365 1.28258
-    ## ScrArmScreening group 0.661523 0.93653
+    ## (Intercept)           0.000099 0.00015
+    ## Follow.Up.Time        1.205296 1.27533
+    ## ScrArmScreening group 0.678221 0.96014
 
 ``` {.r}
 smooth_risk_time <- casebase::absoluteRisk(object = casebase_time, 
@@ -486,7 +569,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-14-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-15-1.png)
 
 ### Flexible time using BSplines
 
@@ -509,23 +592,23 @@ summary(casebase_splines)
     ## 
     ## Deviance Residuals: 
     ##    Min      1Q  Median      3Q     Max  
-    ## -0.459  -0.173  -0.135  -0.085   3.808  
+    ## -0.407  -0.173  -0.136  -0.084   3.808  
     ## 
     ## Coefficients:
     ##                       Estimate Std. Error z value             Pr(>|z|)    
-    ## (Intercept)           -10.3189     0.3208  -32.17 < 0.0000000000000002 ***
-    ## bs(Follow.Up.Time)1     4.4814     0.8196    5.47       0.000000045552 ***
-    ## bs(Follow.Up.Time)2     1.9707     0.5026    3.92       0.000088251848 ***
-    ## bs(Follow.Up.Time)3     4.8713     0.7524    6.47       0.000000000095 ***
-    ## ScrArmScreening group  -0.2097     0.0886   -2.37                0.018 *  
+    ## (Intercept)           -10.3115     0.3189  -32.34 < 0.0000000000000002 ***
+    ## bs(Follow.Up.Time)1     4.4095     0.8051    5.48       0.000000043300 ***
+    ## bs(Follow.Up.Time)2     2.0741     0.4776    4.34       0.000014089702 ***
+    ## bs(Follow.Up.Time)3     4.6253     0.6991    6.62       0.000000000037 ***
+    ## ScrArmScreening group  -0.2163     0.0886   -2.44                0.015 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 6059.0  on 54539  degrees of freedom
-    ## Residual deviance: 5785.2  on 54535  degrees of freedom
-    ## AIC: 5795
+    ## Residual deviance: 5786.8  on 54535  degrees of freedom
+    ## AIC: 5797
     ## 
     ## Number of Fisher Scoring iterations: 9
 
@@ -534,9 +617,9 @@ exp(casebase_splines$coefficients)
 ```
 
     ##           (Intercept)   bs(Follow.Up.Time)1   bs(Follow.Up.Time)2 
-    ##              0.000033             88.360482              7.175770 
+    ##              0.000033             82.227113              7.957285 
     ##   bs(Follow.Up.Time)3 ScrArmScreening group 
-    ##            130.489344              0.810828
+    ##            102.036915              0.805526
 
 ``` {.r}
 exp(confint(casebase_splines))
@@ -546,10 +629,10 @@ exp(confint(casebase_splines))
 
     ##                           2.5 %    97.5 %
     ## (Intercept)            0.000017   0.00006
-    ## bs(Follow.Up.Time)1   18.326261 457.25128
-    ## bs(Follow.Up.Time)2    2.770128  19.97915
-    ## bs(Follow.Up.Time)3   28.092837 543.12946
-    ## ScrArmScreening group  0.680777   0.96376
+    ## bs(Follow.Up.Time)1   17.553644 413.72431
+    ## bs(Follow.Up.Time)2    3.212493  20.98132
+    ## bs(Follow.Up.Time)3   24.680482 386.35794
+    ## ScrArmScreening group  0.676338   0.95744
 
 ``` {.r}
 smooth_risk_splines <- casebase::absoluteRisk(object = casebase_splines, 
@@ -574,7 +657,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-16-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-17-1.png)
 
 Comparing Models Using Likelihood Ratio Test
 --------------------------------------------
@@ -587,9 +670,9 @@ anova(casebase_time, casebase_splines, test = "LRT")
     ## 
     ## Model 1: DeadOfPrCa ~ Follow.Up.Time + ScrArm + offset(offset)
     ## Model 2: DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm + offset(offset)
-    ##   Resid. Df Resid. Dev Df Deviance   Pr(>Chi)    
-    ## 1     54537       5816                           
-    ## 2     54535       5785  2       31 0.00000019 ***
+    ##   Resid. Df Resid. Dev Df Deviance    Pr(>Chi)    
+    ## 1     54537       5825                            
+    ## 2     54535       5787  2     37.9 0.000000006 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 

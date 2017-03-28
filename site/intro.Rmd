@@ -38,6 +38,14 @@ In the following table we provide a comparison between the Cox model and case-ba
 | competing risks          | difficult                           | cause-specific cumulative incidence functions (CIFs) directly obtained via multinomial regression |
 
 
+```{r, echo=FALSE, results='asis'}
+knitr::kable(data.frame(`feature` = c("model type", "time", "cumulative incidence", "non-proportional hazards","model testing","competing risks"),
+           `Cox` = c("semi-parametric","left hand side of the equation", "step function", "interaction of covariates with time"," ", "difficult"),
+           `Case Base Sampling` = c("fully parametric (logistic/multinomial regression)", "right hand side - allows flexible modeling of time",
+           "smooth-in-time curve", "handled directly by modeling time as a covariate", "make use of GLM framework (LRT, AIC, BIC)",
+           "cause-specific cumulative incidence functions (CIFs) directly obtained via multinomial regression")), format = "html", escape = FALSE)
+```
+
 
 ## Load Required Packages
 
