@@ -4,7 +4,7 @@ author: "Sahir"
 date: "January 22, 2017"
 output:
   md_document:
-    variant: markdown_github
+    variant: markdown
 ---
 
 ## casebase: An Alternative Framework for Survival Analysis
