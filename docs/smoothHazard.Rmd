@@ -21,6 +21,8 @@ The first example we discuss uses the well-known ```veteran``` dataset, which is
 
 ```{r eval=TRUE, echo=-1}
 rm(list = ls())
+set.seed(12345)
+
 library(survival)
 data(veteran)
 table(veteran$status)
