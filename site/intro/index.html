@@ -464,10 +464,13 @@
                 
                 <h2 id="casebase-an-alternative-framework-for-survival-analysis">casebase: An Alternative Framework for Survival Analysis<a class="headerlink" href="#casebase-an-alternative-framework-for-survival-analysis" title="Permanent link">&para;</a></h2>
 <p>This vignette introduces the main functions in the <code>casebase</code> package.
-The methods implemented in this package are based on the theory
+The methods implemented in this package are based on the method
 developped in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Fitting Smooth-in-Time Prognostic Risk Functions via
 Logistic Regression (Hanley and Miettinen,
 2009)</a>.
+A rigorous treatment of the theory is developed in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf">A case-base sampling
+method for estimating recurrent event intensities (Saarela,
+2015)</a>.
 The motivation for this work is nicely summarised by Cox:</p>
 <p><img alt="" src="http://i.imgur.com/E674HYw.png" /></p>
 <p>The purpose of the <code>casebase</code> package is to provide practitioners with
@@ -493,30 +496,40 @@ regression. From the fitted hazard function, cumulative incidence and,
 thus, risk functions of time, treatment and profile can be easily
 derived.</p>
 </blockquote>
+<p>The <code>casebase</code> package fits the family of hazard functions of the form</p>
+<p>
+<script type="math/tex; mode=display"> h(x,t) = exp[g(x,t)] </script> where \( t \) denotes the numerical value
+(number of units) of a point in prognostic/prospective time and \( x
+\) is the realization of the vector \( X \) of variates based on the
+patient's profile and intervention (if any). Different functions of \(
+t \) lead to different parametric hazard models.</p>
+<p>The simplest of these models is the one-parameter exponential
+distribution which is obtained by taking the hazard function to be
+constant over the range of \( t \).</p>
+<p>
+<script type="math/tex; mode=display"> h(x,t) = exp(\beta_0 + \beta_1 x) </script>
+</p>
+<p>The instantaneous failure rate is independent of \( t \), so that the
+conditional chance of failure in a time interval of specified length is
+the same regardless of how long the individual has been on study a.k.a
+the memoryless property (Kalbfleisch and Prentice, 2002).</p>
+<p>The Gompertz hazard model is given by including a linear term for time:</p>
+<p>
+<script type="math/tex; mode=display"> h(t)  = exp(\beta_0 + \beta_1 t + \beta_2 x) </script>
+</p>
+<p>Use of \( log(t) \) yields the Weibull hazard which allows for a power
+dependence of the hazard on time (Kalbfleisch and Prentice, 2002):</p>
+<p>
+<script type="math/tex; mode=display"> h(t)  = exp(\beta_0 + \beta_1 \log(t) + \beta_2 x) </script>
+</p>
+<p>Recall that the relative risk model (Cox, 1972)</p>
+<p>
+<script type="math/tex; mode=display"> \lambda(t;x) = \lambda_0(t) exp(\mathbf{X}\boldsymbol{\beta})  </script>
+where \( \lambda_0(\cdot) \) is an arbitrary unspecified baseline
+hazard function for continous time.</p>
 <h2 id="cox-model-vs-case-base-sampling">Cox Model vs. Case-base Sampling<a class="headerlink" href="#cox-model-vs-case-base-sampling" title="Permanent link">&para;</a></h2>
 <p>In the following table we provide a comparison between the Cox model and
 case-base sampling:</p>
-<hr />
-<div class="codehilite"><pre><span></span>          Cox              Case Base Sampling
-</pre></div>
-
-
-<hr />
-<p>model type  semi-parametric  fully parametric (logistic/multinomial
-                               regression)</p>
-<p>time        left hand side   right hand side - allows flexible modeling
-              of the equation  of time</p>
-<p>cumulative  step function    smooth-in-time curve
-  incidence                    </p>
-<p>non-proport interaction of   handled directly by modeling time as a
-  ional       covariates with  covariate
-  hazards     time             </p>
-<p>model                        make use of GLM framework (LRT, AIC, BIC)
-  testing                      </p>
-<p>competing   difficult        cause-specific cumulative incidence
-  risks                        functions (CIFs) directly obtained via
-                               multinomial regression</p>
-<hr />
 <table>
 <thead>
 <tr>
@@ -573,7 +586,7 @@ non-proportional hazards
 interaction of covariates with time
 </td>
 <td style="text-align:left;">
-handled directly by modeling time as a covariate
+interaction of covariates with time
 </td>
 </tr>
 <tr>
@@ -859,20 +872,20 @@ variates based on the patient's profile and intervention (if any).</p>
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -0.147  -0.147  -0.147  -0.133   3.077  
+## -0.147  -0.147  -0.147  -0.133   3.075  
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error z value            Pr(&gt;|z|)    
-## (Intercept)            -7.7691     0.0557 -139.52 &lt;0.0000000000000002 ***
-## ScrArmScreening group  -0.2074     0.0884   -2.35               0.019 *  
+## (Intercept)            -7.7732     0.0557 -139.59 &lt;0.0000000000000002 ***
+## ScrArmScreening group  -0.1984     0.0884   -2.24               0.025 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 6059.0  on 54539  degrees of freedom
-## Residual deviance: 6053.4  on 54538  degrees of freedom
-## AIC: 6057
+## Residual deviance: 6053.9  on 54538  degrees of freedom
+## AIC: 6058
 ## 
 ## Number of Fisher Scoring iterations: 7
 </pre></div>
@@ -883,7 +896,7 @@ variates based on the patient's profile and intervention (if any).</p>
 
 
 <div class="codehilite"><pre><span></span>## ScrArmScreening group 
-##                  0.81
+##                  0.82
 </pre></div>
 
 
@@ -894,7 +907,7 @@ variates based on the patient's profile and intervention (if any).</p>
 <div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
 
 ##  2.5 % 97.5 % 
-##   0.68   0.97
+##   0.69   0.97
 </pre></div>
 
 
@@ -953,21 +966,21 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -0.385  -0.162  -0.123  -0.096   3.453  
+## -0.393  -0.161  -0.122  -0.095   3.465  
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error z value            Pr(&gt;|z|)    
-## (Intercept)            -9.0020     0.1114  -80.79 &lt;0.0000000000000002 ***
-## Follow.Up.Time          0.2149     0.0144   14.92 &lt;0.0000000000000002 ***
-## ScrArmScreening group  -0.2135     0.0886   -2.41               0.016 *  
+## (Intercept)            -9.0297     0.1119  -80.69 &lt;0.0000000000000002 ***
+## Follow.Up.Time          0.2216     0.0145   15.27 &lt;0.0000000000000002 ***
+## ScrArmScreening group  -0.2300     0.0886   -2.59              0.0095 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 6059.0  on 54539  degrees of freedom
-## Residual deviance: 5824.7  on 54537  degrees of freedom
-## AIC: 5831
+## Residual deviance: 5812.7  on 54537  degrees of freedom
+## AIC: 5819
 ## 
 ## Number of Fisher Scoring iterations: 8
 </pre></div>
@@ -978,7 +991,7 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 
 <div class="codehilite"><pre><span></span>##           (Intercept)        Follow.Up.Time ScrArmScreening group 
-##               0.00012               1.23969               0.80778
+##               0.00012               1.24807               0.79456
 </pre></div>
 
 
@@ -989,9 +1002,9 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 <div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
 
 ##                          2.5 %  97.5 %
-## (Intercept)           0.000099 0.00015
-## Follow.Up.Time        1.205296 1.27533
-## ScrArmScreening group 0.678221 0.96014
+## (Intercept)           0.000096 0.00015
+## Follow.Up.Time        1.213190 1.28423
+## ScrArmScreening group 0.667097 0.94445
 </pre></div>
 
 
@@ -1041,25 +1054,25 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 ## 
 ## Deviance Residuals: 
 ##    Min      1Q  Median      3Q     Max  
-## -0.407  -0.173  -0.136  -0.084   3.808  
+## -0.394  -0.173  -0.135  -0.085   3.792  
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error z value             Pr(&gt;|z|)    
-## (Intercept)           -10.3115     0.3189  -32.34 &lt; 0.0000000000000002 ***
-## bs(Follow.Up.Time)1     4.4095     0.8051    5.48       0.000000043300 ***
-## bs(Follow.Up.Time)2     2.0741     0.4776    4.34       0.000014089702 ***
-## bs(Follow.Up.Time)3     4.6253     0.6991    6.62       0.000000000037 ***
-## ScrArmScreening group  -0.2163     0.0886   -2.44                0.015 *  
+## (Intercept)           -10.2448     0.3161  -32.41 &lt; 0.0000000000000002 ***
+## bs(Follow.Up.Time)1     4.2694     0.8083    5.28          0.000000128 ***
+## bs(Follow.Up.Time)2     2.1318     0.4952    4.30          0.000016729 ***
+## bs(Follow.Up.Time)3     4.4789     0.7331    6.11          0.000000001 ***
+## ScrArmScreening group  -0.2212     0.0886   -2.50                0.013 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 6059.0  on 54539  degrees of freedom
-## Residual deviance: 5786.8  on 54535  degrees of freedom
-## AIC: 5797
+## Residual deviance: 5793.7  on 54535  degrees of freedom
+## AIC: 5804
 ## 
-## Number of Fisher Scoring iterations: 9
+## Number of Fisher Scoring iterations: 8
 </pre></div>
 
 
@@ -1068,9 +1081,9 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 
 <div class="codehilite"><pre><span></span>##           (Intercept)   bs(Follow.Up.Time)1   bs(Follow.Up.Time)2 
-##              0.000033             82.227113              7.957285 
+##              0.000036             71.476810              8.430274 
 ##   bs(Follow.Up.Time)3 ScrArmScreening group 
-##            102.036915              0.805526
+##             88.134188              0.801579
 </pre></div>
 
 
@@ -1080,12 +1093,12 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 <div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
 
-##                           2.5 %    97.5 %
-## (Intercept)            0.000017   0.00006
-## bs(Follow.Up.Time)1   17.553644 413.72431
-## bs(Follow.Up.Time)2    3.212493  20.98132
-## bs(Follow.Up.Time)3   24.680482 386.35794
-## ScrArmScreening group  0.676338   0.95744
+##                           2.5 %     97.5 %
+## (Intercept)            0.000019   0.000064
+## bs(Follow.Up.Time)1   15.146468 361.944060
+## bs(Follow.Up.Time)2    3.299095  23.102285
+## bs(Follow.Up.Time)3   19.737520 353.658683
+## ScrArmScreening group  0.673020   0.952755
 </pre></div>
 
 
@@ -1122,9 +1135,9 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 ## 
 ## Model 1: DeadOfPrCa ~ Follow.Up.Time + ScrArm + offset(offset)
 ## Model 2: DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm + offset(offset)
-##   Resid. Df Resid. Dev Df Deviance    Pr(&gt;Chi)    
-## 1     54537       5825                            
-## 2     54535       5787  2     37.9 0.000000006 ***
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)    
+## 1     54537       5813                         
+## 2     54535       5794  2       19 0.000075 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 </pre></div>

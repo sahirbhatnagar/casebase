@@ -29,4 +29,10 @@ output:
 <li>
 <p>Scrucca, L, A Santucci, and F Aversa. 2010. "Regression Modeling of Competing Risk Using R: An in Depth Guide for Clinicians." <em>Bone Marrow Transplantation</em> 45 (9). Nature Publishing Group: 1388–95.</p>
 </li>
+<li>
+<p>Kalbfleisch, John D., and Ross L. Prentice. The statistical analysis of failure time data. Vol. 360. John Wiley & Sons, 2011.</p>
+</li>
+<li>
+<p>Cox, D. R. "Regression models and life tables." <em>Journal of the Royal Statistical Society</em> 34 (1972): 187-220.</p>
+</li>
 </ol>

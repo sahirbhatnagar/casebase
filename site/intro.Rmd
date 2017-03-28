@@ -9,7 +9,8 @@ output:
 
 ## casebase: An Alternative Framework for Survival Analysis
 
-This vignette introduces the main functions in the `casebase` package. The methods implemented in this package are based on the theory developped in [Fitting Smooth-in-Time Prognostic Risk Functions via Logistic Regression (Hanley and Miettinen, 2009)](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf). The motivation for this work is nicely summarised by Cox:
+This vignette introduces the main functions in the `casebase` package. The methods implemented in this package are based on the method developped in [Fitting Smooth-in-Time Prognostic Risk Functions via Logistic Regression (Hanley and Miettinen, 2009)](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf). A rigorous treatment of the theory is developed in [A case-base sampling method for estimating recurrent
+event intensities (Saarela, 2015)](https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf). The motivation for this work is nicely summarised by Cox:
 
 ![](http://i.imgur.com/E674HYw.png)
 
@@ -23,26 +24,41 @@ hazard ratios
 
 > [Hanley and Miettinen, 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf) propose a fully parametric hazard model that can be fit via logistic regression. From the fitted hazard function, cumulative incidence and, thus, risk functions of time, treatment and profile can be easily derived.
 
+The `casebase` package fits the family of hazard functions of the form
+
+$$ h(x,t) = exp[g(x,t)] $$
+where \\( t \\) denotes the numerical value (number of units) of a point in prognostic/prospective time and \\( x \\) is the realization of the vector \\( X \\) of variates based on the patient's profile and intervention (if any). Different functions of \\( t \\) lead to different parametric hazard models. 
+
+The simplest of these models is the one-parameter exponential distribution which is obtained by taking the hazard function to be constant over the range of \\( t \\). 
+
+$$ h(x,t) = exp(\beta_0 + \beta_1 x) $$
+
+The instantaneous failure rate is independent of \\( t \\), so that the conditional chance of failure in a time interval of specified length is the same regardless of how long the individual has been on study a.k.a the memoryless property (Kalbfleisch and Prentice, 2002).
+
+
+The Gompertz hazard model is given by including a linear term for time:
+
+$$ h(t)  = exp(\beta_0 + \beta_1 t + \beta_2 x) $$
+
+Use of \\( log(t) \\) yields the Weibull hazard which allows for a power dependence of the hazard on time (Kalbfleisch and Prentice, 2002):
+
+$$ h(t)  = exp(\beta_0 + \beta_1 \log(t) + \beta_2 x) $$
+
+Recall that the relative risk model (Cox, 1972)
+
+$$ \lambda(t;x) = \lambda_0(t) exp(\mathbf{X}\boldsymbol{\beta})  $$
+where \\( \lambda_0(\cdot)  \\) is an arbitrary unspecified baseline hazard function for continous time. 
+
+
 ## Cox Model vs. Case-base Sampling
 
 In the following table we provide a comparison between the Cox model and case-base sampling:
-
-
-|                          | Cox                                 | Case Base Sampling                                                                                |
-|--------------------------|-------------------------------------|---------------------------------------------------------------------------------------------------|
-| model type               | semi-parametric                     | fully parametric (logistic/multinomial regression)                                                |
-| time                     | left hand side of the equation      | right hand side - allows flexible modeling of time                                                |
-| cumulative incidence     | step function                       | smooth-in-time curve                                                                              |
-| non-proportional hazards | interaction of covariates with time | handled directly by modeling time as a covariate                                                  |
-| model testing            |                                     | make use of GLM framework (LRT, AIC, BIC)                                                         |
-| competing risks          | difficult                           | cause-specific cumulative incidence functions (CIFs) directly obtained via multinomial regression |
-
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(data.frame(`feature` = c("model type", "time", "cumulative incidence", "non-proportional hazards","model testing","competing risks"),
            `Cox` = c("semi-parametric","left hand side of the equation", "step function", "interaction of covariates with time"," ", "difficult"),
            `Case Base Sampling` = c("fully parametric (logistic/multinomial regression)", "right hand side - allows flexible modeling of time",
-           "smooth-in-time curve", "handled directly by modeling time as a covariate", "make use of GLM framework (LRT, AIC, BIC)",
+           "smooth-in-time curve", "interaction of covariates with time", "make use of GLM framework (LRT, AIC, BIC)",
            "cause-specific cumulative incidence functions (CIFs) directly obtained via multinomial regression")), format = "html", escape = FALSE)
 ```
 
