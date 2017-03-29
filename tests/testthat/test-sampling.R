@@ -1,5 +1,3 @@
-library(casebase)
-library(data.table)
 context("Sampling")
 
 test_that("no error in sampling with data.frame or data.table", {
