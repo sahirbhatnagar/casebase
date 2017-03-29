@@ -540,7 +540,13 @@ legend("topleft",
 
 ![](intro_files/figure-markdown/unnamed-chunk-13-1.png)
 
-As we can see, the exponential model is not a good fit.
+As we can see, the exponential model is not a good fit. Based on what we
+observed in the population time plot, where more events are observed
+later on in time, this poor fit is expected. A constant hazard model
+would overestimate the cumulative incidence earlier on in time, and
+underestimate it later on, which is what we see in the cumulative
+incidence plot. This example demonstrates the benefits of population
+time plots as an exploratory analysis tool.
 
 ### Linear Time
 
