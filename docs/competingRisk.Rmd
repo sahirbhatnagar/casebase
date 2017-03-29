@@ -12,8 +12,10 @@ output:
 We will use the same data that was used in Scrucca *et al* [-@scrucca2010regression]. The data is available on the main author's [website](http://www.stat.unipg.it/luca/R/).
 
 ```{r echo=TRUE, eval=TRUE}
-DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
-head(DT)
+set.seed(12345)
+library(casebase)
+data(bmtcrr)
+head(bmtcrr)
 ```
 
 We will perform a competing risk analysis on data from 177 patients who received a stem cell transplant for acute leukemia. The event of interest in relapse, but other competing causes (e.g. transplant-related death) need to be taken into account. We also want to take into account the effect of several covariates such as Sex, Disease (lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively), Phase at transplant (Relapse, CR1, CR2, CR3), Source of stem cells (bone marrow and peripheral blood, coded as BM+PB, or peripheral blood, coded as PB), and Age. Below, we reproduce their Table 1:
@@ -41,30 +43,31 @@ Note that failure time can also correspond to censoring.
 In order to try and visualize the incidence density of relapse, we can look at a population-time plot: on the X-axis we have time, and on the Y-axis we have the size of the risk set at a particular time point. Failure times associated to the event of interest can then be highlighted on the plot using red dots.
 
 ```{r poptime1, eval=TRUE}
-nobs <- nrow(DT)
-ftime <- DT$ftime
-ord <- order(ftime, decreasing=FALSE)
+nobs <- nrow(bmtcrr)
+ftime <- bmtcrr$ftime
+ord <- order(ftime, decreasing = FALSE)
 
 # We split the person-moments in four categories:
 # 1) at-risk
 # 2) main event
 # 3) competing event
 # 4) censored
-yCoords <- cbind(cumsum(DT[ord, "Status"] == 2), 
-                 cumsum(DT[ord, "Status"] == 1),
-                 cumsum(DT[ord, "Status"] == 0))
+yCoords <- cbind(cumsum(bmtcrr[ord, "Status"] == 2), 
+                 cumsum(bmtcrr[ord, "Status"] == 1),
+                 cumsum(bmtcrr[ord, "Status"] == 0))
 yCoords <- cbind(yCoords, nobs - rowSums(yCoords))
 
 # Plot only at-risk
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(c(0, 0, ftime[ord], max(ftime), 0),
         c(0, nobs, yCoords[,4], 0, 0), col = "grey90")
-cases <- DT[, "Status"] == 1
+cases <- bmtcrr[, "Status"] == 1
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20, 
+       col = "red", cex = 1)
 ```
 
 We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.
@@ -73,8 +76,8 @@ To get an idea of whether only relapse is responsible for the shrinking of the r
 
 ```{r poptime2, eval=TRUE}
 # Plot at-risk and events
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(x = c(0,ftime[ord], max(ftime), 0), 
         y = c(0, yCoords[,2], 0, 0), 
         col = "firebrick3")
@@ -84,17 +87,18 @@ polygon(x = c(0, ftime[ord], ftime[rev(ord)], 0, 0),
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-legend("topright", legend=c("Relapse", "At-risk"), 
-       col=c("firebrick3", "grey90"),
-       pch=15)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20,
+       col = "red", cex = 1)
+legend("topright", legend = c("Relapse", "At-risk"), 
+       col = c("firebrick3", "grey90"),
+       pch = 15)
 ```
 
 Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:
 
 ```{r poptime3, eval=TRUE}
-plot(0, type='n', xlim=c(0, max(ftime)), ylim=c(0, nobs), 
-     xlab='Follow-up time', ylab='Population')
+plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
+     xlab = 'Follow-up time', ylab = 'Population')
 polygon(x = c(0, max(ftime), max(ftime), 0),
         y = c(0, 0, nobs, nobs), col = "white")
 # Event of interest
@@ -112,10 +116,11 @@ polygon(x = c(0, ftime[ord], max(ftime), 0),
 
 # randomly move the cases vertically
 moved_cases <- yCoords[cases[ord], 2] + yCoords[cases[ord], 4] * runif(sum(cases))
-points((ftime[ord])[cases[ord]], moved_cases, pch=20, col="red", cex=1)
-legend("topright", legend=c("Relapse", "Competing event", "At-risk"), 
-       col=c("firebrick3", "dodgerblue2", "grey90"),
-       pch=15)
+points((ftime[ord])[cases[ord]], moved_cases, pch = 20,
+       col = "red", cex = 1)
+legend("topright", legend = c("Relapse", "Competing event", "At-risk"), 
+       col = c("firebrick3", "dodgerblue2", "grey90"),
+       pch = 15)
 ```
 
 From this last plot, we can see that there is no censoring during the first 10 months. Moreover, we see that the last competing event occurs around 20 months. Putting all this information together, we have evidence of two types of patients: very sick patients who either relapse or have a competing event early on, and healthier patients who are eventually lost to follow-up.
@@ -125,9 +130,8 @@ From this last plot, we can see that there is no censoring during the first 10 m
 We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:
 
 ```{r eval=TRUE, warning=FALSE}
-library(casebase)
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
-                          data = DT, 
+                          data = bmtcrr, 
                           ratio = 1000, 
                           type = "uniform", 
                           time = "ftime")
@@ -143,7 +147,7 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 
 ```{r eval=TRUE, warning=FALSE}
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
-                          data = DT, 
+                          data = bmtcrr, 
                           ratio = 1000, 
                           type = "uniform", 
                           time = "ftime")
@@ -157,7 +161,7 @@ Finally, using splines, we can be quite flexible about the way the hazard depend
 ```{r eval=TRUE, warning=FALSE}
 model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
-    data = DT, 
+    data = bmtcrr, 
     ratio = 1000, 
     type = "uniform", 
     time = "ftime")
@@ -171,20 +175,20 @@ Again, we see that the results are quite similar for this third model.
 We now look at the 2-year risk of relapse:
 
 ```{r absRisk, eval=TRUE, warning = FALSE, cache=TRUE}
-linearRisk <- absoluteRisk(object = model1, time = 24, newdata = DT[1:10,])
-logRisk <- absoluteRisk(object = model2, time = 24, newdata = DT[1:10,])
-splineRisk <- absoluteRisk(object = model3, time = 24, newdata = DT[1:10,])
+linearRisk <- absoluteRisk(object = model1, time = 24, newdata = bmtcrr[1:10,])
+logRisk <- absoluteRisk(object = model2, time = 24, newdata = bmtcrr[1:10,])
+splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ```{r absRiskPlot, eval=TRUE}
 plot(linearRisk[,1], logRisk[,1],
-     xlab="Linear", ylab = "Log/Spline", pch=19,
-     xlim=c(0,1), ylim=c(0,1), col='red')
+     xlab = "Linear", ylab = "Log/Spline", pch = 19,
+     xlim = c(0,1), ylim = c(0,1), col = 'red')
 points(linearRisk[,1], splineRisk[,1],
-       col = 'blue', pch=19)
-abline(a=0, b=1, lty=2, lwd=2)
-legend("topleft", legend=c("Log", "Spline"),
-       pch=19, col=c("red", "blue"))
+       col = 'blue', pch = 19)
+abline(a = 0, b = 1, lty = 2, lwd = 2)
+legend("topleft", legend = c("Log", "Spline"),
+       pch = 19, col = c("red", "blue"))
 ```
 
 As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:

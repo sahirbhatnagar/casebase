@@ -53,6 +53,7 @@ markdown_extensions:
 # Page tree
 pages:
   - Home: index.md
+  - Introduction: intro.md
   - Smooth Hazard: smoothHazard.md
   - Population Time Plots: popTime.md
   - Competing Risk: competingRisk.md
