@@ -82,7 +82,7 @@ absoluteRisk.default <- function(object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp = 1000, ...) {
     method <- match.arg(method)
     meanAR <- FALSE
 
@@ -113,13 +113,13 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
     }
 
     output <- matrix(NA, nrow = nrow(newdata), ncol = length(sort(unique(time))))
-    time_ordered <- c(0, sort(unique(time)))
+    time_ordered <- unique(c(0, sort(time)))
 
     if (method == "quadrature") {
         for (i in 1:nrow(newdata)) {
             for (j in 1:ncol(output)) {
                 output[i, j] <- integrate(lambda, lower = time_ordered[j], upper = time_ordered[j + 1],
-                                          fit = object, newdata = newdata[i, ],
+                                          fit = object, newdata = newdata[i,,drop = FALSE],
                                           subdivisions = nsamp)$value
             }
             output[i,] <- cumsum(output[i,])
@@ -132,7 +132,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
             for (j in 1:ncol(output)) {
                 output[i, j] <- (time_ordered[j + 1] - time_ordered[j]) * mean(lambda(sampledPoints * (time_ordered[j + 1] -
                                                                                                            time_ordered[j]) +
-                                                                                          time_ordered[j], fit = object, newdata = newdata[i,]))
+                                                                                          time_ordered[j], fit = object, newdata = newdata[i,,drop = FALSE]))
             }
             output[i,] <- cumsum(output[i,])
         }
@@ -152,7 +152,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp=1000, ...) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "quadrature"), nsamp = 1000, ...) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
@@ -221,7 +221,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
                 for (k in 1:dim(output)[2]) {
                     output[i,k,j] <- integrate(subdensities[[j]], lower = time_ordered[k],
                                                upper = time_ordered[k + 1],
-                                               object = object, newdata = newdata[i,],
+                                               object = object, newdata = newdata[i,,drop = FALSE],
                                                subdivisions = nsamp)$value
                 }
                 output[i, ,j] <- cumsum(output[i, ,j])
@@ -239,8 +239,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
             # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
             for (k in 1:dim(output)[2]) {
                 x_vect <- sampledPoints * (time_ordered[k + 1] - time_ordered[k]) + time_ordered[k]
-                surv <- overallSurv(x_vect, object, newdata[i,])
-                newdata2 <- data.frame(newdata[i,], offset = rep_len(0, length(x_vect)),
+                surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE])
+                newdata2 <- data.frame(newdata[i,,drop = FALSE], offset = rep_len(0, length(x_vect)),
                                        row.names = as.character(1:length(x_vect)))
                 newdata2[object@timeVar] <- x_vect
                 withCallingHandlers(pred <- exp(VGAM::predictvglm(object, newdata2)),

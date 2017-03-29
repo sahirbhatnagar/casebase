@@ -1,4 +1,4 @@
-context("Absolute risk")
+context("Absolute risk-Comp risk")
 
 n = 100; alpha = 0.05
 
