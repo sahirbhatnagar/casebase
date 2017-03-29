@@ -93,8 +93,8 @@ Stem Cell Data
 --------------
 
 ``` r
-bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
-str(bmt)
+data(bmtcrr)
+str(bmtcrr)
 ```
 
     ## 'data.frame':    177 obs. of  7 variables:
@@ -108,7 +108,7 @@ str(bmt)
 
 ``` r
 # create 'popTime' object
-popTimeData <- popTime(data = bmt, time = "ftime")
+popTimeData <- popTime(data = bmtcrr, time = "ftime")
 ```
 
     ## 'Status' will be used as the event variable
@@ -138,7 +138,7 @@ plot(popTimeData)
 # abbreviated as ALL and AML, respectively)
 
 # create 'popTimeExposure' object
-popTimeData <- popTime(data = bmt, time = "ftime", exposure = "D")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 ```
 
     ## 'Status' will be used as the event variable
@@ -164,7 +164,7 @@ plot(popTimeData)
 
 ``` r
 # stratify by gender
-popTimeData <- popTime(data = bmt, time = "ftime", exposure = "Sex")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "Sex")
 ```
 
     ## 'Status' will be used as the event variable
@@ -434,24 +434,22 @@ plot(popTimeData, ncol = 2)
 Session information
 -------------------
 
-    ## R version 3.3.2 (2016-10-31)
+    ## R version 3.3.1 (2016-06-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.1 LTS
+    ## Running under: Ubuntu 16.10
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0    survival_2.40-1   ggplot2_2.2.1     magrittr_1.5     
-    ## [5] data.table_1.10.4 knitr_1.15.1     
+    ## [1] casebase_0.1.0   survival_2.39-5  ggplot2_2.2.0    magrittr_1.5    
+    ## [5] data.table_1.9.6 knitr_1.15.1    
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.9        splines_3.3.2      munsell_0.4.3     
-    ##  [4] lattice_0.20-34    colorspace_1.3-2   stringr_1.2.0     
-    ##  [7] plyr_1.8.4         tools_3.3.2        grid_3.3.2        
-    ## [10] gtable_0.2.0       htmltools_0.3.6    yaml_2.1.14       
-    ## [13] lazyeval_0.2.0     rprojroot_1.2      digest_0.6.12     
-    ## [16] assertthat_0.1     tibble_1.2         Matrix_1.2-7.1    
-    ## [19] VGAM_1.0-3         evaluate_0.10      rmarkdown_1.3.9003
-    ## [22] labeling_0.3       stringi_1.1.2      scales_0.4.1      
-    ## [25] backports_1.0.5    stats4_3.3.2
+    ##  [1] Rcpp_0.12.9      splines_3.3.1    munsell_0.4.3    lattice_0.20-33 
+    ##  [5] colorspace_1.3-1 stringr_1.2.0    plyr_1.8.4       tools_3.3.1     
+    ##  [9] grid_3.3.1       gtable_0.2.0     htmltools_0.3.5  yaml_2.1.14     
+    ## [13] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
+    ## [17] tibble_1.2       Matrix_1.2-6     VGAM_1.0-2       evaluate_0.10   
+    ## [21] rmarkdown_1.3    labeling_0.3     stringi_1.1.2    scales_0.4.1    
+    ## [25] backports_1.0.5  stats4_3.3.1     chron_2.3-47

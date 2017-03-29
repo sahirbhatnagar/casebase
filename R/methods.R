@@ -62,8 +62,8 @@ plot.popTime <- function(x, ...,
 #' @import ggplot2
 #' @examples
 #' \dontrun{
-#' DT <- read.csv(system.file("extdata", "bmtcrr.csv", package = "casebase"))
-#' popTimeData <- popTime(data = DT, time = "ftime", exposure = "D")
+#' data(bmtccr)
+#' popTimeData <- popTime(data = bmtccr, time = "ftime", exposure = "D")
 #' # p is an object of class gg and ggplot
 #' p <- plot(popTimeData)
 #' # you can further modify the object using all ggplot2 functions

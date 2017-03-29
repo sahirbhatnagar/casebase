@@ -67,11 +67,11 @@ plot(popTimeData)
 # Stem Cell Data
 
 ```{r}
-bmt <- read.csv("https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv")
-str(bmt)
+data(bmtcrr)
+str(bmtcrr)
 
 # create 'popTime' object
-popTimeData <- popTime(data = bmt, time = "ftime")
+popTimeData <- popTime(data = bmtcrr, time = "ftime")
 
 # object of class 'popTime'
 class(popTimeData)
@@ -89,7 +89,7 @@ plot(popTimeData)
 # abbreviated as ALL and AML, respectively)
 
 # create 'popTimeExposure' object
-popTimeData <- popTime(data = bmt, time = "ftime", exposure = "D")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 
 # object of class 'popTimeExposure'
 class(popTimeData)
@@ -98,7 +98,7 @@ class(popTimeData)
 plot(popTimeData)
 
 # stratify by gender
-popTimeData <- popTime(data = bmt, time = "ftime", exposure = "Sex")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "Sex")
 plot(popTimeData)
 ```
 
