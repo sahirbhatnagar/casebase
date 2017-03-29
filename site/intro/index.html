@@ -1062,7 +1062,13 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 
 <p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-13-1.png" /></p>
-<p>As we can see, the exponential model is not a good fit.</p>
+<p>As we can see, the exponential model is not a good fit. Based on what we
+observed in the population time plot, where more events are observed
+later on in time, this poor fit is expected. A constant hazard model
+would overestimate the cumulative incidence earlier on in time, and
+underestimate it later on, which is what we see in the cumulative
+incidence plot. This example demonstrates the benefits of population
+time plots as an exploratory analysis tool.</p>
 <h3 id="linear-time">Linear Time<a class="headerlink" href="#linear-time" title="Permanent link">&para;</a></h3>
 <p>Next we enter time linearly into the model:</p>
 <div class="codehilite"><pre><span></span>casebase_time <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> Follow.Up.Time <span class="o">+</span> ScrArm<span class="p">,</span> 
