@@ -207,8 +207,7 @@ set.seed(1234)
 
 casebase_exponential <- casebase::fitSmoothHazard(DeadOfPrCa ~ ScrArm, 
                                                   data = ERSPC, 
-                                                  ratio = 100, 
-                                                  type = "uniform")
+                                                  ratio = 100)
 
 summary(casebase_exponential)
 exp(casebase_exponential$coefficients[2])
@@ -258,8 +257,7 @@ Next we enter time linearly into the model:
 ```{r}
 casebase_time <- fitSmoothHazard(DeadOfPrCa ~ Follow.Up.Time + ScrArm, 
                                  data = ERSPC, 
-                                 ratio = 100, 
-                                 type = "uniform")
+                                 ratio = 100)
 
 summary(casebase_time)
 exp(casebase_time$coefficients)
@@ -303,8 +301,7 @@ Next we try to enter a smooth function of time into the model using the `splines
 ```{r}
 casebase_splines <- fitSmoothHazard(DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm, 
                                     data = ERSPC, 
-                                    ratio = 100, 
-                                    type = "uniform")
+                                    ratio = 100)
 
 summary(casebase_splines)
 exp(casebase_splines$coefficients)

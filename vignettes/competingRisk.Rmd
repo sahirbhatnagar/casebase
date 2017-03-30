@@ -143,7 +143,6 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
                           ratio = 1000, 
-                          type = "uniform", 
                           time = "ftime")
 summary(model1)
 ```
@@ -159,7 +158,6 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
                           ratio = 1000, 
-                          type = "uniform", 
                           time = "ftime")
 summary(model2)
 ```
@@ -173,7 +171,6 @@ model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
     data = bmtcrr, 
     ratio = 1000, 
-    type = "uniform", 
     time = "ftime")
 summary(model3)
 ```

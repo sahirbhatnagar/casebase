@@ -1,35 +1,29 @@
 #' Create case-base dataset for use in fitting parametric hazard functions
 #'
-#' This function implements the case-base sampling approach described in Hanley
-#' and Miettinen, Int J Biostatistics 2009. It can be used to fit smooth-in-time
-#' parametric functions easily, via logistic regression.
+#' This function implements the case-base sampling approach described in Hanley and Miettinen, Int J
+#' Biostatistics 2009. It can be used to fit smooth-in-time parametric functions easily, via
+#' logistic regression.
 #'
-#' It is assumed that \code{data} contains the two columns corresponding to the
-#' supplied time and event variables. If either the \code{time} or \code{event}
-#' argument is missing, the function looks for columns with appropriate-looking
-#' names (see \code{\link{checkArgsTimeEvent}}).
+#' The base series is sampled using a multinomial scheme: individuals are sampled proportionally to
+#' their follow-up time.
+#'
+#' It is assumed that \code{data} contains the two columns corresponding to the supplied time and
+#' event variables. If either the \code{time} or \code{event} argument is missing, the function
+#' looks for columns with appropriate-looking names (see \code{\link{checkArgsTimeEvent}}).
 #'
 #' @param data a data.frame or data.table containing the source dataset.
-#' @param time a character string giving the name of the time variable. See
-#'   Details.
-#' @param event a character string giving the name of the event variable. See
-#'   Details.
-#' @param ratio Integer, giving the ratio of the size of the base series to that
-#'   of the case series. Defaults to 10.
-#' @param type There are currently two sampling procedures available:
-#'   \code{uniform}, where person-moments are sampled uniformly across
-#'   individuals and follow-up time; and \code{multinomial}, where individuals
-#'   are sampled proportionally to their follow-up time.
-#' @param comprisk Logical. Indicates whether we have multiple event types and
-#'   that we want to consider some of them as competing risks.
-#' @param censored.indicator a character string of length 1 indicating which
-#'   value in \code{event} is the censored. This function will use
-#'   \code{\link[stats]{relevel}} to set \code{censored.indicator} as the
-#'   reference level. This argument is ignored if the \code{event} variable is a
-#'   numeric
-#' @return The function returns a dataset, with the same format as the source
-#'   dataset, and where each row corresponds to a person-moment sampled from the
-#'   case or the base series. otherwise)
+#' @param time a character string giving the name of the time variable. See Details.
+#' @param event a character string giving the name of the event variable. See Details.
+#' @param ratio Integer, giving the ratio of the size of the base series to that of the case series.
+#'   Defaults to 10.
+#' @param comprisk Logical. Indicates whether we have multiple event types and that we want to
+#'   consider some of them as competing risks.
+#' @param censored.indicator a character string of length 1 indicating which value in \code{event}
+#'   is the censored. This function will use \code{\link[stats]{relevel}} to set
+#'   \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
+#'   variable is a numeric
+#' @return The function returns a dataset, with the same format as the source dataset, and where
+#'   each row corresponds to a person-moment sampled from the case or the base series. otherwise)
 #' @export
 #' @examples
 #' # Simulate censored survival data for two outcome types from exponential distributions
@@ -54,7 +48,7 @@
 #'
 #' out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
 
-sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "multinomial"), comprisk = FALSE, censored.indicator) {
+sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, censored.indicator) {
 
     varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
     timeVar <- varNames$time
@@ -62,7 +56,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     modifiedEvent <- checkArgsEventIndicator(data, eventName, censored.indicator)
     eventVar <- modifiedEvent$event.numeric
 
-    type <- match.arg(type)
+    # type <- match.arg(type)
     # Create survival object from dataset
     if (!comprisk && modifiedEvent$nLevels > 2) {
         stop("For more than one type event, you should either do a competing risk analysis, or reformat your data so that there is only one event of interest.",
@@ -80,14 +74,14 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
     b <- ratio * c               # size of base series
     offset <- log(B / b)            # offset so intercept = log(ID | x, t = 0 )
 
-    if (type == "uniform") {
-        # The idea here is to sample b individuals, with replacement, and then
-        # to sample uniformly a time point for each of them. The sampled time
-        # point must lie between the beginning and the end of follow-up
-        who <- sample(seq_len(n), b, replace = TRUE)
-    }
+    # if (type == "uniform") {
+    #     # The idea here is to sample b individuals, with replacement, and then
+    #     # to sample uniformly a time point for each of them. The sampled time
+    #     # point must lie between the beginning and the end of follow-up
+    #     who <- sample(seq_len(n), b, replace = TRUE)
+    # }
 
-    if (type == "multinomial") {
+    # if (type == "multinomial") {
         # Multinomial sampling: probability of individual contributing a
         # person-moment to base series is proportional to time variable
         # pSum <- c(0, cumsum(survObj[, "time"]))
@@ -98,7 +92,7 @@ sampleCaseBase <- function(data, time, event, ratio = 10, type = c("uniform", "m
         # bSeries[, "time"] <- everyDt - pSum[who]
         p <- survObj[, "time"]/B
         who <- sample(n, b, replace = TRUE, prob = p)
-    }
+    # }
     bSeries <- as.matrix(survObj[who, ])
     bSeries[, "status"] <- 0
     bSeries[, "time"] <- runif(b) * bSeries[, "time"]

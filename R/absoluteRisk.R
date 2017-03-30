@@ -49,7 +49,7 @@
 #' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
 #' set.seed(12345)
-#' nobs <- 5000
+#' nobs <- 1000
 #' tlim <- 20
 #'
 #' # simulation parameters
