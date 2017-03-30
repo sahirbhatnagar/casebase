@@ -453,8 +453,7 @@ set.seed(1234)
 
 casebase_exponential <- casebase::fitSmoothHazard(DeadOfPrCa ~ ScrArm, 
                                                   data = ERSPC, 
-                                                  ratio = 100, 
-                                                  type = "uniform")
+                                                  ratio = 100)
 ```
 
     ## 'Follow.Up.Time' will be used as the time variable
@@ -555,8 +554,7 @@ Next we enter time linearly into the model:
 ``` {.r}
 casebase_time <- fitSmoothHazard(DeadOfPrCa ~ Follow.Up.Time + ScrArm, 
                                  data = ERSPC, 
-                                 ratio = 100, 
-                                 type = "uniform")
+                                 ratio = 100)
 ```
 
     ## 'Follow.Up.Time' will be used as the time variable
@@ -645,8 +643,7 @@ Next we try to enter a smooth function of time into the model using the
 ``` {.r}
 casebase_splines <- fitSmoothHazard(DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm, 
                                     data = ERSPC, 
-                                    ratio = 100, 
-                                    type = "uniform")
+                                    ratio = 100)
 ```
 
     ## 'Follow.Up.Time' will be used as the time variable
@@ -764,26 +761,23 @@ Session Information
 print(sessionInfo(), locale = F)
 ```
 
-    ## R version 3.3.2 (2016-10-31)
+    ## R version 3.3.1 (2016-06-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.1 LTS
+    ## Running under: Ubuntu 16.10
     ## 
     ## attached base packages:
     ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0  survival_2.40-1
+    ## [1] casebase_0.1.0  survival_2.39-5
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.10       knitr_1.15.1       magrittr_1.5      
-    ##  [4] MASS_7.3-45        munsell_0.4.3      colorspace_1.3-2  
-    ##  [7] lattice_0.20-34    stringr_1.2.0      plyr_1.8.4        
-    ## [10] tools_3.3.2        grid_3.3.2         data.table_1.10.4 
-    ## [13] gtable_0.2.0       pacman_0.4.1       htmltools_0.3.6   
-    ## [16] assertthat_0.1     yaml_2.1.14        lazyeval_0.2.0    
-    ## [19] rprojroot_1.2      digest_0.6.12      tibble_1.2        
-    ## [22] Matrix_1.2-7.1     ggplot2_2.2.1      VGAM_1.0-3        
-    ## [25] evaluate_0.10      rmarkdown_1.3.9003 labeling_0.3      
-    ## [28] stringi_1.1.3      scales_0.4.1       backports_1.0.5   
-    ## [31] stats4_3.3.2
+    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     MASS_7.3-45     
+    ##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-33  stringr_1.2.0   
+    ##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
+    ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
+    ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
+    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+    ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
+    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47

@@ -255,7 +255,7 @@ noted above, this corresponds to an Gompertz hazard.
 ``` {.r}
 library(casebase)
 model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio = 100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100)
 ```
 
     ## 'time' will be used as the time variable
@@ -270,30 +270,30 @@ summary(model4)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.6321  -0.1471  -0.1326  -0.1180   3.3378  
+    ## -0.4288  -0.1499  -0.1199  -0.1003   3.4168  
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -4.723692   0.680388  -6.943 3.85e-12 ***
-    ## time               0.004259   0.000580   7.343 2.09e-13 ***
-    ## karno             -0.010888   0.004952  -2.199   0.0279 *  
-    ## diagtime           0.005922   0.009123   0.649   0.5163    
-    ## age                0.004306   0.009273   0.464   0.6424    
-    ## prioryes          -0.221476   0.230259  -0.962   0.3361    
-    ## celltypesquamous  -0.441758   0.287345  -1.537   0.1242    
-    ## celltypesmallcell  0.022139   0.259385   0.085   0.9320    
-    ## celltypeadeno      0.186398   0.291500   0.639   0.5225    
-    ## trttest           -0.100691   0.190795  -0.528   0.5977    
+    ##                     Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)       -2.6999939  0.7215572  -3.742 0.000183 ***
+    ## time               0.0003370  0.0006447   0.523 0.601203    
+    ## karno             -0.0324184  0.0052921  -6.126 9.02e-10 ***
+    ## diagtime           0.0036596  0.0093085   0.393 0.694214    
+    ## age               -0.0064304  0.0092899  -0.692 0.488817    
+    ## prioryes           0.0049789  0.2314208   0.022 0.982835    
+    ## celltypesquamous  -0.4302885  0.2844478  -1.513 0.130352    
+    ## celltypesmallcell  0.3947140  0.2626453   1.503 0.132880    
+    ## celltypeadeno      0.7009165  0.2987905   2.346 0.018984 *  
+    ## trttest            0.2101849  0.2017210   1.042 0.297431    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1394.6  on 12918  degrees of freedom
-    ## AIC: 1414.6
+    ## Residual deviance: 1365.7  on 12918  degrees of freedom
+    ## AIC: 1385.7
     ## 
-    ## Number of Fisher Scoring iterations: 7
+    ## Number of Fisher Scoring iterations: 8
 
 Since the output object from `fitSmoothHazard` inherits from the `glm`
 class, we see a familiar result when using the function `summary`.
@@ -307,7 +307,7 @@ which can then be compared to the empirical measure.
 absoluteRisk(object = model4, time = 90)
 ```
 
-    ## [1] 0.4490265
+    ## [1] 0.5768982
 
 ``` {.r}
 ftime <- veteran$time
@@ -320,7 +320,7 @@ We can also fit a Weibull hazard by using a logarithmic term for time:
 
 ``` {.r}
 model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio = 100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100)
 ```
 
     ## 'time' will be used as the time variable
@@ -335,28 +335,28 @@ summary(model5)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.3669  -0.1625  -0.1255  -0.0916   3.7345  
+    ## -0.4603  -0.1521  -0.1192  -0.0971   3.4266  
     ## 
     ## Coefficients:
     ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -6.025256   0.715645  -8.419  < 2e-16 ***
-    ## log(time)          0.638999   0.081654   7.826 5.05e-15 ***
-    ## karno             -0.021859   0.005402  -4.046 5.21e-05 ***
-    ## diagtime           0.002051   0.008846   0.232    0.817    
-    ## age               -0.002489   0.009044  -0.275    0.783    
-    ## prioryes           0.038160   0.221385   0.172    0.863    
-    ## celltypesquamous  -0.160837   0.273353  -0.588    0.556    
-    ## celltypesmallcell  0.325276   0.263553   1.234    0.217    
-    ## celltypeadeno      0.475734   0.296983   1.602    0.109    
-    ## trttest            0.115654   0.191121   0.605    0.545    
+    ## (Intercept)       -3.016737   0.759750  -3.971 7.17e-05 ***
+    ## log(time)          0.069061   0.071970   0.960   0.3373    
+    ## karno             -0.033136   0.005500  -6.024 1.70e-09 ***
+    ## diagtime          -0.001473   0.009150  -0.161   0.8721    
+    ## age               -0.004822   0.009307  -0.518   0.6044    
+    ## prioryes           0.051890   0.229634   0.226   0.8212    
+    ## celltypesquamous  -0.418226   0.279779  -1.495   0.1350    
+    ## celltypesmallcell  0.448323   0.264064   1.698   0.0895 .  
+    ## celltypeadeno      0.759124   0.303882   2.498   0.0125 *  
+    ## trttest            0.264034   0.204881   1.289   0.1975    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1363.0  on 12918  degrees of freedom
-    ## AIC: 1383
+    ## Residual deviance: 1364.9  on 12918  degrees of freedom
+    ## AIC: 1384.9
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -368,7 +368,7 @@ mean absolute risk.
 # Fit a spline for time
 library(splines)
 model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
-             celltype + trt, data = veteran, ratio = 100, type = "uniform")
+             celltype + trt, data = veteran, ratio = 100)
 ```
 
     ## 'time' will be used as the time variable
@@ -383,30 +383,30 @@ summary(model6)
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
-    ## -0.5950  -0.1519  -0.1207  -0.0984   3.4902  
+    ## -0.4557  -0.1536  -0.1198  -0.0953   3.5215  
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -4.850575   0.688886  -7.041 1.91e-12 ***
-    ## bs(time)1          6.624422   1.057781   6.263 3.79e-10 ***
-    ## bs(time)2         -2.303337   1.859357  -1.239 0.215426    
-    ## bs(time)3          4.793540   0.954585   5.022 5.12e-07 ***
-    ## karno             -0.019221   0.005319  -3.614 0.000302 ***
-    ## diagtime           0.001291   0.009591   0.135 0.892906    
-    ## age               -0.002556   0.009120  -0.280 0.779292    
-    ## prioryes          -0.040716   0.229840  -0.177 0.859390    
-    ## celltypesquamous  -0.220063   0.281321  -0.782 0.434069    
-    ## celltypesmallcell  0.365648   0.268621   1.361 0.173449    
-    ## celltypeadeno      0.542413   0.303971   1.784 0.074355 .  
-    ## trttest            0.108617   0.197434   0.550 0.582222    
+    ##                     Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)       -2.9568779  0.7256358  -4.075 4.60e-05 ***
+    ## bs(time)1          1.6434447  1.0344949   1.589  0.11214    
+    ## bs(time)2         -2.5374842  1.7567675  -1.444  0.14863    
+    ## bs(time)3          1.6957255  0.9856981   1.720  0.08537 .  
+    ## karno             -0.0322233  0.0053581  -6.014 1.81e-09 ***
+    ## diagtime           0.0006669  0.0091320   0.073  0.94178    
+    ## age               -0.0063188  0.0093578  -0.675  0.49952    
+    ## prioryes           0.0068816  0.2356245   0.029  0.97670    
+    ## celltypesquamous  -0.3974461  0.2838466  -1.400  0.16145    
+    ## celltypesmallcell  0.4656989  0.2648835   1.758  0.07873 .  
+    ## celltypeadeno      0.8663980  0.3040303   2.850  0.00438 ** 
+    ## trttest            0.2542601  0.2077276   1.224  0.22095    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## (Dispersion parameter for binomial family taken to be 1)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
-    ## Residual deviance: 1367.3  on 12916  degrees of freedom
-    ## AIC: 1391.3
+    ## Residual deviance: 1362.9  on 12916  degrees of freedom
+    ## AIC: 1386.9
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -414,7 +414,7 @@ summary(model6)
 absoluteRisk(object = model6, time = 90)
 ```
 
-    ## [1] 0.4611582
+    ## [1] 0.5744505
 
 As we can see from the summary, there is little evidence that splines
 actually improve the fit. Moreover, we can see that estimated individual
@@ -469,13 +469,13 @@ karno
 -0.0328
 </td>
 <td style="text-align:right;">
--0.0109
+-0.0324
 </td>
 <td style="text-align:right;">
--0.0219
+-0.0331
 </td>
 <td style="text-align:right;">
--0.0192
+-0.0322
 </td>
 </tr>
 <tr>
@@ -486,13 +486,13 @@ diagtime
 0.0001
 </td>
 <td style="text-align:right;">
-0.0059
+0.0037
 </td>
 <td style="text-align:right;">
-0.0021
+-0.0015
 </td>
 <td style="text-align:right;">
-0.0013
+0.0007
 </td>
 </tr>
 <tr>
@@ -503,13 +503,13 @@ age
 -0.0087
 </td>
 <td style="text-align:right;">
-0.0043
+-0.0064
 </td>
 <td style="text-align:right;">
--0.0025
+-0.0048
 </td>
 <td style="text-align:right;">
--0.0026
+-0.0063
 </td>
 </tr>
 <tr>
@@ -520,13 +520,13 @@ prioryes
 0.0716
 </td>
 <td style="text-align:right;">
--0.2215
+0.0050
 </td>
 <td style="text-align:right;">
-0.0382
+0.0519
 </td>
 <td style="text-align:right;">
--0.0407
+0.0069
 </td>
 </tr>
 <tr>
@@ -537,13 +537,13 @@ celltypesquamous
 -0.4013
 </td>
 <td style="text-align:right;">
--0.4418
+-0.4303
 </td>
 <td style="text-align:right;">
--0.1608
+-0.4182
 </td>
 <td style="text-align:right;">
--0.2201
+-0.3974
 </td>
 </tr>
 <tr>
@@ -554,13 +554,13 @@ celltypesmallcell
 0.4603
 </td>
 <td style="text-align:right;">
-0.0221
+0.3947
 </td>
 <td style="text-align:right;">
-0.3253
+0.4483
 </td>
 <td style="text-align:right;">
-0.3656
+0.4657
 </td>
 </tr>
 <tr>
@@ -571,13 +571,13 @@ celltypeadeno
 0.7948
 </td>
 <td style="text-align:right;">
-0.1864
+0.7009
 </td>
 <td style="text-align:right;">
-0.4757
+0.7591
 </td>
 <td style="text-align:right;">
-0.5424
+0.8664
 </td>
 </tr>
 <tr>
@@ -588,13 +588,13 @@ trttest
 0.2946
 </td>
 <td style="text-align:right;">
--0.1007
+0.2102
 </td>
 <td style="text-align:right;">
-0.1157
+0.2640
 </td>
 <td style="text-align:right;">
-0.1086
+0.2543
 </td>
 </tr>
 </tbody>
