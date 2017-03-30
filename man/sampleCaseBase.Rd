@@ -4,50 +4,43 @@
 \alias{sampleCaseBase}
 \title{Create case-base dataset for use in fitting parametric hazard functions}
 \usage{
-sampleCaseBase(data, time, event, ratio = 10, type = c("uniform",
-  "multinomial"), comprisk = FALSE, censored.indicator)
+sampleCaseBase(data, time, event, ratio = 10, comprisk = FALSE,
+  censored.indicator)
 }
 \arguments{
 \item{data}{a data.frame or data.table containing the source dataset.}
 
-\item{time}{a character string giving the name of the time variable. See
-Details.}
+\item{time}{a character string giving the name of the time variable. See Details.}
 
-\item{event}{a character string giving the name of the event variable. See
-Details.}
+\item{event}{a character string giving the name of the event variable. See Details.}
 
-\item{ratio}{Integer, giving the ratio of the size of the base series to that
-of the case series. Defaults to 10.}
+\item{ratio}{Integer, giving the ratio of the size of the base series to that of the case series.
+Defaults to 10.}
 
-\item{type}{There are currently two sampling procedures available:
-\code{uniform}, where person-moments are sampled uniformly across
-individuals and follow-up time; and \code{multinomial}, where individuals
-are sampled proportionally to their follow-up time.}
+\item{comprisk}{Logical. Indicates whether we have multiple event types and that we want to
+consider some of them as competing risks.}
 
-\item{comprisk}{Logical. Indicates whether we have multiple event types and
-that we want to consider some of them as competing risks.}
-
-\item{censored.indicator}{a character string of length 1 indicating which
-value in \code{event} is the censored. This function will use
-\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
-reference level. This argument is ignored if the \code{event} variable is a
-numeric}
+\item{censored.indicator}{a character string of length 1 indicating which value in \code{event}
+is the censored. This function will use \code{\link[stats]{relevel}} to set
+\code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
+variable is a numeric}
 }
 \value{
-The function returns a dataset, with the same format as the source
-  dataset, and where each row corresponds to a person-moment sampled from the
-  case or the base series. otherwise)
+The function returns a dataset, with the same format as the source dataset, and where
+  each row corresponds to a person-moment sampled from the case or the base series. otherwise)
 }
 \description{
-This function implements the case-base sampling approach described in Hanley
-and Miettinen, Int J Biostatistics 2009. It can be used to fit smooth-in-time
-parametric functions easily, via logistic regression.
+This function implements the case-base sampling approach described in Hanley and Miettinen, Int J
+Biostatistics 2009. It can be used to fit smooth-in-time parametric functions easily, via
+logistic regression.
 }
 \details{
-It is assumed that \code{data} contains the two columns corresponding to the
-supplied time and event variables. If either the \code{time} or \code{event}
-argument is missing, the function looks for columns with appropriate-looking
-names (see \code{\link{checkArgsTimeEvent}}).
+The base series is sampled using a multinomial scheme: individuals are sampled proportionally to
+their follow-up time.
+
+It is assumed that \code{data} contains the two columns corresponding to the supplied time and
+event variables. If either the \code{time} or \code{event} argument is missing, the function
+looks for columns with appropriate-looking names (see \code{\link{checkArgsTimeEvent}}).
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions

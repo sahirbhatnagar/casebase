@@ -182,8 +182,7 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 ``` r
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
-                          ratio = 1000, 
-                          type = "uniform", 
+                          ratio = 1000,
                           time = "ftime")
 summary(model1)
 ```
@@ -193,30 +192,30 @@ summary(model1)
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
     ## Pearson residuals:
-    ##                         Min       1Q   Median       3Q   Max
-    ## log(mu[,2]/mu[,1]) -0.03511 -0.02312 -0.01946 -0.01588 84.80
-    ## log(mu[,3]/mu[,1]) -0.03693 -0.02680 -0.02337 -0.02017 57.29
+    ##                         Min       1Q   Median        3Q    Max
+    ## log(mu[,2]/mu[,1]) -0.07247 -0.02213 -0.01240 -0.004682 143.86
+    ## log(mu[,3]/mu[,1]) -0.10769 -0.02841 -0.01182 -0.002664  63.76
     ## 
     ## Coefficients:
-    ##                  Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1  -4.7086629  0.6860839  -6.863 6.74e-12 ***
-    ## (Intercept):2  -3.7753463  0.4712041  -8.012 1.13e-15 ***
-    ## ftime:1        -0.0074411  0.0095213  -0.782   0.4345    
-    ## ftime:2        -0.0234739  0.0118882  -1.975   0.0483 *  
-    ## SexM:1          0.1173418  0.2766552   0.424   0.6715    
-    ## SexM:2         -0.1317348  0.2355512  -0.559   0.5760    
-    ## DAML:1         -0.2615793  0.3039472  -0.861   0.3895    
-    ## DAML:2          0.1176449  0.2671575   0.440   0.6597    
-    ## PhaseCR2:1      0.1072881  0.4623358   0.232   0.8165    
-    ## PhaseCR2:2      0.1036405  0.3310731   0.313   0.7542    
-    ## PhaseCR3:1      0.2796638  0.6741410   0.415   0.6783    
-    ## PhaseCR3:2      0.1126718  0.5154568   0.219   0.8270    
-    ## PhaseRelapse:1  0.8054620  0.3804372   2.117   0.0342 *  
-    ## PhaseRelapse:2 -0.0007109  0.3000402  -0.002   0.9981    
-    ## SourcePB:1      0.7456485  0.5311726   1.404   0.1604    
-    ## SourcePB:2     -0.6471805  0.3288367  -1.968   0.0491 *  
-    ## Age:1          -0.0151611  0.0118020  -1.285   0.1989    
-    ## Age:2           0.0186593  0.0098371   1.897   0.0579 .  
+    ##                 Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept):1  -3.493702   0.680148  -5.137 2.80e-07 ***
+    ## (Intercept):2  -2.574417   0.459100  -5.608 2.05e-08 ***
+    ## ftime:1        -0.069566   0.014665  -4.744 2.10e-06 ***
+    ## ftime:2        -0.103680   0.018131  -5.718 1.08e-08 ***
+    ## SexM:1         -0.279635   0.280845  -0.996 0.319401    
+    ## SexM:2         -0.398319   0.234326  -1.700 0.089160 .  
+    ## DAML:1         -0.612589   0.299105  -2.048 0.040553 *  
+    ## DAML:2         -0.130847   0.273363  -0.479 0.632183    
+    ## PhaseCR2:1      0.181035   0.465819   0.389 0.697544    
+    ## PhaseCR2:2      0.301255   0.329598   0.914 0.360713    
+    ## PhaseCR3:1      0.494073   0.689858   0.716 0.473871    
+    ## PhaseCR3:2      0.224703   0.522988   0.430 0.667448    
+    ## PhaseRelapse:1  1.434574   0.390435   3.674 0.000239 ***
+    ## PhaseRelapse:2  0.768495   0.306073   2.511 0.012045 *  
+    ## SourcePB:1      0.470195   0.567590   0.828 0.407441    
+    ## SourcePB:2     -1.054388   0.350936  -3.005 0.002660 ** 
+    ## Age:1          -0.006324   0.011931  -0.530 0.596064    
+    ## Age:2           0.028052   0.009885   2.838 0.004542 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -226,11 +225,11 @@ summary(model1)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 2221.211 on 262244 degrees of freedom
+    ## Residual deviance: 2010.111 on 262244 degrees of freedom
     ## 
-    ## Log-likelihood: -1110.605 on 262244 degrees of freedom
+    ## Log-likelihood: -1005.056 on 262244 degrees of freedom
     ## 
-    ## Number of iterations: 11 
+    ## Number of iterations: 13 
     ## 
     ## Reference group is level  1  of the response
 
@@ -244,7 +243,6 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
                           ratio = 1000, 
-                          type = "uniform", 
                           time = "ftime")
 summary(model2)
 ```
@@ -254,30 +252,30 @@ summary(model2)
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
     ## Pearson residuals:
-    ##                         Min       1Q   Median       3Q   Max
-    ## log(mu[,2]/mu[,1]) -0.05154 -0.02288 -0.01882 -0.01490 79.90
-    ## log(mu[,3]/mu[,1]) -0.04174 -0.02653 -0.02323 -0.01983 64.38
+    ##                        Min       1Q   Median       3Q   Max
+    ## log(mu[,2]/mu[,1]) -0.1586 -0.02170 -0.01491 -0.01130 91.41
+    ## log(mu[,3]/mu[,1]) -0.2765 -0.02455 -0.01753 -0.01442 68.65
     ## 
     ## Coefficients:
     ##                 Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1  -5.169337   0.689581  -7.496 6.56e-14 ***
-    ## (Intercept):2  -4.150096   0.469486  -8.840  < 2e-16 ***
-    ## log(ftime):1    0.275468   0.087632   3.143  0.00167 ** 
-    ## log(ftime):2    0.136730   0.074470   1.836  0.06635 .  
-    ## SexM:1         -0.101932   0.282880  -0.360  0.71860    
-    ## SexM:2         -0.277052   0.235713  -1.175  0.23984    
-    ## DAML:1         -0.462982   0.304138  -1.522  0.12794    
-    ## DAML:2          0.022211   0.273592   0.081  0.93530    
-    ## PhaseCR2:1      0.135328   0.463264   0.292  0.77020    
-    ## PhaseCR2:2      0.183499   0.329272   0.557  0.57733    
-    ## PhaseCR3:1      0.350681   0.680687   0.515  0.60642    
-    ## PhaseCR3:2      0.137675   0.516486   0.267  0.78981    
-    ## PhaseRelapse:1  1.106652   0.389873   2.838  0.00453 ** 
-    ## PhaseRelapse:2  0.304955   0.309689   0.985  0.32477    
-    ## SourcePB:1      0.705531   0.549936   1.283  0.19952    
-    ## SourcePB:2     -0.737839   0.339630  -2.172  0.02982 *  
-    ## Age:1          -0.010259   0.011751  -0.873  0.38264    
-    ## Age:2           0.021852   0.009808   2.228  0.02587 *  
+    ## (Intercept):1  -3.976780   0.701316  -5.670 1.42e-08 ***
+    ## (Intercept):2  -3.076452   0.460513  -6.680 2.38e-11 ***
+    ## log(ftime):1   -0.331403   0.068786  -4.818 1.45e-06 ***
+    ## log(ftime):2   -0.410863   0.055669  -7.380 1.58e-13 ***
+    ## SexM:1         -0.406499   0.292048  -1.392 0.163956    
+    ## SexM:2         -0.485123   0.239597  -2.025 0.042894 *  
+    ## DAML:1         -0.674288   0.301859  -2.234 0.025497 *  
+    ## DAML:2         -0.154872   0.284347  -0.545 0.585989    
+    ## PhaseCR2:1      0.232940   0.467074   0.499 0.617976    
+    ## PhaseCR2:2      0.357673   0.329746   1.085 0.278058    
+    ## PhaseCR3:1      0.461212   0.711894   0.648 0.517072    
+    ## PhaseCR3:2      0.118831   0.533390   0.223 0.823704    
+    ## PhaseRelapse:1  1.462762   0.392443   3.727 0.000194 ***
+    ## PhaseRelapse:2  0.850887   0.307694   2.765 0.005686 ** 
+    ## SourcePB:1      0.671664   0.601670   1.116 0.264279    
+    ## SourcePB:2     -0.968265   0.366793  -2.640 0.008295 ** 
+    ## Age:1          -0.003776   0.011733  -0.322 0.747596    
+    ## Age:2           0.029154   0.009940   2.933 0.003357 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -287,11 +285,11 @@ summary(model2)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 2214.089 on 262244 degrees of freedom
+    ## Residual deviance: 2106.329 on 262244 degrees of freedom
     ## 
-    ## Log-likelihood: -1107.044 on 262244 degrees of freedom
+    ## Log-likelihood: -1053.164 on 262244 degrees of freedom
     ## 
-    ## Number of iterations: 10 
+    ## Number of iterations: 11 
     ## 
     ## Reference group is level  1  of the response
 
@@ -304,7 +302,6 @@ model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
     data = bmtcrr, 
     ratio = 1000, 
-    type = "uniform", 
     time = "ftime")
 summary(model3)
 ```
@@ -314,34 +311,34 @@ summary(model3)
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
     ## Pearson residuals:
-    ##                         Min       1Q   Median       3Q   Max
-    ## log(mu[,2]/mu[,1]) -0.05787 -0.02362 -0.01828 -0.01349 103.9
-    ## log(mu[,3]/mu[,1]) -0.05795 -0.02821 -0.02077 -0.01506  93.3
+    ##                         Min       1Q    Median         3Q   Max
+    ## log(mu[,2]/mu[,1]) -0.06497 -0.02241 -0.012772 -2.402e-03 178.2
+    ## log(mu[,3]/mu[,1]) -0.08870 -0.03005 -0.004613 -2.360e-06 115.9
     ## 
     ## Coefficients:
     ##                         Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1          -5.322353   0.701356  -7.589 3.23e-14 ***
-    ## (Intercept):2          -4.806549   0.505056  -9.517  < 2e-16 ***
-    ## splines::bs(ftime)1:1  10.051640   2.514058   3.998 6.38e-05 ***
-    ## splines::bs(ftime)1:2  18.542863   3.706641   5.003 5.66e-07 ***
-    ## splines::bs(ftime)2:1 -27.155285   9.621508  -2.822 0.004767 ** 
-    ## splines::bs(ftime)2:2 -99.768340  26.045064  -3.831 0.000128 ***
-    ## splines::bs(ftime)3:1   2.032730   7.508245   0.271 0.786596    
-    ## splines::bs(ftime)3:2   0.716355  21.435757   0.033 0.973341    
-    ## SexM:1                  0.010810   0.277099   0.039 0.968881    
-    ## SexM:2                 -0.224871   0.236840  -0.949 0.342385    
-    ## DAML:1                 -0.414197   0.302615  -1.369 0.171085    
-    ## DAML:2                 -0.005705   0.265368  -0.021 0.982847    
-    ## PhaseCR2:1              0.040206   0.463103   0.087 0.930815    
-    ## PhaseCR2:2              0.121606   0.330203   0.368 0.712666    
-    ## PhaseCR3:1              0.535662   0.679935   0.788 0.430805    
-    ## PhaseCR3:2              0.274984   0.518349   0.531 0.595765    
-    ## PhaseRelapse:1          1.086171   0.391777   2.772 0.005564 ** 
-    ## PhaseRelapse:2          0.328237   0.310983   1.055 0.291205    
-    ## SourcePB:1              0.507192   0.537842   0.943 0.345674    
-    ## SourcePB:2             -0.892167   0.336761  -2.649 0.008067 ** 
-    ## Age:1                  -0.012264   0.012064  -1.017 0.309381    
-    ## Age:2                   0.022048   0.009932   2.220 0.026427 *  
+    ## (Intercept):1          -3.730220   0.707340  -5.274 1.34e-07 ***
+    ## (Intercept):2          -3.260420   0.507168  -6.429 1.29e-10 ***
+    ## splines::bs(ftime)1:1   0.049603   2.268962   0.022 0.982559    
+    ## splines::bs(ftime)1:2   7.180721   3.646293   1.969 0.048916 *  
+    ## splines::bs(ftime)2:1 -16.297428   8.159884  -1.997 0.045797 *  
+    ## splines::bs(ftime)2:2 -77.667331  25.415907  -3.056 0.002244 ** 
+    ## splines::bs(ftime)3:1  -2.511822  10.083023  -0.249 0.803273    
+    ## splines::bs(ftime)3:2  -2.635626  22.561450  -0.117 0.907003    
+    ## SexM:1                 -0.308727   0.282306  -1.094 0.274135    
+    ## SexM:2                 -0.434290   0.234861  -1.849 0.064438 .  
+    ## DAML:1                 -0.611650   0.299777  -2.040 0.041315 *  
+    ## DAML:2                 -0.133471   0.273911  -0.487 0.626060    
+    ## PhaseCR2:1              0.163280   0.465762   0.351 0.725914    
+    ## PhaseCR2:2              0.295375   0.329884   0.895 0.370580    
+    ## PhaseCR3:1              0.548603   0.694576   0.790 0.429622    
+    ## PhaseCR3:2              0.292396   0.525374   0.557 0.577836    
+    ## PhaseRelapse:1          1.490165   0.394595   3.776 0.000159 ***
+    ## PhaseRelapse:2          0.897693   0.310735   2.889 0.003866 ** 
+    ## SourcePB:1              0.416135   0.572748   0.727 0.467497    
+    ## SourcePB:2             -1.152649   0.357278  -3.226 0.001254 ** 
+    ## Age:1                  -0.005113   0.012054  -0.424 0.671442    
+    ## Age:2                   0.030172   0.010050   3.002 0.002681 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -351,11 +348,11 @@ summary(model3)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 2157.524 on 262240 degrees of freedom
+    ## Residual deviance: 1995.49 on 262240 degrees of freedom
     ## 
-    ## Log-likelihood: -1078.762 on 262240 degrees of freedom
+    ## Log-likelihood: -997.745 on 262240 degrees of freedom
     ## 
-    ## Number of iterations: 16 
+    ## Number of iterations: 18 
     ## 
     ## Reference group is level  1  of the response
 
@@ -424,9 +421,9 @@ Session information
     ##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
     ## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.39-5  yaml_2.1.14     
     ## [17] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
-    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    codetools_0.2-14
-    ## [25] VGAM_1.0-2       evaluate_0.10    rmarkdown_1.3    stringi_1.1.2   
-    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
+    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    scales_0.4.1    
+    ## [29] backports_1.0.5  stats4_3.3.1     chron_2.3-47
 
 References
 ----------
