@@ -9,6 +9,12 @@ r_binary_packages:
   - ggplot2
   - eha
 
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
+
 notifications:
   email:
     - maxime.turgeon@mail.mcgill.ca
