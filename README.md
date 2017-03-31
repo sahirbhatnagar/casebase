@@ -1,6 +1,6 @@
 # casebase
 
-[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase)
+[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
 
 An R package for smooth-in-time fitting of parametric hazard functions
 
