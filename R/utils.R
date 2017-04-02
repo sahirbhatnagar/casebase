@@ -13,6 +13,10 @@ handler_offset <- function(msg) {
 handler_bsplines <- function(msg) {
     if (any(grepl("ill-conditioned bases", msg))) invokeRestart("muffleWarning")
 }
+# Handling warning messages coming from vglm.fitter
+handler_fitter <- function(msg) {
+    if (any(grepl("vglm.fitter", msg))) invokeRestart("muffleWarning")
+}
 
 # Check if provided time and event variables are in the dataset
 # and also check for any good substitute

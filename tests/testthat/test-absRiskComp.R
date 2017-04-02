@@ -1,21 +1,29 @@
-context("Absolute risk")
+context("Absolute risk-Comp risk")
 
 n = 100; alpha = 0.05
 
-lambda_t0 <- 1
-lambda_t1 <- 3
+lambda10 <- 1
+lambda20 <- 2
+lambda11 <- 4
+lambda21 <- 5
+
+lambda_t0 <- lambda10 + lambda20
+lambda_t1 <- lambda11 + lambda21
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
+event <- c(rbinom(n, 1, prob = lambda10/lambda_t0),
+           rbinom(n, 1, prob = lambda11/lambda_t1)) + 1
 censor <- rexp(n = 2*n, rate = -log(alpha))
 
 times_c <- pmin(times, censor)
-event_c <- 1 * (times < censor)
+event_c <- event * (times < censor)
 
-DF <- data.frame("ftime" = times_c,
+DT <- data.table("ftime" = times_c,
                  "event" = event_c,
                  "Z" = c(rep(0,n), rep(1,n)))
-DT <- data.table("ftime" = times_c,
+
+DF <- data.frame("ftime" = times_c,
                  "event" = event_c,
                  "Z" = c(rep(0,n), rep(1,n)))
 
