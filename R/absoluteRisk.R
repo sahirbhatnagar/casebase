@@ -197,7 +197,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     if (method == "quadrature") {
         overallSurv <- function(x, object, newdata) {
-            exp(-integrate(overallLambda, lower = 0, upper = x, object = object, newdata = newdata,
+            exp(-integrate(overallLambda, lower = 0, upper = x[1], object = object, newdata = newdata,
                            subdivisions = nsamp)$value)
         }
         # 2. Compute individual subdensities f_j

@@ -125,8 +125,9 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
         # combData <- cbind(sampleData, multiData_mat)
         # model <- VGAM::vglm(formula, family = VGAM::multinomial,
         #                     data = combData)
-        model <- vglm(formula, family = multinomial(refLevel = 1),
-                      data = sampleData)
+        withCallingHandlers(model <- vglm(formula, family = multinomial(refLevel = 1),
+                                          data = sampleData),
+                            warning = handler_fitter)
 
         out <- new("CompRisk", model,
                    originalData = originalData,
