@@ -1,4 +1,12 @@
-# Mkdocs: HOW-TO
+## Testing: HOW-TO
+
+For automated testing, we use the `testthat` package. The basic testing unit is an *expectation*; a given computation has an expected result. A *test* is a group of related expectations, testing a single function or a single feature of a function. Finally, similar tests are grouped into a *file*, an `R` script; these files are located in the directory `tests/testthat`.
+
+Expectations can assess a variety of results: equality, whether an object is of the correct class, if an output leads to a desired error or warning, etc.
+
+For examples on how to design tests, see the directory `tests/testthat`. For more information, see Hadley Wickham's book on [*R packages*](http://r-pkgs.had.co.nz/tests.html) or his [article in the R journal](https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf).
+
+## Mkdocs: HOW-TO
 
 This explains how to run the mkdocs. But first you need to install `mkdocs` and the third-party theme `material`.
 
@@ -71,7 +79,7 @@ markdown_extensions:
     - mdx_math
 ```
 
-## Further comments
+### Further comments
 
     - used `knitr::kable(format = "html")` for tables, but still had to manually remove backslashes on underscores in the .md file
 

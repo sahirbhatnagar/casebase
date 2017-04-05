@@ -16,7 +16,7 @@
 ^test\.rds$
 
 ^data-raw$
-^MKDOCS_HOWTO$
+^CONTRIBUTE_HOWTO$
 ^docs/
 ^images/$
 ^docs/images/$
