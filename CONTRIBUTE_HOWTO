@@ -6,6 +6,10 @@ Expectations can assess a variety of results: equality, whether an object is of 
 
 For examples on how to design tests, see the directory `tests/testthat`. For more information, see Hadley Wickham's book on [*R packages*](http://r-pkgs.had.co.nz/tests.html) or his [article in the R journal](https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf).
 
+Once new tests have been written, the whole test suite can be run locally using `devtools::test()`. Alternatively, the tests will be run on Travis CI every time a set of commits is pushed to GitHub.
+
+Finally, we track code coverage using Jim Hester's package [covr](https://cran.r-project.org/package=covr), which represent the proportion of code lines that are run during some test. Locally, this can measured using the function `covr::package_coverage()`. And again it is run after a successful Travis check, and the results are uploaded to <codecov.io>; this allows us to keep track of code coverage via the badge at the top of the README file.
+
 ## Mkdocs: HOW-TO
 
 This explains how to run the mkdocs. But first you need to install `mkdocs` and the third-party theme `material`.
