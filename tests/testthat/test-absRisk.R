@@ -27,7 +27,7 @@ test_that("no error in absolute risk with data frames", {
                              method = "montecarlo"),
                 silent = TRUE)
     foo2 <- try(absoluteRisk(fitDF, time = 1, newdata = DF[1,],
-                             method = "quadrature"),
+                             method = "numerical"),
                 silent = TRUE)
 
     expect_false(inherits(foo1, "try-error"))
@@ -39,7 +39,7 @@ test_that("no error in absolute risk with data tables", {
                              method = "montecarlo"),
                 silent = TRUE)
     foo2 <- try(absoluteRisk(fitDT, time = 1, newdata = DT[1,],
-                             method = "quadrature"),
+                             method = "numerical"),
                 silent = TRUE)
 
     expect_false(inherits(foo1, "try-error"))
@@ -55,7 +55,7 @@ test_that("no error in absolute risk with data frames - new data", {
                              method = "montecarlo"),
                 silent = TRUE)
     foo2 <- try(absoluteRisk(fitDF, time = 1, newdata = newDF,
-                             method = "quadrature"),
+                             method = "numerical"),
                 silent = TRUE)
 
     expect_false(inherits(foo1, "try-error"))
@@ -67,7 +67,7 @@ test_that("no error in absolute risk with data tables - new data", {
                              method = "montecarlo"),
                 silent = TRUE)
     foo2 <- try(absoluteRisk(fitDT, time = 1, newdata = newDT,
-                             method = "quadrature"),
+                             method = "numerical"),
                 silent = TRUE)
 
     expect_false(inherits(foo1, "try-error"))
@@ -80,31 +80,31 @@ test_that("should output probabilities with data frames", {
     absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[1,],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[1,],
-                              method = "quadrature")
+                              method = "numerical")
 
-    expect_true(all(absRiskMC[,-1] >= 0))
-    expect_true(all(absRiskNI[,-1] >= 0))
-    expect_true(all(absRiskMC[,-1] <= 1))
-    expect_true(all(absRiskNI[,-1] <= 1))
+    expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskNI >= 0))
+    expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data tables", {
     absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[1,],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[1,],
-                              method = "quadrature")
+                              method = "numerical")
 
-    expect_true(all(absRiskMC[,-1] >= 0))
-    expect_true(all(absRiskNI[,-1] >= 0))
-    expect_true(all(absRiskMC[,-1] <= 1))
-    expect_true(all(absRiskNI[,-1] <= 1))
+    expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskNI >= 0))
+    expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data frames - two time points", {
     absRiskMC <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
-                              method = "quadrature")
+                              method = "numerical")
 
     expect_true(all(absRiskMC[,-1] >= 0))
     expect_true(all(absRiskNI[,-1] >= 0))
@@ -116,7 +116,7 @@ test_that("should output probabilities with data tables - two time points", {
     absRiskMC <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
-                              method = "quadrature")
+                              method = "numerical")
 
     expect_true(all(absRiskMC[,-1] >= 0))
     expect_true(all(absRiskNI[,-1] >= 0))
@@ -128,24 +128,24 @@ test_that("should output probabilities with data frames - two covariate profile"
     absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1),],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1),],
-                              method = "quadrature")
+                              method = "numerical")
 
-    expect_true(all(absRiskMC[,-1] >= 0))
-    expect_true(all(absRiskNI[,-1] >= 0))
-    expect_true(all(absRiskMC[,-1] <= 1))
-    expect_true(all(absRiskNI[,-1] <= 1))
+    expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskNI >= 0))
+    expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data tables - two covariate profile", {
     absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1),],
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1),],
-                              method = "quadrature")
+                              method = "numerical")
 
-    expect_true(all(absRiskMC[,-1] >= 0))
-    expect_true(all(absRiskNI[,-1] >= 0))
-    expect_true(all(absRiskMC[,-1] <= 1))
-    expect_true(all(absRiskNI[,-1] <= 1))
+    expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskNI >= 0))
+    expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskNI <= 1))
 })
 
 # Absolute risk at time = 0
@@ -153,13 +153,13 @@ test_that("should give probability 0 at time 0 with data frames", {
     absRiskMC <- absoluteRisk(fitDF, time = 0, newdata = newDF,
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = 0, newdata = newDF,
-                              method = "quadrature")
+                              method = "numerical")
 
     expect_true(all.equal(absRiskMC,
-                          matrix(0, ncol = 3, nrow = 1),
+                          matrix(0, ncol = 2, nrow = 1),
                           check.attributes = FALSE))
     expect_true(all.equal(absRiskNI,
-                          matrix(0, ncol = 3, nrow = 1),
+                          matrix(0, ncol = 2, nrow = 1),
                           check.attributes = FALSE))
 })
 
@@ -167,12 +167,12 @@ test_that("should give probability 0 at time 0 with data tables", {
     absRiskMC <- absoluteRisk(fitDT, time = 0, newdata = newDT,
                               method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = 0, newdata = newDT,
-                              method = "quadrature")
+                              method = "numerical")
 
     expect_true(all.equal(absRiskMC,
-                          matrix(0, ncol = 3, nrow = 1),
+                          matrix(0, ncol = 2, nrow = 1),
                           check.attributes = FALSE))
     expect_true(all.equal(absRiskNI,
-                          matrix(0, ncol = 3, nrow = 1),
+                          matrix(0, ncol = 2, nrow = 1),
                           check.attributes = FALSE))
 })

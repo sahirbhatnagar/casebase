@@ -515,9 +515,9 @@ smooth_risk_exp <- casebase::absoluteRisk(object = casebase_exponential,
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
 
-plot(survfit(cox_model, newdata=new_data),
+plot(survfit(cox_model, newdata = new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -525,8 +525,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_exp[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_exp[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_exp[,1], smooth_risk_exp[,2], col = "red", lty = 2)
+lines(smooth_risk_exp[,1], smooth_risk_exp[,3], col = "blue", lty = 2)
 
 
 legend("topleft", 
@@ -610,9 +610,9 @@ smooth_risk_time <- casebase::absoluteRisk(object = casebase_time,
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
 
-plot(survfit(cox_model, newdata=new_data),
+plot(survfit(cox_model, newdata = new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -620,8 +620,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_time[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_time[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_time[,1], smooth_risk_time[,2], col = "red", lty = 2)
+lines(smooth_risk_time[,1], smooth_risk_time[,3], col = "blue", lty = 2)
 
 legend("topleft", 
        legend = c("Control group (Cox)","Control group (Casebase)",
@@ -707,7 +707,7 @@ smooth_risk_splines <- absoluteRisk(object = casebase_splines,
 
 plot(survfit(cox_model, newdata=new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -715,8 +715,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_splines[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_splines[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_splines[,1], smooth_risk_splines[,2], col = "red", lty = 2)
+lines(smooth_risk_splines[,1], smooth_risk_splines[,3], col = "blue", lty = 2)
 
 legend("topleft", 
        legend = c("Control group (Cox)","Control group (Casebase)",
@@ -761,23 +761,28 @@ Session Information
 print(sessionInfo(), locale = F)
 ```
 
-    ## R version 3.3.1 (2016-06-21)
+    ## R version 3.4.0 (2017-04-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.10
+    ## Running under: Ubuntu Zesty Zapus (development branch)
+    ## 
+    ## Matrix products: default
+    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
     ## 
     ## attached base packages:
     ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0  survival_2.39-5
+    ## [1] casebase_0.1.0  survival_2.41-3
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     MASS_7.3-45     
-    ##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-33  stringr_1.2.0   
-    ##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
+    ##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-35  stringr_1.2.0   
+    ##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
     ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
     ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
-    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+    ## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
     ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
-    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
+    ## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
+    ## [33] chron_2.3-47

@@ -187,10 +187,10 @@ splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ```{r absRiskPlot, eval=TRUE}
-plot(linearRisk[2,-1,1], logRisk[2,-1,1],
+plot(linearRisk[,,1], logRisk[,,1],
      xlab = "Linear", ylab = "Log/Spline", pch = 19,
      xlim = c(0,1), ylim = c(0,1), col = 'red')
-points(linearRisk[2,-1,1], splineRisk[2,-1,1],
+points(linearRisk[,,1], splineRisk[,,1],
        col = 'blue', pch = 19)
 abline(a = 0, b = 1, lty = 2, lwd = 2)
 legend("topleft", legend = c("Log", "Spline"),
@@ -199,9 +199,9 @@ legend("topleft", legend = c("Log", "Spline"),
 
 We can also estimate the mean absolute risk for the entire dataset:
 ```{r eval=TRUE}
-mean(linearRisk[2,-1,1])
-mean(logRisk[2,-1,1])
-mean(splineRisk[2,-1,1])
+mean(linearRisk[,,1])
+mean(logRisk[,,1])
+mean(splineRisk[,,1])
 ```
 
 ## Session information

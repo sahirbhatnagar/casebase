@@ -115,7 +115,7 @@ The main purpose of fitting smooth hazard functions is that it is then relativel
 
 ```{r eval=TRUE}
 absRisk4 <- absoluteRisk(object = model4, time = 90)
-mean(absRisk4[2,-1])
+mean(absRisk4)
 
 ftime <- veteran$time
 mean(ftime <= 90)
@@ -147,7 +147,7 @@ As we can see from the summary, there is little evidence that splines actually i
 linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
 splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
 
-plot(linearRisk[2,-1], splineRisk[2,-1],
+plot(linearRisk, splineRisk,
      xlab = "Linear", ylab = "Splines", pch = 19)
 abline(a = 0, b = 1, lty = 2, lwd = 2, col = 'red')
 ```
