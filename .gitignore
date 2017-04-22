@@ -2,12 +2,9 @@
 .Rhistory
 .RData
 inst/doc/*
-!inst/doc/*.html
-vignettes/*html
-vignettes/*utf8.md
-vignettes/*knit.md
+vignettes/*
+!vignettes/*.Rmd
 test.rds
-vignettes/*cache/
 data-raw
 references
 

@@ -58,7 +58,7 @@ veteran$trt <- factor(veteran$trt, levels = c(1, 2), labels = c("standard", "tes
 Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For `shape = 1`, we get an exponential distribution:
 
 ```{r eval=TRUE}
-pacman::p_load(eha)
+library(eha)
 y <- with(veteran, Surv(time, status))
 
 model1 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
