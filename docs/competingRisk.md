@@ -182,7 +182,7 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 ``` r
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
-                          ratio = 1000,
+                          ratio = 100,
                           time = "ftime")
 summary(model1)
 ```
@@ -192,30 +192,30 @@ summary(model1)
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
     ## Pearson residuals:
-    ##                         Min       1Q   Median        3Q    Max
-    ## log(mu[,2]/mu[,1]) -0.07247 -0.02213 -0.01240 -0.004682 143.86
-    ## log(mu[,3]/mu[,1]) -0.10769 -0.02841 -0.01182 -0.002664  63.76
+    ##                        Min       1Q   Median        3Q   Max
+    ## log(mu[,2]/mu[,1]) -0.2240 -0.06967 -0.03872 -0.014616 46.24
+    ## log(mu[,3]/mu[,1]) -0.3356 -0.08920 -0.03671 -0.008251 20.23
     ## 
     ## Coefficients:
     ##                 Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1  -3.493702   0.680148  -5.137 2.80e-07 ***
-    ## (Intercept):2  -2.574417   0.459100  -5.608 2.05e-08 ***
-    ## ftime:1        -0.069566   0.014665  -4.744 2.10e-06 ***
-    ## ftime:2        -0.103680   0.018131  -5.718 1.08e-08 ***
-    ## SexM:1         -0.279635   0.280845  -0.996 0.319401    
-    ## SexM:2         -0.398319   0.234326  -1.700 0.089160 .  
-    ## DAML:1         -0.612589   0.299105  -2.048 0.040553 *  
-    ## DAML:2         -0.130847   0.273363  -0.479 0.632183    
-    ## PhaseCR2:1      0.181035   0.465819   0.389 0.697544    
-    ## PhaseCR2:2      0.301255   0.329598   0.914 0.360713    
-    ## PhaseCR3:1      0.494073   0.689858   0.716 0.473871    
-    ## PhaseCR3:2      0.224703   0.522988   0.430 0.667448    
-    ## PhaseRelapse:1  1.434574   0.390435   3.674 0.000239 ***
-    ## PhaseRelapse:2  0.768495   0.306073   2.511 0.012045 *  
-    ## SourcePB:1      0.470195   0.567590   0.828 0.407441    
-    ## SourcePB:2     -1.054388   0.350936  -3.005 0.002660 ** 
-    ## Age:1          -0.006324   0.011931  -0.530 0.596064    
-    ## Age:2           0.028052   0.009885   2.838 0.004542 ** 
+    ## (Intercept):1  -3.527146   0.685168  -5.148 2.63e-07 ***
+    ## (Intercept):2  -2.648451   0.463012  -5.720 1.06e-08 ***
+    ## ftime:1        -0.070927   0.014929  -4.751 2.02e-06 ***
+    ## ftime:2        -0.105177   0.018349  -5.732 9.93e-09 ***
+    ## SexM:1         -0.289067   0.283217  -1.021 0.307418    
+    ## SexM:2         -0.382981   0.236935  -1.616 0.106008    
+    ## DAML:1         -0.575749   0.299617  -1.922 0.054654 .  
+    ## DAML:2         -0.100149   0.274099  -0.365 0.714833    
+    ## PhaseCR2:1      0.186766   0.467042   0.400 0.689237    
+    ## PhaseCR2:2      0.286425   0.332270   0.862 0.388673    
+    ## PhaseCR3:1      0.586630   0.696521   0.842 0.399660    
+    ## PhaseCR3:2      0.310781   0.530986   0.585 0.558353    
+    ## PhaseRelapse:1  1.448907   0.391878   3.697 0.000218 ***
+    ## PhaseRelapse:2  0.792938   0.307933   2.575 0.010023 *  
+    ## SourcePB:1      0.456442   0.571108   0.799 0.424162    
+    ## SourcePB:2     -1.013983   0.355666  -2.851 0.004359 ** 
+    ## Age:1          -0.005242   0.011917  -0.440 0.660007    
+    ## Age:2           0.028597   0.009929   2.880 0.003976 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -225,11 +225,11 @@ summary(model1)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 2010.111 on 262244 degrees of freedom
+    ## Residual deviance: 1409.076 on 26444 degrees of freedom
     ## 
-    ## Log-likelihood: -1005.056 on 262244 degrees of freedom
+    ## Log-likelihood: -704.5378 on 26444 degrees of freedom
     ## 
-    ## Number of iterations: 13 
+    ## Number of iterations: 10 
     ## 
     ## Reference group is level  1  of the response
 
@@ -242,7 +242,7 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 ``` r
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
-                          ratio = 1000, 
+                          ratio = 100, 
                           time = "ftime")
 summary(model2)
 ```
@@ -253,29 +253,29 @@ summary(model2)
     ## 
     ## Pearson residuals:
     ##                        Min       1Q   Median       3Q   Max
-    ## log(mu[,2]/mu[,1]) -0.1586 -0.02170 -0.01491 -0.01130 91.41
-    ## log(mu[,3]/mu[,1]) -0.2765 -0.02455 -0.01753 -0.01442 68.65
+    ## log(mu[,2]/mu[,1]) -0.3728 -0.06889 -0.04686 -0.03489 29.01
+    ## log(mu[,3]/mu[,1]) -0.7720 -0.07784 -0.05517 -0.04490 22.03
     ## 
     ## Coefficients:
     ##                 Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1  -3.976780   0.701316  -5.670 1.42e-08 ***
-    ## (Intercept):2  -3.076452   0.460513  -6.680 2.38e-11 ***
-    ## log(ftime):1   -0.331403   0.068786  -4.818 1.45e-06 ***
-    ## log(ftime):2   -0.410863   0.055669  -7.380 1.58e-13 ***
-    ## SexM:1         -0.406499   0.292048  -1.392 0.163956    
-    ## SexM:2         -0.485123   0.239597  -2.025 0.042894 *  
-    ## DAML:1         -0.674288   0.301859  -2.234 0.025497 *  
-    ## DAML:2         -0.154872   0.284347  -0.545 0.585989    
-    ## PhaseCR2:1      0.232940   0.467074   0.499 0.617976    
-    ## PhaseCR2:2      0.357673   0.329746   1.085 0.278058    
-    ## PhaseCR3:1      0.461212   0.711894   0.648 0.517072    
-    ## PhaseCR3:2      0.118831   0.533390   0.223 0.823704    
-    ## PhaseRelapse:1  1.462762   0.392443   3.727 0.000194 ***
-    ## PhaseRelapse:2  0.850887   0.307694   2.765 0.005686 ** 
-    ## SourcePB:1      0.671664   0.601670   1.116 0.264279    
-    ## SourcePB:2     -0.968265   0.366793  -2.640 0.008295 ** 
-    ## Age:1          -0.003776   0.011733  -0.322 0.747596    
-    ## Age:2           0.029154   0.009940   2.933 0.003357 ** 
+    ## (Intercept):1  -3.947939   0.704805  -5.601 2.13e-08 ***
+    ## (Intercept):2  -3.024184   0.464824  -6.506 7.71e-11 ***
+    ## log(ftime):1   -0.341809   0.070171  -4.871 1.11e-06 ***
+    ## log(ftime):2   -0.426477   0.057517  -7.415 1.22e-13 ***
+    ## SexM:1         -0.443805   0.292859  -1.515 0.129666    
+    ## SexM:2         -0.519251   0.241471  -2.150 0.031526 *  
+    ## DAML:1         -0.740607   0.301246  -2.458 0.013953 *  
+    ## DAML:2         -0.141243   0.287950  -0.491 0.623771    
+    ## PhaseCR2:1      0.305084   0.469113   0.650 0.515471    
+    ## PhaseCR2:2      0.443158   0.331173   1.338 0.180849    
+    ## PhaseCR3:1      0.467723   0.707953   0.661 0.508824    
+    ## PhaseCR3:2      0.117413   0.532943   0.220 0.825629    
+    ## PhaseRelapse:1  1.472912   0.394988   3.729 0.000192 ***
+    ## PhaseRelapse:2  0.834838   0.310771   2.686 0.007224 ** 
+    ## SourcePB:1      0.696141   0.598801   1.163 0.245009    
+    ## SourcePB:2     -0.971909   0.374933  -2.592 0.009536 ** 
+    ## Age:1          -0.003405   0.011665  -0.292 0.770361    
+    ## Age:2           0.028570   0.009802   2.915 0.003561 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -285,11 +285,11 @@ summary(model2)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 2106.329 on 262244 degrees of freedom
+    ## Residual deviance: 1503.138 on 26444 degrees of freedom
     ## 
-    ## Log-likelihood: -1053.164 on 262244 degrees of freedom
+    ## Log-likelihood: -751.5688 on 26444 degrees of freedom
     ## 
-    ## Number of iterations: 11 
+    ## Number of iterations: 8 
     ## 
     ## Reference group is level  1  of the response
 
@@ -301,7 +301,7 @@ Finally, using splines, we can be quite flexible about the way the hazard depend
 model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
     data = bmtcrr, 
-    ratio = 1000, 
+    ratio = 100, 
     time = "ftime")
 summary(model3)
 ```
@@ -311,34 +311,34 @@ summary(model3)
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
     ## Pearson residuals:
-    ##                         Min       1Q    Median         3Q   Max
-    ## log(mu[,2]/mu[,1]) -0.06497 -0.02241 -0.012772 -2.402e-03 178.2
-    ## log(mu[,3]/mu[,1]) -0.08870 -0.03005 -0.004613 -2.360e-06 115.9
+    ##                        Min       1Q   Median         3Q   Max
+    ## log(mu[,2]/mu[,1]) -0.2112 -0.07072 -0.03924 -7.966e-03 55.79
+    ## log(mu[,3]/mu[,1]) -0.2810 -0.09476 -0.01408 -9.698e-06 34.23
     ## 
     ## Coefficients:
     ##                         Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept):1          -3.730220   0.707340  -5.274 1.34e-07 ***
-    ## (Intercept):2          -3.260420   0.507168  -6.429 1.29e-10 ***
-    ## splines::bs(ftime)1:1   0.049603   2.268962   0.022 0.982559    
-    ## splines::bs(ftime)1:2   7.180721   3.646293   1.969 0.048916 *  
-    ## splines::bs(ftime)2:1 -16.297428   8.159884  -1.997 0.045797 *  
-    ## splines::bs(ftime)2:2 -77.667331  25.415907  -3.056 0.002244 ** 
-    ## splines::bs(ftime)3:1  -2.511822  10.083023  -0.249 0.803273    
-    ## splines::bs(ftime)3:2  -2.635626  22.561450  -0.117 0.907003    
-    ## SexM:1                 -0.308727   0.282306  -1.094 0.274135    
-    ## SexM:2                 -0.434290   0.234861  -1.849 0.064438 .  
-    ## DAML:1                 -0.611650   0.299777  -2.040 0.041315 *  
-    ## DAML:2                 -0.133471   0.273911  -0.487 0.626060    
-    ## PhaseCR2:1              0.163280   0.465762   0.351 0.725914    
-    ## PhaseCR2:2              0.295375   0.329884   0.895 0.370580    
-    ## PhaseCR3:1              0.548603   0.694576   0.790 0.429622    
-    ## PhaseCR3:2              0.292396   0.525374   0.557 0.577836    
-    ## PhaseRelapse:1          1.490165   0.394595   3.776 0.000159 ***
-    ## PhaseRelapse:2          0.897693   0.310735   2.889 0.003866 ** 
-    ## SourcePB:1              0.416135   0.572748   0.727 0.467497    
-    ## SourcePB:2             -1.152649   0.357278  -3.226 0.001254 ** 
-    ## Age:1                  -0.005113   0.012054  -0.424 0.671442    
-    ## Age:2                   0.030172   0.010050   3.002 0.002681 ** 
+    ## (Intercept):1          -3.756937   0.707736  -5.308 1.11e-07 ***
+    ## (Intercept):2          -3.230327   0.512122  -6.308 2.83e-10 ***
+    ## splines::bs(ftime)1:1  -0.157959   2.277313  -0.069 0.944701    
+    ## splines::bs(ftime)1:2   6.639515   3.695359   1.797 0.072381 .  
+    ## splines::bs(ftime)2:1 -15.907763   8.133390  -1.956 0.050482 .  
+    ## splines::bs(ftime)2:2 -75.091363  25.403026  -2.956 0.003117 ** 
+    ## splines::bs(ftime)3:1  -2.415094  10.618108  -0.227 0.820073    
+    ## splines::bs(ftime)3:2  -2.157054  22.830019  -0.094 0.924725    
+    ## SexM:1                 -0.327386   0.283998  -1.153 0.249001    
+    ## SexM:2                 -0.483204   0.237367  -2.036 0.041782 *  
+    ## DAML:1                 -0.611398   0.301775  -2.026 0.042764 *  
+    ## DAML:2                 -0.112716   0.274870  -0.410 0.681753    
+    ## PhaseCR2:1              0.215153   0.468799   0.459 0.646273    
+    ## PhaseCR2:2              0.418330   0.333261   1.255 0.209383    
+    ## PhaseCR3:1              0.481796   0.694753   0.693 0.488010    
+    ## PhaseCR3:2              0.214904   0.528079   0.407 0.684042    
+    ## PhaseRelapse:1          1.519795   0.395642   3.841 0.000122 ***
+    ## PhaseRelapse:2          0.941056   0.313721   3.000 0.002703 ** 
+    ## SourcePB:1              0.474662   0.573470   0.828 0.407839    
+    ## SourcePB:2             -1.163727   0.359718  -3.235 0.001216 ** 
+    ## Age:1                  -0.005299   0.012045  -0.440 0.660024    
+    ## Age:2                   0.030127   0.009992   3.015 0.002569 ** 
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -348,11 +348,11 @@ summary(model3)
     ## 
     ## Dispersion Parameter for multinomial family:   1
     ## 
-    ## Residual deviance: 1995.49 on 262240 degrees of freedom
+    ## Residual deviance: 1392.237 on 26440 degrees of freedom
     ## 
-    ## Log-likelihood: -997.745 on 262240 degrees of freedom
+    ## Log-likelihood: -696.1185 on 26440 degrees of freedom
     ## 
-    ## Number of iterations: 18 
+    ## Number of iterations: 16 
     ## 
     ## Reference group is level  1  of the response
 
@@ -369,10 +369,10 @@ splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ``` r
-plot(linearRisk[,1], logRisk[,1],
+plot(linearRisk[,,1], logRisk[,,1],
      xlab = "Linear", ylab = "Log/Spline", pch = 19,
      xlim = c(0,1), ylim = c(0,1), col = 'red')
-points(linearRisk[,1], splineRisk[,1],
+points(linearRisk[,,1], splineRisk[,,1],
        col = 'blue', pch = 19)
 abline(a = 0, b = 1, lty = 2, lwd = 2)
 legend("topleft", legend = c("Log", "Spline"),
@@ -381,33 +381,36 @@ legend("topleft", legend = c("Log", "Spline"),
 
 ![](competingRisk_files/figure-markdown_github/absRiskPlot-1.png)
 
-As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:
+We can also estimate the mean absolute risk for the entire dataset:
 
 ``` r
-# The first column corresponds to the event of interest
-mean(linearRisk[,1])
+mean(linearRisk[,,1])
 ```
 
-    ## [1] 0.1422626
+    ## [1] 0.2012265
 
 ``` r
-mean(logRisk[,1])
+mean(logRisk[,,1])
 ```
 
-    ## [1] 0.1816989
+    ## [1] 0.1453269
 
 ``` r
-mean(splineRisk[,1])
+mean(splineRisk[,,1])
 ```
 
-    ## [1] 0.1393753
+    ## [1] 0.105314
 
 Session information
 -------------------
 
-    ## R version 3.3.1 (2016-06-21)
+    ## R version 3.4.0 (2017-04-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.10
+    ## Running under: Ubuntu Zesty Zapus (development branch)
+    ## 
+    ## Matrix products: default
+    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -416,14 +419,14 @@ Session information
     ## [1] casebase_0.1.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     splines_3.3.1   
-    ##  [5] munsell_0.4.3    lattice_0.20-33  colorspace_1.3-1 stringr_1.2.0   
-    ##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
-    ## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.39-5  yaml_2.1.14     
+    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     splines_3.4.0   
+    ##  [5] munsell_0.4.3    lattice_0.20-35  colorspace_1.3-1 stringr_1.2.0   
+    ##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
+    ## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.41-3  yaml_2.1.14     
     ## [17] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
-    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
-    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    scales_0.4.1    
-    ## [29] backports_1.0.5  stats4_3.3.1     chron_2.3-47
+    ## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
+    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    compiler_3.4.0  
+    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.4.0     chron_2.3-47
 
 References
 ----------

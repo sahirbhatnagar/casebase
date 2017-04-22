@@ -6,7 +6,6 @@ output:
   html_document:
     fig_height: 8
     fig_width: 11
-    keep_md: yes
     toc: yes
     toc_depth: 4
     toc_float: yes
@@ -142,7 +141,7 @@ We now turn to the analysis of this dataset. The population-time plots above giv
 ```{r eval=TRUE, warning=FALSE}
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
-                          ratio = 1000, 
+                          ratio = 100,
                           time = "ftime")
 summary(model1)
 ```
@@ -157,7 +156,7 @@ Next, we include the logarithm of time in the model (which leads to a Weibull ha
 ```{r eval=TRUE, warning=FALSE}
 model2 <- fitSmoothHazard(Status ~ log(ftime) + Sex + D + Phase + Source + Age, 
                           data = bmtcrr, 
-                          ratio = 1000, 
+                          ratio = 100, 
                           time = "ftime")
 summary(model2)
 ```
@@ -170,7 +169,7 @@ Finally, using splines, we can be quite flexible about the way the hazard depend
 model3 <- fitSmoothHazard(
     Status ~ splines::bs(ftime) + Sex + D + Phase + Source + Age, 
     data = bmtcrr, 
-    ratio = 1000, 
+    ratio = 100, 
     time = "ftime")
 summary(model3)
 ```
@@ -181,29 +180,28 @@ Again, we see that the results are quite similar for this third model.
 
 We now look at the 2-year risk of relapse:
 
-```{r absRisk, eval=TRUE, warning = FALSE, cache=TRUE}
+```{r absRisk, eval=TRUE, warning = FALSE}
 linearRisk <- absoluteRisk(object = model1, time = 24, newdata = bmtcrr[1:10,])
 logRisk <- absoluteRisk(object = model2, time = 24, newdata = bmtcrr[1:10,])
 splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ```{r absRiskPlot, eval=TRUE}
-plot(linearRisk[,1], logRisk[,1],
+plot(linearRisk[,,1], logRisk[,,1],
      xlab = "Linear", ylab = "Log/Spline", pch = 19,
      xlim = c(0,1), ylim = c(0,1), col = 'red')
-points(linearRisk[,1], splineRisk[,1],
+points(linearRisk[,,1], splineRisk[,,1],
        col = 'blue', pch = 19)
 abline(a = 0, b = 1, lty = 2, lwd = 2)
 legend("topleft", legend = c("Log", "Spline"),
        pch = 19, col = c("red", "blue"))
 ```
 
-As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:
+We can also estimate the mean absolute risk for the entire dataset:
 ```{r eval=TRUE}
-# The first column corresponds to the event of interest
-mean(linearRisk[,1])
-mean(logRisk[,1])
-mean(splineRisk[,1])
+mean(linearRisk[,,1])
+mean(logRisk[,,1])
+mean(splineRisk[,,1])
 ```
 
 ## Session information

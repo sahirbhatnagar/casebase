@@ -304,7 +304,8 @@ function `absoluteRisk` to compute the mean absolute risk at 90 days,
 which can then be compared to the empirical measure.
 
 ``` {.r}
-absoluteRisk(object = model4, time = 90)
+absRisk4 <- absoluteRisk(object = model4, time = 90)
+mean(absRisk4)
 ```
 
     ## [1] 0.5768982
@@ -414,7 +415,46 @@ summary(model6)
 absoluteRisk(object = model6, time = 90)
 ```
 
-    ## [1] 0.5744505
+    ##                                                                        
+    ## 90 0.2990416 0.2344582 0.3501656 0.3107011 0.2339846 0.768022 0.4948434
+    ##                                                                        
+    ## 90 0.1734315 0.4413401 0.2255779 0.2801434 0.5192211 0.6202901 0.188913
+    ##                                                                         
+    ## 90 0.2567928 0.5867092 0.6322353 0.8622704 0.3696546 0.5985107 0.8259266
+    ##                                                                        
+    ## 90 0.5733822 0.5872865 0.896037 0.3994782 0.9147517 0.6885197 0.5708448
+    ##                                                                         
+    ## 90 0.4093046 0.8278135 0.9738679 0.3654432 0.8965073 0.4121778 0.4854648
+    ##                                                                         
+    ## 90 0.5830452 0.9036242 0.5724129 0.3910962 0.5856197 0.4596609 0.6804068
+    ##                                                                        
+    ## 90 0.7357995 0.8004085 0.8086631 0.9923394 0.6195075 0.918081 0.5507774
+    ##                                                                         
+    ## 90 0.5244521 0.8365737 0.4935648 0.9794734 0.5603674 0.5292029 0.2515149
+    ##                                                                        
+    ## 90 0.5581642 0.355142 0.4236079 0.6408285 0.2757051 0.2844161 0.3223283
+    ##                                                                        
+    ## 90 0.1889938 0.1918393 0.2469368 0.286194 0.3475531 0.4801757 0.1759723
+    ##                                                                         
+    ## 90 0.2246323 0.2396001 0.5080685 0.4652078 0.3140069 0.2925203 0.8232641
+    ##                                                                        
+    ## 90 0.387276 0.1660097 0.7113332 0.8280633 0.3004228 0.1641063 0.2392422
+    ##                                                                         
+    ## 90 0.5433894 0.2922796 0.3688847 0.1768362 0.5359931 0.9419371 0.6268983
+    ##                                                                        
+    ## 90 0.9794362 0.9489498 0.6820533 0.9168847 0.957809 0.9821841 0.7086633
+    ##                                                                        
+    ## 90 0.5370366 0.4355291 0.3972498 0.539053 0.5413103 0.5615188 0.7746676
+    ##                                                                         
+    ## 90 0.9604773 0.8771482 0.9615619 0.9552214 0.3913284 0.6415963 0.8159478
+    ##                                                                        
+    ## 90 0.8442395 0.8513102 0.7995037 0.8974848 0.709612 0.9994542 0.9632844
+    ##                                                                         
+    ## 90 0.7038662 0.4785029 0.5909934 0.9300229 0.9540688 0.9593104 0.5469816
+    ##                                                                        
+    ## 90 0.3954082 0.8866501 0.5019899 0.844221 0.5420656 0.3111089 0.3491629
+    ##                                           
+    ## 90 0.5047598 0.3979445 0.3067164 0.8879022
 
 As we can see from the summary, there is little evidence that splines
 actually improve the fit. Moreover, we can see that estimated individual
@@ -628,14 +668,14 @@ smooth_risk <- absoluteRisk(object = model4, time = seq(0,300, 1),
                             newdata = new_data)
 
 # cumulative incidence function for the Cox model
-plot(survfit(model3, newdata=new_data),
-     xlab = "Days", ylab="Cumulative Incidence (%)", fun = "event",
+plot(survfit(model3, newdata = new_data),
+     xlab = "Days", ylab = "Cumulative Incidence (%)", fun = "event",
      xlim = c(0,300), conf.int = F, col = "red", 
      main = sprintf("Estimated Cumulative Incidence (risk) of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no", median(veteran$karno), median(veteran$diagtime), 
                     median(veteran$age)))
 
 # add casebase curve with legend
-lines(seq(0,300, 1), smooth_risk[1,], type = "l", col = "blue")
+lines(smooth_risk[,1], smooth_risk[,2], type = "l", col = "blue")
 legend("bottomright", 
        legend = c("semi-parametric (Cox)", "parametric (casebase)"), 
        col = c("red","blue"),
@@ -648,23 +688,28 @@ legend("bottomright",
 Session information
 -------------------
 
-    ## R version 3.3.1 (2016-06-21)
+    ## R version 3.4.0 (2017-04-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.10
+    ## Running under: Ubuntu Zesty Zapus (development branch)
+    ## 
+    ## Matrix products: default
+    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
     ## 
     ## attached base packages:
     ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0  eha_2.4-4       survival_2.39-5
+    ## [1] casebase_0.1.0  eha_2.4-4       survival_2.41-3
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     munsell_0.4.3   
-    ##  [5] colorspace_1.3-1 lattice_0.20-33  highr_0.6        plyr_1.8.4      
-    ##  [9] stringr_1.2.0    tools_3.3.1      grid_3.3.1       data.table_1.9.6
+    ##  [5] colorspace_1.3-1 lattice_0.20-35  highr_0.6        plyr_1.8.4      
+    ##  [9] stringr_1.2.0    tools_3.4.0      grid_3.4.0       data.table_1.9.6
     ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
     ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
-    ## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+    ## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
     ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
-    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
+    ## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
+    ## [33] chron_2.3-47
