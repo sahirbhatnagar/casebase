@@ -225,9 +225,9 @@ smooth_risk_exp <- casebase::absoluteRisk(object = casebase_exponential,
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
 
-plot(survfit(cox_model, newdata=new_data),
+plot(survfit(cox_model, newdata = new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -235,8 +235,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_exp[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_exp[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_exp[,1], smooth_risk_exp[,2], col = "red", lty = 2)
+lines(smooth_risk_exp[,1], smooth_risk_exp[,3], col = "blue", lty = 2)
 
 
 legend("topleft", 
@@ -270,9 +270,9 @@ smooth_risk_time <- casebase::absoluteRisk(object = casebase_time,
                                           time = seq(0,15,0.1), 
                                           newdata = new_data)
 
-plot(survfit(cox_model, newdata=new_data),
+plot(survfit(cox_model, newdata = new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -280,8 +280,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_time[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_time[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_time[,1], smooth_risk_time[,2], col = "red", lty = 2)
+lines(smooth_risk_time[,1], smooth_risk_time[,3], col = "blue", lty = 2)
 
 legend("topleft", 
        legend = c("Control group (Cox)","Control group (Casebase)",
@@ -316,7 +316,7 @@ smooth_risk_splines <- absoluteRisk(object = casebase_splines,
 
 plot(survfit(cox_model, newdata=new_data),
      xlab = "Years since Randomization", 
-     ylab="Cumulative Incidence", 
+     ylab = "Cumulative Incidence", 
      fun = "event",
      xlim = c(0,15), conf.int = F, col = c("red","blue"), 
      main = sprintf("Estimated Cumulative Incidence (risk) of Death from Prostate 
@@ -324,8 +324,8 @@ plot(survfit(cox_model, newdata=new_data),
                     sum_cox_model$conf.int[,"exp(coef)"], 
                     sum_cox_model$conf.int[,"lower .95"], 
                     sum_cox_model$conf.int[,"upper .95"]))
-lines(seq(0,15,0.1), smooth_risk_splines[1,], type = "l", col = "red", lty = 2)
-lines(seq(0,15,0.1), smooth_risk_splines[2,], type = "l", col = "blue", lty = 2)
+lines(smooth_risk_splines[,1], smooth_risk_splines[,2], col = "red", lty = 2)
+lines(smooth_risk_splines[,1], smooth_risk_splines[,3], col = "blue", lty = 2)
 
 legend("topleft", 
        legend = c("Control group (Cox)","Control group (Casebase)",
