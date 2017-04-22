@@ -583,8 +583,7 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 <p>We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:</p>
 <div class="codehilite"><pre><span></span>model1 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Status <span class="o">~</span> ftime <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
                           data <span class="o">=</span> bmtcrr<span class="p">,</span> 
-                          ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
-                          type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+                          ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span>
                           time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model1<span class="p">)</span>
 </pre></div>
@@ -595,30 +594,30 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
 ## 
 ## Pearson residuals:
-##                         Min       1Q   Median       3Q   Max
-## log(mu[,2]/mu[,1]) -0.03511 -0.02312 -0.01946 -0.01588 84.80
-## log(mu[,3]/mu[,1]) -0.03693 -0.02680 -0.02337 -0.02017 57.29
+##                        Min       1Q   Median        3Q   Max
+## log(mu[,2]/mu[,1]) -0.2240 -0.06967 -0.03872 -0.014616 46.24
+## log(mu[,3]/mu[,1]) -0.3356 -0.08920 -0.03671 -0.008251 20.23
 ## 
 ## Coefficients:
-##                  Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept):1  -4.7086629  0.6860839  -6.863 6.74e-12 ***
-## (Intercept):2  -3.7753463  0.4712041  -8.012 1.13e-15 ***
-## ftime:1        -0.0074411  0.0095213  -0.782   0.4345    
-## ftime:2        -0.0234739  0.0118882  -1.975   0.0483 *  
-## SexM:1          0.1173418  0.2766552   0.424   0.6715    
-## SexM:2         -0.1317348  0.2355512  -0.559   0.5760    
-## DAML:1         -0.2615793  0.3039472  -0.861   0.3895    
-## DAML:2          0.1176449  0.2671575   0.440   0.6597    
-## PhaseCR2:1      0.1072881  0.4623358   0.232   0.8165    
-## PhaseCR2:2      0.1036405  0.3310731   0.313   0.7542    
-## PhaseCR3:1      0.2796638  0.6741410   0.415   0.6783    
-## PhaseCR3:2      0.1126718  0.5154568   0.219   0.8270    
-## PhaseRelapse:1  0.8054620  0.3804372   2.117   0.0342 *  
-## PhaseRelapse:2 -0.0007109  0.3000402  -0.002   0.9981    
-## SourcePB:1      0.7456485  0.5311726   1.404   0.1604    
-## SourcePB:2     -0.6471805  0.3288367  -1.968   0.0491 *  
-## Age:1          -0.0151611  0.0118020  -1.285   0.1989    
-## Age:2           0.0186593  0.0098371   1.897   0.0579 .  
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept):1  -3.527146   0.685168  -5.148 2.63e-07 ***
+## (Intercept):2  -2.648451   0.463012  -5.720 1.06e-08 ***
+## ftime:1        -0.070927   0.014929  -4.751 2.02e-06 ***
+## ftime:2        -0.105177   0.018349  -5.732 9.93e-09 ***
+## SexM:1         -0.289067   0.283217  -1.021 0.307418    
+## SexM:2         -0.382981   0.236935  -1.616 0.106008    
+## DAML:1         -0.575749   0.299617  -1.922 0.054654 .  
+## DAML:2         -0.100149   0.274099  -0.365 0.714833    
+## PhaseCR2:1      0.186766   0.467042   0.400 0.689237    
+## PhaseCR2:2      0.286425   0.332270   0.862 0.388673    
+## PhaseCR3:1      0.586630   0.696521   0.842 0.399660    
+## PhaseCR3:2      0.310781   0.530986   0.585 0.558353    
+## PhaseRelapse:1  1.448907   0.391878   3.697 0.000218 ***
+## PhaseRelapse:2  0.792938   0.307933   2.575 0.010023 *  
+## SourcePB:1      0.456442   0.571108   0.799 0.424162    
+## SourcePB:2     -1.013983   0.355666  -2.851 0.004359 ** 
+## Age:1          -0.005242   0.011917  -0.440 0.660007    
+## Age:2           0.028597   0.009929   2.880 0.003976 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -628,11 +627,11 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## 
 ## Dispersion Parameter for multinomial family:   1
 ## 
-## Residual deviance: 2221.211 on 262244 degrees of freedom
+## Residual deviance: 1409.076 on 26444 degrees of freedom
 ## 
-## Log-likelihood: -1110.605 on 262244 degrees of freedom
+## Log-likelihood: -704.5378 on 26444 degrees of freedom
 ## 
-## Number of iterations: 11 
+## Number of iterations: 10 
 ## 
 ## Reference group is level  1  of the response
 </pre></div>
@@ -643,8 +642,7 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 <p>Next, we include the logarithm of time in the model (which leads to a Weibull hazard):</p>
 <div class="codehilite"><pre><span></span>model2 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>Status <span class="o">~</span> <span class="kp">log</span><span class="p">(</span>ftime<span class="p">)</span> <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
                           data <span class="o">=</span> bmtcrr<span class="p">,</span> 
-                          ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
-                          type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+                          ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> 
                           time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model2<span class="p">)</span>
 </pre></div>
@@ -655,30 +653,30 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
 ## 
 ## Pearson residuals:
-##                         Min       1Q   Median       3Q   Max
-## log(mu[,2]/mu[,1]) -0.05154 -0.02288 -0.01882 -0.01490 79.90
-## log(mu[,3]/mu[,1]) -0.04174 -0.02653 -0.02323 -0.01983 64.38
+##                        Min       1Q   Median       3Q   Max
+## log(mu[,2]/mu[,1]) -0.3728 -0.06889 -0.04686 -0.03489 29.01
+## log(mu[,3]/mu[,1]) -0.7720 -0.07784 -0.05517 -0.04490 22.03
 ## 
 ## Coefficients:
 ##                 Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept):1  -5.169337   0.689581  -7.496 6.56e-14 ***
-## (Intercept):2  -4.150096   0.469486  -8.840  &lt; 2e-16 ***
-## log(ftime):1    0.275468   0.087632   3.143  0.00167 ** 
-## log(ftime):2    0.136730   0.074470   1.836  0.06635 .  
-## SexM:1         -0.101932   0.282880  -0.360  0.71860    
-## SexM:2         -0.277052   0.235713  -1.175  0.23984    
-## DAML:1         -0.462982   0.304138  -1.522  0.12794    
-## DAML:2          0.022211   0.273592   0.081  0.93530    
-## PhaseCR2:1      0.135328   0.463264   0.292  0.77020    
-## PhaseCR2:2      0.183499   0.329272   0.557  0.57733    
-## PhaseCR3:1      0.350681   0.680687   0.515  0.60642    
-## PhaseCR3:2      0.137675   0.516486   0.267  0.78981    
-## PhaseRelapse:1  1.106652   0.389873   2.838  0.00453 ** 
-## PhaseRelapse:2  0.304955   0.309689   0.985  0.32477    
-## SourcePB:1      0.705531   0.549936   1.283  0.19952    
-## SourcePB:2     -0.737839   0.339630  -2.172  0.02982 *  
-## Age:1          -0.010259   0.011751  -0.873  0.38264    
-## Age:2           0.021852   0.009808   2.228  0.02587 *  
+## (Intercept):1  -3.947939   0.704805  -5.601 2.13e-08 ***
+## (Intercept):2  -3.024184   0.464824  -6.506 7.71e-11 ***
+## log(ftime):1   -0.341809   0.070171  -4.871 1.11e-06 ***
+## log(ftime):2   -0.426477   0.057517  -7.415 1.22e-13 ***
+## SexM:1         -0.443805   0.292859  -1.515 0.129666    
+## SexM:2         -0.519251   0.241471  -2.150 0.031526 *  
+## DAML:1         -0.740607   0.301246  -2.458 0.013953 *  
+## DAML:2         -0.141243   0.287950  -0.491 0.623771    
+## PhaseCR2:1      0.305084   0.469113   0.650 0.515471    
+## PhaseCR2:2      0.443158   0.331173   1.338 0.180849    
+## PhaseCR3:1      0.467723   0.707953   0.661 0.508824    
+## PhaseCR3:2      0.117413   0.532943   0.220 0.825629    
+## PhaseRelapse:1  1.472912   0.394988   3.729 0.000192 ***
+## PhaseRelapse:2  0.834838   0.310771   2.686 0.007224 ** 
+## SourcePB:1      0.696141   0.598801   1.163 0.245009    
+## SourcePB:2     -0.971909   0.374933  -2.592 0.009536 ** 
+## Age:1          -0.003405   0.011665  -0.292 0.770361    
+## Age:2           0.028570   0.009802   2.915 0.003561 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -688,11 +686,11 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## 
 ## Dispersion Parameter for multinomial family:   1
 ## 
-## Residual deviance: 2214.089 on 262244 degrees of freedom
+## Residual deviance: 1503.138 on 26444 degrees of freedom
 ## 
-## Log-likelihood: -1107.044 on 262244 degrees of freedom
+## Log-likelihood: -751.5688 on 26444 degrees of freedom
 ## 
-## Number of iterations: 10 
+## Number of iterations: 8 
 ## 
 ## Reference group is level  1  of the response
 </pre></div>
@@ -703,8 +701,7 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 <div class="codehilite"><pre><span></span>model3 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>
     Status <span class="o">~</span> splines<span class="o">::</span>bs<span class="p">(</span>ftime<span class="p">)</span> <span class="o">+</span> Sex <span class="o">+</span> D <span class="o">+</span> Phase <span class="o">+</span> Source <span class="o">+</span> Age<span class="p">,</span> 
     data <span class="o">=</span> bmtcrr<span class="p">,</span> 
-    ratio <span class="o">=</span> <span class="m">1000</span><span class="p">,</span> 
-    type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">,</span> 
+    ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> 
     time <span class="o">=</span> <span class="s">&quot;ftime&quot;</span><span class="p">)</span>
 <span class="kp">summary</span><span class="p">(</span>model3<span class="p">)</span>
 </pre></div>
@@ -715,34 +712,34 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
 ## 
 ## Pearson residuals:
-##                         Min       1Q   Median       3Q   Max
-## log(mu[,2]/mu[,1]) -0.05787 -0.02362 -0.01828 -0.01349 103.9
-## log(mu[,3]/mu[,1]) -0.05795 -0.02821 -0.02077 -0.01506  93.3
+##                        Min       1Q   Median         3Q   Max
+## log(mu[,2]/mu[,1]) -0.2112 -0.07072 -0.03924 -7.966e-03 55.79
+## log(mu[,3]/mu[,1]) -0.2810 -0.09476 -0.01408 -9.698e-06 34.23
 ## 
 ## Coefficients:
 ##                         Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept):1          -5.322353   0.701356  -7.589 3.23e-14 ***
-## (Intercept):2          -4.806549   0.505056  -9.517  &lt; 2e-16 ***
-## splines::bs(ftime)1:1  10.051640   2.514058   3.998 6.38e-05 ***
-## splines::bs(ftime)1:2  18.542863   3.706641   5.003 5.66e-07 ***
-## splines::bs(ftime)2:1 -27.155285   9.621508  -2.822 0.004767 ** 
-## splines::bs(ftime)2:2 -99.768340  26.045064  -3.831 0.000128 ***
-## splines::bs(ftime)3:1   2.032730   7.508245   0.271 0.786596    
-## splines::bs(ftime)3:2   0.716355  21.435757   0.033 0.973341    
-## SexM:1                  0.010810   0.277099   0.039 0.968881    
-## SexM:2                 -0.224871   0.236840  -0.949 0.342385    
-## DAML:1                 -0.414197   0.302615  -1.369 0.171085    
-## DAML:2                 -0.005705   0.265368  -0.021 0.982847    
-## PhaseCR2:1              0.040206   0.463103   0.087 0.930815    
-## PhaseCR2:2              0.121606   0.330203   0.368 0.712666    
-## PhaseCR3:1              0.535662   0.679935   0.788 0.430805    
-## PhaseCR3:2              0.274984   0.518349   0.531 0.595765    
-## PhaseRelapse:1          1.086171   0.391777   2.772 0.005564 ** 
-## PhaseRelapse:2          0.328237   0.310983   1.055 0.291205    
-## SourcePB:1              0.507192   0.537842   0.943 0.345674    
-## SourcePB:2             -0.892167   0.336761  -2.649 0.008067 ** 
-## Age:1                  -0.012264   0.012064  -1.017 0.309381    
-## Age:2                   0.022048   0.009932   2.220 0.026427 *  
+## (Intercept):1          -3.756937   0.707736  -5.308 1.11e-07 ***
+## (Intercept):2          -3.230327   0.512122  -6.308 2.83e-10 ***
+## splines::bs(ftime)1:1  -0.157959   2.277313  -0.069 0.944701    
+## splines::bs(ftime)1:2   6.639515   3.695359   1.797 0.072381 .  
+## splines::bs(ftime)2:1 -15.907763   8.133390  -1.956 0.050482 .  
+## splines::bs(ftime)2:2 -75.091363  25.403026  -2.956 0.003117 ** 
+## splines::bs(ftime)3:1  -2.415094  10.618108  -0.227 0.820073    
+## splines::bs(ftime)3:2  -2.157054  22.830019  -0.094 0.924725    
+## SexM:1                 -0.327386   0.283998  -1.153 0.249001    
+## SexM:2                 -0.483204   0.237367  -2.036 0.041782 *  
+## DAML:1                 -0.611398   0.301775  -2.026 0.042764 *  
+## DAML:2                 -0.112716   0.274870  -0.410 0.681753    
+## PhaseCR2:1              0.215153   0.468799   0.459 0.646273    
+## PhaseCR2:2              0.418330   0.333261   1.255 0.209383    
+## PhaseCR3:1              0.481796   0.694753   0.693 0.488010    
+## PhaseCR3:2              0.214904   0.528079   0.407 0.684042    
+## PhaseRelapse:1          1.519795   0.395642   3.841 0.000122 ***
+## PhaseRelapse:2          0.941056   0.313721   3.000 0.002703 ** 
+## SourcePB:1              0.474662   0.573470   0.828 0.407839    
+## SourcePB:2             -1.163727   0.359718  -3.235 0.001216 ** 
+## Age:1                  -0.005299   0.012045  -0.440 0.660024    
+## Age:2                   0.030127   0.009992   3.015 0.002569 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -752,9 +749,9 @@ legend<span class="p">(</span><span class="s">&quot;topright&quot;</span><span c
 ## 
 ## Dispersion Parameter for multinomial family:   1
 ## 
-## Residual deviance: 2157.524 on 262240 degrees of freedom
+## Residual deviance: 1392.237 on 26440 degrees of freedom
 ## 
-## Log-likelihood: -1078.762 on 262240 degrees of freedom
+## Log-likelihood: -696.1185 on 26440 degrees of freedom
 ## 
 ## Number of iterations: 16 
 ## 
@@ -771,10 +768,10 @@ splineRisk <span class="o">&lt;-</span> absoluteRisk<span class="p">(</span>obje
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>plot<span class="p">(</span>linearRisk<span class="p">[,</span><span class="m">1</span><span class="p">],</span> logRisk<span class="p">[,</span><span class="m">1</span><span class="p">],</span>
+<div class="codehilite"><pre><span></span>plot<span class="p">(</span>linearRisk<span class="p">[,,</span><span class="m">1</span><span class="p">],</span> logRisk<span class="p">[,,</span><span class="m">1</span><span class="p">],</span>
      xlab <span class="o">=</span> <span class="s">&quot;Linear&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;Log/Spline&quot;</span><span class="p">,</span> pch <span class="o">=</span> <span class="m">19</span><span class="p">,</span>
      xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> ylim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> col <span class="o">=</span> <span class="s">&#39;red&#39;</span><span class="p">)</span>
-points<span class="p">(</span>linearRisk<span class="p">[,</span><span class="m">1</span><span class="p">],</span> splineRisk<span class="p">[,</span><span class="m">1</span><span class="p">],</span>
+points<span class="p">(</span>linearRisk<span class="p">[,,</span><span class="m">1</span><span class="p">],</span> splineRisk<span class="p">[,,</span><span class="m">1</span><span class="p">],</span>
        col <span class="o">=</span> <span class="s">&#39;blue&#39;</span><span class="p">,</span> pch <span class="o">=</span> <span class="m">19</span><span class="p">)</span>
 abline<span class="p">(</span>a <span class="o">=</span> <span class="m">0</span><span class="p">,</span> b <span class="o">=</span> <span class="m">1</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">,</span> lwd <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
 legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Log&quot;</span><span class="p">,</span> <span class="s">&quot;Spline&quot;</span><span class="p">),</span>
@@ -783,36 +780,39 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 
 <p><img alt="" src="../competingRisk_files/figure-markdown_github/absRiskPlot-1.png" /></p>
-<p>As we can see, Model 1 and Model 2 give different absolute risk predictions, but the linear and the spline model actually give very similar results. We can also estimate the mean absolute risk for the entire dataset:</p>
-<div class="codehilite"><pre><span></span><span class="c1"># The first column corresponds to the event of interest</span>
-<span class="kp">mean</span><span class="p">(</span>linearRisk<span class="p">[,</span><span class="m">1</span><span class="p">])</span>
+<p>We can also estimate the mean absolute risk for the entire dataset:</p>
+<div class="codehilite"><pre><span></span><span class="kp">mean</span><span class="p">(</span>linearRisk<span class="p">[,,</span><span class="m">1</span><span class="p">])</span>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## [1] 0.1422626
+<div class="codehilite"><pre><span></span>## [1] 0.2012265
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="kp">mean</span><span class="p">(</span>logRisk<span class="p">[,</span><span class="m">1</span><span class="p">])</span>
+<div class="codehilite"><pre><span></span><span class="kp">mean</span><span class="p">(</span>logRisk<span class="p">[,,</span><span class="m">1</span><span class="p">])</span>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## [1] 0.1816989
+<div class="codehilite"><pre><span></span>## [1] 0.1453269
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="kp">mean</span><span class="p">(</span>splineRisk<span class="p">[,</span><span class="m">1</span><span class="p">])</span>
+<div class="codehilite"><pre><span></span><span class="kp">mean</span><span class="p">(</span>splineRisk<span class="p">[,,</span><span class="m">1</span><span class="p">])</span>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## [1] 0.1393753
+<div class="codehilite"><pre><span></span>## [1] 0.105314
 </pre></div>
 
 
 <h2 id="session-information">Session information<a class="headerlink" href="#session-information" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span>## R version 3.3.1 (2016-06-21)
+<div class="codehilite"><pre><span></span>## R version 3.4.0 (2017-04-21)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.10
+## Running under: Ubuntu Zesty Zapus (development branch)
+## 
+## Matrix products: default
+## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -821,14 +821,14 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 ## [1] casebase_0.1.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     splines_3.3.1   
-##  [5] munsell_0.4.3    lattice_0.20-33  colorspace_1.3-1 stringr_1.2.0   
-##  [9] plyr_1.8.4       tools_3.3.1      grid_3.3.1       data.table_1.9.6
-## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.39-5  yaml_2.1.14     
+##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     splines_3.4.0   
+##  [5] munsell_0.4.3    lattice_0.20-35  colorspace_1.3-1 stringr_1.2.0   
+##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
+## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.41-3  yaml_2.1.14     
 ## [17] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
-## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    codetools_0.2-14
-## [25] VGAM_1.0-2       evaluate_0.10    rmarkdown_1.3    stringi_1.1.2   
-## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
+## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
+## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    compiler_3.4.0  
+## [29] scales_0.4.1     backports_1.0.5  stats4_3.4.0     chron_2.3-47
 </pre></div>
 
 

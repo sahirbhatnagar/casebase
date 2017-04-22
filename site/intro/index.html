@@ -968,8 +968,7 @@ variates based on the patient's profile and intervention (if any).</p>
 
 casebase_exponential <span class="o">&lt;-</span> casebase<span class="o">::</span>fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> ScrArm<span class="p">,</span> 
                                                   data <span class="o">=</span> ERSPC<span class="p">,</span> 
-                                                  ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> 
-                                                  type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+                                                  ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -1038,9 +1037,9 @@ exponential model on the Cox model CIF:</p>
                                           time <span class="o">=</span> <span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> 
                                           newdata <span class="o">=</span> new_data<span class="p">)</span>
 
-plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata <span class="o">=</span> new_data<span class="p">),</span>
      xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
-     ylab<span class="o">=</span><span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
      fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
      xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
      main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
@@ -1048,8 +1047,8 @@ plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class=
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_exp<span class="p">[</span><span class="m">1</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_exp<span class="p">[</span><span class="m">2</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_exp<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_exp<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_exp<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_exp<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
 
 
 legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
@@ -1073,8 +1072,7 @@ time plots as an exploratory analysis tool.</p>
 <p>Next we enter time linearly into the model:</p>
 <div class="codehilite"><pre><span></span>casebase_time <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> Follow.Up.Time <span class="o">+</span> ScrArm<span class="p">,</span> 
                                  data <span class="o">=</span> ERSPC<span class="p">,</span> 
-                                 ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> 
-                                 type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+                                 ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -1138,9 +1136,9 @@ time plots as an exploratory analysis tool.</p>
                                           time <span class="o">=</span> <span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> 
                                           newdata <span class="o">=</span> new_data<span class="p">)</span>
 
-plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata <span class="o">=</span> new_data<span class="p">),</span>
      xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
-     ylab<span class="o">=</span><span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
      fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
      xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
      main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
@@ -1148,8 +1146,8 @@ plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class=
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_time<span class="p">[</span><span class="m">1</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_time<span class="p">[</span><span class="m">2</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_time<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_time<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_time<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_time<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
 
 legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
        legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group (Cox)&quot;</span><span class="p">,</span><span class="s">&quot;Control group (Casebase)&quot;</span><span class="p">,</span>
@@ -1167,8 +1165,7 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 <code>splines</code> package</p>
 <div class="codehilite"><pre><span></span>casebase_splines <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> bs<span class="p">(</span>Follow.Up.Time<span class="p">)</span> <span class="o">+</span> ScrArm<span class="p">,</span> 
                                     data <span class="o">=</span> ERSPC<span class="p">,</span> 
-                                    ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> 
-                                    type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+                                    ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -1240,7 +1237,7 @@ legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span cl
 
 plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
      xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
-     ylab<span class="o">=</span><span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
      fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
      xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
      main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
@@ -1248,8 +1245,8 @@ plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class=
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
                     sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_splines<span class="p">[</span><span class="m">1</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> smooth_risk_splines<span class="p">[</span><span class="m">2</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_splines<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_splines<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_splines<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_splines<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
 
 legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
        legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group (Cox)&quot;</span><span class="p">,</span><span class="s">&quot;Control group (Casebase)&quot;</span><span class="p">,</span>
@@ -1289,29 +1286,31 @@ hypothesis here is that the linear model is just as good as the larger
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## R version 3.3.2 (2016-10-31)
+<div class="codehilite"><pre><span></span>## R version 3.4.0 (2017-04-21)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.04.1 LTS
+## Running under: Ubuntu Zesty Zapus (development branch)
+## 
+## Matrix products: default
+## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
 ## 
 ## attached base packages:
 ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] casebase_0.1.0  survival_2.40-1
+## [1] casebase_0.1.0  survival_2.41-3
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.10       knitr_1.15.1       magrittr_1.5      
-##  [4] MASS_7.3-45        munsell_0.4.3      colorspace_1.3-2  
-##  [7] lattice_0.20-34    stringr_1.2.0      plyr_1.8.4        
-## [10] tools_3.3.2        grid_3.3.2         data.table_1.10.4 
-## [13] gtable_0.2.0       pacman_0.4.1       htmltools_0.3.6   
-## [16] assertthat_0.1     yaml_2.1.14        lazyeval_0.2.0    
-## [19] rprojroot_1.2      digest_0.6.12      tibble_1.2        
-## [22] Matrix_1.2-7.1     ggplot2_2.2.1      VGAM_1.0-3        
-## [25] evaluate_0.10      rmarkdown_1.3.9003 labeling_0.3      
-## [28] stringi_1.1.3      scales_0.4.1       backports_1.0.5   
-## [31] stats4_3.3.2
+##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     MASS_7.3-45     
+##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-35  stringr_1.2.0   
+##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
+## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
+## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
+## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
+## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
+## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
+## [33] chron_2.3-47
 </pre></div>
                 
                   

@@ -612,7 +612,7 @@ logistic regression. First, we will include time as a linear term; as
 noted above, this corresponds to an Gompertz hazard.</p>
 <div class="codehilite"><pre><span></span><span class="kn">library</span><span class="p">(</span>casebase<span class="p">)</span>
 model4 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>status <span class="o">~</span> time <span class="o">+</span> karno <span class="o">+</span> diagtime <span class="o">+</span> age <span class="o">+</span> prior <span class="o">+</span>
-             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -630,30 +630,30 @@ model4 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>statu
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -0.6321  -0.1471  -0.1326  -0.1180   3.3378  
+## -0.4288  -0.1499  -0.1199  -0.1003   3.4168  
 ## 
 ## Coefficients:
-##                    Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -4.723692   0.680388  -6.943 3.85e-12 ***
-## time               0.004259   0.000580   7.343 2.09e-13 ***
-## karno             -0.010888   0.004952  -2.199   0.0279 *  
-## diagtime           0.005922   0.009123   0.649   0.5163    
-## age                0.004306   0.009273   0.464   0.6424    
-## prioryes          -0.221476   0.230259  -0.962   0.3361    
-## celltypesquamous  -0.441758   0.287345  -1.537   0.1242    
-## celltypesmallcell  0.022139   0.259385   0.085   0.9320    
-## celltypeadeno      0.186398   0.291500   0.639   0.5225    
-## trttest           -0.100691   0.190795  -0.528   0.5977    
+##                     Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)       -2.6999939  0.7215572  -3.742 0.000183 ***
+## time               0.0003370  0.0006447   0.523 0.601203    
+## karno             -0.0324184  0.0052921  -6.126 9.02e-10 ***
+## diagtime           0.0036596  0.0093085   0.393 0.694214    
+## age               -0.0064304  0.0092899  -0.692 0.488817    
+## prioryes           0.0049789  0.2314208   0.022 0.982835    
+## celltypesquamous  -0.4302885  0.2844478  -1.513 0.130352    
+## celltypesmallcell  0.3947140  0.2626453   1.503 0.132880    
+## celltypeadeno      0.7009165  0.2987905   2.346 0.018984 *  
+## trttest            0.2101849  0.2017210   1.042 0.297431    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1394.6  on 12918  degrees of freedom
-## AIC: 1414.6
+## Residual deviance: 1365.7  on 12918  degrees of freedom
+## AIC: 1385.7
 ## 
-## Number of Fisher Scoring iterations: 7
+## Number of Fisher Scoring iterations: 8
 </pre></div>
 
 
@@ -663,11 +663,12 @@ class, we see a familiar result when using the function <code>summary</code>.</p
 relatively easy to compute absolute risks. For example, we can use the
 function <code>absoluteRisk</code> to compute the mean absolute risk at 90 days,
 which can then be compared to the empirical measure.</p>
-<div class="codehilite"><pre><span></span>absoluteRisk<span class="p">(</span>object <span class="o">=</span> model4<span class="p">,</span> time <span class="o">=</span> <span class="m">90</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span>absRisk4 <span class="o">&lt;-</span> absoluteRisk<span class="p">(</span>object <span class="o">=</span> model4<span class="p">,</span> time <span class="o">=</span> <span class="m">90</span><span class="p">)</span>
+<span class="kp">mean</span><span class="p">(</span>absRisk4<span class="p">)</span>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## [1] 0.4490265
+<div class="codehilite"><pre><span></span>## [1] 0.5768982
 </pre></div>
 
 
@@ -682,7 +683,7 @@ which can then be compared to the empirical measure.</p>
 
 <p>We can also fit a Weibull hazard by using a logarithmic term for time:</p>
 <div class="codehilite"><pre><span></span>model5 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>status <span class="o">~</span> <span class="kp">log</span><span class="p">(</span>time<span class="p">)</span> <span class="o">+</span> karno <span class="o">+</span> diagtime <span class="o">+</span> age <span class="o">+</span> prior <span class="o">+</span>
-             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -700,28 +701,28 @@ which can then be compared to the empirical measure.</p>
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -0.3669  -0.1625  -0.1255  -0.0916   3.7345  
+## -0.4603  -0.1521  -0.1192  -0.0971   3.4266  
 ## 
 ## Coefficients:
 ##                    Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -6.025256   0.715645  -8.419  &lt; 2e-16 ***
-## log(time)          0.638999   0.081654   7.826 5.05e-15 ***
-## karno             -0.021859   0.005402  -4.046 5.21e-05 ***
-## diagtime           0.002051   0.008846   0.232    0.817    
-## age               -0.002489   0.009044  -0.275    0.783    
-## prioryes           0.038160   0.221385   0.172    0.863    
-## celltypesquamous  -0.160837   0.273353  -0.588    0.556    
-## celltypesmallcell  0.325276   0.263553   1.234    0.217    
-## celltypeadeno      0.475734   0.296983   1.602    0.109    
-## trttest            0.115654   0.191121   0.605    0.545    
+## (Intercept)       -3.016737   0.759750  -3.971 7.17e-05 ***
+## log(time)          0.069061   0.071970   0.960   0.3373    
+## karno             -0.033136   0.005500  -6.024 1.70e-09 ***
+## diagtime          -0.001473   0.009150  -0.161   0.8721    
+## age               -0.004822   0.009307  -0.518   0.6044    
+## prioryes           0.051890   0.229634   0.226   0.8212    
+## celltypesquamous  -0.418226   0.279779  -1.495   0.1350    
+## celltypesmallcell  0.448323   0.264064   1.698   0.0895 .  
+## celltypeadeno      0.759124   0.303882   2.498   0.0125 *  
+## trttest            0.264034   0.204881   1.289   0.1975    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1363.0  on 12918  degrees of freedom
-## AIC: 1383
+## Residual deviance: 1364.9  on 12918  degrees of freedom
+## AIC: 1384.9
 ## 
 ## Number of Fisher Scoring iterations: 8
 </pre></div>
@@ -733,7 +734,7 @@ mean absolute risk.</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Fit a spline for time</span>
 <span class="kn">library</span><span class="p">(</span>splines<span class="p">)</span>
 model6 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>status <span class="o">~</span> bs<span class="p">(</span>time<span class="p">)</span> <span class="o">+</span> karno <span class="o">+</span> diagtime <span class="o">+</span> age <span class="o">+</span> prior <span class="o">+</span>
-             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">,</span> type <span class="o">=</span> <span class="s">&quot;uniform&quot;</span><span class="p">)</span>
+             celltype <span class="o">+</span> trt<span class="p">,</span> data <span class="o">=</span> veteran<span class="p">,</span> ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
 </pre></div>
 
 
@@ -751,30 +752,30 @@ model6 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>statu
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -0.5950  -0.1519  -0.1207  -0.0984   3.4902  
+## -0.4557  -0.1536  -0.1198  -0.0953   3.5215  
 ## 
 ## Coefficients:
-##                    Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -4.850575   0.688886  -7.041 1.91e-12 ***
-## bs(time)1          6.624422   1.057781   6.263 3.79e-10 ***
-## bs(time)2         -2.303337   1.859357  -1.239 0.215426    
-## bs(time)3          4.793540   0.954585   5.022 5.12e-07 ***
-## karno             -0.019221   0.005319  -3.614 0.000302 ***
-## diagtime           0.001291   0.009591   0.135 0.892906    
-## age               -0.002556   0.009120  -0.280 0.779292    
-## prioryes          -0.040716   0.229840  -0.177 0.859390    
-## celltypesquamous  -0.220063   0.281321  -0.782 0.434069    
-## celltypesmallcell  0.365648   0.268621   1.361 0.173449    
-## celltypeadeno      0.542413   0.303971   1.784 0.074355 .  
-## trttest            0.108617   0.197434   0.550 0.582222    
+##                     Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)       -2.9568779  0.7256358  -4.075 4.60e-05 ***
+## bs(time)1          1.6434447  1.0344949   1.589  0.11214    
+## bs(time)2         -2.5374842  1.7567675  -1.444  0.14863    
+## bs(time)3          1.6957255  0.9856981   1.720  0.08537 .  
+## karno             -0.0322233  0.0053581  -6.014 1.81e-09 ***
+## diagtime           0.0006669  0.0091320   0.073  0.94178    
+## age               -0.0063188  0.0093578  -0.675  0.49952    
+## prioryes           0.0068816  0.2356245   0.029  0.97670    
+## celltypesquamous  -0.3974461  0.2838466  -1.400  0.16145    
+## celltypesmallcell  0.4656989  0.2648835   1.758  0.07873 .  
+## celltypeadeno      0.8663980  0.3040303   2.850  0.00438 ** 
+## trttest            0.2542601  0.2077276   1.224  0.22095    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1367.3  on 12916  degrees of freedom
-## AIC: 1391.3
+## Residual deviance: 1362.9  on 12916  degrees of freedom
+## AIC: 1386.9
 ## 
 ## Number of Fisher Scoring iterations: 8
 </pre></div>
@@ -784,7 +785,46 @@ model6 <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>statu
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>## [1] 0.4611582
+<div class="codehilite"><pre><span></span>##                                                                        
+## 90 0.2990416 0.2344582 0.3501656 0.3107011 0.2339846 0.768022 0.4948434
+##                                                                        
+## 90 0.1734315 0.4413401 0.2255779 0.2801434 0.5192211 0.6202901 0.188913
+##                                                                         
+## 90 0.2567928 0.5867092 0.6322353 0.8622704 0.3696546 0.5985107 0.8259266
+##                                                                        
+## 90 0.5733822 0.5872865 0.896037 0.3994782 0.9147517 0.6885197 0.5708448
+##                                                                         
+## 90 0.4093046 0.8278135 0.9738679 0.3654432 0.8965073 0.4121778 0.4854648
+##                                                                         
+## 90 0.5830452 0.9036242 0.5724129 0.3910962 0.5856197 0.4596609 0.6804068
+##                                                                        
+## 90 0.7357995 0.8004085 0.8086631 0.9923394 0.6195075 0.918081 0.5507774
+##                                                                         
+## 90 0.5244521 0.8365737 0.4935648 0.9794734 0.5603674 0.5292029 0.2515149
+##                                                                        
+## 90 0.5581642 0.355142 0.4236079 0.6408285 0.2757051 0.2844161 0.3223283
+##                                                                        
+## 90 0.1889938 0.1918393 0.2469368 0.286194 0.3475531 0.4801757 0.1759723
+##                                                                         
+## 90 0.2246323 0.2396001 0.5080685 0.4652078 0.3140069 0.2925203 0.8232641
+##                                                                        
+## 90 0.387276 0.1660097 0.7113332 0.8280633 0.3004228 0.1641063 0.2392422
+##                                                                         
+## 90 0.5433894 0.2922796 0.3688847 0.1768362 0.5359931 0.9419371 0.6268983
+##                                                                        
+## 90 0.9794362 0.9489498 0.6820533 0.9168847 0.957809 0.9821841 0.7086633
+##                                                                        
+## 90 0.5370366 0.4355291 0.3972498 0.539053 0.5413103 0.5615188 0.7746676
+##                                                                         
+## 90 0.9604773 0.8771482 0.9615619 0.9552214 0.3913284 0.6415963 0.8159478
+##                                                                        
+## 90 0.8442395 0.8513102 0.7995037 0.8974848 0.709612 0.9994542 0.9632844
+##                                                                         
+## 90 0.7038662 0.4785029 0.5909934 0.9300229 0.9540688 0.9593104 0.5469816
+##                                                                        
+## 90 0.3954082 0.8866501 0.5019899 0.844221 0.5420656 0.3111089 0.3491629
+##                                           
+## 90 0.5047598 0.3979445 0.3067164 0.8879022
 </pre></div>
 
 
@@ -837,13 +877,13 @@ karno
 -0.0328
 </td>
 <td style="text-align:right;">
--0.0109
+-0.0324
 </td>
 <td style="text-align:right;">
--0.0219
+-0.0331
 </td>
 <td style="text-align:right;">
--0.0192
+-0.0322
 </td>
 </tr>
 <tr>
@@ -854,13 +894,13 @@ diagtime
 0.0001
 </td>
 <td style="text-align:right;">
-0.0059
+0.0037
 </td>
 <td style="text-align:right;">
-0.0021
+-0.0015
 </td>
 <td style="text-align:right;">
-0.0013
+0.0007
 </td>
 </tr>
 <tr>
@@ -871,13 +911,13 @@ age
 -0.0087
 </td>
 <td style="text-align:right;">
-0.0043
+-0.0064
 </td>
 <td style="text-align:right;">
--0.0025
+-0.0048
 </td>
 <td style="text-align:right;">
--0.0026
+-0.0063
 </td>
 </tr>
 <tr>
@@ -888,13 +928,13 @@ prioryes
 0.0716
 </td>
 <td style="text-align:right;">
--0.2215
+0.0050
 </td>
 <td style="text-align:right;">
-0.0382
+0.0519
 </td>
 <td style="text-align:right;">
--0.0407
+0.0069
 </td>
 </tr>
 <tr>
@@ -905,13 +945,13 @@ celltypesquamous
 -0.4013
 </td>
 <td style="text-align:right;">
--0.4418
+-0.4303
 </td>
 <td style="text-align:right;">
--0.1608
+-0.4182
 </td>
 <td style="text-align:right;">
--0.2201
+-0.3974
 </td>
 </tr>
 <tr>
@@ -922,13 +962,13 @@ celltypesmallcell
 0.4603
 </td>
 <td style="text-align:right;">
-0.0221
+0.3947
 </td>
 <td style="text-align:right;">
-0.3253
+0.4483
 </td>
 <td style="text-align:right;">
-0.3656
+0.4657
 </td>
 </tr>
 <tr>
@@ -939,13 +979,13 @@ celltypeadeno
 0.7948
 </td>
 <td style="text-align:right;">
-0.1864
+0.7009
 </td>
 <td style="text-align:right;">
-0.4757
+0.7591
 </td>
 <td style="text-align:right;">
-0.5424
+0.8664
 </td>
 </tr>
 <tr>
@@ -956,13 +996,13 @@ trttest
 0.2946
 </td>
 <td style="text-align:right;">
--0.1007
+0.2102
 </td>
 <td style="text-align:right;">
-0.1157
+0.2640
 </td>
 <td style="text-align:right;">
-0.1086
+0.2543
 </td>
 </tr>
 </tbody>
@@ -992,14 +1032,14 @@ smooth_risk <span class="o">&lt;-</span> absoluteRisk<span class="p">(</span>obj
                             newdata <span class="o">=</span> new_data<span class="p">)</span>
 
 <span class="c1"># cumulative incidence function for the Cox model</span>
-plot<span class="p">(</span>survfit<span class="p">(</span>model3<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
-     xlab <span class="o">=</span> <span class="s">&quot;Days&quot;</span><span class="p">,</span> ylab<span class="o">=</span><span class="s">&quot;Cumulative Incidence (%)&quot;</span><span class="p">,</span> fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
+plot<span class="p">(</span>survfit<span class="p">(</span>model3<span class="p">,</span> newdata <span class="o">=</span> new_data<span class="p">),</span>
+     xlab <span class="o">=</span> <span class="s">&quot;Days&quot;</span><span class="p">,</span> ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence (%)&quot;</span><span class="p">,</span> fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
      xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">300</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> 
      main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no&quot;</span><span class="p">,</span> median<span class="p">(</span>veteran<span class="o">$</span>karno<span class="p">),</span> median<span class="p">(</span>veteran<span class="o">$</span>diagtime<span class="p">),</span> 
                     median<span class="p">(</span>veteran<span class="o">$</span>age<span class="p">)))</span>
 
 <span class="c1"># add casebase curve with legend</span>
-lines<span class="p">(</span><span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">300</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> smooth_risk<span class="p">[</span><span class="m">1</span><span class="p">,],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk<span class="p">[,</span><span class="m">2</span><span class="p">],</span> type <span class="o">=</span> <span class="s">&quot;l&quot;</span><span class="p">,</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">)</span>
 legend<span class="p">(</span><span class="s">&quot;bottomright&quot;</span><span class="p">,</span> 
        legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;semi-parametric (Cox)&quot;</span><span class="p">,</span> <span class="s">&quot;parametric (casebase)&quot;</span><span class="p">),</span> 
        col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
@@ -1010,26 +1050,31 @@ legend<span class="p">(</span><span class="s">&quot;bottomright&quot;</span><spa
 
 <p><img alt="" src="../smoothHazard_files/figure-markdown/unnamed-chunk-13-1.png" /></p>
 <h2 id="session-information">Session information<a class="headerlink" href="#session-information" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span>## R version 3.3.1 (2016-06-21)
+<div class="codehilite"><pre><span></span>## R version 3.4.0 (2017-04-21)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.10
+## Running under: Ubuntu Zesty Zapus (development branch)
+## 
+## Matrix products: default
+## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
 ## 
 ## attached base packages:
 ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] casebase_0.1.0  eha_2.4-4       survival_2.39-5
+## [1] casebase_0.1.0  eha_2.4-4       survival_2.41-3
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     munsell_0.4.3   
-##  [5] colorspace_1.3-1 lattice_0.20-33  highr_0.6        plyr_1.8.4      
-##  [9] stringr_1.2.0    tools_3.3.1      grid_3.3.1       data.table_1.9.6
+##  [5] colorspace_1.3-1 lattice_0.20-35  highr_0.6        plyr_1.8.4      
+##  [9] stringr_1.2.0    tools_3.4.0      grid_3.4.0       data.table_1.9.6
 ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
 ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
-## [21] tibble_1.2       Matrix_1.2-6     ggplot2_2.2.0    VGAM_1.0-2      
+## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
 ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
-## [29] scales_0.4.1     backports_1.0.5  stats4_3.3.1     chron_2.3-47
+## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
+## [33] chron_2.3-47
 </pre></div>
                 
                   
