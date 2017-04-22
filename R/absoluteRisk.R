@@ -112,42 +112,42 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "qu
         meanAR <- TRUE
     }
 
-    output <- matrix(NA, nrow = nrow(newdata), ncol = length(sort(unique(time))))
     time_ordered <- unique(c(0, sort(time)))
+    output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
+    output[,1] <- time_ordered
+    colnames(output) <- c("time", rep("", nrow(newdata)))
+    rownames(output) <- rep("", length(time_ordered))
+    output[1,-1] <- 0
 
-    if (method == "quadrature") {
-        for (i in 1:nrow(newdata)) {
-            for (j in 1:ncol(output)) {
-                output[i, j] <- integrate(lambda, lower = time_ordered[j], upper = time_ordered[j + 1],
-                                          fit = object, newdata = newdata[i,,drop = FALSE],
-                                          subdivisions = nsamp)$value
-            }
-            output[i,] <- cumsum(output[i,])
-        }
-        output <- exp(-output)
-    }
-    if (method == "montecarlo") {
-        sampledPoints <- runif(nsamp)
-        for (i in 1:nrow(newdata)) {
-            for (j in 1:ncol(output)) {
-                output[i, j] <- (time_ordered[j + 1] - time_ordered[j]) * mean(lambda(sampledPoints * (time_ordered[j + 1] -
-                                                                                                           time_ordered[j]) +
-                                                                                          time_ordered[j], fit = object, newdata = newdata[i,,drop = FALSE]))
-            }
-            output[i,] <- cumsum(output[i,])
-        }
-        output <- exp(-output)
-    }
+    if (length(time_ordered) > 1) {
+        # output[1,-1] <- 0
+        if (method == "quadrature") {
+            for (j in 1:nrow(newdata)) {
+                for (i in 2:length(time_ordered)) {
 
-    if (meanAR) {
-        absRisk <- colMeans(1.0 - output)
-        return(absRisk)
-    } else {
-        absRisk <- 1.0 - output
-        rownames(absRisk) <- rownames(newdata)
-        colnames(absRisk) <- time_ordered[-1]
-        return(absRisk)
+                    output[i, j + 1] <- integrate(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
+                                                  fit = object, newdata = newdata[j,,drop = FALSE],
+                                                  subdivisions = nsamp)$value
+                }
+                output[,j + 1] <- cumsum(output[,j + 1])
+            }
+
+        }
+        if (method == "montecarlo") {
+            sampledPoints <- runif(nsamp)
+            for (j in 1:nrow(newdata)) {
+                for (i in 2:length(time_ordered)) {
+                    output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
+                                                                                                               time_ordered[i - 1]) +
+                                                                                              time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
+                }
+                output[,j + 1] <- cumsum(output[,j + 1])
+            }
+        }
+        output[,-1] <- exp(-output[,-1])
+        output[,-1] <- 1 - output[,-1]
     }
+    return(output)
 }
 
 #' @rdname absoluteRisk
