@@ -17,7 +17,7 @@ pacman::p_install_gh("sahirbhatnagar/casebase")
 
 See the [package website](http://sahirbhatnagar.com/casebase/) for example usage of the functions. This includes
 
-1. [Fitting Smooth Hazard Functions](http://sahirbhatnagar.com/casebase/smoothhazard/)
+1. [Fitting Smooth Hazard Functions](http://sahirbhatnagar.com/casebase/smoothHazard/)
 2. [Competing Risks Analysis](http://sahirbhatnagar.com/casebase/competingRisk/)
 3. [Population Time Plots](http://sahirbhatnagar.com/casebase/popTime/)
 
