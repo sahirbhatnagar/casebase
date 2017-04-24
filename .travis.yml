@@ -2,14 +2,14 @@ language: r
 r:
   - release
   - devel
-sudo: required
-
-r_binary_packages:
-  - knitr
-  - ggplot2
-  - eha
+sudo: false
+cache: packages
 
 r_packages:
+  - knitr
+  - devtools
+  - ggplot2
+  - eha
   - covr
 
 after_success:
