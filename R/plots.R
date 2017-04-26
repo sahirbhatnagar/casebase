@@ -110,8 +110,8 @@ popTime <- function(data, time, event, censored.indicator,
         # if the 50th percentile number of available subjects at any given
         # point is less than 10, then sample regardless of case status
         if (DT[,quantile(n_available, probs = 0.5)] < 10) {
-            message("Sampling from all remaining individuals under study,
-                    regardless of event status")
+            # message("Sampling from all remaining individuals under study,
+            #         regardless of event status")
             DT[event == 1,
                n_available := sapply(time,
                                      function(i) DT[time >= i , .N ])]
@@ -125,8 +125,8 @@ popTime <- function(data, time, event, censored.indicator,
             DT[event == 1 & n_available == 0, yc := ycoord]
         } else {
 
-            message("Sampling only from individuals who never experienced
-                    the event of interest")
+            # message("Sampling only from individuals who never experienced
+            #         the event of interest")
 
             DT[event == 1 & n_available > 0,
                yc := sapply(time,
@@ -184,8 +184,8 @@ popTime <- function(data, time, event, censored.indicator,
             # if the 50th percentile number of available subjects at any given
             # point is less than 10, then sample regardless of case status
             if (K[,quantile(n_available, probs = 0.5)] < 10) {
-                message("Sampling from all remaining individuals under study,
-                    regardless of event status")
+                # message("Sampling from all remaining individuals under study,
+                #     regardless of event status")
                 K[event == 1,
                    n_available := sapply(time,
                                          function(i) K[time >= i , .N ])]
@@ -199,8 +199,8 @@ popTime <- function(data, time, event, censored.indicator,
                 K[event == 1 & n_available == 0, yc := ycoord]
             } else {
 
-                message("Sampling only from individuals who never experienced
-                    the event of interest")
+                # message("Sampling only from individuals who never experienced
+                #     the event of interest")
 
                 K[event == 1 & n_available > 0,
                    yc := sapply(time,

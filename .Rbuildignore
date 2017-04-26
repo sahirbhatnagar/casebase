@@ -24,3 +24,4 @@
 ^CONDUCT\.md$
 ^mkdocs\.yml$
 ^references$
+^update_doc.R$

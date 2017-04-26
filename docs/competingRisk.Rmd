@@ -201,4 +201,3 @@ mean(splineRisk[,,1])
 print(sessionInfo(), locale = FALSE)
 ```
 
-## References

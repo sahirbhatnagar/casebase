@@ -252,9 +252,6 @@ pt_object <- casebase::popTime(ERSPC, event = "DeadOfPrCa")
 
     ## 'Follow.Up.Time' will be used as the time variable
 
-    ## Sampling from all remaining individuals under study,
-    ##                     regardless of event status
-
 We can see its contents and its class:
 
 ``` {.r}
@@ -289,7 +286,7 @@ The `casebase` package has a `plot` method for objects of class
 plot(pt_object)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-5-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-13-1.png)
 
 > Can you explain the distinct shape of the grey area?
 
@@ -306,11 +303,6 @@ pt_object_strat <- casebase::popTime(ERSPC,
 ```
 
     ## 'Follow.Up.Time' will be used as the time variable
-
-    ## Sampling from all remaining individuals under study,
-    ##                     regardless of event status
-    ## Sampling from all remaining individuals under study,
-    ##                     regardless of event status
 
 We can see its contents and its class:
 
@@ -360,7 +352,7 @@ The `casebase` package also has a `plot` method for objects of class
 plot(pt_object_strat)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-8-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-16-1.png)
 
 We can also plot them side-by-side using the `ncol` argument:
 
@@ -368,7 +360,7 @@ We can also plot them side-by-side using the `ncol` argument:
 plot(pt_object_strat, ncol = 2)
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-9-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-17-1.png)
 
 Cox Model
 ---------
@@ -426,7 +418,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-11-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-19-1.png)
 
 We compare it to the figure in [Schroder FH, et al. N Engl J Med
 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Schroder_et_al-2009-NEJM.pdf)
@@ -537,7 +529,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-13-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-21-1.png)
 
 As we can see, the exponential model is not a good fit. Based on what we
 observed in the population time plot, where more events are observed
@@ -631,7 +623,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-15-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-23-1.png)
 
 We see that the Weibull model leads to a better fit.
 
@@ -726,7 +718,7 @@ legend("topleft",
        bg = "gray90")
 ```
 
-![](intro_files/figure-markdown/unnamed-chunk-17-1.png)
+![](intro_files/figure-markdown/unnamed-chunk-25-1.png)
 
 It looks like the best fit.
 
@@ -761,28 +753,32 @@ Session Information
 print(sessionInfo(), locale = F)
 ```
 
-    ## R version 3.4.0 (2017-04-21)
+    ## R version 3.3.3 (2017-03-06)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu Zesty Zapus (development branch)
-    ## 
-    ## Matrix products: default
-    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
-    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
+    ## Running under: Ubuntu 16.04.2 LTS
     ## 
     ## attached base packages:
     ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0  survival_2.41-3
+    ## [1] casebase_0.1.0       data.table_1.10.4    survival_2.40-1     
+    ## [4] devtools_1.12.0.9000
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     MASS_7.3-45     
-    ##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-35  stringr_1.2.0   
-    ##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
-    ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
-    ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
-    ## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
-    ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
-    ## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
-    ## [33] chron_2.3-47
+    ##  [1] Rcpp_0.12.10        git2r_0.18.0        plyr_1.8.4         
+    ##  [4] tools_3.3.3         testthat_1.0.2      digest_0.6.12      
+    ##  [7] pkgbuild_0.0.0.9000 pkgload_0.0.0.9000  memoise_1.0.0      
+    ## [10] evaluate_0.10       tibble_1.3.0        gtable_0.2.0       
+    ## [13] lattice_0.20-35     Matrix_1.2-8        commonmark_1.1     
+    ## [16] curl_2.3            yaml_2.1.14         httr_1.2.1         
+    ## [19] withr_1.0.2         stringr_1.2.0       knitr_1.15.1       
+    ## [22] roxygen2_6.0.1      xml2_1.1.1          desc_1.1.0         
+    ## [25] stats4_3.3.3        rprojroot_1.2       grid_3.3.3         
+    ## [28] R6_2.2.0            VGAM_1.0-3          rmarkdown_1.3.9003 
+    ## [31] pacman_0.4.1        callr_1.0.0.9000    ggplot2_2.2.1      
+    ## [34] magrittr_1.5        MASS_7.3-45         scales_0.4.1       
+    ## [37] backports_1.0.5     htmltools_0.3.6     rsconnect_0.7      
+    ## [40] assertthat_0.1      colorspace_1.3-2    labeling_0.3       
+    ## [43] stringi_1.1.5       lazyeval_0.2.0      munsell_0.4.3      
+    ## [46] crayon_1.3.2
