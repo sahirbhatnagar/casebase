@@ -1,0 +1,1408 @@
+
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Smooth-in-time fitting of parametric hazard functions">
+      
+      
+        <link rel="canonical" href="https://sahirbhatnagar.github.io/casebase/intro/">
+      
+      
+        <meta name="author" content="Sahir">
+      
+      
+        <link rel="shortcut icon" href="../assets/images/favicon.png">
+      
+      <meta name="generator" content="mkdocs-0.16.2, mkdocs-material-1.4.1">
+    
+    
+      
+        <title>data</title>
+      
+    
+    
+      <script src="../assets/javascripts/modernizr-56ade86843.js"></script>
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application-76741b64bc.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-66fa0d9bba.palette.css">
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+    
+  </head>
+  
+  
+  
+  
+    <body data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
+    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <a href=".." title="casebase" class="md-logo md-header-nav__button">
+            <img src="../images/logo.png" width="24" height="24">
+          </a>
+        
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <span class="md-flex__ellipsis md-header-nav__title">
+          
+            
+              
+            
+            Introduction
+          
+        </span>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+          
+<div class="md-search" data-md-component="search">
+  <div class="md-search__overlay"></div>
+  <div class="md-search__inner">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" accesskey="s" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
+      <label class="md-icon md-search__icon" for="search"></label>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta" data-md-lang-result-none="No matching documents" data-md-lang-result-one="1 matching document" data-md-lang-result-other="# matching documents">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <div class="md-header-nav__source">
+          
+            
+
+
+  
+
+
+  <a href="https://github.com/sahirbhatnagar/casebase" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      casebase
+    </div>
+  </a>
+
+          
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="drawer">
+    
+      <i class="md-logo md-nav__button">
+        <img src="../images/logo.png">
+      </i>
+    
+    casebase
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/sahirbhatnagar/casebase" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      casebase
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        Introduction
+      </label>
+    
+    <a href="./" title="Introduction" class="md-nav__link md-nav__link--active">
+      Introduction
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#casebase-an-alternative-framework-for-survival-analysis" title="casebase: An Alternative Framework for Survival Analysis" class="md-nav__link">
+    casebase: An Alternative Framework for Survival Analysis
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-another-package-for-survival-analysis" title="Why another package for survival analysis?" class="md-nav__link">
+    Why another package for survival analysis?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parametric-family-of-hazard-functions" title="Parametric family of hazard functions" class="md-nav__link">
+    Parametric family of hazard functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox-model-vs-case-base-sampling" title="Cox Model vs. Case-base Sampling" class="md-nav__link">
+    Cox Model vs. Case-base Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intuition-behind-casebase-sampling" title="Intuition Behind Casebase sampling" class="md-nav__link">
+    Intuition Behind Casebase sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load-required-packages" title="Load Required Packages" class="md-nav__link">
+    Load Required Packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#european-randomized-study-of-prostate-cancer-screening-data" title="European Randomized Study of Prostate Cancer Screening Data" class="md-nav__link">
+    European Randomized Study of Prostate Cancer Screening Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#population-time-plot" title="Population Time Plot" class="md-nav__link">
+    Population Time Plot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exposure-stratified-population-time-plot" title="Exposure Stratified Population Time Plot" class="md-nav__link">
+    Exposure Stratified Population Time Plot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox-model" title="Cox Model" class="md-nav__link">
+    Cox Model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#case-base-sampling" title="Case-base Sampling" class="md-nav__link">
+    Case-base Sampling
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-time" title="Linear Time" class="md-nav__link">
+    Linear Time
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexible-time-using-bsplines" title="Flexible time using BSplines" class="md-nav__link">
+    Flexible time using BSplines
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-models-using-likelihood-ratio-test" title="Comparing Models Using Likelihood Ratio Test" class="md-nav__link">
+    Comparing Models Using Likelihood Ratio Test
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-information" title="Session Information" class="md-nav__link">
+    Session Information
+  </a>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../smoothHazard/" title="Smooth Hazard" class="md-nav__link">
+      Smooth Hazard
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../popTime/" title="Population Time Plots" class="md-nav__link">
+      Population Time Plots
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../competingRisk/" title="Competing Risk" class="md-nav__link">
+      Competing Risk
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../references/" title="References" class="md-nav__link">
+      References
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#casebase-an-alternative-framework-for-survival-analysis" title="casebase: An Alternative Framework for Survival Analysis" class="md-nav__link">
+    casebase: An Alternative Framework for Survival Analysis
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-another-package-for-survival-analysis" title="Why another package for survival analysis?" class="md-nav__link">
+    Why another package for survival analysis?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parametric-family-of-hazard-functions" title="Parametric family of hazard functions" class="md-nav__link">
+    Parametric family of hazard functions
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox-model-vs-case-base-sampling" title="Cox Model vs. Case-base Sampling" class="md-nav__link">
+    Cox Model vs. Case-base Sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#intuition-behind-casebase-sampling" title="Intuition Behind Casebase sampling" class="md-nav__link">
+    Intuition Behind Casebase sampling
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load-required-packages" title="Load Required Packages" class="md-nav__link">
+    Load Required Packages
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#european-randomized-study-of-prostate-cancer-screening-data" title="European Randomized Study of Prostate Cancer Screening Data" class="md-nav__link">
+    European Randomized Study of Prostate Cancer Screening Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#population-time-plot" title="Population Time Plot" class="md-nav__link">
+    Population Time Plot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exposure-stratified-population-time-plot" title="Exposure Stratified Population Time Plot" class="md-nav__link">
+    Exposure Stratified Population Time Plot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox-model" title="Cox Model" class="md-nav__link">
+    Cox Model
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#case-base-sampling" title="Case-base Sampling" class="md-nav__link">
+    Case-base Sampling
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linear-time" title="Linear Time" class="md-nav__link">
+    Linear Time
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flexible-time-using-bsplines" title="Flexible time using BSplines" class="md-nav__link">
+    Flexible time using BSplines
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-models-using-likelihood-ratio-test" title="Comparing Models Using Likelihood Ratio Test" class="md-nav__link">
+    Comparing Models Using Likelihood Ratio Test
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#session-information" title="Session Information" class="md-nav__link">
+    Session Information
+  </a>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Introduction</h1>
+                
+                <h2 id="casebase-an-alternative-framework-for-survival-analysis">casebase: An Alternative Framework for Survival Analysis<a class="headerlink" href="#casebase-an-alternative-framework-for-survival-analysis" title="Permanent link">&para;</a></h2>
+<p>This vignette introduces the main functions in the <code>casebase</code> package.
+The methods implemented in this package are based on the method
+developped in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Fitting Smooth-in-Time Prognostic Risk Functions via
+Logistic Regression (Hanley and Miettinen,
+2009)</a>.
+A rigorous treatment of the theory is developed in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf">A case-base sampling
+method for estimating recurrent event intensities (Saarela,
+2015)</a>
+and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela_et_al-2015-Scandinavian_Journal_of_Statistics.pdf">Non-parametric Bayesian Hazard Regression for Chronic Disease Risk
+Assessment</a>.
+The motivation for this work is nicely summarised by Cox:</p>
+<p><img alt="" src="http://i.imgur.com/E674HYw.png" /></p>
+<h3 id="why-another-package-for-survival-analysis">Why another package for survival analysis?<a class="headerlink" href="#why-another-package-for-survival-analysis" title="Permanent link">&para;</a></h3>
+<p>The purpose of the <code>casebase</code> package is to provide practitioners with
+an easy-to-use software tool to predict the risk (or cumulative
+incidence (CI)) of an event, for a particular patient. The following
+points should be noted:</p>
+<ol>
+<li>Time matching/risk set sampling (including Cox partial likelihood)
+    eliminates the baseline hazard from the likelihood expression for
+    the hazard ratios</li>
+<li>If, however, the absolute risks are of interest, they have to be
+    recovered using the semi-parametric Breslow estimator</li>
+<li>Alternative approaches for fitting flexible hazard models for
+    estimating absolute risks, not requiring this two-step approach?
+    Yes! <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Hanley and Miettinen,
+    2009</a></li>
+</ol>
+<blockquote>
+<p><a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Hanley and Miettinen,
+2009</a>
+propose a fully parametric hazard model that can be fit via logistic
+regression. From the fitted hazard function, cumulative incidence and,
+thus, risk functions of time, treatment and profile can be easily
+derived.</p>
+</blockquote>
+<h3 id="parametric-family-of-hazard-functions">Parametric family of hazard functions<a class="headerlink" href="#parametric-family-of-hazard-functions" title="Permanent link">&para;</a></h3>
+<p>The <code>casebase</code> package fits the family of hazard functions of the form</p>
+<p>
+<script type="math/tex; mode=display"> h(x,t) = exp[g(x,t)] </script> where \( t \) denotes the numerical value
+(number of units) of a point in prognostic/prospective time and \( x
+\) is the realization of the vector \( X \) of variates based on the
+patient's profile and intervention (if any). Different functions of \(
+t \) lead to different parametric hazard models.</p>
+<p>The simplest of these models is the one-parameter exponential
+distribution which is obtained by taking the hazard function to be
+constant over the range of \( t \).</p>
+<p>
+<script type="math/tex; mode=display"> h(x,t) = exp(\beta_0 + \beta_1 x) </script>
+</p>
+<p>The instantaneous failure rate is independent of \( t \), so that the
+conditional chance of failure in a time interval of specified length is
+the same regardless of how long the individual has been on study a.k.a
+the memoryless property (Kalbfleisch and Prentice, 2002).</p>
+<p>The Gompertz hazard model is given by including a linear term for time:</p>
+<p>
+<script type="math/tex; mode=display"> h(x,t)  = exp(\beta_0 + \beta_1 t + \beta_2 x) </script>
+</p>
+<p>Use of \( log(t) \) yields the Weibull hazard which allows for a power
+dependence of the hazard on time (Kalbfleisch and Prentice, 2002):</p>
+<p>
+<script type="math/tex; mode=display"> h(x, t)  = exp(\beta_0 + \beta_1 \log(t) + \beta_2 x) </script>
+</p>
+<p>Recall that the relative risk model (Cox, 1972)</p>
+<p>
+<script type="math/tex; mode=display"> \lambda(t;x) = \lambda_0(t) exp(\mathbf{X}\boldsymbol{\beta})  </script>
+where \( \lambda_0(\cdot) \) is an arbitrary unspecified baseline
+hazard function for continous time.</p>
+<h2 id="cox-model-vs-case-base-sampling">Cox Model vs. Case-base Sampling<a class="headerlink" href="#cox-model-vs-case-base-sampling" title="Permanent link">&para;</a></h2>
+<p>In the following table we provide a comparison between the Cox model and
+case-base sampling:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+feature
+</th>
+<th style="text-align:left;">
+Cox
+</th>
+<th style="text-align:left;">
+Case.Base.Sampling
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+model type
+</td>
+<td style="text-align:left;">
+semi-parametric
+</td>
+<td style="text-align:left;">
+fully parametric (logistic/multinomial regression)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+time
+</td>
+<td style="text-align:left;">
+left hand side of the equation
+</td>
+<td style="text-align:left;">
+right hand side - allows flexible modeling of time
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cumulative incidence
+</td>
+<td style="text-align:left;">
+step function
+</td>
+<td style="text-align:left;">
+smooth-in-time curve
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+non-proportional hazards
+</td>
+<td style="text-align:left;">
+interaction of covariates with time
+</td>
+<td style="text-align:left;">
+interaction of covariates with time
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+model testing
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+make use of GLM framework (LRT, AIC, BIC)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+competing risks
+</td>
+<td style="text-align:left;">
+difficult
+</td>
+<td style="text-align:left;">
+cause-specific cumulative incidence functions (CIFs) directly obtained
+via multinomial regression
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+prediction
+</td>
+<td style="text-align:left;">
+Kaplan-Meier-based
+</td>
+<td style="text-align:left;">
+ROC, AUC, risk reclassification probabilities
+</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="intuition-behind-casebase-sampling">Intuition Behind Casebase sampling<a class="headerlink" href="#intuition-behind-casebase-sampling" title="Permanent link">&para;</a></h2>
+<p><a href="https://www.fields.utoronto.ca/programs/scientific/14-15/biomarker/slides/saarela.pdf">Slides from Olli
+Saarela</a></p>
+<h2 id="load-required-packages">Load Required Packages<a class="headerlink" href="#load-required-packages" title="Permanent link">&para;</a></h2>
+<p>We fist load the required packages:</p>
+<div class="codehilite"><pre><span></span><span class="kr">if</span> <span class="p">(</span><span class="o">!</span><span class="kp">requireNamespace</span><span class="p">(</span><span class="s">&quot;pacman&quot;</span><span class="p">,</span> quietly <span class="o">=</span> <span class="kc">TRUE</span><span class="p">))</span> install.packages<span class="p">(</span><span class="s">&quot;pacman&quot;</span><span class="p">)</span>
+pacman<span class="o">::</span>p_load<span class="p">(</span>survival<span class="p">)</span>
+pacman<span class="o">::</span>p_load<span class="p">(</span>casebase<span class="p">)</span>
+pacman<span class="o">::</span>p_load<span class="p">(</span>splines<span class="p">)</span>
+</pre></div>
+
+
+<h2 id="european-randomized-study-of-prostate-cancer-screening-data">European Randomized Study of Prostate Cancer Screening Data<a class="headerlink" href="#european-randomized-study-of-prostate-cancer-screening-data" title="Permanent link">&para;</a></h2>
+<p>Throughout this vignette, we make use of the European Randomized Study
+of Prostate Cancer Screening data which ships with the <code>casebase</code>
+package:</p>
+<div class="codehilite"><pre><span></span>data<span class="p">(</span><span class="s">&quot;ERSPC&quot;</span><span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>ERSPC<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>##   ScrArm Follow.Up.Time DeadOfPrCa
+## 1      1         0.0027          0
+## 2      1         0.0027          0
+## 3      1         0.0027          0
+## 4      0         0.0027          0
+## 5      0         0.0027          0
+## 6      0         0.0027          0
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>ERSPC<span class="o">$</span>ScrArm <span class="o">&lt;-</span> <span class="kp">factor</span><span class="p">(</span>ERSPC<span class="o">$</span>ScrArm<span class="p">,</span> 
+                       levels <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> 
+                       labels <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group&quot;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>The results of this study were published by <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Schroder_et_al-2009-NEJM.pdf">Schroder FH, et al. N Engl
+J Med
+2009</a>.
+There's a really interesting story on how this data was obtained. See
+<code>help(ERSPC)</code> and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Liu_et_al-2015-Systematic_Reviews.pdf">Liu Z, Rich B, Hanley JA, Recovering the raw data
+behind a non-parametric survival curve. Systematic Reviews
+2014</a>
+for further details.</p>
+<h2 id="population-time-plot">Population Time Plot<a class="headerlink" href="#population-time-plot" title="Permanent link">&para;</a></h2>
+<p>Population time plots can be extremely informative graphical displays of
+survival data. They should be the first step in your exploratory data
+analyses. We facilitate this task in the <code>casebase</code> package using the
+<code>popTime</code> function. We first create the necessary dataset for producing
+the population time plots:</p>
+<div class="codehilite"><pre><span></span>pt_object <span class="o">&lt;-</span> casebase<span class="o">::</span>popTime<span class="p">(</span>ERSPC<span class="p">,</span> event <span class="o">=</span> <span class="s">&quot;DeadOfPrCa&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## &#39;Follow.Up.Time&#39; will be used as the time variable
+
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</pre></div>
+
+
+<p>We can see its contents and its class:</p>
+<div class="codehilite"><pre><span></span><span class="kp">head</span><span class="p">(</span>pt_object<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>##             ScrArm   time event original.time original.event event status
+## 1: Screening group 0.0027     0        0.0027              0     censored
+## 2: Screening group 0.0027     0        0.0027              0     censored
+## 3: Screening group 0.0027     0        0.0027              0     censored
+## 4:   Control group 0.0027     0        0.0027              0     censored
+## 5:   Control group 0.0027     0        0.0027              0     censored
+## 6:   Control group 0.0027     0        0.0027              0     censored
+##    ycoord yc n_available
+## 1: 159893  0           0
+## 2: 159892  0           0
+## 3: 159891  0           0
+## 4: 159890  0           0
+## 5: 159889  0           0
+## 6: 159888  0           0
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">class</span><span class="p">(</span>pt_object<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## [1] &quot;popTime&quot;    &quot;data.table&quot; &quot;data.frame&quot;
+</pre></div>
+
+
+<p>The <code>casebase</code> package has a <code>plot</code> method for objects of class
+<code>popTime</code>:</p>
+<div class="codehilite"><pre><span></span>plot<span class="p">(</span>pt_object<span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-5-1.png" /></p>
+<blockquote>
+<p>Can you explain the distinct shape of the grey area?</p>
+</blockquote>
+<h2 id="exposure-stratified-population-time-plot">Exposure Stratified Population Time Plot<a class="headerlink" href="#exposure-stratified-population-time-plot" title="Permanent link">&para;</a></h2>
+<p>We can also create exposure stratified plots by specifying the
+<code>exposure</code> argument in the <code>popTime</code> function:</p>
+<div class="codehilite"><pre><span></span>pt_object_strat <span class="o">&lt;-</span> casebase<span class="o">::</span>popTime<span class="p">(</span>ERSPC<span class="p">,</span> 
+                                     event <span class="o">=</span> <span class="s">&quot;DeadOfPrCa&quot;</span><span class="p">,</span> 
+                                     exposure <span class="o">=</span> <span class="s">&quot;ScrArm&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## &#39;Follow.Up.Time&#39; will be used as the time variable
+
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+## Sampling from all remaining individuals under study,
+##                     regardless of event status
+</pre></div>
+
+
+<p>We can see its contents and its class:</p>
+<div class="codehilite"><pre><span></span><span class="kp">head</span><span class="p">(</span>pt_object_strat<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## $data
+##                  ScrArm    time event original.time original.event
+##      1:   Control group  0.0027     0        0.0027              0
+##      2:   Control group  0.0027     0        0.0027              0
+##      3:   Control group  0.0027     0        0.0027              0
+##      4:   Control group  0.0027     0        0.0027              0
+##      5:   Control group  0.0137     0        0.0137              0
+##     ---                                                           
+## 159889: Screening group 14.9405     0       14.9405              0
+## 159890: Screening group 14.9405     0       14.9405              0
+## 159891: Screening group 14.9405     0       14.9405              0
+## 159892: Screening group 14.9405     0       14.9405              0
+## 159893: Screening group 14.9405     0       14.9405              0
+##         event status ycoord yc n_available
+##      1:     censored  88232  0           0
+##      2:     censored  88231  0           0
+##      3:     censored  88230  0           0
+##      4:     censored  88229  0           0
+##      5:     censored  88228  0           0
+##     ---                                   
+## 159889:     censored      5  0           0
+## 159890:     censored      4  0           0
+## 159891:     censored      3  0           0
+## 159892:     censored      2  0           0
+## 159893:     censored      1  0           0
+## 
+## $exposure
+## [1] &quot;ScrArm&quot;
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">class</span><span class="p">(</span>pt_object_strat<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## [1] &quot;popTimeExposure&quot; &quot;list&quot;
+</pre></div>
+
+
+<p>The <code>casebase</code> package also has a <code>plot</code> method for objects of class
+<code>popTimeExposure</code>:</p>
+<div class="codehilite"><pre><span></span>plot<span class="p">(</span>pt_object_strat<span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-8-1.png" /></p>
+<p>We can also plot them side-by-side using the <code>ncol</code> argument:</p>
+<div class="codehilite"><pre><span></span>plot<span class="p">(</span>pt_object_strat<span class="p">,</span> ncol <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-9-1.png" /></p>
+<h2 id="cox-model">Cox Model<a class="headerlink" href="#cox-model" title="Permanent link">&para;</a></h2>
+<p>We first fit a Cox model, examine the hazard ratio for the screening
+group (relative to the control group), and plot the cumulative incidence
+function (CIF).</p>
+<div class="codehilite"><pre><span></span>cox_model <span class="o">&lt;-</span> survival<span class="o">::</span>coxph<span class="p">(</span>Surv<span class="p">(</span>Follow.Up.Time<span class="p">,</span> DeadOfPrCa<span class="p">)</span> <span class="o">~</span> ScrArm<span class="p">,</span> 
+                             data <span class="o">=</span> ERSPC<span class="p">)</span>
+<span class="p">(</span>sum_cox_model <span class="o">&lt;-</span> <span class="kp">summary</span><span class="p">(</span>cox_model<span class="p">))</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## Call:
+## survival::coxph(formula = Surv(Follow.Up.Time, DeadOfPrCa) ~ 
+##     ScrArm, data = ERSPC)
+## 
+##   n= 159893, number of events= 540 
+## 
+##                         coef exp(coef) se(coef)     z Pr(&gt;|z|)  
+## ScrArmScreening group -0.222     0.801    0.088 -2.52    0.012 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##                       exp(coef) exp(-coef) lower .95 upper .95
+## ScrArmScreening group     0.801       1.25     0.674     0.952
+## 
+## Concordance= 0.519  (se = 0.011 )
+## Rsquare= 0   (max possible= 0.075 )
+## Likelihood ratio test= 6.45  on 1 df,   p=0.0111
+## Wald test            = 6.37  on 1 df,   p=0.0116
+## Score (logrank) test = 6.39  on 1 df,   p=0.0115
+</pre></div>
+
+
+<p>We can plot the CIF for each group:</p>
+<div class="codehilite"><pre><span></span>new_data <span class="o">&lt;-</span> <span class="kt">data.frame</span><span class="p">(</span>ScrArm <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group&quot;</span><span class="p">),</span>
+                       ignore <span class="o">=</span> <span class="m">99</span><span class="p">)</span>
+
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
+     xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
+     ylab<span class="o">=</span><span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
+     xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
+     main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
+<span class="s">                    Cancer Screening group Hazard Ratio: %.2g (%.2g, %.2g)&quot;</span><span class="p">,</span>
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
+legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
+       legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group&quot;</span><span class="p">),</span> 
+       col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
+       lty <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> 
+       bg <span class="o">=</span> <span class="s">&quot;gray90&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-11-1.png" /></p>
+<p>We compare it to the figure in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Schroder_et_al-2009-NEJM.pdf">Schroder FH, et al. N Engl J Med
+2009</a>
+and see that the plots are very similar, as is the hazard ratio and 95%
+confidence interval:</p>
+<p><img alt="" src="http://i.imgur.com/fk21dlV.png" /></p>
+<h2 id="case-base-sampling">Case-base Sampling<a class="headerlink" href="#case-base-sampling" title="Permanent link">&para;</a></h2>
+<p>Next we fit several models using case-base sampling. The models we fit
+differ in how we choose to model time.</p>
+<p>The <code>fitSmoothHazard</code> function provides an estimate of the hazard
+function \( h(x, t) \) is the hazard function, \( t \) denotes the
+numerical value (number of units) of a point in prognostic/prospective
+time and \( x \) is the realization of the vector \( X \) of
+variates based on the patient's profile and intervention (if any).</p>
+<div class="codehilite"><pre><span></span><span class="c1"># set the seed for reproducible output</span>
+<span class="kp">set.seed</span><span class="p">(</span><span class="m">1234</span><span class="p">)</span>
+
+casebase_exponential <span class="o">&lt;-</span> casebase<span class="o">::</span>fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> ScrArm<span class="p">,</span> 
+                                                  data <span class="o">=</span> ERSPC<span class="p">,</span> 
+                                                  ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## &#39;Follow.Up.Time&#39; will be used as the time variable
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">summary</span><span class="p">(</span>casebase_exponential<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## 
+## Call:
+## glm(formula = formula, family = binomial, data = sampleData)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -0.148  -0.148  -0.148  -0.132   3.080  
+## 
+## Coefficients:
+##                       Estimate Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)            -7.7608     0.0557 -139.36 &lt;0.0000000000000002 ***
+## ScrArmScreening group  -0.2261     0.0884   -2.56               0.011 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6059.0  on 54539  degrees of freedom
+## Residual deviance: 6052.3  on 54538  degrees of freedom
+## AIC: 6056
+## 
+## Number of Fisher Scoring iterations: 7
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>casebase_exponential<span class="o">$</span>coefficients<span class="p">[</span><span class="m">2</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## ScrArmScreening group 
+##                   0.8
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>confint<span class="p">(</span>casebase_exponential<span class="p">)[</span><span class="m">2</span><span class="p">,])</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
+
+##  2.5 % 97.5 % 
+##   0.67   0.95
+</pre></div>
+
+
+<p>The <code>absoluteRisk</code> function provides an estimate of the cumulative
+incidence curves for a specific risk profile using the following
+equation:</p>
+<p>
+<script type="math/tex; mode=display"> CI(x, t) = 1 - exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] </script>
+</p>
+<p>In the plot below, we overlay the estimated CIF from the casebase
+exponential model on the Cox model CIF:</p>
+<div class="codehilite"><pre><span></span>smooth_risk_exp <span class="o">&lt;-</span> casebase<span class="o">::</span>absoluteRisk<span class="p">(</span>object <span class="o">=</span> casebase_exponential<span class="p">,</span> 
+                                          time <span class="o">=</span> <span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> 
+                                          newdata <span class="o">=</span> new_data<span class="p">)</span>
+
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata <span class="o">=</span> new_data<span class="p">),</span>
+     xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
+     xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
+     main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
+<span class="s">                    Cancer Screening group Hazard Ratio: %.2g (%.2g, %.2g)&quot;</span><span class="p">,</span>
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
+lines<span class="p">(</span>smooth_risk_exp<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_exp<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_exp<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_exp<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+
+
+legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
+       legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group (Cox)&quot;</span><span class="p">,</span><span class="s">&quot;Control group (Casebase)&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Screening group (Cox)&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group (Casebase)&quot;</span><span class="p">),</span> 
+       col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
+       lty <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> 
+       bg <span class="o">=</span> <span class="s">&quot;gray90&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-13-1.png" /></p>
+<p>As we can see, the exponential model is not a good fit. Based on what we
+observed in the population time plot, where more events are observed
+later on in time, this poor fit is expected. A constant hazard model
+would overestimate the cumulative incidence earlier on in time, and
+underestimate it later on, which is what we see in the cumulative
+incidence plot. This example demonstrates the benefits of population
+time plots as an exploratory analysis tool.</p>
+<h3 id="linear-time">Linear Time<a class="headerlink" href="#linear-time" title="Permanent link">&para;</a></h3>
+<p>Next we enter time linearly into the model:</p>
+<div class="codehilite"><pre><span></span>casebase_time <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> Follow.Up.Time <span class="o">+</span> ScrArm<span class="p">,</span> 
+                                 data <span class="o">=</span> ERSPC<span class="p">,</span> 
+                                 ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## &#39;Follow.Up.Time&#39; will be used as the time variable
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">summary</span><span class="p">(</span>casebase_time<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## 
+## Call:
+## glm(formula = formula, family = binomial, data = sampleData)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -0.391  -0.161  -0.123  -0.095   3.462  
+## 
+## Coefficients:
+##                       Estimate Std. Error z value            Pr(&gt;|z|)    
+## (Intercept)            -9.0013     0.1116  -80.66 &lt;0.0000000000000002 ***
+## Follow.Up.Time          0.2174     0.0145   15.04 &lt;0.0000000000000002 ***
+## ScrArmScreening group  -0.2455     0.0886   -2.77              0.0056 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6059.0  on 54539  degrees of freedom
+## Residual deviance: 5818.9  on 54537  degrees of freedom
+## AIC: 5825
+## 
+## Number of Fisher Scoring iterations: 8
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>casebase_time<span class="o">$</span>coefficients<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>##           (Intercept)        Follow.Up.Time ScrArmScreening group 
+##               0.00012               1.24290               0.78230
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>confint<span class="p">(</span>casebase_time<span class="p">))</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
+
+##                          2.5 %  97.5 %
+## (Intercept)           0.000099 0.00015
+## Follow.Up.Time        1.208290 1.27878
+## ScrArmScreening group 0.656812 0.92986
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>smooth_risk_time <span class="o">&lt;-</span> casebase<span class="o">::</span>absoluteRisk<span class="p">(</span>object <span class="o">=</span> casebase_time<span class="p">,</span> 
+                                          time <span class="o">=</span> <span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> 
+                                          newdata <span class="o">=</span> new_data<span class="p">)</span>
+
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata <span class="o">=</span> new_data<span class="p">),</span>
+     xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
+     xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
+     main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
+<span class="s">                    Cancer Screening group Hazard Ratio: %.2g (%.2g, %.2g)&quot;</span><span class="p">,</span>
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
+lines<span class="p">(</span>smooth_risk_time<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_time<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_time<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_time<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+
+legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
+       legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group (Cox)&quot;</span><span class="p">,</span><span class="s">&quot;Control group (Casebase)&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Screening group (Cox)&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group (Casebase)&quot;</span><span class="p">),</span> 
+       col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
+       lty <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> 
+       bg <span class="o">=</span> <span class="s">&quot;gray90&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-15-1.png" /></p>
+<p>We see that the Weibull model leads to a better fit.</p>
+<h3 id="flexible-time-using-bsplines">Flexible time using BSplines<a class="headerlink" href="#flexible-time-using-bsplines" title="Permanent link">&para;</a></h3>
+<p>Next we try to enter a smooth function of time into the model using the
+<code>splines</code> package</p>
+<div class="codehilite"><pre><span></span>casebase_splines <span class="o">&lt;-</span> fitSmoothHazard<span class="p">(</span>DeadOfPrCa <span class="o">~</span> bs<span class="p">(</span>Follow.Up.Time<span class="p">)</span> <span class="o">+</span> ScrArm<span class="p">,</span> 
+                                    data <span class="o">=</span> ERSPC<span class="p">,</span> 
+                                    ratio <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## &#39;Follow.Up.Time&#39; will be used as the time variable
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">summary</span><span class="p">(</span>casebase_splines<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## 
+## Call:
+## glm(formula = formula, family = binomial, data = sampleData)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -0.437  -0.173  -0.135  -0.085   3.803  
+## 
+## Coefficients:
+##                       Estimate Std. Error z value             Pr(&gt;|z|)    
+## (Intercept)           -10.3009     0.3182  -32.37 &lt; 0.0000000000000002 ***
+## bs(Follow.Up.Time)1     4.4289     0.8088    5.48       0.000000043451 ***
+## bs(Follow.Up.Time)2     1.9887     0.4875    4.08       0.000045142561 ***
+## bs(Follow.Up.Time)3     4.7511     0.7215    6.59       0.000000000045 ***
+## ScrArmScreening group  -0.2097     0.0886   -2.37                0.018 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6059.0  on 54539  degrees of freedom
+## Residual deviance: 5789.2  on 54535  degrees of freedom
+## AIC: 5799
+## 
+## Number of Fisher Scoring iterations: 8
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>casebase_splines<span class="o">$</span>coefficients<span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>##           (Intercept)   bs(Follow.Up.Time)1   bs(Follow.Up.Time)2 
+##              0.000034             83.840791              7.305938 
+##   bs(Follow.Up.Time)3 ScrArmScreening group 
+##            115.710908              0.810854
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span><span class="kp">exp</span><span class="p">(</span>confint<span class="p">(</span>casebase_splines<span class="p">))</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## Waiting for profiling to be done...
+
+##                           2.5 %     97.5 %
+## (Intercept)            0.000017   0.000061
+## bs(Follow.Up.Time)1   17.745271 424.854594
+## bs(Follow.Up.Time)2    2.900215  19.704298
+## bs(Follow.Up.Time)3   26.568668 455.040311
+## ScrArmScreening group  0.680804   0.963786
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>smooth_risk_splines <span class="o">&lt;-</span> absoluteRisk<span class="p">(</span>object <span class="o">=</span> casebase_splines<span class="p">,</span> 
+                                    time <span class="o">=</span> <span class="kp">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">,</span><span class="m">0.1</span><span class="p">),</span> 
+                                    newdata <span class="o">=</span> new_data<span class="p">)</span>
+
+plot<span class="p">(</span>survfit<span class="p">(</span>cox_model<span class="p">,</span> newdata<span class="o">=</span>new_data<span class="p">),</span>
+     xlab <span class="o">=</span> <span class="s">&quot;Years since Randomization&quot;</span><span class="p">,</span> 
+     ylab <span class="o">=</span> <span class="s">&quot;Cumulative Incidence&quot;</span><span class="p">,</span> 
+     fun <span class="o">=</span> <span class="s">&quot;event&quot;</span><span class="p">,</span>
+     xlim <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">15</span><span class="p">),</span> conf.int <span class="o">=</span> <span class="bp">F</span><span class="p">,</span> col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span> 
+     main <span class="o">=</span> <span class="kp">sprintf</span><span class="p">(</span><span class="s">&quot;Estimated Cumulative Incidence (risk) of Death from Prostate </span>
+<span class="s">                    Cancer Screening group Hazard Ratio: %.2g (%.2g, %.2g)&quot;</span><span class="p">,</span>
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;exp(coef)&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;lower .95&quot;</span><span class="p">],</span> 
+                    sum_cox_model<span class="o">$</span>conf.int<span class="p">[,</span><span class="s">&quot;upper .95&quot;</span><span class="p">]))</span>
+lines<span class="p">(</span>smooth_risk_splines<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_splines<span class="p">[,</span><span class="m">2</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+lines<span class="p">(</span>smooth_risk_splines<span class="p">[,</span><span class="m">1</span><span class="p">],</span> smooth_risk_splines<span class="p">[,</span><span class="m">3</span><span class="p">],</span> col <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> lty <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+
+legend<span class="p">(</span><span class="s">&quot;topleft&quot;</span><span class="p">,</span> 
+       legend <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;Control group (Cox)&quot;</span><span class="p">,</span><span class="s">&quot;Control group (Casebase)&quot;</span><span class="p">,</span>
+                  <span class="s">&quot;Screening group (Cox)&quot;</span><span class="p">,</span> <span class="s">&quot;Screening group (Casebase)&quot;</span><span class="p">),</span> 
+       col <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
+       lty <span class="o">=</span> <span class="kt">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> 
+       bg <span class="o">=</span> <span class="s">&quot;gray90&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><img alt="" src="../intro_files/figure-markdown/unnamed-chunk-17-1.png" /></p>
+<p>It looks like the best fit.</p>
+<h2 id="comparing-models-using-likelihood-ratio-test">Comparing Models Using Likelihood Ratio Test<a class="headerlink" href="#comparing-models-using-likelihood-ratio-test" title="Permanent link">&para;</a></h2>
+<p>Since we are in the GLM framework, we can easily test for which model
+better fits the data using a Likelihood ratio test (LRT). The null
+hypothesis here is that the linear model is just as good as the larger
+(in terms of number of parameters) splines model.</p>
+<div class="codehilite"><pre><span></span>anova<span class="p">(</span>casebase_time<span class="p">,</span> casebase_splines<span class="p">,</span> test <span class="o">=</span> <span class="s">&quot;LRT&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## Analysis of Deviance Table
+## 
+## Model 1: DeadOfPrCa ~ Follow.Up.Time + ScrArm + offset(offset)
+## Model 2: DeadOfPrCa ~ bs(Follow.Up.Time) + ScrArm + offset(offset)
+##   Resid. Df Resid. Dev Df Deviance   Pr(&gt;Chi)    
+## 1     54537       5819                           
+## 2     54535       5789  2     29.7 0.00000036 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</pre></div>
+
+
+<p>We see that splines model is the better fit.</p>
+<h2 id="session-information">Session Information<a class="headerlink" href="#session-information" title="Permanent link">&para;</a></h2>
+<div class="codehilite"><pre><span></span><span class="kp">print</span><span class="p">(</span>sessionInfo<span class="p">(),</span> locale <span class="o">=</span> <span class="bp">F</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>## R version 3.4.0 (2017-04-21)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu Zesty Zapus (development branch)
+## 
+## Matrix products: default
+## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
+## 
+## attached base packages:
+## [1] splines   stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
+## 
+## other attached packages:
+## [1] casebase_0.1.0  survival_2.41-3
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     MASS_7.3-45     
+##  [5] munsell_0.4.3    colorspace_1.3-1 lattice_0.20-35  stringr_1.2.0   
+##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
+## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
+## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
+## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
+## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
+## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
+## [33] chron_2.3-47
+</pre></div>
+                
+                  
+                
+              
+              
+                
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Home
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../smoothHazard/" title="Smooth Hazard" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Smooth Hazard
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            Copyright &copy; 2017 <a href="http://turgeonmaxime.github.io/">Maxime Turgeon</a>, <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>
+          </div>
+        
+        powered by
+        <a href="http://www.mkdocs.org" title="MkDocs">MkDocs</a>
+        and
+        <a href="http://squidfunk.github.io/mkdocs-material/" title="Material for MkDocs">
+          Material for MkDocs</a>
+      </div>
+      
+        
+  <div class="md-footer-social">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+      <a href="https://github.com/sahirbhatnagar/casebase" class="md-footer-social__link fa fa-github"></a>
+    
+      <a href="https://twitter.com/syfi_24" class="md-footer-social__link fa fa-twitter"></a>
+    
+  </div>
+
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application-3964c0cb56.js"></script>
+      <script>app.initialize({url:{base:".."}})</script>
+      
+        <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>
