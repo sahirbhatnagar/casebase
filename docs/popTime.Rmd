@@ -7,38 +7,165 @@ output:
     variant: markdown_github
 ---
 
+## Overview
+
+Population time plots can be extremely informative graphical displays of survival data. They should be the first step in your exploratory data analyses. We facilitate this task in the `casebase` package by providing a `plot` method for objects returned by the `popTime` function. This is done in two steps:
+
+1) Pass your dataset to the `casebase::popTime` function and specify the column names corresponding to 
+* the time of event
+* the event status 
+* exposure (optional)
+
+This will create an object of class `popTime` (or `popTimeExposure` if you specify a value for the `exposure` argument)
+
+2) Pass the object of class `popTime` (or `popTimeExposure`) to the `plot` function
+
+In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package.
+
 ## Load Required Packages
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
-library(knitr)
-library(data.table)
-library(magrittr)
-library(ggplot2)
 library(survival)
 library(casebase)
+library(data.table)
 ```
 
+## European Randomized Study of Prostate Cancer Screening Data
+
+For our first example, we make use of the European Randomized Study of Prostate Cancer Screening (ERSPC) data which ships with the `casebase` package (see `help("ERSPC", package = "casebase")` for details about this data). 
+
+```{r}
+data("ERSPC")
+head(ERSPC)
+# Appropriately label the factor variable so that these labels appear in the 
+# stratified population time plot
+ERSPC$ScrArm <- factor(ERSPC$ScrArm, 
+                       levels = c(0,1), 
+                       labels = c("Control group", "Screening group"))
+```
+
+We first pass this dataset to the `popTime` function. If you do not specify the `time` and `event` arguments, this function will try to guess them using regular expressions. See the **Details** section of `help("popTime", package = "casebase")` for how we try to guess these inputs. 
+
+```{r}
+pt_object <- casebase::popTime(ERSPC, event = "DeadOfPrCa")
+```
+
+We can see its contents and its class:
+
+```{r}
+head(pt_object)
+class(pt_object)
+```
+
+The `casebase` package has a `plot` method for objects of class `popTime`:
+
+```{r}
+# plot method for objects of class 'popTime'
+plot(pt_object)
+```
+
+One benefit from these plots is that it allows you to see the incidence density. This can be seen from the distribution of the red dots in the above plot. We can see that more events are observed later on in time. Therefore a constant hazard model would not be appropriate in this instance as it would overestimate the cumulative incidence earlier on in time, and underestimate it later on. 
+
+The unique 'step shape' of the population time plot is due to the randomization of the Finnish cohorts which were carried out on January 1 of each of the 4 years 1996 to 1999. This, coupled with the uniform December 31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8 years of follow-up.
+
+
+> It is important to note that the red points are random distributed across the grey area for each time of event. That is, imagine we draw a vertical line at a specific event time. We then plot the red point at a randomly sampled y-coordinate along this vertical line. This is done to avoid having all red points along the upper edge of the plot (because the subjects with the least amount of observation time are plotted at the top of the y-axis). By randomly distributing them, we can get a better sense of the inicidence density.
+
+### Exposure Stratified Population Time Plot
+
+Often the observations in a study are in specific groups such as treatment arms. It may be of interest to compare the population time plots between these two groups. Here we compare the control group and the screening group. We create exposure stratified plots by specifying the `exposure` argument in the `popTime` function:
+
+```{r}
+pt_object_strat <- casebase::popTime(ERSPC, 
+                                     event = "DeadOfPrCa", 
+                                     exposure = "ScrArm")
+```
+
+We can see its contents and its class:
+
+```{r}
+head(pt_object_strat)
+class(pt_object_strat)
+```
+
+The `casebase` package also has a `plot` method for objects of class `popTimeExposure`:
+
+```{r}
+plot(pt_object_strat)
+```
+
+We can also plot them side-by-side using the `ncol` argument:
+
+```{r}
+plot(pt_object_strat, ncol = 2)
+```
+
+
+## Stem Cell Data
+
+Next we show population time plots on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the `casebase` package. See `help("bmtcrr", package = "casebase")` for more details.
+
+For this dataset, the `popTime` fails to identify a `time` variable if you didn't specify one:
+```{r, error=TRUE}
+# load data
+data(bmtcrr)
+str(bmtcrr)
+
+# error because it can't determine a time variable
+popTimeData <- popTime(data = bmtcrr)
+```
+
+In this case, you must be explict about what the time variable is:
+```{r}
+popTimeData <- popTime(data = bmtcrr, time = "ftime")
+class(popTimeData)
+plot(popTimeData)
+```
+
+In the above plot we can clearly see many of the deaths occur at the beginning, so in this case, a constant hazard assumption isnt valid. This information is useful when deciding on the type of model to use.
+
+## Stratified by Disease
+
+Next we stratified by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
+
+```{r}
+# create 'popTimeExposure' object
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
+class(popTimeData)
+plot(popTimeData)
+```
+
+We can also stratify by gender:
+
+```{r}
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "Sex")
+plot(popTimeData)
+```
+
+
+
 ## Veteran Data
+
+Below are the steps to create a population time plot for the Veterans' Administration Lung Cancer study (see `help("veteran", package = "survival")` for more details on this dataset). 
 
 ```{r}
 # veteran data in library(survival)
 data("veteran")
 str(veteran)
-
-# create 'popTime' object
-popTimeData <- popTime(data = veteran)
-
-# object of class 'popTime'
+popTimeData <- casebase::popTime(data = veteran)
 class(popTimeData)
-
-# plot method for objects of class 'popTime'
 plot(popTimeData)
 ```
 
+We can see in this example that the dots are fairly evenly spread out. That is, we don't see any particular clusters of red dots indicating that perhaps a constant hazard assumption would be appropriate.
+
+
 ### Stratified by treatment population time plot
 
+In this example we compare the standard and test treatment groups. A reminder that this is done by simply specifying the `exposure` argument in the `casebase::popTime` function:
+
 ```{r}
-# stratified by treatment population time plot
+# Label the factor so that it appears in the plot
 veteran <- transform(veteran, trt = factor(trt, levels = 1:2,
                                            labels = c("standard", "test")))
 
@@ -47,54 +174,19 @@ popTimeData <- popTime(data = veteran, exposure = "trt")
 
 # object of class 'popTimeExposure'
 class(popTimeData)
+```
 
+Again, we simply pass this object to the `plot` function to get an exposure stratified population time plot:
+
+```{r}
 # plot method for objects of class 'popTimeExposure'
 plot(popTimeData)
 ```
-
-
-
-## Stem Cell Data
-
-```{r}
-data(bmtcrr)
-str(bmtcrr)
-
-# create 'popTime' object
-popTimeData <- popTime(data = bmtcrr, time = "ftime")
-
-# object of class 'popTime'
-class(popTimeData)
-
-# plot method for objects of class 'popTime'
-plot(popTimeData)
-```
-
-
-### Stratified by Disease
-
-```{r}
-# stratified by Disease population time plot
-# Disease (lymphoblastic or myeloblastic leukemia,
-# abbreviated as ALL and AML, respectively)
-
-# create 'popTimeExposure' object
-popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-
-# object of class 'popTimeExposure'
-class(popTimeData)
-
-# plot method for objects of class 'popTimeExposure'
-plot(popTimeData)
-
-# stratify by gender
-popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "Sex")
-plot(popTimeData)
-```
-
 
 
 ## Stanford Heart Transplant Data
+
+Population time plots also allow you to explain patterns in the data. We use the Stanford Heart Transplant Data to demonstrate this. See `help("heart", package = "survival")` for details about this dataset. For this example, we must create a time variable, because we only have the start and stop times. This is a good example to show that population time plots are also valid for this type of data (i.e. subjects who have different entry times) because we are only plotting the time spent in the study on the x-axis.
 
 ```{r}
 # data from library(survival)
@@ -115,7 +207,13 @@ plot(popTimeData, legend = TRUE)
 ```
 
 
+In the plot above we see that those who didnt receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.
+
+
+
 ## NCCTG Lung Cancer Data
+
+The following example is from survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. See `help("cancer", package = "survival")` for details about this data.  
 
 ```{r}
 # data from library(survival)
@@ -129,16 +227,14 @@ cancer <- transform(cancer,
                     sex = factor(sex, levels = 1:2,
                                  labels = c("Male", "Female")))
 
-
-# population time plot
-# redistributing the red points among those who never experienced an event
-# because there are enough available at each time point
 popTimeData <- popTime(data = cancer)
 plot(popTimeData)
 ```
 
 
 ### Stratified by gender
+
+We can also change the plot aesthetics:
 
 ```{r}
 popTimeData <- popTime(data = cancer, exposure = "sex")
@@ -152,7 +248,9 @@ plot(popTimeData,
 
 ## Simulated Data Example
 
-### Simulate the data
+Below is an example based on simulated data.
+
+## Simulate the data
 
 ```{r}
 set.seed(1)
@@ -206,8 +304,9 @@ plot(popTimeData, ncol = 2)
 ## Session information
 
 ```{r echo=FALSE, eval=TRUE}
-print(sessionInfo(), locale = FALSE)
+print(sessionInfo(), locale = F)
 ```
+
 
 
 

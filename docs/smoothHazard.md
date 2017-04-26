@@ -118,7 +118,7 @@ summary(model1)
     ## Max. log. likelihood      -716.16 
     ## LR test statistic         70.1 
     ## Degrees of freedom        8 
-    ## Overall p-value           4.64229e-12
+    ## Overall p-value           0.00000000000464229
 
 If we take `shape = 0`, the shape parameter is estimated along with the
 regression coefficients:
@@ -157,7 +157,7 @@ summary(model2)
     ## Max. log. likelihood      -715.55 
     ## LR test statistic         65.1 
     ## Degrees of freedom        8 
-    ## Overall p-value           4.65393e-11
+    ## Overall p-value           0.0000000000465393
 
 Finally, we can also fit a Cox proportional hazard:
 
@@ -173,33 +173,33 @@ summary(model3)
     ## 
     ##   n= 137, number of events= 128 
     ## 
-    ##                         coef  exp(coef)   se(coef)      z Pr(>|z|)    
-    ## karno             -3.282e-02  9.677e-01  5.508e-03 -5.958 2.55e-09 ***
-    ## diagtime           8.132e-05  1.000e+00  9.136e-03  0.009  0.99290    
-    ## age               -8.706e-03  9.913e-01  9.300e-03 -0.936  0.34920    
-    ## prioryes           7.159e-02  1.074e+00  2.323e-01  0.308  0.75794    
-    ## celltypesquamous  -4.013e-01  6.695e-01  2.827e-01 -1.420  0.15574    
-    ## celltypesmallcell  4.603e-01  1.584e+00  2.662e-01  1.729  0.08383 .  
-    ## celltypeadeno      7.948e-01  2.214e+00  3.029e-01  2.624  0.00869 ** 
-    ## trttest            2.946e-01  1.343e+00  2.075e-01  1.419  0.15577    
+    ##                         coef  exp(coef)   se(coef)     z     Pr(>|z|)    
+    ## karno             -0.0328153  0.9677173  0.0055078 -5.96 0.0000000026 ***
+    ## diagtime           0.0000813  1.0000813  0.0091361  0.01       0.9929    
+    ## age               -0.0087065  0.9913313  0.0093003 -0.94       0.3492    
+    ## prioryes           0.0715936  1.0742187  0.2323054  0.31       0.7579    
+    ## celltypesquamous  -0.4012917  0.6694548  0.2826886 -1.42       0.1557    
+    ## celltypesmallcell  0.4602688  1.5844999  0.2662207  1.73       0.0838 .  
+    ## celltypeadeno      0.7947747  2.2139422  0.3028777  2.62       0.0087 ** 
+    ## trttest            0.2946028  1.3425930  0.2075496  1.42       0.1558    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ##                   exp(coef) exp(-coef) lower .95 upper .95
-    ## karno                0.9677     1.0334    0.9573    0.9782
-    ## diagtime             1.0001     0.9999    0.9823    1.0182
-    ## age                  0.9913     1.0087    0.9734    1.0096
-    ## prioryes             1.0742     0.9309    0.6813    1.6937
-    ## celltypesquamous     0.6695     1.4938    0.3847    1.1651
-    ## celltypesmallcell    1.5845     0.6311    0.9403    2.6699
-    ## celltypeadeno        2.2139     0.4517    1.2228    4.0084
-    ## trttest              1.3426     0.7448    0.8939    2.0166
+    ## karno                 0.968      1.033     0.957     0.978
+    ## diagtime              1.000      1.000     0.982     1.018
+    ## age                   0.991      1.009     0.973     1.010
+    ## prioryes              1.074      0.931     0.681     1.694
+    ## celltypesquamous      0.669      1.494     0.385     1.165
+    ## celltypesmallcell     1.584      0.631     0.940     2.670
+    ## celltypeadeno         2.214      0.452     1.223     4.008
+    ## trttest               1.343      0.745     0.894     2.017
     ## 
     ## Concordance= 0.736  (se = 0.03 )
     ## Rsquare= 0.364   (max possible= 0.999 )
-    ## Likelihood ratio test= 62.1  on 8 df,   p=1.799e-10
-    ## Wald test            = 62.37  on 8 df,   p=1.596e-10
-    ## Score (logrank) test = 66.74  on 8 df,   p=2.186e-11
+    ## Likelihood ratio test= 62.1  on 8 df,   p=0.00000000018
+    ## Wald test            = 62.4  on 8 df,   p=0.00000000016
+    ## Score (logrank) test = 66.7  on 8 df,   p=0.0000000000219
 
 As we can see, all three models are significant, and they give similar
 information: `karno` and `celltype` are significant predictors, both
@@ -223,9 +223,6 @@ pt_veteran <- casebase::popTime(data = veteran)
     ## 'time' will be used as the time variable
 
     ## 'status' will be used as the event variable
-
-    ## Sampling from all remaining individuals under study,
-    ##                     regardless of event status
 
 ``` {.r}
 class(pt_veteran)
@@ -269,21 +266,21 @@ summary(model4)
     ## glm(formula = formula, family = binomial, data = sampleData)
     ## 
     ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -0.4288  -0.1499  -0.1199  -0.1003   3.4168  
+    ##    Min      1Q  Median      3Q     Max  
+    ## -0.429  -0.150  -0.120  -0.100   3.417  
     ## 
     ## Coefficients:
-    ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.6999939  0.7215572  -3.742 0.000183 ***
-    ## time               0.0003370  0.0006447   0.523 0.601203    
-    ## karno             -0.0324184  0.0052921  -6.126 9.02e-10 ***
-    ## diagtime           0.0036596  0.0093085   0.393 0.694214    
-    ## age               -0.0064304  0.0092899  -0.692 0.488817    
-    ## prioryes           0.0049789  0.2314208   0.022 0.982835    
-    ## celltypesquamous  -0.4302885  0.2844478  -1.513 0.130352    
-    ## celltypesmallcell  0.3947140  0.2626453   1.503 0.132880    
-    ## celltypeadeno      0.7009165  0.2987905   2.346 0.018984 *  
-    ## trttest            0.2101849  0.2017210   1.042 0.297431    
+    ##                    Estimate Std. Error z value     Pr(>|z|)    
+    ## (Intercept)       -2.699994   0.721557   -3.74      0.00018 ***
+    ## time               0.000337   0.000645    0.52      0.60120    
+    ## karno             -0.032418   0.005292   -6.13 0.0000000009 ***
+    ## diagtime           0.003660   0.009309    0.39      0.69421    
+    ## age               -0.006430   0.009290   -0.69      0.48882    
+    ## prioryes           0.004979   0.231421    0.02      0.98284    
+    ## celltypesquamous  -0.430289   0.284448   -1.51      0.13035    
+    ## celltypesmallcell  0.394714   0.262645    1.50      0.13288    
+    ## celltypeadeno      0.700917   0.298791    2.35      0.01898 *  
+    ## trttest            0.210185   0.201721    1.04      0.29743    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -291,7 +288,7 @@ summary(model4)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
     ## Residual deviance: 1365.7  on 12918  degrees of freedom
-    ## AIC: 1385.7
+    ## AIC: 1386
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -308,14 +305,14 @@ absRisk4 <- absoluteRisk(object = model4, time = 90)
 mean(absRisk4)
 ```
 
-    ## [1] 0.5768982
+    ## [1] 0.58
 
 ``` {.r}
 ftime <- veteran$time
 mean(ftime <= 90)
 ```
 
-    ## [1] 0.5547445
+    ## [1] 0.55
 
 We can also fit a Weibull hazard by using a logarithmic term for time:
 
@@ -335,21 +332,21 @@ summary(model5)
     ## glm(formula = formula, family = binomial, data = sampleData)
     ## 
     ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -0.4603  -0.1521  -0.1192  -0.0971   3.4266  
+    ##    Min      1Q  Median      3Q     Max  
+    ## -0.460  -0.152  -0.119  -0.097   3.427  
     ## 
     ## Coefficients:
-    ##                    Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -3.016737   0.759750  -3.971 7.17e-05 ***
-    ## log(time)          0.069061   0.071970   0.960   0.3373    
-    ## karno             -0.033136   0.005500  -6.024 1.70e-09 ***
-    ## diagtime          -0.001473   0.009150  -0.161   0.8721    
-    ## age               -0.004822   0.009307  -0.518   0.6044    
-    ## prioryes           0.051890   0.229634   0.226   0.8212    
-    ## celltypesquamous  -0.418226   0.279779  -1.495   0.1350    
-    ## celltypesmallcell  0.448323   0.264064   1.698   0.0895 .  
-    ## celltypeadeno      0.759124   0.303882   2.498   0.0125 *  
-    ## trttest            0.264034   0.204881   1.289   0.1975    
+    ##                   Estimate Std. Error z value     Pr(>|z|)    
+    ## (Intercept)       -3.01674    0.75975   -3.97 0.0000716623 ***
+    ## log(time)          0.06906    0.07197    0.96        0.337    
+    ## karno             -0.03314    0.00550   -6.02 0.0000000017 ***
+    ## diagtime          -0.00147    0.00915   -0.16        0.872    
+    ## age               -0.00482    0.00931   -0.52        0.604    
+    ## prioryes           0.05189    0.22963    0.23        0.821    
+    ## celltypesquamous  -0.41823    0.27978   -1.49        0.135    
+    ## celltypesmallcell  0.44832    0.26406    1.70        0.090 .  
+    ## celltypeadeno      0.75912    0.30388    2.50        0.012 *  
+    ## trttest            0.26403    0.20488    1.29        0.197    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -357,7 +354,7 @@ summary(model5)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
     ## Residual deviance: 1364.9  on 12918  degrees of freedom
-    ## AIC: 1384.9
+    ## AIC: 1385
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -383,23 +380,23 @@ summary(model6)
     ## glm(formula = formula, family = binomial, data = sampleData)
     ## 
     ## Deviance Residuals: 
-    ##     Min       1Q   Median       3Q      Max  
-    ## -0.4557  -0.1536  -0.1198  -0.0953   3.5215  
+    ##    Min      1Q  Median      3Q     Max  
+    ## -0.456  -0.154  -0.120  -0.095   3.522  
     ## 
     ## Coefficients:
-    ##                     Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.9568779  0.7256358  -4.075 4.60e-05 ***
-    ## bs(time)1          1.6434447  1.0344949   1.589  0.11214    
-    ## bs(time)2         -2.5374842  1.7567675  -1.444  0.14863    
-    ## bs(time)3          1.6957255  0.9856981   1.720  0.08537 .  
-    ## karno             -0.0322233  0.0053581  -6.014 1.81e-09 ***
-    ## diagtime           0.0006669  0.0091320   0.073  0.94178    
-    ## age               -0.0063188  0.0093578  -0.675  0.49952    
-    ## prioryes           0.0068816  0.2356245   0.029  0.97670    
-    ## celltypesquamous  -0.3974461  0.2838466  -1.400  0.16145    
-    ## celltypesmallcell  0.4656989  0.2648835   1.758  0.07873 .  
-    ## celltypeadeno      0.8663980  0.3040303   2.850  0.00438 ** 
-    ## trttest            0.2542601  0.2077276   1.224  0.22095    
+    ##                    Estimate Std. Error z value     Pr(>|z|)    
+    ## (Intercept)       -2.956878   0.725636   -4.07 0.0000460384 ***
+    ## bs(time)1          1.643445   1.034495    1.59       0.1121    
+    ## bs(time)2         -2.537484   1.756768   -1.44       0.1486    
+    ## bs(time)3          1.695725   0.985698    1.72       0.0854 .  
+    ## karno             -0.032223   0.005358   -6.01 0.0000000018 ***
+    ## diagtime           0.000667   0.009132    0.07       0.9418    
+    ## age               -0.006319   0.009358   -0.68       0.4995    
+    ## prioryes           0.006882   0.235625    0.03       0.9767    
+    ## celltypesquamous  -0.397446   0.283847   -1.40       0.1614    
+    ## celltypesmallcell  0.465699   0.264884    1.76       0.0787 .  
+    ## celltypeadeno      0.866398   0.304030    2.85       0.0044 ** 
+    ## trttest            0.254260   0.207728    1.22       0.2209    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -407,7 +404,7 @@ summary(model6)
     ## 
     ##     Null deviance: 1436.2  on 12927  degrees of freedom
     ## Residual deviance: 1362.9  on 12916  degrees of freedom
-    ## AIC: 1386.9
+    ## AIC: 1387
     ## 
     ## Number of Fisher Scoring iterations: 8
 
@@ -416,45 +413,25 @@ absoluteRisk(object = model6, time = 90)
 ```
 
     ##                                                                        
-    ## 90 0.2990416 0.2344582 0.3501656 0.3107011 0.2339846 0.768022 0.4948434
-    ##                                                                        
-    ## 90 0.1734315 0.4413401 0.2255779 0.2801434 0.5192211 0.6202901 0.188913
+    ## 90 0.3 0.23 0.35 0.31 0.23 0.77 0.49 0.17 0.44 0.23 0.28 0.52 0.62 0.19
+    ##                                                                           
+    ## 90 0.26 0.59 0.63 0.86 0.37 0.6 0.83 0.57 0.59 0.9 0.4 0.91 0.69 0.57 0.41
+    ##                                                                           
+    ## 90 0.83 0.97 0.37 0.9 0.41 0.49 0.58 0.9 0.57 0.39 0.59 0.46 0.68 0.74 0.8
     ##                                                                         
-    ## 90 0.2567928 0.5867092 0.6322353 0.8622704 0.3696546 0.5985107 0.8259266
-    ##                                                                        
-    ## 90 0.5733822 0.5872865 0.896037 0.3994782 0.9147517 0.6885197 0.5708448
+    ## 90 0.81 0.99 0.62 0.92 0.55 0.52 0.84 0.49 0.98 0.56 0.53 0.25 0.56 0.36
     ##                                                                         
-    ## 90 0.4093046 0.8278135 0.9738679 0.3654432 0.8965073 0.4121778 0.4854648
+    ## 90 0.42 0.64 0.28 0.28 0.32 0.19 0.19 0.25 0.29 0.35 0.48 0.18 0.22 0.24
+    ##                                                                        
+    ## 90 0.51 0.47 0.31 0.29 0.82 0.39 0.17 0.71 0.83 0.3 0.16 0.24 0.54 0.29
     ##                                                                         
-    ## 90 0.5830452 0.9036242 0.5724129 0.3910962 0.5856197 0.4596609 0.6804068
+    ## 90 0.37 0.18 0.54 0.94 0.63 0.98 0.95 0.68 0.92 0.96 0.98 0.71 0.54 0.44
     ##                                                                        
-    ## 90 0.7357995 0.8004085 0.8086631 0.9923394 0.6195075 0.918081 0.5507774
-    ##                                                                         
-    ## 90 0.5244521 0.8365737 0.4935648 0.9794734 0.5603674 0.5292029 0.2515149
-    ##                                                                        
-    ## 90 0.5581642 0.355142 0.4236079 0.6408285 0.2757051 0.2844161 0.3223283
-    ##                                                                        
-    ## 90 0.1889938 0.1918393 0.2469368 0.286194 0.3475531 0.4801757 0.1759723
-    ##                                                                         
-    ## 90 0.2246323 0.2396001 0.5080685 0.4652078 0.3140069 0.2925203 0.8232641
-    ##                                                                        
-    ## 90 0.387276 0.1660097 0.7113332 0.8280633 0.3004228 0.1641063 0.2392422
-    ##                                                                         
-    ## 90 0.5433894 0.2922796 0.3688847 0.1768362 0.5359931 0.9419371 0.6268983
-    ##                                                                        
-    ## 90 0.9794362 0.9489498 0.6820533 0.9168847 0.957809 0.9821841 0.7086633
-    ##                                                                        
-    ## 90 0.5370366 0.4355291 0.3972498 0.539053 0.5413103 0.5615188 0.7746676
-    ##                                                                         
-    ## 90 0.9604773 0.8771482 0.9615619 0.9552214 0.3913284 0.6415963 0.8159478
-    ##                                                                        
-    ## 90 0.8442395 0.8513102 0.7995037 0.8974848 0.709612 0.9994542 0.9632844
-    ##                                                                         
-    ## 90 0.7038662 0.4785029 0.5909934 0.9300229 0.9540688 0.9593104 0.5469816
-    ##                                                                        
-    ## 90 0.3954082 0.8866501 0.5019899 0.844221 0.5420656 0.3111089 0.3491629
-    ##                                           
-    ## 90 0.5047598 0.3979445 0.3067164 0.8879022
+    ## 90 0.4 0.54 0.54 0.56 0.77 0.96 0.88 0.96 0.96 0.39 0.64 0.82 0.84 0.85
+    ##                                                                           
+    ## 90 0.8 0.9 0.71 1 0.96 0.7 0.48 0.59 0.93 0.95 0.96 0.55 0.4 0.89 0.5 0.84
+    ##                                    
+    ## 90 0.54 0.31 0.35 0.5 0.4 0.31 0.89
 
 As we can see from the summary, there is little evidence that splines
 actually improve the fit. Moreover, we can see that estimated individual
@@ -688,28 +665,32 @@ legend("bottomright",
 Session information
 -------------------
 
-    ## R version 3.4.0 (2017-04-21)
+    ## R version 3.3.3 (2017-03-06)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu Zesty Zapus (development branch)
-    ## 
-    ## Matrix products: default
-    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
-    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
+    ## Running under: Ubuntu 16.04.2 LTS
     ## 
     ## attached base packages:
     ## [1] splines   stats     graphics  grDevices utils     datasets  methods  
     ## [8] base     
     ## 
     ## other attached packages:
-    ## [1] casebase_0.1.0  eha_2.4-4       survival_2.41-3
+    ## [1] eha_2.4-4            casebase_0.1.0       data.table_1.10.4   
+    ## [4] survival_2.40-1      devtools_1.12.0.9000
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     munsell_0.4.3   
-    ##  [5] colorspace_1.3-1 lattice_0.20-35  highr_0.6        plyr_1.8.4      
-    ##  [9] stringr_1.2.0    tools_3.4.0      grid_3.4.0       data.table_1.9.6
-    ## [13] gtable_0.2.0     pacman_0.4.1     htmltools_0.3.5  assertthat_0.1  
-    ## [17] lazyeval_0.2.0   yaml_2.1.14      rprojroot_1.2    digest_0.6.12   
-    ## [21] tibble_1.2       Matrix_1.2-8     ggplot2_2.2.1    VGAM_1.0-2      
-    ## [25] evaluate_0.10    rmarkdown_1.3    labeling_0.3     stringi_1.1.2   
-    ## [29] compiler_3.4.0   scales_0.4.1     backports_1.0.5  stats4_3.4.0    
-    ## [33] chron_2.3-47
+    ##  [1] Rcpp_0.12.10        highr_0.6           git2r_0.18.0       
+    ##  [4] plyr_1.8.4          tools_3.3.3         testthat_1.0.2     
+    ##  [7] digest_0.6.12       pkgbuild_0.0.0.9000 pkgload_0.0.0.9000 
+    ## [10] memoise_1.0.0       evaluate_0.10       tibble_1.3.0       
+    ## [13] gtable_0.2.0        lattice_0.20-35     Matrix_1.2-8       
+    ## [16] commonmark_1.1      curl_2.3            yaml_2.1.14        
+    ## [19] httr_1.2.1          withr_1.0.2         stringr_1.2.0      
+    ## [22] knitr_1.15.1        roxygen2_6.0.1      xml2_1.1.1         
+    ## [25] desc_1.1.0          stats4_3.3.3        rprojroot_1.2      
+    ## [28] grid_3.3.3          R6_2.2.0            VGAM_1.0-3         
+    ## [31] rmarkdown_1.3.9003  pacman_0.4.1        callr_1.0.0.9000   
+    ## [34] ggplot2_2.2.1       magrittr_1.5        MASS_7.3-45        
+    ## [37] scales_0.4.1        backports_1.0.5     htmltools_0.3.6    
+    ## [40] rsconnect_0.7       assertthat_0.1      colorspace_1.3-2   
+    ## [43] labeling_0.3        stringi_1.1.5       lazyeval_0.2.0     
+    ## [46] munsell_0.4.3       crayon_1.3.2
