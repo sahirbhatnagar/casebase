@@ -10,7 +10,7 @@ output:
     toc_depth: 4
     toc_float: yes
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Competing risk analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: reference.bib

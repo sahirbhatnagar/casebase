@@ -3,7 +3,6 @@
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
 ^README\.md$       # An Rmarkdown file used to generate README.md
 ^cran-comments\.md$ # Comments for CRAN submission
-^NEWS\.md$          # A news file written in Markdown
 ^\.travis\.yml$
 ^cr\.R$
 ^exercises5\.R$
