@@ -49,6 +49,6 @@ citEntry(entry = "Article",
 
   textVersion  =
   paste("Saarela, Olli, and Elja Arjas.",
-        "Non‐parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment.",
+        "Non-parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment.",
         "Scandinavian Journal of Statistics 42.2 (2015): 609-626.")
 )
