@@ -1,19 +1,25 @@
 Package: casebase
 Type: Package
-Title: Smooth-in-time fitting of parametric hazard functions
+Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
 Version: 0.1.0
+Date: 2017-4-28
 Authors@R: c(
   person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
   role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
   person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
-  role = c("aut")),
+  role = c("aut"), comment = "http://turgeonmaxime.github.io/"),
   person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
-  role = c("aut")),
+  role = c("aut"), comment = "http://individual.utoronto.ca/osaarela/"),
   person("James", "Hanley", email = "james.hanley@mcgill.ca",
-  role = c("aut"))
+  role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
   )
-Description: Fit parametric survival models for single event type or competing risks data. 
-    Create population time plots to visualise incidence density.
+Description: This package implements the case-base sampling approach of Hanley and Miettinen (2009) <DOI:10.2202/1557-4679.1125>, 
+    Saarela and Arjas (2015) <DOI:10.1111/sjos.12125>, and Saarela (2015) <DOI:10.1007/s10985-015-9352-x>, for fitting flexible hazard 
+    regression models to survival data with single event type or multiple competing causes via logistic and multinomial regression. 
+    From the fitted hazard function, cumulative incidence, risk functions of time, treatment and profile 
+    can be derived. This approach accommodates any log-linear hazard function of prognostic time, treatment, 
+    and covariates, and readily allows for non-proportionality. We also provide a plot method for visualizing 
+    incidence density via population time plots.
 Depends:
     R (>= 3.3.1)
 Imports:
@@ -31,6 +37,6 @@ Suggests:
     splines,
     testthat
 VignetteBuilder: knitr
-URL: https://github.com/sahirbhatnagar/casebase
+URL: http://sahirbhatnagar.com/casebase/
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
 RoxygenNote: 6.0.1
