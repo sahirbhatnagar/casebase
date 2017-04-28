@@ -13,7 +13,7 @@ Authors@R: c(
   person("James", "Hanley", email = "james.hanley@mcgill.ca",
   role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
   )
-Description: This package implements the case-base sampling approach of Hanley and Miettinen (2009) <DOI:10.2202/1557-4679.1125>, 
+Description: Implements the case-base sampling approach of Hanley and Miettinen (2009) <DOI:10.2202/1557-4679.1125>, 
     Saarela and Arjas (2015) <DOI:10.1111/sjos.12125>, and Saarela (2015) <DOI:10.1007/s10985-015-9352-x>, for fitting flexible hazard 
     regression models to survival data with single event type or multiple competing causes via logistic and multinomial regression. 
     From the fitted hazard function, cumulative incidence, risk functions of time, treatment and profile 

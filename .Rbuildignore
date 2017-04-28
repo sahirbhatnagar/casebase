@@ -25,3 +25,4 @@
 ^mkdocs\.yml$
 ^references$
 ^update_doc.R$
+^cran-comments\.md$
