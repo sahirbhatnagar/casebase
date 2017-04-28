@@ -1,5 +1,24 @@
 citHeader("To cite casebase in publications use:")
 
+bibentry(
+     bibtype = "Manual",
+     title = "casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression",
+     author = c(
+        person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
+        role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
+        person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
+        role = c("aut"), comment = "http://turgeonmaxime.github.io/"),
+        person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
+        role = c("aut"), comment = "http://individual.utoronto.ca/osaarela/"),
+        person("James", "Hanley", email = "james.hanley@mcgill.ca",
+        role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
+    ),
+     year = "2017",
+     note = "R package version 0.1.0",
+     url = "https://CRAN.R-project.org/package=casebase",
+     key = "casebase-package"
+   )
+
 citEntry(entry = "Article",
   title        = "Fitting smooth-in-time prognostic risk functions via logistic regression",
   author       = personList(as.person("James A Hanley"),
@@ -34,7 +53,6 @@ citEntry(entry = "Article",
 )
 
 
-citHeader("If competing risks analyis is used, please also cite:")
 
 citEntry(entry = "Article",
   title        = "Non-parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment",
@@ -50,5 +68,6 @@ citEntry(entry = "Article",
   textVersion  =
   paste("Saarela, Olli, and Elja Arjas.",
         "Non-parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment.",
-        "Scandinavian Journal of Statistics 42.2 (2015): 609-626.")
+        "Scandinavian Journal of Statistics 42.2 (2015): 609-626."),
+  header       = "If competing risks analyis is used, please also cite"
 )
