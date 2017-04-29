@@ -1,12 +1,14 @@
 # casebase
 
-[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
+[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](http://cran.rstudio.com/package=casebase) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
 
 An R package for smooth-in-time fitting of parametric hazard functions
 
 ## Installation
 
-You can install the development version of `casebase` from [GitHub](https://github.com/sahirbhatnagar/casebase) with:
+The package is hosted on [CRAN](https://cran.r-project.org/package=casebase), and therefore it can easily be installed via `install.packages("casebase")`.
+
+Alternatively, you can install the development version from [GitHub](https://github.com/sahirbhatnagar/casebase) with:
 
 ```R
 install.packages("pacman")
