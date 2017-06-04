@@ -113,10 +113,10 @@ test_that("should output probabilities with data frames - two time points", {
     absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[,-1,] >= 0))
-    expect_true(all(absRiskNI[,-1,] >= 0))
-    expect_true(all(absRiskMC[,-1,] <= 1))
-    expect_true(all(absRiskNI[,-1,] <= 1))
+    expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskNI[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskNI[,-1] <= 1))
 })
 
 test_that("should output probabilities with data tables - two time points", {
@@ -125,10 +125,10 @@ test_that("should output probabilities with data tables - two time points", {
     absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[,-1,] >= 0))
-    expect_true(all(absRiskNI[,-1,] >= 0))
-    expect_true(all(absRiskMC[,-1,] <= 1))
-    expect_true(all(absRiskNI[,-1,] <= 1))
+    expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskNI[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskNI[,-1] <= 1))
 })
 
 test_that("should output probabilities with data frames - two covariate profile", {
