@@ -21,7 +21,7 @@ Description: Implements the case-base sampling approach of Hanley and Miettinen 
     and covariates, and readily allows for non-proportionality. We also provide a plot method for visualizing 
     incidence density via population time plots.
 Depends:
-    R (>= 3.3.1)
+    R (>= 3.3.0)
 Imports:
     data.table,
     ggplot2,
