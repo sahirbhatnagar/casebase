@@ -39,6 +39,8 @@
 #'   function \code{\link{integrate}}.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
 #'   points (if \code{method = "montecarlo"}).
+#' @param onlyMain Logical. For competing risks, should we return absolute risks only for the main
+#'   event of interest? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return Returns the estimated absolute risk for the user-supplied covariate profiles. This will
 #'   be stored in a 2- or 3-dimensional array, depending on the input. See details.
@@ -161,7 +163,8 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, ...) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "numerical"),
+                                  nsamp = 1000, onlyMain = TRUE, ...) {
     # stop("absoluteRisk is not currently implemented for competing risks",
     #      call. = FALSE)
     method <- match.arg(method)
@@ -239,7 +242,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
                                                        object = object, newdata = newdata[i,,drop = FALSE],
                                                        subdivisions = nsamp)$value
                     }
-                    output[,i,j] <- cumsum(output[,i,j])
+                    output[,i + 1,j] <- cumsum(output[,i + 1,j])
                 }
             }
         }
@@ -264,7 +267,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
                     output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * pred)
                 }
                 # if k==1, there was only one time point and we don't need to sum the contributions
-                if (k != 1) output[,i,] <- apply(output[,i,], 2, cumsum)
+                if (k != 1) output[,i + 1,] <- apply(output[,i + 1,], 2, cumsum)
             }
 
         }
@@ -283,6 +286,5 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
     # If there is only one time point, we should drop a dimension and return a matrix
     # output <- drop(output)
-
-    return(output)
+    if (onlyMain) return(output[,,1]) else return(output)
 }

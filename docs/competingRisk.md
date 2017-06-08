@@ -6,6 +6,11 @@ We will use the same data that was used in Scrucca *et al* \[-@scrucca2010regres
 ``` r
 set.seed(12345)
 library(casebase)
+```
+
+    ## See example usage at http://sahirbhatnagar.com/casebase/
+
+``` r
 data(bmtcrr)
 head(bmtcrr)
 ```
@@ -191,13 +196,12 @@ summary(model1)
     ## Call:
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
-    ## 
     ## Pearson residuals:
     ##                        Min       1Q   Median        3Q   Max
     ## log(mu[,2]/mu[,1]) -0.2240 -0.06967 -0.03872 -0.014616 46.24
     ## log(mu[,3]/mu[,1]) -0.3356 -0.08920 -0.03671 -0.008251 20.23
     ## 
-    ## Coefficients: 
+    ## Coefficients:
     ##                 Estimate Std. Error z value Pr(>|z|)    
     ## (Intercept):1  -3.527146   0.685168  -5.148 2.63e-07 ***
     ## (Intercept):2  -2.648451   0.463012  -5.720 1.06e-08 ***
@@ -223,6 +227,8 @@ summary(model1)
     ## Number of linear predictors:  2 
     ## 
     ## Names of linear predictors: log(mu[,2]/mu[,1]), log(mu[,3]/mu[,1])
+    ## 
+    ## Dispersion Parameter for multinomial family:   1
     ## 
     ## Residual deviance: 1409.076 on 26444 degrees of freedom
     ## 
@@ -250,13 +256,12 @@ summary(model2)
     ## Call:
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
-    ## 
     ## Pearson residuals:
     ##                        Min       1Q   Median       3Q   Max
     ## log(mu[,2]/mu[,1]) -0.3728 -0.06889 -0.04686 -0.03489 29.01
     ## log(mu[,3]/mu[,1]) -0.7720 -0.07784 -0.05517 -0.04490 22.03
     ## 
-    ## Coefficients: 
+    ## Coefficients:
     ##                 Estimate Std. Error z value Pr(>|z|)    
     ## (Intercept):1  -3.947939   0.704805  -5.601 2.13e-08 ***
     ## (Intercept):2  -3.024184   0.464824  -6.506 7.71e-11 ***
@@ -283,6 +288,8 @@ summary(model2)
     ## 
     ## Names of linear predictors: log(mu[,2]/mu[,1]), log(mu[,3]/mu[,1])
     ## 
+    ## Dispersion Parameter for multinomial family:   1
+    ## 
     ## Residual deviance: 1503.138 on 26444 degrees of freedom
     ## 
     ## Log-likelihood: -751.5688 on 26444 degrees of freedom
@@ -308,13 +315,12 @@ summary(model3)
     ## Call:
     ## vglm(formula = formula, family = multinomial(refLevel = 1), data = sampleData)
     ## 
-    ## 
     ## Pearson residuals:
     ##                        Min       1Q   Median         3Q   Max
     ## log(mu[,2]/mu[,1]) -0.2112 -0.07072 -0.03924 -7.966e-03 55.79
     ## log(mu[,3]/mu[,1]) -0.2810 -0.09476 -0.01408 -9.698e-06 34.23
     ## 
-    ## Coefficients: 
+    ## Coefficients:
     ##                         Estimate Std. Error z value Pr(>|z|)    
     ## (Intercept):1          -3.756937   0.707736  -5.308 1.11e-07 ***
     ## (Intercept):2          -3.230327   0.512122  -6.308 2.83e-10 ***
@@ -345,6 +351,8 @@ summary(model3)
     ## 
     ## Names of linear predictors: log(mu[,2]/mu[,1]), log(mu[,3]/mu[,1])
     ## 
+    ## Dispersion Parameter for multinomial family:   1
+    ## 
     ## Residual deviance: 1392.237 on 26440 degrees of freedom
     ## 
     ## Log-likelihood: -696.1185 on 26440 degrees of freedom
@@ -366,10 +374,10 @@ splineRisk <- absoluteRisk(object = model3, time = 24, newdata = bmtcrr[1:10,])
 ```
 
 ``` r
-plot(linearRisk[,,1], logRisk[,,1],
+plot(linearRisk, logRisk,
      xlab = "Linear", ylab = "Log/Spline", pch = 19,
      xlim = c(0,1), ylim = c(0,1), col = 'red')
-points(linearRisk[,,1], splineRisk[,,1],
+points(linearRisk, splineRisk,
        col = 'blue', pch = 19)
 abline(a = 0, b = 1, lty = 2, lwd = 2)
 legend("topleft", legend = c("Log", "Spline"),
@@ -381,29 +389,33 @@ legend("topleft", legend = c("Log", "Spline"),
 We can also estimate the mean absolute risk for the entire dataset:
 
 ``` r
-mean(linearRisk[,,1])
+mean(linearRisk)
 ```
 
-    ## [1] 0.2012265
+    ## [1] 0.4265396
 
 ``` r
-mean(logRisk[,,1])
+mean(logRisk)
 ```
 
-    ## [1] 0.1453269
+    ## [1] 0.34474
 
 ``` r
-mean(splineRisk[,,1])
+mean(splineRisk)
 ```
 
-    ## [1] 0.105314
+    ## [1] 0.2164902
 
 Session information
 -------------------
 
-    ## R version 3.3.3 (2017-03-06)
+    ## R version 3.4.0 (2017-04-21)
     ## Platform: x86_64-pc-linux-gnu (64-bit)
-    ## Running under: Ubuntu 16.04.2 LTS
+    ## Running under: Ubuntu Zesty Zapus (development branch)
+    ## 
+    ## Matrix products: default
+    ## BLAS: /usr/lib/atlas-base/atlas/libblas.so.3.0
+    ## LAPACK: /usr/lib/atlas-base/atlas/liblapack.so.3.0
     ## 
     ## attached base packages:
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -412,13 +424,11 @@ Session information
     ## [1] casebase_0.1.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] Rcpp_0.12.10       knitr_1.15.1       magrittr_1.5      
-    ##  [4] splines_3.3.3      munsell_0.4.3      lattice_0.20-35   
-    ##  [7] colorspace_1.3-2   stringr_1.2.0      plyr_1.8.4        
-    ## [10] tools_3.3.3        grid_3.3.3         data.table_1.10.4 
-    ## [13] gtable_0.2.0       htmltools_0.3.6    survival_2.40-1   
-    ## [16] yaml_2.1.14        lazyeval_0.2.0     rprojroot_1.2     
-    ## [19] digest_0.6.12      tibble_1.3.0       Matrix_1.2-8      
-    ## [22] ggplot2_2.2.1      VGAM_1.0-3         evaluate_0.10     
-    ## [25] rmarkdown_1.3.9003 stringi_1.1.5      scales_0.4.1      
-    ## [28] backports_1.0.5    stats4_3.3.3
+    ##  [1] Rcpp_0.12.9      knitr_1.15.1     magrittr_1.5     splines_3.4.0   
+    ##  [5] munsell_0.4.3    lattice_0.20-35  colorspace_1.3-1 stringr_1.2.0   
+    ##  [9] plyr_1.8.4       tools_3.4.0      grid_3.4.0       data.table_1.9.6
+    ## [13] gtable_0.2.0     htmltools_0.3.5  survival_2.41-3  yaml_2.1.14     
+    ## [17] lazyeval_0.2.0   rprojroot_1.2    digest_0.6.12    assertthat_0.1  
+    ## [21] tibble_1.2       Matrix_1.2-10    ggplot2_2.2.1    VGAM_1.0-2      
+    ## [25] evaluate_0.10    rmarkdown_1.3    stringi_1.1.2    compiler_3.4.0  
+    ## [29] scales_0.4.1     backports_1.0.5  stats4_3.4.0     chron_2.3-47

@@ -15,7 +15,8 @@ absoluteRisk(object, ...)
   "numerical"), nsamp = 1000, ...)
 
 \method{absoluteRisk}{CompRisk}(object, time, newdata,
-  method = c("montecarlo", "numerical"), nsamp = 1000, ...)
+  method = c("montecarlo", "numerical"), nsamp = 1000, onlyMain = TRUE,
+  ...)
 }
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
@@ -33,6 +34,9 @@ function \code{\link{integrate}}.}
 
 \item{nsamp}{Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
 points (if \code{method = "montecarlo"}).}
+
+\item{onlyMain}{Logical. For competing risks, should we return absolute risks only for the main
+event of interest? Defaults to \code{TRUE}.}
 }
 \value{
 Returns the estimated absolute risk for the user-supplied covariate profiles. This will
