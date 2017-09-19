@@ -105,26 +105,7 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
         out$eventVar <- eventVar
 
     } else {
-        # # If we have competing risks, we need to reformat the response
-        # multiData_mat <- c()
-        # for (type in typeEvents[typeEvents != 0]) {
-        #     multiData_mat <- cbind(multiData_mat, as.numeric(sampleData[[eventVar]] == type))
-        # }
-        # # Base series should correspond to last column
-        # multiData_mat <- cbind(multiData_mat, 1- rowSums(multiData_mat))
-        # multiData_mat <- as.data.frame(multiData_mat)
-        # colnames(multiData_mat) <- paste0("EventType", c(typeEvents[typeEvents != 0], 0))
-        #
-        # formula <- do.call(update,
-        #                    list(formula,
-        #                         as.formula(paste(paste0("cbind(",
-        #                                                 paste(names(multiData_mat),
-        #                                                       collapse = ", "), ")"),
-        #                                          "~ ."))))
-        #
-        # combData <- cbind(sampleData, multiData_mat)
-        # model <- VGAM::vglm(formula, family = VGAM::multinomial,
-        #                     data = combData)
+        # Otherwise fit a multinomial regression
         withCallingHandlers(model <- vglm(formula, family = multinomial(refLevel = 1),
                                           data = sampleData),
                             warning = handler_fitter)
@@ -135,6 +116,5 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
                    timeVar = timeVar,
                    eventVar = eventVar)
     }
-
     return(out)
 }

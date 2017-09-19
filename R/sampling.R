@@ -56,7 +56,6 @@ sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, cens
     modifiedEvent <- checkArgsEventIndicator(data, eventName, censored.indicator)
     eventVar <- modifiedEvent$event.numeric
 
-    # type <- match.arg(type)
     # Create survival object from dataset
     if (!comprisk && modifiedEvent$nLevels > 2) {
         stop("For more than one type event, you should either do a competing risk analysis, or reformat your data so that there is only one event of interest.",
@@ -74,25 +73,9 @@ sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, cens
     b <- ratio * c               # size of base series
     offset <- log(B / b)            # offset so intercept = log(ID | x, t = 0 )
 
-    # if (type == "uniform") {
-    #     # The idea here is to sample b individuals, with replacement, and then
-    #     # to sample uniformly a time point for each of them. The sampled time
-    #     # point must lie between the beginning and the end of follow-up
-    #     who <- sample(seq_len(n), b, replace = TRUE)
-    # }
+    p <- survObj[, "time"]/B
+    who <- sample(n, b, replace = TRUE, prob = p)
 
-    # if (type == "multinomial") {
-        # Multinomial sampling: probability of individual contributing a
-        # person-moment to base series is proportional to time variable
-        # pSum <- c(0, cumsum(survObj[, "time"]))
-        # everyDt <- B*(1:b)/(b+1)
-        # who <- findInterval(everyDt, pSum)
-        # bSeries <- as.matrix(survObj[who, ])
-        # bSeries[, "status"] <- 0
-        # bSeries[, "time"] <- everyDt - pSum[who]
-        p <- survObj[, "time"]/B
-        who <- sample(n, b, replace = TRUE, prob = p)
-    # }
     bSeries <- as.matrix(survObj[who, ])
     bSeries[, "status"] <- 0
     bSeries[, "time"] <- runif(b) * bSeries[, "time"]
