@@ -42,8 +42,10 @@
 #' @param onlyMain Logical. For competing risks, should we return absolute risks only for the main
 #'   event of interest? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
-#' @return Returns the estimated absolute risk for the user-supplied covariate profiles. This will
-#'   be stored in a 2- or 3-dimensional array, depending on the input. See details.
+#' @return If \code{time} was provided, returns the estimated absolute risk for the user-supplied
+#'   covariate profiles. This will be stored in a 2- or 3-dimensional array, depending on the input
+#'   (see details). If both \code{time} and \code{newdata} were provided, returns the original data
+#'   with a new column containing the risk estimate at failure time.
 #' @export
 #' @examples
 #' # Simulate censored survival data for two outcome types from exponential distributions
@@ -84,7 +86,6 @@ absoluteRisk.default <- function(object, ...) {
 #' @export
 absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, ...) {
     method <- match.arg(method)
-    meanAR <- FALSE
 
     # Create hazard function
     lambda <- function(x, fit, newdata) {
@@ -104,14 +105,25 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
                  call. = FALSE)
         }
         newdata <- object$originalData
-        # colnames(data)[colnames(data) == "event"] <- "status"
-        # Next commented line will break on data.table
-        # newdata <- newdata[, colnames(newdata) != "time"]
-        unselectTime <- (names(newdata) != object$timeVar)
-        newdata <- subset(newdata, select = unselectTime)
-        meanAR <- TRUE
+        if (missing(time)) {
+            # If both newdata and time are missing
+            # compute risk at failure times
+            riskVar <- "risk"
+            while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
+            newdata[,riskVar] <- sapply(seq_len(nrow(newdata)), function(j) {
+                integrate(lambda, lower = 0, upper = newdata[j,object$timeVar],
+                          fit = object, newdata = newdata[j,,drop = FALSE])$value
+            })
+            newdata[,riskVar] <- 1 - exp(-newdata[,riskVar])
+            return(newdata)
+        } else {
+            # colnames(data)[colnames(data) == "event"] <- "status"
+            # Next commented line will break on data.table
+            # newdata <- newdata[, colnames(newdata) != "time"]
+            unselectTime <- (names(newdata) != object$timeVar)
+            newdata <- subset(newdata, select = unselectTime)
+        }
     }
-
     time_ordered <- unique(c(0, sort(time)))
     output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
     output[,1] <- time_ordered
@@ -157,7 +169,6 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
         }
         rownames(output) <- time
     }
-
     return(output)
 }
 
@@ -165,10 +176,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
 #' @export
 absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "numerical"),
                                   nsamp = 1000, onlyMain = TRUE, ...) {
-    # stop("absoluteRisk is not currently implemented for competing risks",
-    #      call. = FALSE)
     method <- match.arg(method)
-    meanAR <- FALSE
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
@@ -182,7 +190,6 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         # newdata <- newdata[, colnames(newdata) != "time"]
         unselectTime <- (names(newdata) != object@timeVar)
         newdata <- subset(newdata, select = unselectTime)
-        meanAR <- TRUE
     }
     ###################################################
     # In competing risks, we can get a cumulative
@@ -254,7 +261,6 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
                 exp(-x * mean(overallLambda(sampledPoints, object = object, newdata = newdata)))
             }
             for (i in 1:nrow(newdata)) {
-                # output[i, ] <- time * colMeans(subdensity_mat(sampledPoints, object=object, newdata=newdata[i,]))
                 for (k in 2:length(time_ordered)) {
                     x_vect <- sampledPoints * (time_ordered[k] - time_ordered[k - 1]) + time_ordered[k - 1]
                     surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE])
@@ -285,6 +291,5 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
     }
 
     # If there is only one time point, we should drop a dimension and return a matrix
-    # output <- drop(output)
     if (onlyMain) return(output[,,1]) else return(output)
 }

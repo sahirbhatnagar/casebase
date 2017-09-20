@@ -176,3 +176,11 @@ test_that("should give probability 0 at time 0 with data tables", {
                           matrix(0, ncol = 2, nrow = 1),
                           check.attributes = FALSE))
 })
+
+test_that("should compute risk when time and newdata aren't provided", {
+    absRiskDF <- absoluteRisk(fitDF)
+    absRiskDT <- absoluteRisk(fitDT)
+
+    expect_true("risk" %in% names(absRiskDF))
+    expect_true("risk" %in% names(absRiskDT))
+})
