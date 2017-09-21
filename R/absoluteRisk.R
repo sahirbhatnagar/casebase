@@ -39,6 +39,7 @@
 #'   function \code{\link{integrate}}.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
 #'   points (if \code{method = "montecarlo"}).
+#' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
 #' @param onlyMain Logical. For competing risks, should we return absolute risks only for the main
 #'   event of interest? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
@@ -92,12 +93,34 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
         # Note: the offset should be set to zero when estimating the hazard.
         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
-        newdata2[object$timeVar] <- x
+        newdata2[fit$timeVar] <- x
         withCallingHandlers(pred <- predict(fit, newdata2),
                             warning = handler_bsplines)
         return(as.numeric(exp(pred)))
     }
 
+    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+}
+
+absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, n.trees, ...) {
+    method <- match.arg(method)
+
+    # Create hazard function
+    lambda <- function(x, fit, newdata) {
+        # Note: the offset should be set to zero when estimating the hazard.
+        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                               row.names = as.character(1:length(x)))
+        newdata2[fit$timeVar] <- x
+        withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
+                            warning = handler_offset)
+        return(as.numeric(pred))
+    }
+
+    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+}
+
+# The absolute risk methods create the lambda function and pass it to  estimate_risk
+estimate_risk <- function(lambda, object, time, newdata, method, nsamp) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
@@ -150,8 +173,8 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
             for (j in 1:nrow(newdata)) {
                 for (i in 2:length(time_ordered)) {
                     output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
-                                                                                                               time_ordered[i - 1]) +
-                                                                                              time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
+                                                                                                                   time_ordered[i - 1]) +
+                                                                                                  time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
                 }
                 output[,j + 1] <- cumsum(output[,j + 1])
             }

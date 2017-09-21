@@ -184,3 +184,45 @@ test_that("should compute risk when time and newdata aren't provided", {
     expect_true("risk" %in% names(absRiskDF))
     expect_true("risk" %in% names(absRiskDT))
 })
+
+# non-glm methods
+fitDF1 <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam")
+fitDT1 <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam")
+fitDF2 <- fitSmoothHazard(event ~ lo(ftime) + Z, data = DF, time = "ftime", family = "gam")
+fitDT2 <- fitSmoothHazard(event ~ lo(ftime) + Z, data = DT, time = "ftime", family = "gam")
+
+test_that("no error in fitting gam", {
+    riskDF1 <- try(absoluteRisk(fitDF1, time = 0.5, newdata = newDF),
+                  silent = TRUE)
+    riskDT1 <- try(absoluteRisk(fitDT1, time = 0.5, newdata = newDT),
+                  silent = TRUE)
+    riskDF2 <- try(absoluteRisk(fitDF2, time = 0.5, newdata = newDF),
+                  silent = TRUE)
+    riskDT2 <- try(absoluteRisk(fitDT2, time = 0.5, newdata = newDT),
+                  silent = TRUE)
+
+    expect_false(inherits(riskDF1, "try-error"))
+    expect_false(inherits(riskDT1, "try-error"))
+    expect_false(inherits(riskDF2, "try-error"))
+    expect_false(inherits(riskDT2, "try-error"))
+})
+
+fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm")
+fitDT <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm")
+
+test_that("no error in fitting gbm", {
+    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF, n.trees = 100),
+                 silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT, n.trees = 100),
+                 silent = TRUE)
+
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
+})
+
+# extra_vars <- matrix(rnorm(10 * n), ncol = 10)
+# DF_ext <- cbind(DF, as.data.frame(extra_vars))
+# DT_ext <- cbind(DT, as.data.table(extra_vars))
+# formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
+#                                   paste0("V", 1:10)),
+#                                 collapse = " + "))

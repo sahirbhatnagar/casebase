@@ -37,6 +37,8 @@ points (if \code{method = "montecarlo"}).}
 
 \item{onlyMain}{Logical. For competing risks, should we return absolute risks only for the main
 event of interest? Defaults to \code{TRUE}.}
+
+\item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
 }
 \value{
 If \code{time} was provided, returns the estimated absolute risk for the user-supplied
