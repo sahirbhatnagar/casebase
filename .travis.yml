@@ -9,6 +9,7 @@ r_packages:
   - knitr
   - devtools
   - ggplot2
+  - gbm
   - eha
   - covr
 

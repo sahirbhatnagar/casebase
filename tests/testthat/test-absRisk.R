@@ -186,25 +186,17 @@ test_that("should compute risk when time and newdata aren't provided", {
 })
 
 # non-glm methods
-fitDF1 <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam")
-fitDT1 <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam")
-fitDF2 <- fitSmoothHazard(event ~ lo(ftime) + Z, data = DF, time = "ftime", family = "gam")
-fitDT2 <- fitSmoothHazard(event ~ lo(ftime) + Z, data = DT, time = "ftime", family = "gam")
+fitDF <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam")
+fitDT <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam")
 
 test_that("no error in fitting gam", {
-    riskDF1 <- try(absoluteRisk(fitDF1, time = 0.5, newdata = newDF),
+    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF),
                   silent = TRUE)
-    riskDT1 <- try(absoluteRisk(fitDT1, time = 0.5, newdata = newDT),
-                  silent = TRUE)
-    riskDF2 <- try(absoluteRisk(fitDF2, time = 0.5, newdata = newDF),
-                  silent = TRUE)
-    riskDT2 <- try(absoluteRisk(fitDT2, time = 0.5, newdata = newDT),
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT),
                   silent = TRUE)
 
-    expect_false(inherits(riskDF1, "try-error"))
-    expect_false(inherits(riskDT1, "try-error"))
-    expect_false(inherits(riskDF2, "try-error"))
-    expect_false(inherits(riskDT2, "try-error"))
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
 })
 
 fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm")

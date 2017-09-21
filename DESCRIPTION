@@ -24,17 +24,17 @@ Depends:
     R (>= 3.3.0)
 Imports:
     data.table,
-    gam,
-    gbm,
     ggplot2,
-    glmnet,
     methods,
+    mgcv,
+    stats,
     survival,
     VGAM
 License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
     eha,
+    gbm,
     knitr,
     rmarkdown,
     splines,

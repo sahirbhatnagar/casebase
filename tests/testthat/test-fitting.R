@@ -47,26 +47,18 @@ formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
 #     expect_false(inherits(fitDT, "try-error"))
 # })
 
-formula_gam1 <- formula(paste(c("event ~ s(ftime)", "Z",
+formula_gam <- formula(paste(c("event ~ s(ftime)", "Z",
                                 paste0("V", 1:10)),
                               collapse = " + "))
-formula_gam2 <- formula(paste(c("event ~ lo(ftime)", "Z",
-                                paste0("V", 1:10)),
-                              collapse = " + "))
+
 test_that("no error in fitting gam", {
-    fitDF1 <- try(fitSmoothHazard(formula_gam1, data = DF_ext, time = "ftime", family = "gam"),
+    fitDF <- try(fitSmoothHazard(formula_gam, data = DF_ext, time = "ftime", family = "gam"),
                  silent = TRUE)
-    fitDT1 <- try(fitSmoothHazard(formula_gam1, data = DT_ext, time = "ftime", family = "gam"),
-                 silent = TRUE)
-    fitDF2 <- try(fitSmoothHazard(formula_gam2, data = DF_ext, time = "ftime", family = "gam"),
-                 silent = TRUE)
-    fitDT2 <- try(fitSmoothHazard(formula_gam2, data = DT_ext, time = "ftime", family = "gam"),
+    fitDT <- try(fitSmoothHazard(formula_gam, data = DT_ext, time = "ftime", family = "gam"),
                  silent = TRUE)
 
-    expect_false(inherits(fitDF1, "try-error"))
-    expect_false(inherits(fitDT1, "try-error"))
-    expect_false(inherits(fitDF2, "try-error"))
-    expect_false(inherits(fitDT2, "try-error"))
+    expect_false(inherits(fitDF, "try-error"))
+    expect_false(inherits(fitDT, "try-error"))
 })
 
 formula_gbm <- formula(paste(c("event ~ ftime", "Z",
