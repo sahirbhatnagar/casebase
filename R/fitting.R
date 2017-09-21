@@ -2,40 +2,35 @@
 
 #' Fit smooth-in-time parametric hazard functions.
 #'
-#' Miettinen and Hanley (2009) explained how case-base sampling can be used to
-#' estimate smooth-in-time parametric hazard functions. The idea is to sample
-#' person-moments, which may or may not correspond to an event, and then fit the
-#' hazard using logistic regression.
+#' Miettinen and Hanley (2009) explained how case-base sampling can be used to estimate
+#' smooth-in-time parametric hazard functions. The idea is to sample person-moments, which may or
+#' may not correspond to an event, and then fit the hazard using logistic regression.
 #'
-#' The object \code{data} should either be the output of the function
-#' \code{\link{sampleCaseBase}} or the source dataset on which case-base
-#' sampling will be performed. In the latter case, it is assumed that
-#' \code{data} contains the two columns corresponding to the supplied time and
-#' event variables. If \code{time} is missing, the function looks for a column
-#' named \code{"time"} in the data. Note that the event variable is inferred
-#' from \code{formula}, since it is the left hand side.
+#' The object \code{data} should either be the output of the function \code{\link{sampleCaseBase}}
+#' or the source dataset on which case-base sampling will be performed. In the latter case, it is
+#' assumed that \code{data} contains the two columns corresponding to the supplied time and event
+#' variables. If \code{time} is missing, the function looks for a column named \code{"time"} in the
+#' data. Note that the event variable is inferred from \code{formula}, since it is the left hand
+#' side.
 #'
-#' @param formula an object of class "formula" (or one that can be coerced to
-#'   that class): a symbolic description of the model to be fitted. The details
-#'   of model specification are given under Details.
-#' @param data a data frame, list or environment containing the variables in the
-#'   model. If not found in data, the variables are taken from
-#'   \code{environment(formula)}, typically the environment from which
-#'   \code{fitSmoothHazard} is called.
-#' @param time a character string giving the name of the time variable. See
-#'   Details.
-#' @param censored.indicator a character string of length 1 indicating which
-#'   value in \code{event} is the censored. This function will use
-#'   \code{\link[stats]{relevel}} to set \code{censored.indicator} as the
-#'   reference level. This argument is ignored if the \code{event} variable is a
-#'   numeric
-#' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If
-#'   \code{data} inherits from the class \code{cbData}, then these parameters
-#'   are ignored.
-#' @return An object of \code{glm} and \code{lm} when there is only one event of
-#'   interest, or of class \code{\link{CompRisk}}, which inherits from
-#'   \code{vglm}, for a competing risk analysis. As such, functions like
-#'   \code{summary}, \code{deviance} and \code{coefficients} give familiar
+#' @param formula an object of class "formula" (or one that can be coerced to that class): a
+#'   symbolic description of the model to be fitted. The details of model specification are given
+#'   under Details.
+#' @param data a data frame, list or environment containing the variables in the model. If not found
+#'   in data, the variables are taken from \code{environment(formula)}, typically the environment
+#'   from which \code{fitSmoothHazard} is called.
+#' @param time a character string giving the name of the time variable. See Details.
+#' @param family a character string specifying the family of regression models used to fit the
+#'   hazard
+#' @param censored.indicator a character string of length 1 indicating which value in \code{event}
+#'   is the censored. This function will use \code{\link[stats]{relevel}} to set
+#'   \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
+#'   variable is a numeric
+#' @param ... Additional parameters passed to \code{\link{sampleCaseBase}}. If \code{data} inherits
+#'   from the class \code{cbData}, then these parameters are ignored.
+#' @return An object of \code{glm} and \code{lm} when there is only one event of interest, or of
+#'   class \code{\link{CompRisk}}, which inherits from \code{vglm}, for a competing risk analysis.
+#'   As such, functions like \code{summary}, \code{deviance} and \code{coefficients} give familiar
 #'   results.
 #' @export
 #' @examples
@@ -63,7 +58,15 @@
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 #' @importMethodsFrom VGAM summary predict
 #' @importFrom VGAM vglm multinomial summaryvglm
-fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
+#' @importFrom mgcv s te ti t2
+fitSmoothHazard <- function(formula, data, time,
+                            family = c("glm", "gam", "gbm"),
+                            censored.indicator, ...) {
+    family <- match.arg(family)
+    if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+        stop("Pkg gbm needed for this function to work. Please install it.",
+             call. = FALSE)
+    }
     # Infer name of event variable from LHS of formula
     eventVar <- as.character(attr(terms(formula), "variables")[[2]])
 
@@ -79,15 +82,12 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
         originalData <- as.data.frame(data)
         if (missing(censored.indicator)) {
             sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
-                                         comprisk = (length(typeEvents) > 2), ...)
+                                         comprisk = (length(typeEvents) > 2))
         } else {
             sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
                                          comprisk = (length(typeEvents) > 2),
-                                         censored.indicator, ...)
+                                         censored.indicator)
         }
-        # if (length(list(...)) != 2) {
-        #     message("sampleCaseBase is using some default values; see documentation for more details.")
-        # }
     } else {
         originalData <- NULL
         sampleData <- data
@@ -98,7 +98,13 @@ fitSmoothHazard <- function(formula, data, time, censored.indicator, ...) {
 
     # Fit a binomial model if there are no competing risks
     if (length(typeEvents) == 2) {
-        out <- glm(formula, data = sampleData, family = binomial)
+        fittingFunction <- switch(family,
+                                  "glm" = function(formula) glm(formula, data = sampleData, family = binomial),
+                                  # "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
+                                  "gam" = function(formula) mgcv::gam(formula, sampleData, family = "binomial", ...),
+                                  "gbm" = function(formula) gbm::gbm(formula, sampleData, distribution = "bernoulli", ...))
+
+        out <- fittingFunction(formula)
         out$originalData <- originalData
         out$typeEvents <- typeEvents
         out$timeVar <- timeVar

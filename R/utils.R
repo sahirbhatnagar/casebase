@@ -137,7 +137,7 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
                                                            factor(data[,event],
                                                                   labels = c("censored","event",
                                                                              paste0("competing event",
-                                                                                    if (nLevels >= 4) 1:(nLevels-2))))
+                                                                                    if (nLevels >= 4) 1:(nLevels - 2))))
         }
 
     } else {
@@ -158,7 +158,7 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
                                                            factor(data[,event],
                                                                   labels = c("censored","event",
                                                                              paste0("competing event",
-                                                                                    if (nLevels >= 4) 1:(nLevels-2))))
+                                                                                    if (nLevels >= 4) 1:(nLevels - 2))))
 
         }
 
@@ -188,4 +188,15 @@ partialize <- function(`_f`, ...) {
     args <- as.pairlist(list(... = quote(expr = )))
     stopifnot(is.language(fcall))
     eval(call("function", args, fcall), parent.frame())
+}
+
+# Remove offset from formula
+# https://stackoverflow.com/a/40313732/2836971
+remove_offset <- function(x) {
+    proc <- function(x) {
+        if (length(x) == 1) return(x)
+        if (x[[1]] == as.name("offset")) return(x[[1]])
+        replace(x, -1, lapply(x[-1], proc))
+        }
+    update(proc(x), . ~ . - offset)
 }

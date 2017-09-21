@@ -184,3 +184,37 @@ test_that("should compute risk when time and newdata aren't provided", {
     expect_true("risk" %in% names(absRiskDF))
     expect_true("risk" %in% names(absRiskDT))
 })
+
+# non-glm methods
+fitDF <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam")
+fitDT <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam")
+
+test_that("no error in fitting gam", {
+    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF),
+                  silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT),
+                  silent = TRUE)
+
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
+})
+
+fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm")
+fitDT <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm")
+
+test_that("no error in fitting gbm", {
+    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF, n.trees = 100),
+                 silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT, n.trees = 100),
+                 silent = TRUE)
+
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
+})
+
+# extra_vars <- matrix(rnorm(10 * n), ncol = 10)
+# DF_ext <- cbind(DF, as.data.frame(extra_vars))
+# DT_ext <- cbind(DT, as.data.table(extra_vars))
+# formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
+#                                   paste0("V", 1:10)),
+#                                 collapse = " + "))
