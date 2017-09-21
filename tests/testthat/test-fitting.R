@@ -37,15 +37,15 @@ formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
                                   paste0("V", 1:10)),
                                 collapse = " + "))
 
-test_that("no error in fitting glmnet", {
-    fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet"),
-                 silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet"),
-                 silent = TRUE)
-
-    expect_false(inherits(fitDF, "try-error"))
-    expect_false(inherits(fitDT, "try-error"))
-})
+# test_that("no error in fitting glmnet", {
+#     fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet"),
+#                  silent = TRUE)
+#     fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet"),
+#                  silent = TRUE)
+#
+#     expect_false(inherits(fitDF, "try-error"))
+#     expect_false(inherits(fitDT, "try-error"))
+# })
 
 formula_gam1 <- formula(paste(c("event ~ s(ftime)", "Z",
                                 paste0("V", 1:10)),
