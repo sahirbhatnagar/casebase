@@ -108,6 +108,7 @@ fitSmoothHazard <- function(formula, data, time,
         out$eventVar <- eventVar
 
     } else {
+        # Otherwise fit a multinomial regression
         withCallingHandlers(model <- vglm(formula, family = multinomial(refLevel = 1),
                                           data = sampleData),
                             warning = handler_fitter)
@@ -118,6 +119,5 @@ fitSmoothHazard <- function(formula, data, time,
                    timeVar = timeVar,
                    eventVar = eventVar)
     }
-
     return(out)
 }
