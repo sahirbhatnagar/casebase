@@ -131,6 +131,7 @@ plot.popTimeExposure <- function(x, ...,
 
 # Add a formula interface to cv.glmnet
 #' @importFrom glmnet cv.glmnet
+#' @importFrom stats model.matrix
 cv.glmnet.formula <- function(formula, data, event, ...) {
     X <- model.matrix(update(remove_offset(formula), ~ . -1), data)
     Y <- data[,event]

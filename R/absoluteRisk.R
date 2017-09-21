@@ -102,6 +102,8 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
     return(estimate_risk(lambda, object, time, newdata, method, nsamp))
 }
 
+#' @rdname absoluteRisk
+#' @export
 absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, n.trees, ...) {
     method <- match.arg(method)
 

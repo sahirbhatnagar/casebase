@@ -58,7 +58,7 @@
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
 #' @importMethodsFrom VGAM summary predict
 #' @importFrom VGAM vglm multinomial summaryvglm
-#' @importFrom gam gam
+#' @importFrom gam gam s lo
 #' @importFrom gbm gbm
 fitSmoothHazard <- function(formula, data, time,
                             family = c("glm", "glmnet", "gam", "gbm"),
