@@ -60,11 +60,15 @@
 #' @importFrom VGAM vglm multinomial summaryvglm
 #' @importFrom mgcv s te ti t2
 fitSmoothHazard <- function(formula, data, time,
-                            family = c("glm", "gam", "gbm"),
+                            family = c("glm", "gam", "gbm", "glmnet"),
                             censored.indicator, ...) {
     family <- match.arg(family)
     if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
         stop("Pkg gbm needed for this function to work. Please install it.",
+             call. = FALSE)
+    }
+    if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
+        stop("Pkg glmnet needed for this function to work. Please install it.",
              call. = FALSE)
     }
     # Infer name of event variable from LHS of formula
@@ -100,7 +104,7 @@ fitSmoothHazard <- function(formula, data, time,
     if (length(typeEvents) == 2) {
         fittingFunction <- switch(family,
                                   "glm" = function(formula) glm(formula, data = sampleData, family = binomial),
-                                  # "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
+                                  "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
                                   "gam" = function(formula) mgcv::gam(formula, sampleData, family = "binomial", ...),
                                   "gbm" = function(formula) gbm::gbm(formula, sampleData, distribution = "bernoulli", ...))
 

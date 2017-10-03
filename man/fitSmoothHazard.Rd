@@ -4,8 +4,8 @@
 \alias{fitSmoothHazard}
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
-fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm"),
-  censored.indicator, ...)
+fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
+  "glmnet"), censored.indicator, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a

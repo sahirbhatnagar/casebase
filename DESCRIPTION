@@ -35,6 +35,7 @@ LazyData: TRUE
 Suggests:
     eha,
     gbm,
+    glmnet,
     knitr,
     rmarkdown,
     splines,
