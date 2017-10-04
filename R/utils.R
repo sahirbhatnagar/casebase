@@ -200,3 +200,12 @@ remove_offset <- function(x) {
         }
     update(proc(x), . ~ . - offset)
 }
+
+# Add a formula interface to cv.glmnet
+#' @importFrom stats model.matrix
+cv.glmnet.formula <- function(formula, data, event, ...) {
+    X <- model.matrix(update(remove_offset(formula), ~ . -1), data)
+    Y <- data[,event]
+    offset <- data[,"offset"]
+    glmnet::cv.glmnet(X, Y, offset = offset, family = 'binomial', ...)
+}

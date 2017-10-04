@@ -212,9 +212,26 @@ test_that("no error in fitting gbm", {
     expect_false(inherits(riskDT, "try-error"))
 })
 
-# extra_vars <- matrix(rnorm(10 * n), ncol = 10)
-# DF_ext <- cbind(DF, as.data.frame(extra_vars))
-# DT_ext <- cbind(DT, as.data.table(extra_vars))
-# formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
-#                                   paste0("V", 1:10)),
-#                                 collapse = " + "))
+extra_vars <- matrix(rnorm(10 * n), ncol = 10)
+DF_ext <- cbind(DF, as.data.frame(extra_vars))
+DT_ext <- cbind(DT, as.data.table(extra_vars))
+formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
+                                  paste0("V", 1:10)),
+                                collapse = " + "))
+fitDF <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet")
+fitDT <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet")
+
+extra_vars_new <- matrix(rnorm(10 * 2), ncol = 10)
+colnames(extra_vars_new) <- paste0("V", 1:10)
+newDF_ext <- cbind(newDF, extra_vars_new)
+newDT_ext <- cbind(newDT, extra_vars_new)
+
+test_that("no error in fitting glmnet", {
+    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF_ext),
+                  silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT_ext),
+                  silent = TRUE)
+
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
+})

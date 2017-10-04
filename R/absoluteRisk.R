@@ -40,6 +40,8 @@
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
 #'   points (if \code{method = "montecarlo"}).
 #' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
+#' @param s Value of the penalty parameter lambda at which predictions are required (for class
+#'   \code{cv.glmnet}).
 #' @param onlyMain Logical. For competing risks, should we return absolute risks only for the main
 #'   event of interest? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
@@ -79,7 +81,7 @@ absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.default <- function(object, ...) {
-    stop("This function should be used with an object of class glm or CompRisk",
+    stop("This function should be used with an object of class glm, cv.glmnet, gbm, or CompRisk",
          call. = TRUE)
 }
 
@@ -115,6 +117,29 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "nu
         newdata2[fit$timeVar] <- x
         withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
                             warning = handler_offset)
+        return(as.numeric(pred))
+    }
+
+    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+}
+
+#' @rdname absoluteRisk
+#' @importFrom stats formula delete.response
+#' @export
+absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
+                                   nsamp = 1000, s = c("lambda.1se","lambda.min"), ...) {
+    method <- match.arg(method)
+    s <- match.arg(s)
+
+    # Create hazard function
+    lambda <- function(x, fit, newdata) {
+        # Note: the offset should be set to zero when estimating the hazard.
+        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                               row.names = as.character(1:length(x)))
+        newdata2[fit$timeVar] <- x
+        formula_pred <- update(formula(delete.response(terms(remove_offset(fit$formula)))), ~ . -1)
+        newdata_matrix <- model.matrix(formula_pred, newdata2)
+        pred <- predict(fit, newdata_matrix, s, newoffset = 0)
         return(as.numeric(pred))
     }
 
