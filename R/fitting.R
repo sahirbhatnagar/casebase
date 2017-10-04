@@ -13,6 +13,11 @@
 #' data. Note that the event variable is inferred from \code{formula}, since it is the left hand
 #' side.
 #'
+#' For single-event survival analysis, it is possible to fit the hazard function using
+#' \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family is controled by the
+#' parameter \code{family}. The default value is \code{glm}, which corresponds to logistic
+#' regression.
+#'
 #' @param formula an object of class "formula" (or one that can be coerced to that class): a
 #'   symbolic description of the model to be fitted. The details of model specification are given
 #'   under Details.
@@ -21,7 +26,7 @@
 #'   from which \code{fitSmoothHazard} is called.
 #' @param time a character string giving the name of the time variable. See Details.
 #' @param family a character string specifying the family of regression models used to fit the
-#'   hazard
+#'   hazard.
 #' @param censored.indicator a character string of length 1 indicating which value in \code{event}
 #'   is the censored. This function will use \code{\link[stats]{relevel}} to set
 #'   \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
@@ -113,6 +118,7 @@ fitSmoothHazard <- function(formula, data, time,
         out$typeEvents <- typeEvents
         out$timeVar <- timeVar
         out$eventVar <- eventVar
+        if (family == "glmnet") out$formula <- formula
 
     } else {
         # Otherwise fit a multinomial regression

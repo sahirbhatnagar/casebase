@@ -5,6 +5,7 @@
 \alias{absoluteRisk.default}
 \alias{absoluteRisk.glm}
 \alias{absoluteRisk.gbm}
+\alias{absoluteRisk.cv.glmnet}
 \alias{absoluteRisk.CompRisk}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
@@ -17,6 +18,10 @@ absoluteRisk(object, ...)
 
 \method{absoluteRisk}{gbm}(object, time, newdata, method = c("montecarlo",
   "numerical"), nsamp = 1000, n.trees, ...)
+
+\method{absoluteRisk}{cv.glmnet}(object, time, newdata,
+  method = c("montecarlo", "numerical"), nsamp = 1000, s = c("lambda.1se",
+  "lambda.min"), ...)
 
 \method{absoluteRisk}{CompRisk}(object, time, newdata,
   method = c("montecarlo", "numerical"), nsamp = 1000, onlyMain = TRUE,
@@ -40,6 +45,9 @@ function \code{\link{integrate}}.}
 points (if \code{method = "montecarlo"}).}
 
 \item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
+
+\item{s}{Value of the penalty parameter lambda at which predictions are required (for class
+\code{cv.glmnet}).}
 
 \item{onlyMain}{Logical. For competing risks, should we return absolute risks only for the main
 event of interest? Defaults to \code{TRUE}.}
