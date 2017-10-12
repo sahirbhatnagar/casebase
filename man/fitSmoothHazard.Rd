@@ -5,7 +5,7 @@
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
 fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
-  "glmnet"), censored.indicator, ...)
+  "glmnet"), censored.indicator, ratio = 100, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a
@@ -24,10 +24,13 @@ hazard.}
 \item{censored.indicator}{a character string of length 1 indicating which value in \code{event}
 is the censored. This function will use \code{\link[stats]{relevel}} to set
 \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
-variable is a numeric}
+variable is a numeric.}
 
-\item{...}{Additional parameters passed to \code{\link{sampleCaseBase}}. If \code{data} inherits
-from the class \code{cbData}, then these parameters are ignored.}
+\item{ratio}{nteger, giving the ratio of the size of the base series to that of the case series.
+Defaults to 100.}
+
+\item{...}{Additional parameters passed to fitting functions (e.g. \code{glm}, \code{glmnet},
+\code{gam}).}
 }
 \value{
 An object of \code{glm} and \code{lm} when there is only one event of interest, or of
@@ -74,6 +77,6 @@ DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
          "time" = pmin(t_event, t_comp))]
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
-out_linear <- fitSmoothHazard(event ~ time + z, DT)
-out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
+out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
 }
