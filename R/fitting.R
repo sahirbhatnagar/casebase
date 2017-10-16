@@ -105,8 +105,10 @@ fitSmoothHazard <- function(formula, data, time,
         sampleData <- data
     }
 
-    # Update formula to add offset term
-    formula <- update(formula, ~ . + offset(offset))
+    if (family != "glmnet") {
+        # Update formula to add offset term
+        formula <- update(formula, ~ . + offset(offset))
+    }
 
     # Fit a binomial model if there are no competing risks
     if (length(typeEvents) == 2) {
