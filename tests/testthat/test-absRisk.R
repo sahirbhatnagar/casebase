@@ -19,8 +19,8 @@ DT <- data.table("ftime" = times_c,
                  "event" = event_c,
                  "Z" = c(rep(0,n), rep(1,n)))
 
-fitDF <- fitSmoothHazard(event ~ Z, data = DF, time = "ftime")
-fitDT <- fitSmoothHazard(event ~ Z, data = DT, time = "ftime")
+fitDF <- fitSmoothHazard(event ~ Z, data = DF, time = "ftime", ratio = 10)
+fitDT <- fitSmoothHazard(event ~ Z, data = DT, time = "ftime", ratio = 10)
 
 test_that("no error in absolute risk with data frames", {
     foo1 <- try(absoluteRisk(fitDF, time = 1, newdata = DF[1,],
@@ -186,8 +186,8 @@ test_that("should compute risk when time and newdata aren't provided", {
 })
 
 # non-glm methods
-fitDF <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam")
-fitDT <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam")
+fitDF <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam", ratio = 10)
+fitDT <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam", ratio = 10)
 
 test_that("no error in fitting gam", {
     riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF),
@@ -199,8 +199,8 @@ test_that("no error in fitting gam", {
     expect_false(inherits(riskDT, "try-error"))
 })
 
-fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm")
-fitDT <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm")
+fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm", ratio = 10)
+fitDT <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm", ratio = 10)
 
 test_that("no error in fitting gbm", {
     riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF, n.trees = 100),
@@ -218,8 +218,8 @@ DT_ext <- cbind(DT, as.data.table(extra_vars))
 formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
                                   paste0("V", 1:10)),
                                 collapse = " + "))
-fitDF <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet")
-fitDT <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet")
+fitDF <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet", ratio = 10)
+fitDT <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet", ratio = 10)
 
 extra_vars_new <- matrix(rnorm(10 * 2), ncol = 10)
 colnames(extra_vars_new) <- paste0("V", 1:10)
