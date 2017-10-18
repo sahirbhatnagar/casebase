@@ -132,15 +132,28 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo
     s <- match.arg(s)
 
     # Create hazard function
-    lambda <- function(x, fit, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[fit$timeVar] <- x
-        formula_pred <- update(formula(delete.response(terms(remove_offset(fit$formula)))), ~ . -1)
-        newdata_matrix <- model.matrix(formula_pred, newdata2)
-        pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-        return(as.numeric(pred))
+    if (is.null(object$matrix.fit)) {
+        lambda <- function(x, fit, newdata) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[fit$timeVar] <- x
+            formula_pred <- update(formula(delete.response(terms(remove_offset(fit$formula)))), ~ . -1)
+            newdata_matrix <- model.matrix(formula_pred, newdata2)
+            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+            return(as.numeric(pred))
+        }
+    } else {
+        lambda <- function(x, fit, newdata) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            # newdata_matrix <- cbind(x, newdata)
+            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
+            newdata_matrix <- as.matrix(cbind(data.frame(x),
+                                              as.data.frame(newdata_matrix)))
+            colnames(newdata_matrix)[1] <- fit$timeVar
+            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+            return(as.numeric(pred))
+        }
     }
 
     return(estimate_risk(lambda, object, time, newdata, method, nsamp))
@@ -160,11 +173,17 @@ estimate_risk <- function(lambda, object, time, newdata, method, nsamp) {
             # compute risk at failure times
             riskVar <- "risk"
             while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
-            newdata[,riskVar] <- sapply(seq_len(nrow(newdata)), function(j) {
+
+            risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
                 integrate(lambda, lower = 0, upper = newdata[j,object$timeVar],
                           fit = object, newdata = newdata[j,,drop = FALSE])$value
             })
-            newdata[,riskVar] <- 1 - exp(-newdata[,riskVar])
+            if (is.data.frame(newdata)) {
+                newdata[,riskVar] <- 1 - exp(-risk_res)
+            } else {
+                newdata <- cbind(1 - exp(-risk_res), newdata)
+                colnames(newdata)[1] <- riskVar
+            }
             return(newdata)
         } else {
             # colnames(data)[colnames(data) == "event"] <- "status"

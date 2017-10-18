@@ -1,4 +1,4 @@
-context("Fitting-fit")
+context("Glmnet")
 
 N <- 1000; p <- 30
 nzc <- p/3
@@ -24,5 +24,19 @@ test_that("no error in fitting fitSmoothHazard.fit", {
     expect_false(inherits(fit_glm, "try-error"))
     expect_false(inherits(fit_glmnet, "try-error"))
     expect_false(inherits(fit_gbm, "try-error"))
+})
 
+fit_glmnet <- fitSmoothHazard.fit(x, y, "time", "status", family = "glmnet", ratio = 10)
+
+test_that("no error in absoluteRisk with glmnet", {
+    risk <- absoluteRisk(fit_glmnet, nsamp = 100)
+
+    expect_false(inherits(risk, "try-error"))
+})
+
+test_that("we get probabilities", {
+    risk <- absoluteRisk(fit_glmnet, nsamp = 100)
+
+    expect_true(all(risk[,"risk"] >= 0))
+    expect_true(all(risk[,"risk"] <= 1))
 })

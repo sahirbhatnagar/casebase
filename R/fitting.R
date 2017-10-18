@@ -170,14 +170,16 @@ fitSmoothHazard.fit <- function(x, y, time, event, family = c("glm", "gbm", "glm
 
     typeEvents <- sort(unique(y[,eventVar]))
     # Call sampleCaseBase
-    originalData <- as.data.frame(cbind(y, x))
+    originalData <- cbind(y[, timeVar, drop = FALSE], x)
     if (missing(censored.indicator)) {
-        sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+                                     timeVar, eventVar,
                                      comprisk = (length(typeEvents) > 2),
                                      ratio)
 
     } else {
-        sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+                                     timeVar, eventVar,
                                      comprisk = (length(typeEvents) > 2),
                                      censored.indicator, ratio)
     }
@@ -203,7 +205,7 @@ fitSmoothHazard.fit <- function(x, y, time, event, family = c("glm", "gbm", "glm
         out$typeEvents <- typeEvents
         out$timeVar <- timeVar
         out$eventVar <- eventVar
-        if (family == "glmnet") out$formula <- formula
+        out$matrix.fit <- TRUE
 
     } else {
         stop("Not implemented yet")
