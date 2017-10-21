@@ -14,11 +14,13 @@ tcens <- rbinom(n = N,
 y <- cbind(time = ty, status = 1 - tcens) # y=Surv(ty,1-tcens) with library(survival)
 
 test_that("no error in fitting fitSmoothHazard.fit", {
-    fit_glm <- try(fitSmoothHazard.fit(x, y, "time", "status", ratio = 10),
+    fit_glm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status", ratio = 10),
                    silent = TRUE)
-    fit_glmnet <- try(fitSmoothHazard.fit(x, y, "time", "status", family = "glmnet", ratio = 10),
+    fit_glmnet <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
+                                          family = "glmnet", ratio = 10),
                       silent = TRUE)
-    fit_gbm <- try(fitSmoothHazard.fit(x, y, "time", "status", family = "gbm", ratio = 10),
+    fit_gbm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
+                                       family = "gbm", ratio = 10),
                    silent = TRUE)
 
     expect_false(inherits(fit_glm, "try-error"))
@@ -26,7 +28,7 @@ test_that("no error in fitting fitSmoothHazard.fit", {
     expect_false(inherits(fit_gbm, "try-error"))
 })
 
-fit_glmnet <- fitSmoothHazard.fit(x, y, "time", "status", family = "glmnet", ratio = 10)
+# fit_glmnet <- fitSmoothHazard.fit(x, y, "time", "status", family = "glmnet", ratio = 10)
 
 test_that("no error in absoluteRisk with glmnet", {
     risk <- absoluteRisk(fit_glmnet, nsamp = 100)

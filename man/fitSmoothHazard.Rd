@@ -8,8 +8,8 @@
 fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
   "glmnet"), censored.indicator, ratio = 100, ...)
 
-fitSmoothHazard.fit(x, y, time, event, family = c("glm", "gbm", "glmnet"),
-  censored.indicator, ratio = 100, ...)
+fitSmoothHazard.fit(x, y, formula_time, time, event, family = c("glm", "gbm",
+  "glmnet"), censored.indicator, ratio = 100, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a
@@ -39,6 +39,8 @@ Defaults to 100.}
 \item{x}{Matrix containing covariates.}
 
 \item{y}{Matrix containing two columns: one corresponding to time, the other to the event type.}
+
+\item{formula_time}{A formula describing how the hazard depends on time. Defaults to linear.}
 
 \item{event}{a character string giving the name of the event variable.}
 }
