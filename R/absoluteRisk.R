@@ -71,8 +71,8 @@
 #'          "time" = pmin(t_event, t_comp))]
 #' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 #'
-#' out_linear <- fitSmoothHazard(event ~ time + z, DT)
-#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+#' out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
+#' out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
 #'
 #' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
 #' log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))
@@ -101,7 +101,8 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
         return(as.numeric(exp(pred)))
     }
 
-    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
+    # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
 }
 
 #' @rdname absoluteRisk
@@ -120,11 +121,12 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "nu
         return(as.numeric(pred))
     }
 
-    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
+    # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
 }
 
 #' @rdname absoluteRisk
-#' @importFrom stats formula delete.response
+#' @importFrom stats formula delete.response setNames
 #' @export
 absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
                                    nsamp = 1000, s = c("lambda.1se","lambda.min"), ...) {
@@ -132,22 +134,75 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo
     s <- match.arg(s)
 
     # Create hazard function
-    lambda <- function(x, fit, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[fit$timeVar] <- x
-        formula_pred <- update(formula(delete.response(terms(remove_offset(fit$formula)))), ~ . -1)
-        newdata_matrix <- model.matrix(formula_pred, newdata2)
-        pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-        return(as.numeric(pred))
+    if (is.null(object$matrix.fit)) {
+        lambda <- function(x, fit, newdata) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[fit$timeVar] <- x
+            formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
+            newdata_matrix <- model.matrix(formula_pred, newdata2)
+            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+            return(as.numeric(exp(pred)))
+        }
+    } else {
+        lambda <- function(x, fit, newdata) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            # newdata_matrix <- cbind(x, newdata)
+            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
+            newdata_matrix <- as.matrix(cbind(as.data.frame(newdata_matrix),
+                                              model.matrix(update(fit$formula_time, ~ . -1),
+                                                           setNames(data.frame(x), fit$timeVar))))
+            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+            return(as.numeric(exp(pred)))
+        }
     }
 
-    return(estimate_risk(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
 }
 
-# The absolute risk methods create the lambda function and pass it to  estimate_risk
-estimate_risk <- function(lambda, object, time, newdata, method, nsamp) {
+call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method, nsamp) {
+    # Call the correct function with correct parameters
+    if (missing(newdata)) {
+        if (missing(time)) {
+            return(estimate_risk(lambda, object))
+        } else {
+            return(estimate_risk_newtime(lambda, object, time,
+                                         method = method, nsamp = nsamp))
+        }
+    } else {
+        return(estimate_risk_newtime(lambda, object, time,
+                                     newdata, method, nsamp))
+    }
+}
+
+# The absolute risk methods create the lambda function and pass it to
+# estimate_risk or estimate_risk_newtime
+estimate_risk <- function(lambda, object) {
+    newdata <- object$originalData
+    if (inherits(newdata, "data.fit")) newdata <- newdata$x
+    # If both newdata and time are missing
+    # compute risk at failure times
+    riskVar <- "risk"
+    while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
+
+    time_vector <- if (is.null(object$matrix.fit)) {
+        newdata[object$timeVar][[1]]
+        } else object$originalData$y[,object$timeVar]
+    risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
+        integrate(lambda, lower = 0, upper = time_vector[j],
+                  fit = object, newdata = newdata[j,,drop = FALSE])$value
+    })
+    if (is.data.frame(newdata)) {
+        newdata[,riskVar] <- 1 - exp(-risk_res)
+    } else {
+        newdata <- cbind(1 - exp(-risk_res), newdata)
+        colnames(newdata)[1] <- riskVar
+    }
+    return(newdata)
+}
+
+estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
@@ -155,24 +210,11 @@ estimate_risk <- function(lambda, object, time, newdata, method, nsamp) {
                  call. = FALSE)
         }
         newdata <- object$originalData
-        if (missing(time)) {
-            # If both newdata and time are missing
-            # compute risk at failure times
-            riskVar <- "risk"
-            while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
-            newdata[,riskVar] <- sapply(seq_len(nrow(newdata)), function(j) {
-                integrate(lambda, lower = 0, upper = newdata[j,object$timeVar],
-                          fit = object, newdata = newdata[j,,drop = FALSE])$value
-            })
-            newdata[,riskVar] <- 1 - exp(-newdata[,riskVar])
-            return(newdata)
-        } else {
-            # colnames(data)[colnames(data) == "event"] <- "status"
-            # Next commented line will break on data.table
-            # newdata <- newdata[, colnames(newdata) != "time"]
-            unselectTime <- (names(newdata) != object$timeVar)
-            newdata <- subset(newdata, select = unselectTime)
-        }
+        # colnames(data)[colnames(data) == "event"] <- "status"
+        # Next commented line will break on data.table
+        # newdata <- newdata[, colnames(newdata) != "time"]
+        unselectTime <- (names(newdata) != object$timeVar)
+        newdata <- subset(newdata, select = unselectTime)
     }
     time_ordered <- unique(c(0, sort(time)))
     output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))

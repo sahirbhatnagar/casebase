@@ -2,9 +2,13 @@
 % Please edit documentation in R/fitting.R
 \name{fitSmoothHazard}
 \alias{fitSmoothHazard}
+\alias{fitSmoothHazard.fit}
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
 fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
+  "glmnet"), censored.indicator, ratio = 100, ...)
+
+fitSmoothHazard.fit(x, y, formula_time, time, event, family = c("glm", "gbm",
   "glmnet"), censored.indicator, ratio = 100, ...)
 }
 \arguments{
@@ -31,6 +35,14 @@ Defaults to 100.}
 
 \item{...}{Additional parameters passed to fitting functions (e.g. \code{glm}, \code{glmnet},
 \code{gam}).}
+
+\item{x}{Matrix containing covariates.}
+
+\item{y}{Matrix containing two columns: one corresponding to time, the other to the event type.}
+
+\item{formula_time}{A formula describing how the hazard depends on time. Defaults to linear.}
+
+\item{event}{a character string giving the name of the event variable.}
 }
 \value{
 An object of \code{glm} and \code{lm} when there is only one event of interest, or of

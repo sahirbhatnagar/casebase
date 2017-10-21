@@ -109,8 +109,8 @@ DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
          "time" = pmin(t_event, t_comp))]
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
-out_linear <- fitSmoothHazard(event ~ time + z, DT)
-out_log <- fitSmoothHazard(event ~ log(time) + z, DT)
+out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
+out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
 
 linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
 log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))

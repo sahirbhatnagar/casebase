@@ -79,7 +79,8 @@ fitSmoothHazard <- function(formula, data, time,
              call. = FALSE)
     }
     # Infer name of event variable from LHS of formula
-    eventVar <- as.character(attr(terms(formula), "variables")[[2]])
+    # eventVar <- as.character(attr(terms(formula), "variables")[[2]])
+    eventVar <- all.vars(formula[[2]])
 
     if (missing(time)) {
         varNames <- checkArgsTimeEvent(data = data, event = eventVar)
@@ -139,3 +140,98 @@ fitSmoothHazard <- function(formula, data, time,
     }
     return(out)
 }
+
+#' @export
+#' @rdname fitSmoothHazard
+#' @param x Matrix containing covariates.
+#' @param y Matrix containing two columns: one corresponding to time, the other to the event type.
+#' @param formula_time A formula describing how the hazard depends on time. Defaults to linear.
+#' @param event a character string giving the name of the event variable.
+#' @importFrom stats glm.fit
+fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm", "gbm", "glmnet"),
+                                censored.indicator, ratio = 100, ...) {
+    family <- match.arg(family)
+    if (family == "gam") stop("The matrix interface is not available for gam")
+    if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+        stop("Pkg gbm needed for this function to work. Please install it.",
+             call. = FALSE)
+    }
+    if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
+        stop("Pkg glmnet needed for this function to work. Please install it.",
+             call. = FALSE)
+    }
+
+    # Default to linear term
+    if (missing(formula_time)) {
+        formula_time <- formula(paste("~", time))
+        timeVar <- time
+    } else {
+        timeVar <- if (length(formula_time) == 3) all.vars(formula_time[[3]]) else all.vars(formula_time)
+    }
+    # There should only be one time variable
+    stopifnot(length(timeVar) == 1)
+
+    # Try to infer event from
+    if (missing(event)) {
+        varNames <- checkArgsTimeEvent(data = as.data.frame(y), time = timeVar)
+        eventVar <- varNames$event
+    } else eventVar <- event
+
+    typeEvents <- sort(unique(y[,eventVar]))
+    # Call sampleCaseBase
+    originalData <- list("x" = x,
+                         "y" = y)
+    class(originalData) <- c(class(originalData), "data.fit")
+    if (missing(censored.indicator)) {
+        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+                                     timeVar, eventVar,
+                                     comprisk = (length(typeEvents) > 2),
+                                     ratio)
+    } else {
+        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+                                     timeVar, eventVar,
+                                     comprisk = (length(typeEvents) > 2),
+                                     censored.indicator, ratio)
+    }
+    sample_event <- as.matrix(sampleData[,eventVar])
+    sample_time_x <- cbind(as.matrix(sampleData[,!names(sampleData) %in% c(eventVar, timeVar, "offset")]),
+                           model.matrix(update(formula_time, ~ . -1), sampleData))
+    sample_offset <- sampleData$offset
+
+    # Fit a binomial model if there are no competing risks
+    if (length(typeEvents) == 2) {
+        out <- switch(family,
+                      "glm" = glm.fit(sample_time_x, sample_event,
+                                      family = binomial(),
+                                      offset = sample_offset),
+                      "glmnet" = glmnet::cv.glmnet(sample_time_x, sample_event,
+                                                   family = "binomial",
+                                                   offset = sample_offset, ...),
+                      "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
+                                           distribution = "bernoulli",
+                                           offset = sample_offset,
+                                           verbose = FALSE, ...))
+
+        out$originalData <- originalData
+        out$typeEvents <- typeEvents
+        out$timeVar <- timeVar
+        out$eventVar <- eventVar
+        out$matrix.fit <- TRUE
+        out$formula_time <- formula_time
+
+    } else {
+        stop("Not implemented yet")
+        # Otherwise fit a multinomial regression
+        # withCallingHandlers(model <- vglm(formula, family = multinomial(refLevel = 1),
+        #                                   data = sampleData),
+        #                     warning = handler_fitter)
+        #
+        # out <- new("CompRisk", model,
+        #            originalData = originalData,
+        #            typeEvents = typeEvents,
+        #            timeVar = timeVar,
+        #            eventVar = eventVar)
+    }
+    return(out)
+}
+
