@@ -179,7 +179,9 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
 
     typeEvents <- sort(unique(y[,eventVar]))
     # Call sampleCaseBase
-    originalData <- cbind(y[, timeVar, drop = FALSE], x)
+    originalData <- list("x" = x,
+                         "y" = y)
+    class(originalData) <- c(class(originalData), "data.fit")
     if (missing(censored.indicator)) {
         sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
                                      timeVar, eventVar,
