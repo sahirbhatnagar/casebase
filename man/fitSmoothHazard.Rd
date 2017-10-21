@@ -67,6 +67,15 @@ For single-event survival analysis, it is possible to fit the hazard function us
 \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family is controled by the
 parameter \code{family}. The default value is \code{glm}, which corresponds to logistic
 regression.
+
+We also provide a matrix interface through \code{fitSmoothHazard.fit}, which mimics
+\code{glm.fit} and \code{gbm.fit}. This is mostly convenient for \code{family = "glmnet"}, since
+a formula interface becomes quickly cumbersome as the number of variables increases. In this
+setting, the matrix \code{y} should have two columns and contain the time and event variables
+(e.g. like the output of \code{survival::Surv}). We need this linear function of time in order to
+perform case-base sampling. Therefore, nonlinear functions of time should be specified as a
+one-sided formula through the argument \code{formula_time} (the left-hand side is always
+ignored)..
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions

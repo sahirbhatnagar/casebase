@@ -28,18 +28,63 @@ test_that("no error in fitting fitSmoothHazard.fit", {
     expect_false(inherits(fit_gbm, "try-error"))
 })
 
+test_that("no error in using nonlinear functions of time", {
+    fit_glm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+                                       time = "time", event = "status", ratio = 10),
+                   silent = TRUE)
+    fit_glmnet <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+                                          time = "time", event = "status",
+                                          family = "glmnet", ratio = 10),
+                      silent = TRUE)
+    fit_gbm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+                                       time = "time", event = "status",
+                                       family = "gbm", ratio = 10),
+                   silent = TRUE)
+
+    fit_glm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+                                               time = "time", event = "status", ratio = 10),
+                           silent = TRUE)
+    fit_glmnet_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+                                                  time = "time", event = "status",
+                                                  family = "glmnet", ratio = 10),
+                              silent = TRUE)
+    fit_gbm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+                                               time = "time", event = "status",
+                                               family = "gbm", ratio = 10),
+                           silent = TRUE)
+
+    expect_false(inherits(fit_glm, "try-error"))
+    expect_false(inherits(fit_glmnet, "try-error"))
+    expect_false(inherits(fit_gbm, "try-error"))
+
+    expect_false(inherits(fit_glm_splines, "try-error"))
+    expect_false(inherits(fit_glmnet_splines, "try-error"))
+    expect_false(inherits(fit_gbm_splines, "try-error"))
+})
+
 fit_glmnet <- fitSmoothHazard.fit(x, y, time = "time", event = "status",
                                   family = "glmnet", ratio = 10)
+fit_glmnet_log <- fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+                                      time = "time", event = "status",
+                                      family = "glmnet", ratio = 10)
+# Test absoluteRisk
+new_x <- x[1:10, ]
+risk <- try(absoluteRisk(fit_glmnet, time = 1,
+                         newdata = new_x, nsamp = 100),
+            silent = TRUE)
+risk_log <- try(absoluteRisk(fit_glmnet_log, time = 1,
+                             newdata = new_x, nsamp = 100),
+                silent = TRUE)
 
 test_that("no error in absoluteRisk with glmnet", {
-    risk <- absoluteRisk(fit_glmnet, nsamp = 100)
 
     expect_false(inherits(risk, "try-error"))
+    expect_false(inherits(risk_log, "try-error"))
 })
 
 test_that("we get probabilities", {
-    risk <- absoluteRisk(fit_glmnet, nsamp = 100)
-
-    expect_true(all(risk[,"risk"] >= 0))
-    expect_true(all(risk[,"risk"] <= 1))
+    expect_true(all(risk >= 0))
+    expect_true(all(risk <= 1))
+    expect_true(all(risk_log >= 0))
+    expect_true(all(risk_log <= 1))
 })

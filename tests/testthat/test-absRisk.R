@@ -186,26 +186,26 @@ test_that("should compute risk when time and newdata aren't provided", {
 })
 
 # non-glm methods
-fitDF <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam", ratio = 10)
-fitDT <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam", ratio = 10)
+fitDF_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam", ratio = 10)
+fitDT_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam", ratio = 10)
 
 test_that("no error in fitting gam", {
-    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF),
+    riskDF <- try(absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF),
                   silent = TRUE)
-    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT),
+    riskDT <- try(absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT),
                   silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
     expect_false(inherits(riskDT, "try-error"))
 })
 
-fitDF <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm", ratio = 10)
-fitDT <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm", ratio = 10)
+fitDF_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm", ratio = 10)
+fitDT_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm", ratio = 10)
 
 test_that("no error in fitting gbm", {
-    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF, n.trees = 100),
+    riskDF <- try(absoluteRisk(fitDF_gbm, time = 0.5, newdata = newDF, n.trees = 100),
                  silent = TRUE)
-    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT, n.trees = 100),
+    riskDT <- try(absoluteRisk(fitDT_gbm, time = 0.5, newdata = newDT, n.trees = 100),
                  silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
@@ -218,8 +218,8 @@ DT_ext <- cbind(DT, as.data.table(extra_vars))
 formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
                                   paste0("V", 1:10)),
                                 collapse = " + "))
-fitDF <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet", ratio = 10)
-fitDT <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet", ratio = 10)
+fitDF_glmnet <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet", ratio = 10)
+fitDT_glmnet <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet", ratio = 10)
 
 extra_vars_new <- matrix(rnorm(10 * 2), ncol = 10)
 colnames(extra_vars_new) <- paste0("V", 1:10)
@@ -227,11 +227,39 @@ newDF_ext <- cbind(newDF, extra_vars_new)
 newDT_ext <- cbind(newDT, extra_vars_new)
 
 test_that("no error in fitting glmnet", {
-    riskDF <- try(absoluteRisk(fitDF, time = 0.5, newdata = newDF_ext),
+    riskDF <- try(absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext),
                   silent = TRUE)
-    riskDT <- try(absoluteRisk(fitDT, time = 0.5, newdata = newDT_ext),
+    riskDT <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext),
                   silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
     expect_false(inherits(riskDT, "try-error"))
+})
+
+test_that("output probabilities", {
+    riskDF_gam <- absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF, family = "gam")
+    riskDT_gam <- absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT, family = "gam")
+
+    riskDF_gbm <- absoluteRisk(fitDF_gbm, time = 0.5, newdata = newDF,
+                               family = "gbm", n.trees = 100)
+    riskDT_gbm <- absoluteRisk(fitDT_gbm, time = 0.5, newdata = newDT,
+                               family = "gbm", n.trees = 100)
+
+    riskDF_glmnet <- absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext, family = "glmnet")
+    riskDT_glmnet <- absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext, family = "glmnet")
+
+    expect_true(all(riskDF_gam >= 0))
+    expect_true(all(riskDT_gam >= 0))
+    expect_true(all(riskDF_gam <= 1))
+    expect_true(all(riskDT_gam <= 1))
+
+    expect_true(all(riskDF_gbm >= 0))
+    expect_true(all(riskDT_gbm >= 0))
+    expect_true(all(riskDF_gbm <= 1))
+    expect_true(all(riskDT_gbm <= 1))
+
+    expect_true(all(riskDF_glmnet >= 0))
+    expect_true(all(riskDT_glmnet >= 0))
+    expect_true(all(riskDF_glmnet <= 1))
+    expect_true(all(riskDT_glmnet <= 1))
 })
