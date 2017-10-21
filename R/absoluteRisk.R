@@ -140,10 +140,10 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                    row.names = as.character(1:length(x)))
             newdata2[fit$timeVar] <- x
-            formula_pred <- update(formula(delete.response(terms(remove_offset(fit$formula)))), ~ . -1)
+            formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
             newdata_matrix <- model.matrix(formula_pred, newdata2)
             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-            return(as.numeric(pred))
+            return(as.numeric(exp(pred)))
         }
     } else {
         lambda <- function(x, fit, newdata) {
@@ -154,7 +154,7 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo
                                               model.matrix(update(fit$formula_time, ~ . -1),
                                                            setNames(data.frame(x), fit$timeVar))))
             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-            return(as.numeric(pred))
+            return(as.numeric(exp(pred)))
         }
     }
 

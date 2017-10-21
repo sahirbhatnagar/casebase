@@ -28,7 +28,8 @@ test_that("no error in fitting fitSmoothHazard.fit", {
     expect_false(inherits(fit_gbm, "try-error"))
 })
 
-# fit_glmnet <- fitSmoothHazard.fit(x, y, "time", "status", family = "glmnet", ratio = 10)
+fit_glmnet <- fitSmoothHazard.fit(x, y, time = "time", event = "status",
+                                  family = "glmnet", ratio = 10)
 
 test_that("no error in absoluteRisk with glmnet", {
     risk <- absoluteRisk(fit_glmnet, nsamp = 100)

@@ -163,7 +163,7 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
 
     # Default to linear term
     if (missing(formula_time)) {
-        formula_time <- as.formula(paste("~", time))
+        formula_time <- formula(paste("~", time))
         timeVar <- time
     } else {
         timeVar <- if (length(formula_time) == 3) all.vars(formula_time[[3]]) else all.vars(formula_time)
