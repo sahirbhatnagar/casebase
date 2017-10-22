@@ -2,7 +2,9 @@
 
 [![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](http://cran.rstudio.com/package=casebase) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
 
-An R package for smooth-in-time fitting of parametric hazard functions
+An R package for smooth-in-time fitting of parametric hazard functions and compute absolute risks.
+
+![](hernan_HR_tweet.png)
 
 ## Installation
 
