@@ -17,7 +17,8 @@ test_that("no error in fitting fitSmoothHazard.fit", {
     fit_glm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status", ratio = 10),
                    silent = TRUE)
     fit_glmnet <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
-                                          family = "glmnet", ratio = 10),
+                                          family = "glmnet", ratio = 10,
+                                          lambda = c(0, 0.5)),
                       silent = TRUE)
     fit_gbm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
                                        family = "gbm", ratio = 10),
@@ -34,7 +35,8 @@ test_that("no error in using nonlinear functions of time", {
                    silent = TRUE)
     fit_glmnet <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
                                           time = "time", event = "status",
-                                          family = "glmnet", ratio = 10),
+                                          family = "glmnet", ratio = 10,
+                                          lambda = c(0, 0.5)),
                       silent = TRUE)
     fit_gbm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
                                        time = "time", event = "status",
@@ -46,7 +48,8 @@ test_that("no error in using nonlinear functions of time", {
                            silent = TRUE)
     fit_glmnet_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
                                                   time = "time", event = "status",
-                                                  family = "glmnet", ratio = 10),
+                                                  family = "glmnet", ratio = 10,
+                                                  lambda = c(0, 0.5)),
                               silent = TRUE)
     fit_gbm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
                                                time = "time", event = "status",
@@ -63,10 +66,12 @@ test_that("no error in using nonlinear functions of time", {
 })
 
 fit_glmnet <- fitSmoothHazard.fit(x, y, time = "time", event = "status",
-                                  family = "glmnet", ratio = 10)
+                                  family = "glmnet", ratio = 10,
+                                  lambda = c(0, 0.5))
 fit_glmnet_log <- fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
                                       time = "time", event = "status",
-                                      family = "glmnet", ratio = 10)
+                                      family = "glmnet", ratio = 10,
+                                      lambda = c(0, 0.5))
 # Test absoluteRisk
 new_x <- x[1:10, ]
 risk <- try(absoluteRisk(fit_glmnet, time = 1,

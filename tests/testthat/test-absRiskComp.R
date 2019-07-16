@@ -154,3 +154,38 @@ test_that("should output probabilities with data tables - two covariate profile"
     expect_true(all(absRiskMC <= 1))
     expect_true(all(absRiskNI <= 1))
 })
+
+# Competing Risks and glmnet
+extra_vars <- matrix(rnorm(10 * n), ncol = 10)
+DF_ext <- cbind(DF, as.data.frame(extra_vars))
+DT_ext <- cbind(DT, as.data.table(extra_vars))
+formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
+                                  paste0("V", 1:10)),
+                                collapse = " + "))
+
+test_that("no error in fitting glmnet", {
+    fitDF_glmnet <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
+                                        family = "glmnet", ratio = 10,
+                                        lambda = c(0, 0.5)),
+                        silent = TRUE)
+    fitDT_glmnet <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
+                                        family = "glmnet", ratio = 10,
+                                        lambda = c(0, 0.5)),
+                        silent = TRUE)
+    expect_false(inherits(fitDF_glmnet, "try-error"))
+    expect_false(inherits(fitDT_glmnet, "try-error"))
+})
+
+y <- cbind(time = DF_ext$ftime,
+           status = DF_ext$event)
+x <- subset(DF_ext, select = !(colnames(DF_ext) %in% c("ftime", "event")))
+x <- as.matrix(x)
+
+test_that("no error in fitting fitSmoothHazard.fit", {
+    fit_glmnet <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
+                                          family = "glmnet", ratio = 10,
+                                          lambda = c(0, 0.5)),
+                      silent = TRUE)
+
+    expect_false(inherits(fit_glmnet, "try-error"))
+})

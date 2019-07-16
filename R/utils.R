@@ -200,9 +200,16 @@ remove_offset <- function(x) {
 
 # Add a formula interface to cv.glmnet
 #' @importFrom stats model.matrix
-cv.glmnet.formula <- function(formula, data, event, ...) {
+cv.glmnet.formula <- function(formula, data, event, competingRisk = FALSE, ...) {
     X <- model.matrix(update(formula, ~ . -1), data)
     Y <- data[,event]
     offset <- data[,"offset"]
-    glmnet::cv.glmnet(X, Y, offset = offset, family = 'binomial', ...)
+    if (competingRisk) {
+        fam <- "multinomial"
+        offset <- NULL
+    } else {
+        fam <- "binomial"
+        offset <- data[,"offset"]
+    }
+    glmnet::cv.glmnet(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
 }
