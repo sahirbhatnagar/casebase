@@ -118,7 +118,7 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "nu
         newdata2[fit$timeVar] <- x
         withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
                             warning = handler_offset)
-        return(as.numeric(pred))
+        return(as.numeric(exp(pred)))
     }
 
     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
