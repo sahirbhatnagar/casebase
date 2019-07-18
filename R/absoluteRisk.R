@@ -161,6 +161,7 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo
     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
 }
 
+# Helper functions----
 call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method, nsamp) {
     # Call the correct function with correct parameters
     if (missing(newdata)) {
@@ -241,9 +242,12 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
             sampledPoints <- runif(nsamp)
             for (j in 1:nrow(newdata)) {
                 for (i in 2:length(time_ordered)) {
-                    output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
-                                                                                                                   time_ordered[i - 1]) +
-                                                                                                  time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
+                    # output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
+                    #                                                                                                time_ordered[i - 1]) +
+                    #                                                                               time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
+                    output[i, j + 1] <- integrate_mc(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
+                                                     fit = object, newdata = newdata[j,,drop = FALSE],
+                                                     subdivisions = nsamp)
                 }
                 output[,j + 1] <- cumsum(output[,j + 1])
             }
@@ -262,126 +266,4 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
         rownames(output) <- time
     }
     return(output)
-}
-
-#' @rdname absoluteRisk
-#' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "numerical"),
-                                  nsamp = 1000, onlyMain = TRUE, ...) {
-    method <- match.arg(method)
-
-    if (missing(newdata)) {
-        # Should we use the whole case-base dataset or the original one?
-        if (is.null(object@originalData)) {
-            stop("Can't estimate the mean absolute risk without the original data. See documentation.",
-                 call. = FALSE)
-        }
-        newdata <- object@originalData
-        # colnames(data)[colnames(data) == "event"] <- "status"
-        # Next commented line will break on data.table
-        # newdata <- newdata[, colnames(newdata) != "time"]
-        unselectTime <- (names(newdata) != object@timeVar)
-        newdata <- subset(newdata, select = unselectTime)
-    }
-    ###################################################
-    # In competing risks, we can get a cumulative
-    # incidence function using a nested double integral
-    # f_j = lambda_j * Survival
-    # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
-    ###################################################
-    J <- length(object@typeEvents) - 1
-    time_ordered <- unique(c(0, sort(time)))
-    output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
-    output[,1,] <- time_ordered
-    dimnames(output) <- list(rep("", length(time_ordered)),
-                             c("time", rep("", nrow(newdata))),
-                             paste("event", object@typeEvents[-1], sep = "="))
-    output[1,-1,] <- 0
-
-    # 1. Compute overall survival
-    overallLambda <- function(x, object, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[object@timeVar] <- x
-        # predictvglm doesn't like offset = 0
-        withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
-                            warning = handler_offset)
-        return(as.numeric(rowSums(exp(pred))))
-    }
-
-    if (length(time_ordered) > 1) {
-
-        if (method == "numerical") {
-            overallSurv <- function(x, object, newdata) {
-                exp(-integrate(overallLambda, lower = 0, upper = x[1], object = object, newdata = newdata,
-                               subdivisions = nsamp)$value)
-            }
-            # 2. Compute individual subdensities f_j
-            subdensities <- vector("list", length = J)
-            subdensity_template <- function(x, object, newdata, index) {
-                newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                                       row.names = as.character(1:length(x)))
-                newdata2[object@timeVar] <- x
-                # predictvglm doesn't like offset = 0
-                withCallingHandlers(lambdas <- VGAM::predictvglm(object, newdata2),
-                                    warning = handler_offset)
-                exp(lambdas[,index]) * overallSurv(x, object = object, newdata2)
-            }
-            for (j in 1:J) {
-                subdensities[[j]] <- partialize(subdensity_template, index = j)
-            }
-
-            # 3. Compute cumulative incidence functions F_j
-            for (i in 1:nrow(newdata)) {
-                for (j in 1:J) {
-                    for (k in 2:length(time_ordered)) {
-                        output[k,i + 1,j] <- integrate(subdensities[[j]], lower = time_ordered[k - 1],
-                                                       upper = time_ordered[k],
-                                                       object = object, newdata = newdata[i,,drop = FALSE],
-                                                       subdivisions = nsamp)$value
-                    }
-                    output[,i + 1,j] <- cumsum(output[,i + 1,j])
-                }
-            }
-        }
-
-        if (method == "montecarlo") {
-            sampledPoints <- runif(nsamp)
-            overallSurv <- function(x, object, newdata) {
-                sampledPoints <- runif(nsamp) * x
-                exp(-x * mean(overallLambda(sampledPoints, object = object, newdata = newdata)))
-            }
-            for (i in 1:nrow(newdata)) {
-                for (k in 2:length(time_ordered)) {
-                    x_vect <- sampledPoints * (time_ordered[k] - time_ordered[k - 1]) + time_ordered[k - 1]
-                    surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE])
-                    newdata2 <- data.frame(newdata[i,,drop = FALSE], offset = rep_len(0, length(x_vect)),
-                                           row.names = as.character(1:length(x_vect)))
-                    newdata2[object@timeVar] <- x_vect
-                    withCallingHandlers(pred <- exp(VGAM::predictvglm(object, newdata2)),
-                                        warning = handler_offset)
-
-                    output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * pred)
-                }
-                # if k==1, there was only one time point and we don't need to sum the contributions
-                if (k != 1) output[,i + 1,] <- apply(output[,i + 1,], 2, cumsum)
-            }
-
-        }
-
-    }
-
-    # Reformat output when only one time point
-    if (length(time) == 1) {
-        if (time == 0) {
-            output <- output[1,-1,,drop = FALSE]
-        } else {
-            output <- output[2,-1,,drop = FALSE]
-        }
-        dimnames(output)[[1]] <- time
-    }
-
-    # If there is only one time point, we should drop a dimension and return a matrix
-    if (onlyMain) return(output[,,1]) else return(output)
 }
