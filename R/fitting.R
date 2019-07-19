@@ -163,7 +163,7 @@ fitSmoothHazard <- function(formula, data, time,
                                 "eventVar" = eventVar,
                                 "formula" = formula
                                    )),
-                          class = class(model)
+                          class = c("CompRiskGlmnet", class(model))
                           ))
     }
     return(out)
@@ -261,6 +261,7 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
         out$eventVar <- eventVar
         out$matrix.fit <- TRUE
         out$formula_time <- formula_time
+        class(out) <- c("CompRiskGlmnet", class(out))
     }
     return(out)
 }

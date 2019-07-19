@@ -37,29 +37,192 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         return(exp(pred))
     }
 
+    # Compute subdensities
+    if (method == "numerical") {
+        overallLambda <- function(x, object, newdata, lambda_vec) {
+            return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
+        }
+        overallSurv <- function(x, object, newdata, lambda_vec,
+                                method, nsamp) {
+            # Need to integrate later, so need to ability to take a vector x
+            if (method == "numerical") {
+                fn <- function(t) {
+                    exp(-integrate(overallLambda, lower = 0, upper = t,
+                                   object = object, newdata = newdata,
+                                   lambda_vec = lambda_vec,
+                                   subdivisions = nsamp)$value)
+                }
+            } else if (method == "montecarlo"){
+                fn <- function(t) {
+                    exp(-integrate_mc(overallLambda, lower = 0, upper = t,
+                                      object = object, newdata = newdata,
+                                      lambda_vec = lambda_vec,
+                                      subdivisions = nsamp))
+                }
+            } else {
+                stop("Unrecognised integration method")
+            }
+            # Vectorize
+            return(sapply(x, fn))
+        }
+        J <- length(typeEvents) - 1
+        # 2. Compute individual subdensities f_j
+        subdensities <- vector("list", length = J)
+        subdensity_template <- function(x, object, newdata, index) {
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[timeVar] <- x
+            lambdas <- lambda_vec(x, object, newdata2)
+            lambdas[,index] * overallSurv(x, object = object, newdata2, lambda_vec, method, nsamp)
+        }
+        for (j in 1:J) {
+            subdensities[[j]] <- partialize(subdensity_template, index = j)
+        }
+    } else subdensities <- NULL
+
     return(estimate_risk_cr(object, time, newdata, method,
-                            nsamp, onlyMain,
+                            nsamp, onlyMain, subdensities,
                             lambda_vec, timeVar, typeEvents))
 
 }
 
+#' @rdname absoluteRisk
+#' @export
+absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
+                                        nsamp = 1000, onlyMain = TRUE, s = c("lambda.1se","lambda.min"), ...) {
+    method <- match.arg(method)
+
+    if (missing(newdata)) {
+        # Should we use the whole case-base dataset or the original one?
+        if (is.null(object$originalData)) {
+            stop("Can't estimate the mean absolute risk without the original data. See documentation.",
+                 call. = FALSE)
+        }
+        newdata <- object$originalData
+        # colnames(data)[colnames(data) == "event"] <- "status"
+        # Next commented line will break on data.table
+        # newdata <- newdata[, colnames(newdata) != "time"]
+        unselectTime <- (names(newdata) != object$timeVar)
+        newdata <- subset(newdata, select = unselectTime)
+    }
+    timeVar <- object$timeVar
+    typeEvents <- object$typeEvents
+    ###################################################
+    # In competing risks, we can get a cumulative
+    # incidence function using a nested double integral
+    # f_j = lambda_j * Survival
+    # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
+    ###################################################
+    if (is.null(object$matrix.fit)) {
+        lambda_vec <- function(x, object, newdata) {
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                   row.names = as.character(1:length(x)))
+            newdata2[timeVar] <- x
+            formula_pred <- update(formula(delete.response(terms(object$formula))), ~ . -1)
+            newdata_matrix <- model.matrix(formula_pred, newdata2)
+            pred <- predict(object, newdata_matrix, s, type = "response")
+            pred <- exp(pred[,seq(2, ncol(pred))] - pred[,1])
+            return(pred)
+        }
+    } else {
+        lambda_vec <- function(x, object, newdata) {
+            newdata_matrix <- newdata[,colnames(newdata) != timeVar, drop = FALSE]
+            newdata_matrix <- as.matrix(cbind(as.data.frame(newdata_matrix),
+                                              model.matrix(update(object$formula_time, ~ . -1),
+                                                           setNames(data.frame(x), timeVar)),
+                                              row.names = NULL))
+            pred <- predict(object, newdata_matrix, s, type = "response")
+            pred <- exp(pred[,seq(2, ncol(pred))] - pred[,1])
+            return(pred)
+        }
+    }
+
+    # Compute subdensities
+    if (method == "numerical") {
+        overallLambda <- function(x, object, newdata, lambda_vec) {
+            return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
+        }
+        overallSurv <- function(x, object, newdata, lambda_vec,
+                                method, nsamp) {
+            # Need to integrate later, so need to ability to take a vector x
+            if (method == "numerical") {
+                fn <- function(t) {
+                    exp(-integrate(overallLambda, lower = 0, upper = t,
+                                   object = object, newdata = newdata,
+                                   lambda_vec = lambda_vec,
+                                   subdivisions = nsamp)$value)
+                }
+            } else if (method == "montecarlo"){
+                fn <- function(t) {
+                    exp(-integrate_mc(overallLambda, lower = 0, upper = t,
+                                      object = object, newdata = newdata,
+                                      lambda_vec = lambda_vec,
+                                      subdivisions = nsamp))
+                }
+            } else {
+                stop("Unrecognised integration method")
+            }
+            # Vectorize
+            return(sapply(x, fn))
+        }
+        J <- length(typeEvents) - 1
+        # 2. Compute individual subdensities f_j
+        subdensities <- vector("list", length = J)
+        if (is.null(object$matrix.fit)) {
+            subdensity_template <- function(x, object, newdata, index) {
+                newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                                        row.names = as.character(1:length(x)))
+                newdata2[timeVar] <- x
+                lambdas <- lambda_vec(x, object, newdata2)
+                lambdas[,index] * overallSurv(x, object = object, newdata2, lambda_vec, method, nsamp)
+            }
+        } else {
+            subdensity_template <- function(x, object, newdata, index) {
+                newdata_matrix <- newdata[,colnames(newdata) != timeVar, drop = FALSE]
+                newdata_matrix <- as.matrix(cbind(as.data.frame(newdata_matrix),
+                                                  model.matrix(update(object$formula_time, ~ . -1),
+                                                               setNames(data.frame(x), timeVar)),
+                                                  row.names = NULL))
+                lambdas <- lambda_vec(x, object, newdata_matrix)
+                lambdas[,index] * overallSurv(x, object = object, newdata_matrix, lambda_vec, method, nsamp)
+            }
+        }
+
+        for (j in 1:J) {
+            subdensities[[j]] <- partialize(subdensity_template, index = j)
+        }
+    } else subdensities <- NULL
+
+    return(estimate_risk_cr(object, time, newdata, method,
+                            nsamp, onlyMain, subdensities,
+                            lambda_vec, timeVar, typeEvents))
+
+}
+
+predict.CompRiskGlmnet <- function(object, ...) {
+    if (!requireNamespace("glmnet", quietly = TRUE)) {
+        stop("Pkg glmnet needed for this function to work. Please install it.",
+             call. = FALSE)
+    } else drop(glmnet::predict.cv.glmnet(object, ...))
+}
+
 estimate_risk_cr <- function(object, time, newdata, method,
-                             nsamp, onlyMain,
+                             nsamp, onlyMain, subdensities,
                              lambda_vec, timeVar, typeEvents) {
+    # Create output matrix
     J <- length(typeEvents) - 1
     time_ordered <- unique(c(0, sort(time)))
     output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
     output[,1,] <- time_ordered
     dimnames(output) <- list(rep("", length(time_ordered)),
                              c("time", rep("", nrow(newdata))),
-                             paste("event", object@typeEvents[-1], sep = "="))
+                             paste("event", typeEvents[-1], sep = "="))
     output[1,-1,] <- 0
 
     # 1. Compute overall survival
     overallLambda <- function(x, object, newdata, lambda_vec) {
         return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
     }
-
     overallSurv <- function(x, object, newdata, lambda_vec,
                             method, nsamp) {
         # Need to integrate later, so need to ability to take a vector x
@@ -86,21 +249,6 @@ estimate_risk_cr <- function(object, time, newdata, method,
 
     if (length(time_ordered) > 1) {
         if (method == "numerical") {
-
-            # 2. Compute individual subdensities f_j
-            subdensities <- vector("list", length = J)
-            subdensity_template <- function(x, object, newdata, index) {
-                newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                                       row.names = as.character(1:length(x)))
-                newdata2[timeVar] <- x
-                # predictvglm doesn't like offset = 0
-                lambdas <- lambda_vec(x, object, newdata2)
-                lambdas[,index] * overallSurv(x, object = object, newdata2, lambda_vec, method, nsamp)
-            }
-            for (j in 1:J) {
-                subdensities[[j]] <- partialize(subdensity_template, index = j)
-            }
-
             # 3. Compute cumulative incidence functions F_j
             for (i in 1:nrow(newdata)) {
                 for (j in 1:J) {

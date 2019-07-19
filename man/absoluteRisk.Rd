@@ -2,6 +2,7 @@
 % Please edit documentation in R/absoluteRisk-cr.R, R/absoluteRisk.R
 \name{absoluteRisk.CompRisk}
 \alias{absoluteRisk.CompRisk}
+\alias{absoluteRisk.CompRiskGlmnet}
 \alias{absoluteRisk}
 \alias{absoluteRisk.default}
 \alias{absoluteRisk.glm}
@@ -12,6 +13,10 @@
 \method{absoluteRisk}{CompRisk}(object, time, newdata,
   method = c("montecarlo", "numerical"), nsamp = 1000,
   onlyMain = TRUE, ...)
+
+\method{absoluteRisk}{CompRiskGlmnet}(object, time, newdata,
+  method = c("montecarlo", "numerical"), nsamp = 1000,
+  onlyMain = TRUE, s = c("lambda.1se", "lambda.min"), ...)
 
 absoluteRisk(object, ...)
 
@@ -47,10 +52,10 @@ event of interest? Defaults to \code{TRUE}.}
 
 \item{...}{Extra parameters. Currently these are simply ignored.}
 
-\item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
-
 \item{s}{Value of the penalty parameter lambda at which predictions are required (for class
 \code{cv.glmnet}).}
+
+\item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
 }
 \value{
 If \code{time} was provided, returns the estimated absolute risk for the user-supplied
