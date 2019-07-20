@@ -8,8 +8,8 @@
 fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
   "glmnet"), censored.indicator, ratio = 100, ...)
 
-fitSmoothHazard.fit(x, y, formula_time, time, event, family = c("glm", "gbm",
-  "glmnet"), censored.indicator, ratio = 100, ...)
+fitSmoothHazard.fit(x, y, formula_time, time, event, family = c("glm",
+  "gbm", "glmnet"), censored.indicator, ratio = 100, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a
@@ -66,7 +66,7 @@ side.
 For single-event survival analysis, it is possible to fit the hazard function using
 \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family is controled by the
 parameter \code{family}. The default value is \code{glm}, which corresponds to logistic
-regression.
+regression. For competing risk analysis, only \code{glm} and \code{glmnet} are allowed.
 
 We also provide a matrix interface through \code{fitSmoothHazard.fit}, which mimics
 \code{glm.fit} and \code{gbm.fit}. This is mostly convenient for \code{family = "glmnet"}, since
@@ -75,7 +75,7 @@ setting, the matrix \code{y} should have two columns and contain the time and ev
 (e.g. like the output of \code{survival::Surv}). We need this linear function of time in order to
 perform case-base sampling. Therefore, nonlinear functions of time should be specified as a
 one-sided formula through the argument \code{formula_time} (the left-hand side is always
-ignored)..
+ignored).
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions

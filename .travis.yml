@@ -19,5 +19,5 @@ after_success:
 
 notifications:
   email:
-    - maxime.turgeon@mail.mcgill.ca
+    - turgeonmaxime@gmail.com
     - sahir.bhatnagar@gmail.com
