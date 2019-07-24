@@ -1,7 +1,7 @@
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo", "numerical"),
-                                  nsamp = 1000, onlyMain = TRUE, ...) {
+absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
+                                  nsamp = 100, onlyMain = TRUE, ...) {
     method <- match.arg(method)
 
     if (missing(newdata)) {
@@ -76,8 +76,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
-                                        nsamp = 1000, onlyMain = TRUE, s = c("lambda.1se","lambda.min"), ...) {
+absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
+                                        nsamp = 100, onlyMain = TRUE, s = c("lambda.1se","lambda.min"), ...) {
     warning("There is currently no guarantee that the output is correct.")
     method <- match.arg(method)
     if (is.numeric(s))
@@ -272,7 +272,10 @@ estimate_risk_cr <- function(object, time, newdata, method,
         }
         dimnames(output)[[1]] <- time
     }
-
+    # Sometimes montecarlo integration gives nonsensical probability estimates
+    if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
+        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
+    }
     # If there is only one time point, we should drop a dimension and return a matrix
     if (onlyMain) return(output[,,1, drop = TRUE]) else return(output)
 }

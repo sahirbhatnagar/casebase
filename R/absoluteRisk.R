@@ -87,7 +87,7 @@ absoluteRisk.default <- function(object, ...) {
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, ...) {
+absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, ...) {
     method <- match.arg(method)
 
     # Create hazard function
@@ -107,7 +107,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("montecarlo", "nu
 
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "numerical"), nsamp = 1000, n.trees, ...) {
+absoluteRisk.gbm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, n.trees, ...) {
     method <- match.arg(method)
 
     # Create hazard function
@@ -128,8 +128,8 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "nu
 #' @rdname absoluteRisk
 #' @importFrom stats formula delete.response setNames
 #' @export
-absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
-                                   nsamp = 1000, s = c("lambda.1se","lambda.min"), ...) {
+absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
+                                   nsamp = 100, s = c("lambda.1se","lambda.min"), ...) {
     method <- match.arg(method)
     if (is.numeric(s))
         s <- s[1]
@@ -268,6 +268,10 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
             output <- output[2,-1,drop = FALSE]
         }
         rownames(output) <- time
+    }
+    # Sometimes montecarlo integration gives nonsensical probability estimates
+    if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
+        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
     }
     return(output)
 }
