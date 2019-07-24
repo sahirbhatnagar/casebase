@@ -48,3 +48,21 @@ test_that("no error in stratified popTime with data.frame or data.table", {
     expect_false(inherits(out1, "try-error"))
     expect_false(inherits(out2, "try-error"))
 })
+
+test_that("plot methods-no error in popTime with data.frame or data.table", {
+    out1 <- try(plot(popTime(data = DTsim, time = "time", event = "event")))
+    out2 <- try(plot(popTime(data = DFsim, time = "time", event = "event")))
+
+    expect_false(inherits(out1, "try-error"))
+    expect_false(inherits(out2, "try-error"))
+})
+
+test_that("plot methods-no error in stratified popTime with data.frame or data.table", {
+    out1 <- try(plot(popTime(data = DTsim, time = "time",
+                             event = "event", exposure = "z")))
+    out2 <- try(plot(popTime(data = DFsim, time = "time",
+                             event = "event", exposure = "z")))
+
+    expect_false(inherits(out1, "try-error"))
+    expect_false(inherits(out2, "try-error"))
+})

@@ -1,6 +1,6 @@
 # This is where all utility functions should appear
 # These functions are not exported
-roundUp <- function(x) 10^ceiling(log10(x))
+# roundUp <- function(x) 10^ceiling(log10(x))
 
 # Handling warning messages coming from predictvglm when offset = 0
 handler_offset <- function(msg) {
