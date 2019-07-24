@@ -44,23 +44,11 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
         }
         overallSurv <- function(x, object, newdata, lambda_vec,
                                 method, nsamp) {
-            # Need to integrate later, so need to ability to take a vector x
-            if (method == "numerical") {
-                fn <- function(t) {
-                    exp(-integrate(overallLambda, lower = 0, upper = t,
-                                   object = object, newdata = newdata,
-                                   lambda_vec = lambda_vec,
-                                   subdivisions = nsamp)$value)
-                }
-            } else if (method == "montecarlo"){
-                fn <- function(t) {
-                    exp(-integrate_mc(overallLambda, lower = 0, upper = t,
-                                      object = object, newdata = newdata,
-                                      lambda_vec = lambda_vec,
-                                      subdivisions = nsamp))
-                }
-            } else {
-                stop("Unrecognised integration method")
+            fn <- function(t) {
+                exp(-integrate(overallLambda, lower = 0, upper = t,
+                               object = object, newdata = newdata,
+                               lambda_vec = lambda_vec,
+                               subdivisions = nsamp)$value)
             }
             # Vectorize
             return(sapply(x, fn))
@@ -90,7 +78,13 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("montecarlo"
 #' @export
 absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
                                         nsamp = 1000, onlyMain = TRUE, s = c("lambda.1se","lambda.min"), ...) {
+    warning("There is currently no guarantee that the output is correct.")
     method <- match.arg(method)
+    if (is.numeric(s))
+        s <- s[1]
+    else if (is.character(s)) {
+        s <- match.arg(s)
+    }
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
@@ -144,23 +138,11 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("monte
         }
         overallSurv <- function(x, object, newdata, lambda_vec,
                                 method, nsamp) {
-            # Need to integrate later, so need to ability to take a vector x
-            if (method == "numerical") {
-                fn <- function(t) {
-                    exp(-integrate(overallLambda, lower = 0, upper = t,
-                                   object = object, newdata = newdata,
-                                   lambda_vec = lambda_vec,
-                                   subdivisions = nsamp)$value)
-                }
-            } else if (method == "montecarlo"){
-                fn <- function(t) {
-                    exp(-integrate_mc(overallLambda, lower = 0, upper = t,
-                                      object = object, newdata = newdata,
-                                      lambda_vec = lambda_vec,
-                                      subdivisions = nsamp))
-                }
-            } else {
-                stop("Unrecognised integration method")
+            fn <- function(t) {
+                exp(-integrate(overallLambda, lower = 0, upper = t,
+                               object = object, newdata = newdata,
+                               lambda_vec = lambda_vec,
+                               subdivisions = nsamp)$value)
             }
             # Vectorize
             return(sapply(x, fn))

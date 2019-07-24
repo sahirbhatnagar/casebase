@@ -131,7 +131,11 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("montecarlo", "nu
 absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("montecarlo", "numerical"),
                                    nsamp = 1000, s = c("lambda.1se","lambda.min"), ...) {
     method <- match.arg(method)
-    s <- match.arg(s)
+    if (is.numeric(s))
+        s <- s[1]
+    else if (is.character(s)) {
+        s <- match.arg(s)
+    }
 
     # Create hazard function
     if (is.null(object$matrix.fit)) {

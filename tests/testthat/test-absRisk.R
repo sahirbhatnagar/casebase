@@ -236,6 +236,16 @@ test_that("no error in fitting glmnet", {
     expect_false(inherits(riskDT, "try-error"))
 })
 
+test_that("no error in using custom lambda in glmnet", {
+    riskDF <- try(absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext, s = 0.1),
+                  silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext, s = 0.1),
+                  silent = TRUE)
+
+    expect_false(inherits(riskDF, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
+})
+
 test_that("output probabilities", {
     riskDF_gam <- absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF, family = "gam")
     riskDT_gam <- absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT, family = "gam")

@@ -197,15 +197,15 @@ test_that("no error in absolute risk - new data", {
                                           family = "glmnet", ratio = 10,
                                           lambda = c(0, 0.5)),
                       silent = TRUE)
-    foo1 <- try(absoluteRisk(fit_glmnet, time = 1,
-                             newdata = new_x,
-                             method = "montecarlo",
-                             nsamp = 10),
-                silent = TRUE)
-    foo2 <- try(absoluteRisk(fit_glmnet, time = 1,
-                             newdata = new_x,
-                             method = "numerical"),
-                silent = TRUE)
+    expect_warning(foo1 <- try(absoluteRisk(fit_glmnet, time = 1,
+                                            newdata = new_x,
+                                            method = "montecarlo",
+                                            nsamp = 10),
+                               silent = TRUE))
+    expect_warning(foo2 <- try(absoluteRisk(fit_glmnet, time = 1,
+                                            newdata = new_x,
+                                            method = "numerical"),
+                               silent = TRUE))
 
     expect_false(inherits(foo1, "try-error"))
     expect_false(inherits(foo2, "try-error"))
@@ -219,15 +219,15 @@ test_that("no error in absolute risk with data frames - new data", {
                                         family = "glmnet", ratio = 10,
                                         lambda = c(0, 0.5)),
                         silent = TRUE)
-    foo1 <- try(absoluteRisk(fitDF_glmnet, time = 1,
-                             newdata = newDF_ext,
-                             method = "montecarlo",
-                             nsamp = 10),
-                silent = TRUE)
-    foo2 <- try(absoluteRisk(fitDF_glmnet, time = 1,
-                             newdata = newDF_ext,
-                             method = "numerical"),
-                silent = TRUE)
+    expect_warning(foo1 <- try(absoluteRisk(fitDF_glmnet, time = 1,
+                                            newdata = newDF_ext,
+                                            method = "montecarlo",
+                                            nsamp = 10),
+                               silent = TRUE))
+    expect_warning(foo2 <- try(absoluteRisk(fitDF_glmnet, time = 1,
+                                            newdata = newDF_ext,
+                                            method = "numerical"),
+                               silent = TRUE))
 
     expect_false(inherits(foo1, "try-error"))
     expect_false(inherits(foo2, "try-error"))
@@ -238,15 +238,15 @@ test_that("no error in absolute risk with data tables - new data", {
                                         family = "glmnet", ratio = 10,
                                         lambda = c(0, 0.5)),
                         silent = TRUE)
-    foo1 <- try(absoluteRisk(fitDT_glmnet, time = 1,
-                             newdata = newDT_ext,
-                             method = "montecarlo",
-                             nsamp = 10),
-                silent = TRUE)
-    foo2 <- try(absoluteRisk(fitDT_glmnet, time = 1,
-                             newdata = newDT_ext,
-                             method = "numerical"),
-                silent = TRUE)
+    expect_warning(foo1 <- try(absoluteRisk(fitDT_glmnet, time = 1,
+                                            newdata = newDT_ext,
+                                            method = "montecarlo",
+                                            nsamp = 10),
+                               silent = TRUE))
+    expect_warning(foo2 <- try(absoluteRisk(fitDT_glmnet, time = 1,
+                                         newdata = newDT_ext,
+                                         method = "numerical"),
+                               silent = TRUE))
 
     expect_false(inherits(foo1, "try-error"))
     expect_false(inherits(foo2, "try-error"))
