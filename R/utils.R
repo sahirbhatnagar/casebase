@@ -222,3 +222,20 @@ integrate_mc <- function(f, lower, upper, ..., subdivisions = 100L) {
                            max = upper)
     return((upper - lower) * mean(f(sampledPoints, ...)))
 }
+
+# Taken from brms package
+expand_dot_formula <- function(formula, data = NULL) {
+    if (isTRUE("." %in% all.vars(formula))) {
+        att <- attributes(formula)
+        try_terms <- try(
+            stats::terms(formula, data = data),
+            silent = TRUE
+        )
+        if (!is(try_terms, "try-error")) {
+            formula <- formula(try_terms)
+        }
+        attributes(formula) <- att
+    }
+    formula
+}
+
