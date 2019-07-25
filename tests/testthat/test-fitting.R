@@ -73,3 +73,10 @@ test_that("no error in fitting gbm", {
     expect_false(inherits(fitDF, "try-error"))
     expect_false(inherits(fitDT, "try-error"))
 })
+
+test_that("allow dot notation in formula", {
+    try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = ERSPC, time='Follow.Up.Time', ratio = 100),
+        silent = TRUE)
+
+    expect_false(inherits(model, "try-error"))
+})

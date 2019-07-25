@@ -87,6 +87,7 @@ fitSmoothHazard <- function(formula, data, time,
         stop("Pkg glmnet needed for this function to work. Please install it.",
              call. = FALSE)
     }
+    formula <- expand_dot_formula(formula, data = data)
     # Infer name of event variable from LHS of formula
     # eventVar <- as.character(attr(terms(formula), "variables")[[2]])
     eventVar <- all.vars(formula[[2]])
