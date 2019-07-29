@@ -223,8 +223,14 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
                                      censored.indicator, ratio)
     }
     sample_event <- as.matrix(sampleData[,eventVar])
-    sample_time_x <- cbind(as.matrix(sampleData[,!names(sampleData) %in% c(eventVar, timeVar, "offset")]),
-                           model.matrix(update(formula_time, ~ . -1), sampleData))
+    sample_time <- if (family %in% c("glmnet", "gbm")) {
+        model.matrix(update(formula_time, ~ . -1),
+                     sampleData)
+    } else {
+        model.matrix(formula_time, sampleData)
+    }
+    sample_time_x <- cbind(sample_time,
+                           as.matrix(sampleData[,!names(sampleData) %in% c(eventVar, timeVar, "offset")]))
     sample_offset <- sampleData$offset
 
     # Fit a binomial model if there are no competing risks
