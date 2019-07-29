@@ -211,7 +211,24 @@ cv.glmnet.formula <- function(formula, data, event, competingRisk = FALSE, ...) 
         fam <- "binomial"
         offset <- data[,"offset"]
     }
-    glmnet::cv.glmnet(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
+    cv.glmnet_offset_hack(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
+}
+
+cv.glmnet_offset_hack <- function(x, y, offset, ...) {
+    # For some values of the offset, cv.glmnet does not converge
+    # For constant offset, we can use the hack below
+    if (diff(range(offset)) > 1e-06) {
+        stop("Glmnet is only available with constant offset",
+             call. = FALSE)
+    }
+
+    offset_value <- unique(offset)[1]
+    # 1. Fit without offset
+    out <- glmnet::cv.glmnet(x, y, ...)
+    # 2. Fix the intercept
+    out$glmnet.fit$a0 <- out$glmnet.fit$a0 - offset_value
+
+    return(out)
 }
 
 # Montecarlo Integration
