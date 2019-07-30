@@ -60,16 +60,16 @@ exposure variable which must be contained in \code{data}. Default is
 }
 \value{
 The methods for \code{plot} return a population time plot, stratified by exposure status
-  in the case of \code{popTimeExposure}.
+in the case of \code{popTimeExposure}.
 
 The methods for \code{plot} return a population time plot, stratified by exposure status
-  in the case of \code{popTimeExposure}.
+in the case of \code{popTimeExposure}.
 
 An object of class \code{popTime} (or \code{popTimeExposure} if
-  exposure is specified), \code{data.table} and \code{data.frame} in this
-  order! The output of this function is to be used with the plot method for
-  objects of class \code{popTime} or of class \code{popTimeExposure}, which
-  will produce population time plots
+exposure is specified), \code{data.table} and \code{data.frame} in this
+order! The output of this function is to be used with the plot method for
+objects of class \code{popTime} or of class \code{popTimeExposure}, which
+will produce population time plots
 }
 \description{
 \code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
@@ -79,26 +79,26 @@ of incidence density
 }
 \details{
 It is assumed that \code{data} contains the two columns
-  corresponding to the supplied time and event variables. If either the
-  \code{time} or \code{event} argument is missing, the function looks for
-  columns that contain the words \code{"time"}, \code{"event"}, or
-  \code{"status"} in them (case insensitive). The function first looks for
-  the time variable, then it looks for the event variable. This order of
-  operation is important if for example the time variable is named
-  \code{"event time"} and the event variable is named \code{"event
+corresponding to the supplied time and event variables. If either the
+\code{time} or \code{event} argument is missing, the function looks for
+columns that contain the words \code{"time"}, \code{"event"}, or
+\code{"status"} in them (case insensitive). The function first looks for
+the time variable, then it looks for the event variable. This order of
+operation is important if for example the time variable is named
+\code{"event time"} and the event variable is named \code{"event
   indicator"}. This function will first (automatically) find the time
-  variable and remove this as a possibility from subsequent searches of the
-  event variable.
-  The following regular expressions are used for the time and event
-  variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
-  \item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
-   }
-  This allows for \code{"time"} to be preceded or followed by one or more
-  white space characters, one or more non-word characters or one or more
-  underscores. For example, the following column names would be recognized by
-  the function as the \code{"time"} variable: \code{"time of death",
+variable and remove this as a possibility from subsequent searches of the
+event variable.
+The following regular expressions are used for the time and event
+variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
+\item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
+}
+This allows for \code{"time"} to be preceded or followed by one or more
+white space characters, one or more non-word characters or one or more
+underscores. For example, the following column names would be recognized by
+the function as the \code{"time"} variable: \code{"time of death",
   "death_time", "Time", "time", "diagnosis_time", "time.diag", "diag__time"}.
-  But the following will not be recognized: \code{"diagtime","eventtime",
+But the following will not be recognized: \code{"diagtime","eventtime",
   "Timediag"}
 }
 \examples{

@@ -151,8 +151,11 @@
 #'\eqn{\beta_1} quantifies the amount by which the log hazard ratio for
 #'treatment changes for each one unit increase in log(t). Here we are assuming
 #'the time-dependent effect is induced by interacting the log hazard ratio with
-#'log time. The true parameters are 1. \eqn{\beta_0} = -0.5 2. \eqn{\beta_1} =
-#'0.15 3. \eqn{\lambda} = 0.1 4. \eqn{\gamma} = 1.5
+#'log time. The true parameters are
+#'1. \eqn{\beta_0} = -0.5
+#'2. \eqn{\beta_1} = 0.15
+#'3. \eqn{\lambda} = 0.1
+#'4. \eqn{\gamma} = 1.5
 #'
 #'@format A dataframe with 1000 observations and 4 variables: \describe{
 #'  \item{id}{patient id} \item{eventtime}{time of event} \item{status}{event

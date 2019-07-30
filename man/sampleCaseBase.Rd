@@ -27,7 +27,7 @@ variable is a numeric}
 }
 \value{
 The function returns a dataset, with the same format as the source dataset, and where
-  each row corresponds to a person-moment sampled from the case or the base series. otherwise)
+each row corresponds to a person-moment sampled from the case or the base series. otherwise)
 }
 \description{
 This function implements the case-base sampling approach described in Hanley and Miettinen, Int J
