@@ -1,35 +1,178 @@
-# View(rstpm2:::plot.stpm2.base)
+#' @title Plot Fitted Hazard Curve as a Funtion of Time
+#' @description Visualize estimated hazard curves as a funtion of time with
+#'   confidence intervals. This function takes as input, the result from the
+#'   [casebase::fitSmoothHazard()] function. The user can also specify a sequence of times
+#'   at which to estimate the hazard function. These plots are useful to
+#'   visualize the non-proportional hazards, i.e., time dependent interactions
+#'   with a covariate.
+#' @param object Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This
+#'   is the result from the [casebase::fitSmoothHazard()] function.
+#' @param newdata A data frame in which to look for variables with which to
+#'   predict. This is required and must contain all the variables used in the
+#'   model. Only one covariate profile can be used. If more than one row is
+#'   provided, only the first row will be used.
+#' @param type Type of plot. Currently, only "hazard" has been implemented.
+#'   Default: c("hazard")
+#' @param xlab x-axis label. Default: the name of the time variable from the
+#'   fitted `object`.
+#' @param breaks Number of points at which to estimate the hazard. This argument
+#'   is only used if argument `times=NULL`. This function will calculate a
+#'   sequence of times between the minimum and maximum of observed event times.
+#'   Default: 100.
+#' @param ci.lvl Confidence level. Must be in (0,1), Default: 0.95
+#' @param ylab y-axis label. Default: NULL which means the function will put
+#'   sensible defaults.
+#' @param line.col Line color, Default: 1. See [graphics::par()] for details.
+#' @param ci.col Confidence band color. Only used if argument `ci=TRUE`,
+#'   Default: 'grey'
+#' @param lty Line type. See [graphics::par()] for details, Default: par("lty")
+#' @param add Logical; if TRUE add to an already existing plot; Default: FALSE
+#' @param ci Logical; if TRUE confidence bands are calculated. Only available
+#'   for `family="glm"` and `family="gam"`, Default: !add
+#' @param rug Logical. Adds a rug representation (1-d plot) of the event times
+#'   (only for `status=1`), Default: !add
+#' @param s Value of the penalty parameter lambda at which predictions are
+#'   required (for class \code{cv.glmnet} only). Only the first entry will be
+#'   used if more than one numeric value is provided, Default: c("lambda.1se",
+#'   "lambda.min")
+#' @param times Vector of numeric values at which the hazard should be
+#'   calculated. Default: NULL which means this function will use the minimum
+#'   and maximum of observed event times with the `breaks` argument.
+#' @param ... further arguments passed to [graphics::matplot()]
+#' @return a plot of the hazard function and a data.frame of original data used
+#'   in the fitting along with the data used to create the plots including
+#'   `predictedhazard` which is the predicted hazard for a given covariate
+#'   pattern and time `predictedloghazard` is the predicted hazard on the log
+#'   scale. `lowerbound` and `upperbound` are the lower and upper confidence
+#'   interval bounds on the hazard scale (i.e. used to plot the confidence
+#'   bands). `standarderror` is the standard error of the log hazard (only if
+#'   `family="glm"` or `family="gam"`)
+#' @seealso [casebase::fitSmoothHazard()], [graphics::par()]
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#' data("simdat")
+#' library(splines)
+#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+#'                                         trt:ns(log(eventtime),df=1),
+#'                                     time = "eventtime",
+#'                                     data = simdat,
+#'                                     ratio = 100,
+#'                                     family = "glm")
+#'
+#' hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
+#'            ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+#' hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+#'            ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
+#' legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
+#'  }
+#' }
+#' @rdname hazardPlot
+#' @export
+hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
+                       breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
+                       ci.col = "grey", lty = par("lty"), add = FALSE,
+                       ci = !add, rug = !add, s = c("lambda.1se","lambda.min"),
+                       times = NULL, ...) {
 
-hazardPlot <- function(x, y, newdata = NULL, type = "surv", xlab = NULL,
-          ylab = NULL, line.col = 1, ci.col = "grey", lty = par("lty"),
-          log = "", add = FALSE, ci = !add, rug = !add, var = NULL,
-          exposed = incrVar(var), times = NULL, type.relsurv = c("excess", "total", "other"),
-          ratetable = survival::survexp.us,
-          rmap, scale = 365.24, ...) {
-    # if (type %in% c("meansurv", "meansurvdiff", "af", "meanhaz","meanhr")) {
-    #     return(plot.meansurv(x, times = times, newdata = newdata,
-    #                          type = type, xlab = xlab, ylab = ylab, line.col = line.col,
-    #                          ci.col = ci.col, lty = lty, add = add, ci = ci,
-    #                          rug = rug, exposed = exposed, ...))
-    # }
+    type <- match.arg(type)
+
     if (is.null(newdata))
         stop("newdata argument needs to be specified")
-    y <- predict(x, newdata, type = switch(type, fail = "surv",
-                                           margfail = "margsurv", type), var = var, exposed = exposed,
-                 grid = !(x@timeVar %in% names(newdata)), se.fit = ci,
-                 keep.attributes = TRUE, type.relsurv = type.relsurv,
-                 ratetable = ratetable, rmap = rmap, scale = scale)
-    if (type %in% c("fail", "margfail")) {
-        if (ci) {
-            y$Estimate <- 1 - y$Estimate
-            lower <- y$lower
-            y$lower = 1 - y$upper
-            y$upper = 1 - lower
-        }
-        else y <- structure(1 - y, newdata = attr(y, "newdata"))
+
+    if(!is.data.frame(newdata))
+        stop("newdata must be a data.frame")
+
+    if (nrow(newdata)>1) {
+        newdata <- newdata[1, , drop = FALSE]
+        warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
     }
+
+    if (any(names(newdata) %in% c("sequence_of_times","predictedloghazard")))
+        stop("sequence_of_times or predictedloghazard cannot be used as a colunm name in newdata. rename them to something else.")
+
+    if (any(names(newdata) %in% object[["timeVar"]]))
+        stop("%s cannot be used as a colunm name in newdata. remove it.",object[["timeVar"]])
+
+    obj_class <- class(object)[1]
+
+    if (obj_class %ni%  c("glm", "gam", "gbm", "cv.glmnet"))
+        stop("object must be of class glm, gam, gbm or cv.glmnet")
+
+    if (ci) {
+        if (!between(ci.lvl, 0,1, incbounds = FALSE))
+            stop("ci.lvl must be between 0 and 1")
+        if (obj_class %ni% c("glm","gam")) {
+            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",obj_class))
+            ci <- FALSE
+        }
+        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
+            stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
+    }
+
+    if (is.null(times)) {
+        times <- object[["originalData"]][[ object[["timeVar"]] ]]
+        times <- seq(min(times),max(times),length.out = breaks)
+    } else {
+        times <- times[order(times)]
+    }
+
+    newdata <- newdata[rep(seq_len(nrow(newdata)), each=length(times)), , drop = FALSE]
+    newdata$sequence_of_times <- times
+    names(newdata)[names(newdata) == 'sequence_of_times'] <- object[["timeVar"]]
+
+    newdata$offset <- 0
+
+    preds <- switch (obj_class,
+                     glm = {
+                         pp <- predict(object, newdata = newdata, se.fit = ci, type = "link")
+                         newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
+                         pp
+                     },
+
+                     gam = {
+                         pp <- predict(object, newdata = newdata, se.fit = ci, type = "link")
+                         newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
+                         pp
+                     },
+
+                     cv.glmnet = {
+                         if (is.numeric(s)) {
+                             if (length(s)>1) warning("More than one value for s has been supplied. Only first entry will be used")
+                             s <- s[1]
+                         } else if (is.character(s)) {
+                             s <- match.arg(s)
+                         }
+
+                         newx <- model.matrix(update(object$formula[-2], # First extract RHS
+                                                     ~ . -1), # Then remove intercept
+                                              newdata)
+
+                         # the newoffset=0 isn't required for now as glmnet is not using the offset
+                         # because of the hack
+                         pp <- predict(object, newx = newx, s = s, newoffset = 0)
+                         newdata$predictedloghazard <- pp
+                         pp
+                     },
+
+                     gbm = {
+                         pp <- predict(object, newdata, n.trees = object$n.trees)
+                         newdata$predictedloghazard <- pp
+                         pp
+
+                     }
+    )
+
+    if (ci) {
+        newdata$standarderror <- preds$se.fit
+        newdata$lowerbound <- exp(newdata$predictedloghazard + qnorm((1-ci.lvl)/2) * newdata$standarderror)
+        newdata$upperbound <- exp(newdata$predictedloghazard + qnorm(1-(1-ci.lvl)/2) * newdata$standarderror)
+    }
+
+    newdata$predictedhazard <- exp(newdata$predictedloghazard)
+
     if (is.null(xlab))
-        xlab <- deparse(x@timeExpr)
+        xlab <- object[["timeVar"]]
     if (is.null(ylab))
         ylab <- switch(type, hr = "Hazard ratio", hazard = "Hazard",
                        surv = "Survival", density = "Density", sdiff = "Survival difference",
@@ -42,233 +185,29 @@ hazardPlot <- function(x, y, newdata = NULL, type = "surv", xlab = NULL,
                        fail = "Failure", meanhaz = "Mean hazard", margfail = "Marginal failure",
                        af = "Attributable fraction", meanmargsurv = "Mean marginal survival",
                        uncured = "Uncured distribution")
-    xx <- attr(y, "newdata")
-    xx <- eval(x@timeExpr, xx)
+
+    ylims <- if (ci) range(newdata$lowerbound,newdata$upperbound) else range(newdata$predictedhazard)
+
     if (!add)
-        matplot(xx, y, type = "n", xlab = xlab, ylab = ylab,
-                log = log, ...)
+        matplot(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
+                type = "n", xlab = xlab, ylab = ylab, ylim = ylims, ...)
     if (ci) {
-        polygon(c(xx, rev(xx)), c(y[, 2], rev(y[, 3])), col = ci.col,
+        polygon(c(newdata[[object[["timeVar"]]]], rev(newdata[[object[["timeVar"]]]])),
+                c(newdata[["lowerbound"]], rev(newdata[["upperbound"]])),
+                col = ci.col,
                 border = ci.col)
-        lines(xx, y[, 1], col = line.col, lty = lty, ...)
-    }
-    else lines(xx, y, col = line.col, lty = lty, ...)
+        lines(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
+              col = line.col, lty = lty, ...)
+    } else lines(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
+                 col = line.col, lty = lty, ...)
     if (rug) {
-        Y <- x@y
-        eventTimes <- Y[Y[, ncol(Y)] == 1, ncol(Y) - 1]
-        rug(eventTimes, col = line.col)
+        # rug(object[["originalData"]][[ object[["timeVar"]] ]], col = line.col)
+        events <- object[["originalData"]][[object[["eventVar"]] ]]
+        rug(object[["originalData"]][which(events==1),,drop=F][[ object[["timeVar"]]  ]],
+            col = line.col)
     }
-    return(invisible(y))
+    return(invisible(newdata))
 }
 
 
 
-#
-# pacman::p_load(reprex)
-# # simulated non-PH example ------------------------------------------------
-#
-# pacman::p_load(simsurv) # to simulate data
-# pacman::p_load(rstpm2) # package that can fit non-PH model
-# pacman::p_load(casebase)
-# pacman::p_version(casebase)
-# pacman::p_load(splines) # for bsplines
-#
-#
-# covs <- data.frame(id = 1:5000, trt = rbinom(5000, 1, 0.5))
-# simdat <- simsurv(dist = "weibull", lambdas = 0.1, gammas = 1.5, betas = c(trt = -0.5),
-#                   x = covs, tde = c(trt = 0.15), tdefunction = "log", maxt = 5)
-# simdat <- merge(simdat, covs)
-# head(simdat)
-#
-# mod_tvc <- rstpm2::stpm2(Surv(eventtime, status) ~ trt,
-#                          data = simdat, tvc = list(trt = 1))
-#
-# mod_cb <- casebase::fitSmoothHazard(status ~ trt + nsx(log(eventtime), df = 3) +
-#                                       trt:nsx(log(eventtime),df=1),
-#                                     time = "eventtime",
-#                                     data = simdat,
-#                                     ratio = 100)
-# summary(mod_tvc)
-# summary(mod_cb)
-#
-#
-#
-#
-# # plot hazard function-rstpm2 ----------------------------------------------------
-#
-# plot(mod_tvc, newdata = data.frame(trt = 1), type = "hr",
-#      var = "trt", ylim = c(0,1), ci = TRUE, rug = FALSE,
-#      main = "Time dependent hazard ratio",
-#      ylab = "Hazard ratio", xlab = "Time")
-# mod_ph <- rstpm2::stpm2(Surv(eventtime, status) ~ trt,
-#                         data = simdat)
-# plot(mod_ph,  newdata = data.frame(trt = 0), type = "hr",
-#      var = "trt", ylim = c(0,1), add = TRUE, ci = FALSE, lty = 2)
-#
-# rstpm2::plot.aft.base()
-# pacman::p_functions("rstpm2")
-# rstpm2:::plot.stpm2.base
-# rstpm2:::predict.stpm2.base
-#
-#
-#
-# # plot-hazard function casebase -------------------------------------------
-#
-# pacman::p_load(simsurv) # to simulate data
-# pacman::p_load(casebase)
-# pacman::p_version(casebase)
-# pacman::p_load(splines) # for bsplines
-#
-#
-# covs <- data.frame(id = 1:5000, trt = rbinom(5000, 1, 0.5))
-# simdat <- simsurv(dist = "weibull", lambdas = 0.1, gammas = 1.5, betas = c(trt = -0.5),
-#                   x = covs, tde = c(trt = 0.15), tdefunction = "log", maxt = 5)
-# simdat <- merge(simdat, covs)
-#
-# mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
-#                                       trt:ns(log(eventtime),df=1),
-#                                     time = "eventtime",
-#                                     data = simdat,
-#                                     ratio = 100)
-# newdat <- data.frame(trt = 1,
-#                      eventtime = seq(min(simdat$eventtime),max(simdat$eventtime),0.01),
-#                      offset = 0)
-#
-# preds <- predict(mod_cb, newdata = newdat, se.fit = TRUE)
-#
-# newdat$haz <- preds$fit
-# newdat$se <- preds$se.fit
-# newdat$lower <- newdat$haz + qnorm(0.025) * newdat$se
-# newdat$upper <- newdat$haz + qnorm(0.975) * newdat$se
-#
-# matplot(newdat$eventtime, exp(newdat$haz), type = "n", xlab = "Time", ylab = "Hazard function")
-# polygon(c(newdat$eventtime, rev(newdat$eventtime)),
-#         c(exp(newdat$lower), rev(exp(newdat$upper))),
-#         col = "grey",
-#         border = "grey")
-# lines(newdat$eventtime, exp(newdat$haz), col = 1, lty = 1)
-#
-#
-#
-#
-# # Make a function to plot hazard function ---------------------------------
-#
-#
-# function (x, y, newdata = NULL, type = "surv", xlab = NULL,
-#           ylab = NULL, line.col = 1, ci.col = "grey", lty = par("lty"),
-#           log = "", add = FALSE, ci = !add, rug = !add, var = NULL,
-#           exposed = incrVar(var), times = NULL, type.relsurv = c("excess",
-#                                                                  "total", "other"), ratetable = survival::survexp.us,
-#           rmap, scale = 365.24, ...)
-# {
-#   if (type %in% c("meansurv", "meansurvdiff", "af", "meanhaz",
-#                   "meanhr")) {
-#     return(plot.meansurv(x, times = times, newdata = newdata,
-#                          type = type, xlab = xlab, ylab = ylab, line.col = line.col,
-#                          ci.col = ci.col, lty = lty, add = add, ci = ci,
-#                          rug = rug, exposed = exposed, ...))
-#   }
-#   if (is.null(newdata))
-#     stop("newdata argument needs to be specified")
-#   y <- predict(x, newdata, type = switch(type, fail = "surv",
-#                                          margfail = "margsurv", type), var = var, exposed = exposed,
-#                grid = !(x@timeVar %in% names(newdata)), se.fit = ci,
-#                keep.attributes = TRUE, type.relsurv = type.relsurv,
-#                ratetable = ratetable, rmap = rmap, scale = scale)
-#   if (type %in% c("fail", "margfail")) {
-#     if (ci) {
-#       y$Estimate <- 1 - y$Estimate
-#       lower <- y$lower
-#       y$lower = 1 - y$upper
-#       y$upper = 1 - lower
-#     }
-#     else y <- structure(1 - y, newdata = attr(y, "newdata"))
-#   }
-#   if (is.null(xlab))
-#     xlab <- deparse(x@timeExpr)
-#   if (is.null(ylab))
-#     ylab <- switch(type, hr = "Hazard ratio", hazard = "Hazard",
-#                    surv = "Survival", density = "Density", sdiff = "Survival difference",
-#                    hdiff = "Hazard difference", cumhaz = "Cumulative hazard",
-#                    loghazard = "log(hazard)", link = "Linear predictor",
-#                    meansurv = "Mean survival", meansurvdiff = "Difference in mean survival",
-#                    meanhr = "Mean hazard ratio", odds = "Odds", or = "Odds ratio",
-#                    margsurv = "Marginal survival", marghaz = "Marginal hazard",
-#                    marghr = "Marginal hazard ratio", haz = "Hazard",
-#                    fail = "Failure", meanhaz = "Mean hazard", margfail = "Marginal failure",
-#                    af = "Attributable fraction", meanmargsurv = "Mean marginal survival",
-#                    uncured = "Uncured distribution")
-#   xx <- attr(y, "newdata")
-#   xx <- eval(x@timeExpr, xx)
-#   if (!add)
-#     matplot(xx, y, type = "n", xlab = xlab, ylab = ylab,
-#             log = log, ...)
-#   if (ci) {
-#     polygon(c(xx, rev(xx)), c(y[, 2], rev(y[, 3])), col = ci.col,
-#             border = ci.col)
-#     lines(xx, y[, 1], col = line.col, lty = lty, ...)
-#   }
-#   else lines(xx, y, col = line.col, lty = lty, ...)
-#   if (rug) {
-#     Y <- x@y
-#     eventTimes <- Y[Y[, ncol(Y)] == 1, ncol(Y) - 1]
-#     rug(eventTimes, col = line.col)
-#   }
-#   return(invisible(y))
-# }
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# rstpm2:::plot.stpm2.base
-#
-#
-#
-# pacman::p_load(dplyr)
-#
-# newdat0 <- newdat %>% filter(trt==0)
-# newdat1 <- newdat %>% filter(trt==1)
-#
-# plot(newdat0$eventtime, newdat1$haz / newdat0$haz, type = "l")
-# plot(mod_tvc,  newdata = data.frame(trt = 0), type = "hr",
-#      var = "trt",
-#      # ylim = c(0,1),
-#      add = TRUE, ci = FALSE, lty = 2)
-#
-#
-# newdat2 <- data.frame(trt = 1,
-#                       eventtime = seq(min(simdat$eventtime),max(simdat$eventtime),0.01),
-#                       offset = 0)
-# newdat2$haz <- exp(predict(mod_cb, newdata = newdat2))
-# plot(newdat2$eventtime, newdat2$haz, type = "p", pch = 19, col = "red")
-#
-# library(magrittr)
-# newdat %>% head
-# rstpm2:::plot.stpm2.base
-#
-# plot(mod_tvc, newdata = data.frame(trt = 0), type = "hazard",
-#      var = "trt",
-#      # ylim = c(0,1),
-#      ci = FALSE,
-#      rug = FALSE,
-#      # main = "Time dependent hazard ratio",
-#      # ylab = "Hazard ratio",
-#      xlab = "Time")
-# lines(ttime, exp(haz), type = "l")
