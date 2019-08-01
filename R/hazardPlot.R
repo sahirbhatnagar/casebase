@@ -60,8 +60,9 @@
 #'                                     ratio = 100,
 #'                                     family = "glm")
 #'
-#' hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
+#' results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
 #'            ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+#' head(results0)
 #' hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
 #'            ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
 #' legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
