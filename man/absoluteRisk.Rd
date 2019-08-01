@@ -59,9 +59,9 @@ event of interest? Defaults to \code{TRUE}.}
 }
 \value{
 If \code{time} was provided, returns the estimated absolute risk for the user-supplied
-  covariate profiles. This will be stored in a 2- or 3-dimensional array, depending on the input
-  (see details). If both \code{time} and \code{newdata} were provided, returns the original data
-  with a new column containing the risk estimate at failure time.
+covariate profiles. This will be stored in a 2- or 3-dimensional array, depending on the input
+(see details). If both \code{time} and \code{newdata} were provided, returns the original data
+with a new column containing the risk estimate at failure time.
 }
 \description{
 Using the output of the function \code{fitSmoothHazard}, we can compute absolute risks by

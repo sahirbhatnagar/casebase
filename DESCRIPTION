@@ -44,4 +44,5 @@ VignetteBuilder: knitr
 URL: http://sahirbhatnagar.com/casebase/
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
 RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

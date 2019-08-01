@@ -46,9 +46,9 @@ Defaults to 100.}
 }
 \value{
 An object of \code{glm} and \code{lm} when there is only one event of interest, or of
-  class \code{\link{CompRisk}}, which inherits from \code{vglm}, for a competing risk analysis.
-  As such, functions like \code{summary}, \code{deviance} and \code{coefficients} give familiar
-  results.
+class \code{\link{CompRisk}}, which inherits from \code{vglm}, for a competing risk analysis.
+As such, functions like \code{summary}, \code{deviance} and \code{coefficients} give familiar
+results.
 }
 \description{
 Miettinen and Hanley (2009) explained how case-base sampling can be used to estimate

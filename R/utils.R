@@ -2,6 +2,8 @@
 # These functions are not exported
 # roundUp <- function(x) 10^ceiling(log10(x))
 
+`%ni%` <- Negate("%in%")
+
 # Handling warning messages coming from predictvglm when offset = 0
 handler_offset <- function(msg) {
     if (any(grepl("offset", msg))) invokeRestart("muffleWarning")

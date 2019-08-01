@@ -26,7 +26,7 @@ numeric}
 }
 \value{
 A list of length two. The first element is the factored event, and
-  the second element is the numeric representation of the event
+the second element is the numeric representation of the event
 }
 \description{
 Checks for event categories and gives a warning message indicating which
