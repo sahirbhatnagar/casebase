@@ -154,10 +154,13 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical"
             # Note: the offset should be set to zero when estimating the hazard.
             # newdata_matrix <- cbind(x, newdata)
             newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
-            newdata_matrix <- as.matrix(cbind(as.data.frame(newdata_matrix),
+            # newdata_matrix is organized to match the output from fitSmoothHazard.fit
+            newdata_matrix <- as.matrix(cbind(
                                               model.matrix(update(fit$formula_time, ~ . -1),
-                                                           setNames(data.frame(x), fit$timeVar))))
+                                                           setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
+
             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+
             return(as.numeric(exp(pred)))
         }
     }
@@ -233,7 +236,6 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
         if (method == "numerical") {
             for (j in 1:nrow(newdata)) {
                 for (i in 2:length(time_ordered)) {
-
                     output[i, j + 1] <- integrate(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
                                                   fit = object, newdata = newdata[j,,drop = FALSE],
                                                   subdivisions = nsamp)$value

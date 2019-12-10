@@ -4,8 +4,14 @@
 \alias{sampleCaseBase}
 \title{Create case-base dataset for use in fitting parametric hazard functions}
 \usage{
-sampleCaseBase(data, time, event, ratio = 10, comprisk = FALSE,
-  censored.indicator)
+sampleCaseBase(
+  data,
+  time,
+  event,
+  ratio = 10,
+  comprisk = FALSE,
+  censored.indicator
+)
 }
 \arguments{
 \item{data}{a data.frame or data.table containing the source dataset.}
