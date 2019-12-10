@@ -7,16 +7,32 @@
 \alias{checkArgsTimeEvent}
 \title{Population Time Plot}
 \usage{
-\method{plot}{popTime}(x, ..., xlab = "Follow-up time",
-  ylab = "Population", line.width = 1, line.colour = "grey80",
-  point.size = 1, point.colour = "red", legend = FALSE,
-  legend.position = c("bottom", "top", "left", "right"))
+\method{plot}{popTime}(
+  x,
+  ...,
+  xlab = "Follow-up time",
+  ylab = "Population",
+  line.width = 1,
+  line.colour = "grey80",
+  point.size = 1,
+  point.colour = "red",
+  legend = FALSE,
+  legend.position = c("bottom", "top", "left", "right")
+)
 
-\method{plot}{popTimeExposure}(x, ..., ncol = 1,
-  xlab = "Follow-up time", ylab = "Population", line.width = 1,
-  line.colour = "grey80", point.size = 1, point.colour = "red",
-  legend = FALSE, legend.position = c("bottom", "top", "left",
-  "right"))
+\method{plot}{popTimeExposure}(
+  x,
+  ...,
+  ncol = 1,
+  xlab = "Follow-up time",
+  ylab = "Population",
+  line.width = 1,
+  line.colour = "grey80",
+  point.size = 1,
+  point.colour = "red",
+  legend = FALSE,
+  legend.position = c("bottom", "top", "left", "right")
+)
 
 popTime(data, time, event, censored.indicator, exposure)
 

@@ -5,11 +5,27 @@
 \alias{fitSmoothHazard.fit}
 \title{Fit smooth-in-time parametric hazard functions.}
 \usage{
-fitSmoothHazard(formula, data, time, family = c("glm", "gam", "gbm",
-  "glmnet"), censored.indicator, ratio = 100, ...)
+fitSmoothHazard(
+  formula,
+  data,
+  time,
+  family = c("glm", "gam", "gbm", "glmnet"),
+  censored.indicator,
+  ratio = 100,
+  ...
+)
 
-fitSmoothHazard.fit(x, y, formula_time, time, event, family = c("glm",
-  "gbm", "glmnet"), censored.indicator, ratio = 100, ...)
+fitSmoothHazard.fit(
+  x,
+  y,
+  formula_time,
+  time,
+  event,
+  family = c("glm", "gbm", "glmnet"),
+  censored.indicator,
+  ratio = 100,
+  ...
+)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class): a

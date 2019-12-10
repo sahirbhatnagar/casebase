@@ -10,27 +10,59 @@
 \alias{absoluteRisk.cv.glmnet}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
-\method{absoluteRisk}{CompRisk}(object, time, newdata,
-  method = c("numerical", "montecarlo"), nsamp = 100,
-  onlyMain = TRUE, ...)
+\method{absoluteRisk}{CompRisk}(
+  object,
+  time,
+  newdata,
+  method = c("numerical", "montecarlo"),
+  nsamp = 100,
+  onlyMain = TRUE,
+  ...
+)
 
-\method{absoluteRisk}{CompRiskGlmnet}(object, time, newdata,
-  method = c("numerical", "montecarlo"), nsamp = 100,
-  onlyMain = TRUE, s = c("lambda.1se", "lambda.min"), ...)
+\method{absoluteRisk}{CompRiskGlmnet}(
+  object,
+  time,
+  newdata,
+  method = c("numerical", "montecarlo"),
+  nsamp = 100,
+  onlyMain = TRUE,
+  s = c("lambda.1se", "lambda.min"),
+  ...
+)
 
 absoluteRisk(object, ...)
 
 \method{absoluteRisk}{default}(object, ...)
 
-\method{absoluteRisk}{glm}(object, time, newdata, method = c("numerical",
-  "montecarlo"), nsamp = 100, ...)
+\method{absoluteRisk}{glm}(
+  object,
+  time,
+  newdata,
+  method = c("numerical", "montecarlo"),
+  nsamp = 100,
+  ...
+)
 
-\method{absoluteRisk}{gbm}(object, time, newdata, method = c("numerical",
-  "montecarlo"), nsamp = 100, n.trees, ...)
+\method{absoluteRisk}{gbm}(
+  object,
+  time,
+  newdata,
+  method = c("numerical", "montecarlo"),
+  nsamp = 100,
+  n.trees,
+  ...
+)
 
-\method{absoluteRisk}{cv.glmnet}(object, time, newdata,
-  method = c("numerical", "montecarlo"), nsamp = 100,
-  s = c("lambda.1se", "lambda.min"), ...)
+\method{absoluteRisk}{cv.glmnet}(
+  object,
+  time,
+  newdata,
+  method = c("numerical", "montecarlo"),
+  nsamp = 100,
+  s = c("lambda.1se", "lambda.min"),
+  ...
+)
 }
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
