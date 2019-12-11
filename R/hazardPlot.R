@@ -70,6 +70,8 @@
 #' }
 #' @rdname hazardPlot
 #' @export
+#' @importFrom graphics lines matplot par polygon
+#' @importFrom stats qnorm
 hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
                        ci.col = "grey", lty = par("lty"), add = FALSE,

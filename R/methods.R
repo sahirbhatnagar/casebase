@@ -56,7 +56,6 @@ plot.popTime <- function(x, ...,
 }
 
 #' @param ncol Number of columns.
-#' @inheritParams plot.popTime
 #' @return The methods for \code{plot} return a population time plot, stratified by exposure status
 #'   in the case of \code{popTimeExposure}.
 #' @import ggplot2
