@@ -24,6 +24,11 @@
 #'   \code{NULL}. This is used to produced exposure stratified plots. If an
 #'   \code{exposure} is specified, \code{popTime} returns an object of class
 #'   \code{popTimeExposure}
+#'  @param percentile_number Default=0.5. Give a value between 0-1. if the
+#'  percentile number of available subjects at any given point is less than 10,
+#'  then sample regardless of case status. Depending on distribution of survival
+#'  times and events event points may not be evenly distributed with default value.
+#'
 #'
 #' @details It is assumed that \code{data} contains the two columns
 #'   corresponding to the supplied time and event variables. If either the
@@ -57,7 +62,7 @@
 #' @import data.table
 #' @export
 popTime <- function(data, time, event, censored.indicator,
-                    exposure){
+                    exposure,percentile_number){
 
     #data <- DTsim;censored.indicator = NULL;exposure = "z" ; time = "time"; event = "event"
     #names(data)
@@ -67,6 +72,9 @@ popTime <- function(data, time, event, censored.indicator,
     ycoord <- yc <- n_available <- NULL
 
     DT <- data.table::as.data.table(data)
+    if (missing(percentile_number)) {
+        percentile_number <- 0.5
+    }
     if (missing(censored.indicator)) {
         censored.indicator <- NULL
     }
@@ -109,7 +117,8 @@ popTime <- function(data, time, event, censored.indicator,
 
         # if the 50th percentile number of available subjects at any given
         # point is less than 10, then sample regardless of case status
-        if (DT[,quantile(n_available, probs = 0.5)] < 10) {
+        ###NEED TO MAKE THIS LESS STRINGENT##############??????
+        if (DT[,quantile(n_available, probs = percentile_number)] < 15) {
             # message("Sampling from all remaining individuals under study,
             #         regardless of event status")
             DT[event == 1,
@@ -183,7 +192,7 @@ popTime <- function(data, time, event, censored.indicator,
 
             # if the 50th percentile number of available subjects at any given
             # point is less than 10, then sample regardless of case status
-            if (K[,quantile(n_available, probs = 0.5)] < 10) {
+            if (K[,quantile(n_available, probs = percentile_number)] < 10) {
                 # message("Sampling from all remaining individuals under study,
                 #     regardless of event status")
                 K[event == 1,
