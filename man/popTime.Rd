@@ -34,7 +34,7 @@
   legend.position = c("bottom", "top", "left", "right")
 )
 
-popTime(data, time, event, censored.indicator, exposure)
+popTime(data, time, event, censored.indicator, exposure, percentile_number)
 
 checkArgsTimeEvent(data, time, event)
 }
@@ -73,6 +73,11 @@ exposure variable which must be contained in \code{data}. Default is
 \code{NULL}. This is used to produced exposure stratified plots. If an
 \code{exposure} is specified, \code{popTime} returns an object of class
 \code{popTimeExposure}}
+
+\item{percentile_number}{Default=0.5. Give a value between 0-1. if the
+percentile number of available subjects at any given point is less than 10,
+then sample regardless of case status. Depending on distribution of survival
+times and events event points may not be evenly distributed with default value.}
 }
 \value{
 The methods for \code{plot} return a population time plot, stratified by exposure status
