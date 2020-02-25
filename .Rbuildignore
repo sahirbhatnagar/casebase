@@ -27,3 +27,4 @@
 ^update_doc.R$
 ^cran-comments\.md$
 ^appveyor\.yml$
+^R/new_poptime\.R$

@@ -15,20 +15,46 @@
 #' @method plot popTime
 #' @rdname popTime
 plot.popTime <- function(x, ...,
-                         xlab = "Follow-up time", ylab = "Population",
-                         line.width = 1, line.colour = "grey80",
-                         point.size = 1, point.colour = "red",
+                         xlab = "Follow-up time",
+                         ylab = "Population",
+                         add.base.series = FALSE,
+                         default.theme = TRUE,
+                         area.colour = "grey80",
+                         line.width,
+                         line.colour,
+                         point.size = 1,
+                         point.colour = "red",
                          legend = FALSE,
                          legend.position = c("bottom", "top", "left", "right")) {
+
     ycoord <- yc <- `event status` <- event <- NULL
 
-    p1 <- ggplot(x, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
+    if (!missing(line.colour)) {
+        warning("line.colour argument deprecated. use area.colour argument instead.
+                The parameter area.colour is set equal to line.colour.")
+        area.colour <- line.colour
+    }
+
+    if (!missing(line.width)) {
+        warning("line.width argument deprecated.")
+    }
+
+    # p1 <- ggplot(x, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
+    p1 <- ggplot()
+
 
     p2 <- p1 +
-        geom_segment(size = line.width, colour = line.colour) +
+        geom_ribbon(mapping = aes(x = time, ymin = 0, ymax = ycoord), fill = area.colour) +
         xlab(xlab) +
         ylab(ylab) +
-        theme_bw()
+        theme_minimal()
+
+browser()
+
+p2 + geom_mean(bar.params = list(data = x[event == 0], colour = "red"))
+
+geom_mean(add.base.series = T)
+str(p2)
 
     if (legend) {
         legend.position <- match.arg(legend.position)
@@ -37,23 +63,60 @@ plot.popTime <- function(x, ...,
                        data = x[event == 1], size = point.size) +
             theme(axis.text = element_text(size = 12, face = 'bold'),
                   legend.position = legend.position,
-                  legend.title = element_blank(),
-                  panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()) +
-            scale_colour_manual(values = c("event" = point.colour))
+                  legend.title = element_blank())
     } else {
         p2 +
             geom_point(aes(x = time, y = yc),
                        data = x[event == 1], colour = point.colour,
                        size = point.size) +
-            theme(axis.text = element_text(size = 12, face = 'bold'),
-                  panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank())
+            theme(axis.text = element_text(size = 12, face = 'bold'))#,
+                  # panel.grid.major = element_blank(),
+                  # panel.grid.minor = element_blank())
 
     }
 
 
 }
+
+# popTimeData <- popTime(data = ERSPC, time = "Follow.Up.Time",
+#                        event = "DeadOfPrCa")
+# plot(popTimeData)
+
+geom_mean <- function(..., add.base.series = FALSE,
+                      bar.params = list(), errorbar.params = list()) {
+    params <- list(...)
+    bar.params <- modifyList(params, bar.params)
+    errorbar.params  <- modifyList(params, errorbar.params)
+
+    bar <- do.call("geom_point", modifyList(
+        list(colour = "blue", size = 1),
+        bar.params)
+    )
+
+    geom_point()
+
+    errorbar <- do.call("geom_point", modifyList(
+        list(colour = "red", size = 1),
+        errorbar.params)
+    )
+
+    list(
+        bar,
+        if (add.base.series)
+            errorbar
+    )
+}
+
+
+# geoms <- list(
+#     geom_point(),
+#     geom_boxplot(aes(group = cut_width(displ, 1))),
+#     list(geom_point(), geom_smooth())
+# )
+#
+# p <- ggplot(mpg, aes(displ, hwy))
+# lapply(geoms, function(g) p + g)
+
 
 #' @param ncol Number of columns.
 #' @return The methods for \code{plot} return a population time plot, stratified by exposure status
