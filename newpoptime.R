@@ -63,25 +63,83 @@ popTimeData <- popTime(data = ERSPC,
 
 plot(popTimeData)
 
+devtools::load_all()
+cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
 plot(popTimeData,
      casebase.theme = TRUE,
      add.case.series = TRUE,
      ratio = 1,
      add.base.series = TRUE,
      legend = TRUE,
-     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-     base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
-     legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))
+     base.params = list(show.legend = TRUE))#,
+     # legend.params = list(name = element_blank(),
+     #                 breaks = c("Case series", "Competing event", "Base series"),
+     #                 values = cols))
+     # case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     # base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
+     # legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))
+
+
+popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+plot(popTimeData,
+     casebase.theme = TRUE,
+     add.case.series = TRUE,
+     ratio = 1,
+     add.base.series = TRUE,
+     legend = TRUE,
+     comprisk = TRUE,
+     add.competing.event = FALSE,
+     legend.params = list(name = element_blank(),
+                     breaks = c("Case series", "Competing event", "Base series"),
+                     values = cols),
+     theme.params = list(legend.position = "none"))
+     # case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     # base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
+     # legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))
+
 
 h <- ggplot(popTimeData)
 
 
-data("bmtcrr")
-head(bmtcrr)
-popTimeData <- popTime(data = bmtcrr, time = "ftime")
-
 devtools::load_all()
-plot(popTimeData)
+# library(casebase)
+popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     add.competing.event = FALSE,
+     comprisk = TRUE,
+     # case.params = list(show.legend = TRUE),
+     ratio = 1,
+     legend = T,
+     casebase.theme = TRUE,
+     theme.params = list(legend.position = "bottom"))
+
+
+
+bt <- data.table::as.data.table(bmtcrr)
+popTimeData <- popTime(data = bt, time = "ftime", event = "Status")
+
+
+
+head(popTimeData)
+
+
+rlang::last_error()
+?popTime
+
+head(popTimeData)
+popTimeData$comprisk.event <- 0
+popTimeData$comprisk.event[popTimeData$event == 1] <- 2
+popTimeData$comprisk.event[popTimeData$event == 2] <- 1
+
+table(popTimeData$comprisk.event, popTimeData$event)
+
+str(popTimeData)
+popTime(data = popTimeData, time = "time", event = "comprisk.event")
+
+
 
 
 # Ribbon ------------------------------------------------------------------
