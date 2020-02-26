@@ -49,6 +49,7 @@ huron %>% head
 library(casebase)
 library(ggplot2)
 
+
 devtools::load_all()
 ERSPC$ScrArm <- factor(ERSPC$ScrArm,
                        levels = c(0, 1),
@@ -60,16 +61,27 @@ popTimeData <- popTime(data = ERSPC,
                        time = "Follow.Up.Time",
                        event = "DeadOfPrCa")
 
+plot(popTimeData)
+
 plot(popTimeData,
      casebase.theme = TRUE,
-     add.case.series = FALSE,
+     add.case.series = TRUE,
      ratio = 1,
      add.base.series = TRUE,
      legend = TRUE,
-     base.params = list(aes(x = time, y = ycoord, colour = "controls")),
-     legend.params = list(breaks = "controls", values = c("controls" = "red")))
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
+     legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))
 
 h <- ggplot(popTimeData)
+
+
+data("bmtcrr")
+head(bmtcrr)
+popTimeData <- popTime(data = bmtcrr, time = "ftime")
+
+devtools::load_all()
+plot(popTimeData)
 
 
 # Ribbon ------------------------------------------------------------------

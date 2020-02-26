@@ -48,12 +48,12 @@ plot.popTime <- function(x, ...,
     if (!missing(line.width)) {
         warning("line.width argument deprecated.")
     }
-browser()
-    params <- list(...)
-    case.params <- modifyList(params, case.params)
-    base.params  <- modifyList(params, base.params)
-    competing.params  <- modifyList(params, competing.params)
-    ribbon.params  <- modifyList(params, ribbon.params)
+# browser()
+    # params <- list(...)
+    # case.params <- modifyList(params, case.params)
+    # base.params  <- modifyList(params, base.params)
+    # competing.params  <- modifyList(params, competing.params)
+    # ribbon.params  <- modifyList(params, ribbon.params)
 
     p2 <- list(
 
@@ -66,7 +66,7 @@ browser()
         # Add case series ---------------------------------------------------------
         if (add.case.series)
             do.call("geom_point", modifyList(
-                list(data = x[event == 1], mapping = aes(x = time, y = yc, colour = "Case series")),
+                list(data = x[event == 1], mapping = aes(x = time, y = yc, colour = "Case series"), show.legend = FALSE),
                 case.params)
             ),
 
@@ -75,8 +75,9 @@ browser()
         if (add.base.series) {
             basedata <- sampleCaseBase(data = x, time = "time", event = "event", ratio = ratio,
                                        comprisk = comprisk, censored.indicator = censored.indicator)
+            browser()
             do.call("geom_point", modifyList(
-                list(data = basedata[event == 0], mapping = aes(x = time, y = ycoord, colour = "Base series")),
+                list(data = basedata[event == 0], mapping = aes(x = time, y = ycoord, colour = "Base series"), show.legend = FALSE),
                 base.params)
             )
         },
@@ -107,7 +108,7 @@ browser()
     # cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
     # plot(seq_along(cbPalette),col = cbPalette, pch = 19, cex = 2.5)
 
-browser()
+# browser()
 
     # p1 <- ggplot(x, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
     p1 <- ggplot()
