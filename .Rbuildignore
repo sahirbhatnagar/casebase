@@ -6,6 +6,7 @@
 ^\.travis\.yml$
 ^cr\.R$
 ^exercises5\.R$
+^newpoptime\.R$
 ^risksets\.R$
 ^vignettes\/bmtcrr\.csv$
 ^inst\/doc\/.*R$

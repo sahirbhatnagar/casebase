@@ -17,9 +17,19 @@
 plot.popTime <- function(x, ...,
                          xlab = "Follow-up time",
                          ylab = "Population",
+                         add.case.series = TRUE,
                          add.base.series = FALSE,
-                         default.theme = TRUE,
+                         add.competing.event = FALSE,
+                         casebase.theme = TRUE,
                          area.colour = "grey80",
+                         ribbon.params = list(),
+                         case.params = list(),
+                         base.params = list(),
+                         competing.params = list(),
+                         legend.params = list(),
+                         ratio = 10,
+                         comprisk = FALSE,
+                         censored.indicator,
                          line.width,
                          line.colour,
                          point.size = 1,
@@ -38,84 +48,103 @@ plot.popTime <- function(x, ...,
     if (!missing(line.width)) {
         warning("line.width argument deprecated.")
     }
+browser()
+    params <- list(...)
+    case.params <- modifyList(params, case.params)
+    base.params  <- modifyList(params, base.params)
+    competing.params  <- modifyList(params, competing.params)
+    ribbon.params  <- modifyList(params, ribbon.params)
+
+    p2 <- list(
+
+        # Add poptime area --------------------------------------------------------
+        do.call("geom_ribbon", modifyList(
+            list(data = x, mapping = aes(x = time, ymin = 0, ymax = ycoord), fill = "grey80"),
+            ribbon.params)
+        ),
+
+        # Add case series ---------------------------------------------------------
+        if (add.case.series)
+            do.call("geom_point", modifyList(
+                list(data = x[event == 1], mapping = aes(x = time, y = yc, colour = "Case series")),
+                case.params)
+            ),
+
+
+        # Add base series ---------------------------------------------------------
+        if (add.base.series) {
+            basedata <- sampleCaseBase(data = x, time = "time", event = "event", ratio = ratio,
+                                       comprisk = comprisk, censored.indicator = censored.indicator)
+            do.call("geom_point", modifyList(
+                list(data = basedata[event == 0], mapping = aes(x = time, y = ycoord, colour = "Base series")),
+                base.params)
+            )
+        },
+
+
+        # Add legend --------------------------------------------------------------
+        if (legend) {
+            cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
+
+            # cols <- c("Case series" = "#D55E00", "Base series" = "#0072B2")
+
+
+            do.call("scale_colour_manual", modifyList(
+                list(name = element_blank(),
+                     breaks = c("Case series", "Competing evemt", "Base series"),
+                     # breaks = c("Case series", "Base series"),
+                     values = cols), legend.params)
+            )
+        },
+
+
+        # Use casebase theme or not -----------------------------------------------
+        if (casebase.theme)
+            theme_minimal()
+    )
+
+
+    # cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    # plot(seq_along(cbPalette),col = cbPalette, pch = 19, cex = 2.5)
+
+browser()
 
     # p1 <- ggplot(x, aes(x = 0, xend = time, y = ycoord, yend = ycoord))
     p1 <- ggplot()
 
-
-    p2 <- p1 +
-        geom_ribbon(mapping = aes(x = time, ymin = 0, ymax = ycoord), fill = area.colour) +
-        xlab(xlab) +
-        ylab(ylab) +
-        theme_minimal()
-
-browser()
-
-p2 + geom_mean(bar.params = list(data = x[event == 0], colour = "red"))
-
-geom_mean(add.base.series = T)
-str(p2)
-
-    if (legend) {
-        legend.position <- match.arg(legend.position)
-        p2 +
-            geom_point(aes(x = time, y = yc, colour = `event status`),
-                       data = x[event == 1], size = point.size) +
-            theme(axis.text = element_text(size = 12, face = 'bold'),
-                  legend.position = legend.position,
-                  legend.title = element_blank())
-    } else {
-        p2 +
-            geom_point(aes(x = time, y = yc),
-                       data = x[event == 1], colour = point.colour,
-                       size = point.size) +
-            theme(axis.text = element_text(size = 12, face = 'bold'))#,
-                  # panel.grid.major = element_blank(),
-                  # panel.grid.minor = element_blank())
-
-    }
+    p1 + p2 + xlab(xlab) + ylab(ylab)
+    # browser()
+    # #+
+    #     # scale_colour_manual(name = element_blank(),
+    #                        # breaks = c("Case series", "Base series"),
+    #                        # values = cols) #+
+    #     # theme(axis.text = element_text(size = 12, face = 'bold'),
+    #           # legend.position = "bottom",
+    #           # legend.title = element_blank())
+    #
+    #
+    # if (legend) {
+    #     legend.position <- match.arg(legend.position)
+    #     p2 +
+    #         geom_point(aes(x = time, y = yc, colour = `event status`),
+    #                    data = x[event == 1], size = point.size) +
+    #         theme(axis.text = element_text(size = 12, face = 'bold'),
+    #               legend.position = legend.position,
+    #               legend.title = element_blank())
+    # } else {
+    #     p2 +
+    #         geom_point(aes(x = time, y = yc),
+    #                    data = x[event == 1], colour = point.colour,
+    #                    size = point.size) +
+    #         theme(axis.text = element_text(size = 12, face = 'bold'))#,
+    #               # panel.grid.major = element_blank(),
+    #               # panel.grid.minor = element_blank())
+    #
+    # }
 
 
 }
 
-# popTimeData <- popTime(data = ERSPC, time = "Follow.Up.Time",
-#                        event = "DeadOfPrCa")
-# plot(popTimeData)
-
-geom_mean <- function(..., add.base.series = FALSE,
-                      bar.params = list(), errorbar.params = list()) {
-    params <- list(...)
-    bar.params <- modifyList(params, bar.params)
-    errorbar.params  <- modifyList(params, errorbar.params)
-
-    bar <- do.call("geom_point", modifyList(
-        list(colour = "blue", size = 1),
-        bar.params)
-    )
-
-    geom_point()
-
-    errorbar <- do.call("geom_point", modifyList(
-        list(colour = "red", size = 1),
-        errorbar.params)
-    )
-
-    list(
-        bar,
-        if (add.base.series)
-            errorbar
-    )
-}
-
-
-# geoms <- list(
-#     geom_point(),
-#     geom_boxplot(aes(group = cut_width(displ, 1))),
-#     list(geom_point(), geom_smooth())
-# )
-#
-# p <- ggplot(mpg, aes(displ, hwy))
-# lapply(geoms, function(g) p + g)
 
 
 #' @param ncol Number of columns.
