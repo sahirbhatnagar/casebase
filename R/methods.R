@@ -2,14 +2,88 @@
 
 #' Population Time Plot
 #'
-#' @description \code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
+#' @description \code{plot} method for objects of class \code{popTime} and
+#'   \code{popTimeExposure}
 #'
 #' @param x an object of class \code{popTime} or \code{popTimeExposure}.
 #' @param ... Ignored.
-#' @param xlab,ylab,line.width,line.colour,point.size,point.colour,legend,legend.position See
-#'   \code{\link[graphics]{par}}.
-#' @return The methods for \code{plot} return a population time plot, stratified by exposure status
-#'   in the case of \code{popTimeExposure}.
+#' @param xlab,ylab The title of the respective axis. Default: 'Follow-up time'
+#'   for xlab and 'Population' for ylab
+#' @param add.case.series Logical indicating if the case series should be added
+#'   to the plot. Default: TRUE
+#' @param add.base.series Logical indicating if the base series should be added
+#'   to the plot. Default: FALSE
+#' @param add.competing.event Logical indicating if the competing event should
+#'   be added to the plot. Default: FALSE
+#' @param casebase.theme Logical indication if the casebase theme be used. The
+#'   casebase theme uses \code{\link[ggplot2]{theme_minimal}}. Default: TRUE.
+#' @param ribbon.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{geom_ribbon}} which is used to plot the
+#'   population-time area. These arguments will override the function defaults.
+#'   For example, you can set \code{ribbon.params = list(colour = 'green')} if
+#'   you want the area to be green.
+#' @param case.params,base.params,competing.params A list containing arguments
+#'   that are passed to \code{\link[ggplot2]{geom_point}} which is used to plot
+#'   the case series, base series, competing events. These arguments will
+#'   override the function defaults. For example, you can set \code{case.params
+#'   = list(size = 1.5)} if you want to increase the point size for the case
+#'   series points. Note: do not use this argument to change the color of the
+#'   points. Doing so will result in unexpected results for the legend. See the
+#'   \code{legend.params} argument, if you want to change the color of the
+#'   points.
+#' @param legend.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{scale_color_manual}} which is used to plot the legend.
+#'   Only used if \code{legend=TRUE}. These arguments will override the function
+#'   defaults. Use this argument if you want to change the color of the points.
+#'   See examples for more details.
+#' @param theme.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{theme}}. For example \code{theme.params =
+#'   list(legend.position = 'none'}.
+#' @param ratio If \code{add.base.series=TRUE}, integer, giving the ratio of the
+#'   size of the base series to that of the case series. This argument is passed
+#'   to the \code{\link{sampleCaseBase}} function. Default: 10.
+#' @param censored.indicator If \code{add.base.series=TRUE}, a character string
+#'   of length 1 indicating which value in event is the censored. This function
+#'   will use relevel to set \code{censored.indicator} as the reference level.
+#'   This argument is ignored if the event variable is a numeric. This argument
+#'   is passed to the \code{\link{sampleCaseBase}} function.
+#' @param comprisk If \code{add.base.series=TRUE}, logical indicating whether we
+#'   have multiple event types and that we want to consider some of them as
+#'   competing risks. This argument is passed to the
+#'   \code{\link{sampleCaseBase}} function. Note: should be \code{TRUE} if your
+#'   data has competing risks, even if you dont want to add competing risk
+#'   points (\code{add.competing.event=FALSE}). Default: FALSE
+#' @param legend Logical indicating if a legend should be added to the plot.
+#'   Note that if you want to change the colors of the points, through the
+#'   \code{legend.params} argument, then set \code{legend=TRUE}. If you want to
+#'   change the color of the points but not have a legend, then set
+#'   \code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
+#'   Default: FALSE
+#' @param legend.position Deprecated. Specify the legend.position argument
+#'   instead in the \code{theme.params} argument. e.g. \code{theme.params =
+#'   list(legend.position = 'bottom')}.
+#' @param line.width Deprecated.
+#' @param line.colour Deprecated. specify the fill argument instead in
+#'   \code{ribbon.params}. e.g. \code{ribbon.params = list(fill = 'red')}.
+#' @param point.size Deprecated. specify the size argument instead in the
+#'   \code{case.params} or \code{base.params} or \code{competing.params}
+#'   argument. e.g. \code{case.params = list(size = 1.5)}.
+#' @param point.colour Deprecated. Specify the values argument instead in the
+#'   \code{legend.params} argument. See examples for details.
+#' @return The methods for \code{plot} return a population time plot, stratified
+#'   by exposure status in the case of \code{popTimeExposure}. Note that these
+#'   are \code{ggplot2} objects and can therefore be used in subsequent ggplot2
+#'   type plots. See examples and vignette for details.
+#' @details This function leverages the \code{ggplot2} package to build
+#'   population time plots. It builds the plot by adding layers, starting with a
+#'   layer for the area representing the population time. It then sequentially
+#'   adds points to the plots to show the casebase sampling mechanism. This
+#'   function gives user the flexibility to add any combination of the
+#'   case.series, base.series and competing events. The case series and
+#'   competing events are sampled at random vertically on the plot in order to
+#'   visualise the incidence density using the \code{\link{popTime}} function.
+#'   The base series is sampled horizontally on the plot using the
+#'   \code{\link{sampleCaseBase}} function.
 #' @import ggplot2
 #' @examples
 #' # change color of points, but don't produce a legend
@@ -45,7 +119,7 @@ plot.popTime <- function(x, ...,
                          theme.params = list(),
                          ratio = 10,
                          censored.indicator,
-                         comprisk = FALSE, # passed to sampleCaseBase. should be true if your data has comp risk, even if you dont want to add comprisk points
+                         comprisk = FALSE,
                          legend = FALSE,
                          legend.position,
                          line.width,

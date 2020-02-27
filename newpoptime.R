@@ -82,7 +82,7 @@ plot(popTimeData,
 
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
 cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
-plot(popTimeData,
+p1 <- plot(popTimeData,
      casebase.theme = TRUE,
      add.case.series = TRUE,
      ratio = 1,
@@ -94,6 +94,11 @@ plot(popTimeData,
                      breaks = c("Case series", "Competing event", "Base series"),
                      values = cols),
      theme.params = list(legend.position = "none"))
+
+dev.off()
+p1
+
+p1 + labs(caption = c("hellow worls"), title = "Poptime", x = "nine")
      # case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
      # base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
      # legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))
