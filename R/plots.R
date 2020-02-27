@@ -154,6 +154,8 @@ popTime <- function(data, time, event, censored.indicator,
 
         }
         class(DT) <- c("popTime",class(DT))
+        attr(DT, "exposure") <- NULL
+        attr(DT, "call") <- match.call()
         return(DT)
 
     } else {
@@ -168,9 +170,9 @@ popTime <- function(data, time, event, censored.indicator,
         l <- lapply(l,
                 function(i) {
                     transform(i,
-                    event = checkArgsEventIndicator(data = i, event = varNames$event,
+                    event = checkArgsEventIndicator(data = i, event = "event",
                           censored.indicator = censored.indicator)$event.numeric,
-                   `event status` = checkArgsEventIndicator(data = i, event = varNames$event,
+                   `event status` = checkArgsEventIndicator(data = i, event = "event",
                               censored.indicator = censored.indicator)$event.factor
                         )
                     }
@@ -227,14 +229,14 @@ popTime <- function(data, time, event, censored.indicator,
                 K[event == 1 & n_available == 0, yc := ycoord]
 
             }
-
         }
         )
+
         lk <- data.table::rbindlist(l)
-        lkj <- list(data = lk, exposure = exposure)
-        class(lkj) <- c("popTimeExposure", class(lkj))
-        attr(lkj, "call") <- match.call()
-        return(lkj)
+        attr(lk, "exposure") <- exposure
+        class(lk) <- c("popTimeExposure", class(lk))
+        attr(lk, "call") <- match.call()
+        return(lk)
 
     }
 

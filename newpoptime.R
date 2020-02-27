@@ -1,3 +1,32 @@
+devtools::load_all()
+data("bmtcrr")
+head(bmtcrr)
+str(bmtcrr)
+
+popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status", exposure = "D")
+# popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+
+attr(popTimeData, "exposure")
+attr(popTimeData, "call")
+
+plot(popTimeData,
+     add.base.series = T,
+     comprisk = T,
+     add.competing.event = T,
+     ratio = 1,
+     legend = TRUE,
+     facet.params = list(ncol=1),
+     theme.params = list(legend.position = "top"),
+     casebase.theme = F
+)
+
+str(popTimeData)
+
+
+
+
+
+
 library(casebase)
 library(ggplot2)
 

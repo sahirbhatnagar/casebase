@@ -36,15 +36,29 @@
 \method{plot}{popTimeExposure}(
   x,
   ...,
-  ncol = 1,
   xlab = "Follow-up time",
   ylab = "Population",
-  line.width = 1,
-  line.colour = "grey80",
-  point.size = 1,
-  point.colour = "red",
+  add.case.series = TRUE,
+  add.base.series = FALSE,
+  add.competing.event = FALSE,
+  casebase.theme = TRUE,
+  ribbon.params = list(),
+  case.params = list(),
+  base.params = list(),
+  competing.params = list(),
+  legend.params = list(),
+  theme.params = list(),
+  facet.params = list(),
+  ratio = 10,
+  censored.indicator,
+  comprisk = FALSE,
   legend = FALSE,
-  legend.position = c("bottom", "top", "left", "right")
+  ncol,
+  legend.position,
+  line.width,
+  line.colour,
+  point.size,
+  point.colour
 )
 
 popTime(data, time, event, censored.indicator, exposure, percentile_number)
@@ -95,7 +109,7 @@ See examples for more details.}
 
 \item{theme.params}{A list containing arguments that are passed to
 \code{\link[ggplot2]{theme}}. For example \code{theme.params =
-  list(legend.position = 'none'}.}
+  list(legend.position = 'none')}.}
 
 \item{ratio}{If \code{add.base.series=TRUE}, integer, giving the ratio of the
 size of the base series to that of the case series. This argument is passed
@@ -137,7 +151,12 @@ argument. e.g. \code{case.params = list(size = 1.5)}.}
 \item{point.colour}{Deprecated. Specify the values argument instead in the
 \code{legend.params} argument. See examples for details.}
 
-\item{ncol}{Number of columns.}
+\item{facet.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
+used if plotting exposure stratified population time plots. These arguments
+will override the function defaults.}
+
+\item{ncol}{Deprecated. Use \code{facet.params} instead.}
 
 \item{data}{a \code{data.frame} or \code{data.table} containing the source
 dataset.}
@@ -171,8 +190,8 @@ by exposure status in the case of \code{popTimeExposure}. Note that these
 are \code{ggplot2} objects and can therefore be used in subsequent ggplot2
 type plots. See examples and vignette for details.
 
-The methods for \code{plot} return a population time plot, stratified by exposure status
-in the case of \code{popTimeExposure}.
+The methods for \code{plot} return a population time plot, stratified
+by exposure status in the case of \code{popTimeExposure}.
 
 An object of class \code{popTime} (or \code{popTimeExposure} if
 exposure is specified), \code{data.table} and \code{data.frame} in this
@@ -203,8 +222,13 @@ function gives user the flexibility to add any combination of the
 case.series, base.series and competing events. The case series and
 competing events are sampled at random vertically on the plot in order to
 visualise the incidence density using the \code{\link{popTime}} function.
-The base series is sampled horizontally on the plot using the
-\code{\link{sampleCaseBase}} function.
+That is, imagine we draw a vertical line at a specific event time. We then
+plot the point at a randomly sampled y-coordinate along this vertical line.
+This is done to avoid having all points along the upper edge of the plot
+(because the subjects with the least amount of observation time are plotted
+at the top of the y-axis). By randomly distributing them, we can get a
+better sense of the inicidence density. The base series is sampled
+horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 
 It is assumed that \code{data} contains the two columns
 corresponding to the supplied time and event variables. If either the
@@ -254,5 +278,8 @@ p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
 }
 }
 \seealso{
+\link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
+\link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
+
 \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
 }
