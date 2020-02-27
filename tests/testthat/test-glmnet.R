@@ -1,4 +1,5 @@
 context("Glmnet")
+library(splines)
 
 N <- 1000; p <- 30
 nzc <- p/3

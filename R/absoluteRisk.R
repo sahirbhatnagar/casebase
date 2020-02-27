@@ -2,52 +2,58 @@
 
 #' Compute absolute risks using the fitted hazard function.
 #'
-#' Using the output of the function \code{fitSmoothHazard}, we can compute absolute risks by
-#' integrating the fitted hazard function over a time period and then converting this to an
-#' estimated survival for each individual.
+#' Using the output of the function \code{fitSmoothHazard}, we can compute
+#' absolute risks by integrating the fitted hazard function over a time period
+#' and then converting this to an estimated survival for each individual.
 #'
-#' If the user supplies the original dataset through the parameter \code{newdata}, the mean absolute
-#' risk can be computed as the average of the output vector.
+#' If the user supplies the original dataset through the parameter
+#' \code{newdata}, the mean absolute risk can be computed as the average of the
+#' output vector.
 #'
-#' In general, if \code{time} is a vector of length greater than one, the output will include a
-#' column corresponding to the provided time points. Some modifications of the \code{time} vector
-#' are done: \code{time=0} is added, the time points are ordered, and duplicates are removed. All
-#' these modifications simplify the computations and give an output that can easily be used to plot
+#' In general, if \code{time} is a vector of length greater than one, the output
+#' will include a column corresponding to the provided time points. Some
+#' modifications of the \code{time} vector are done: \code{time=0} is added, the
+#' time points are ordered, and duplicates are removed. All these modifications
+#' simplify the computations and give an output that can easily be used to plot
 #' risk curves.
 #'
-#' On the other hand, if \code{time} corresponds to a single time point, the output does not include
-#' a column corresponding to time.
+#' On the other hand, if \code{time} corresponds to a single time point, the
+#' output does not include a column corresponding to time.
 #'
-#' If there is no competing risk, the output is a matrix where each column corresponds to the
-#' several covariate profiles, and where each row corresponds to a time point. If there are
-#' competing risks, the output will be a 3-dimensional array, with the third dimension corresponding
-#' to the different events.
+#' If there is no competing risk, the output is a matrix where each column
+#' corresponds to the several covariate profiles, and where each row corresponds
+#' to a time point. If there are competing risks, the output will be a
+#' 3-dimensional array, with the third dimension corresponding to the different
+#' events.
 #'
-#' The numerical method should be good enough in most situation, but Monte Carlo integration can
-#' give more accurate results when the estimated hazard function is not smooth (e.g. when modeling
-#' with time-varying covariates). However, if there are competing risks, we strongly encourage the
-#' user to select Monte-Carlo integration, which is much faster than the numerical method. (This is
-#' due to the current implementation of the numerical method, and it may be improved in future
-#' versions.)
+#' The numerical method should be good enough in most situation, but Monte Carlo
+#' integration can give more accurate results when the estimated hazard function
+#' is not smooth (e.g. when modeling with time-varying covariates). However, if
+#' there are competing risks, we strongly encourage the user to select
+#' Monte-Carlo integration, which is much faster than the numerical method.
+#' (This is due to the current implementation of the numerical method, and it
+#' may be improved in future versions.)
 #'
 #' @param object Output of function \code{\link{fitSmoothHazard}}.
-#' @param time A vector of time points at which we should compute the absolute risks.
-#' @param newdata Optionally, a data frame in which to look for variables with which to predict. If
-#'   omitted, the mean absolute risk is returned.
-#' @param method Method used for integration. Defaults to \code{"montecarlo"}, which implements
-#'   Monte-Carlo integration. The only other option is \code{"numerical"}, which simply calls the
-#'   function \code{\link{integrate}}.
-#' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
-#'   points (if \code{method = "montecarlo"}).
+#' @param time A vector of time points at which we should compute the absolute
+#'   risks.
+#' @param newdata Optionally, a data frame in which to look for variables with
+#'   which to predict. If omitted, the mean absolute risk is returned.
+#' @param method Method used for integration. Defaults to \code{"numerical"},
+#'   which simply calls the function \code{\link{integrate}}. The only other
+#'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
+#' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"})
+#'   or number of sampled points (if \code{method = "montecarlo"}).
 #' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
-#' @param s Value of the penalty parameter lambda at which predictions are required (for class
-#'   \code{cv.glmnet}).
-#' @param onlyMain Logical. For competing risks, should we return absolute risks only for the main
-#'   event of interest? Defaults to \code{TRUE}.
+#' @param s Value of the penalty parameter lambda at which predictions are
+#'   required (for class \code{cv.glmnet}).
+#' @param onlyMain Logical. For competing risks, should we return absolute risks
+#'   only for the main event of interest? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
-#' @return If \code{time} was provided, returns the estimated absolute risk for the user-supplied
-#'   covariate profiles. This will be stored in a 2- or 3-dimensional array, depending on the input
-#'   (see details). If both \code{time} and \code{newdata} were provided, returns the original data
+#' @return If \code{time} was provided, returns the estimated absolute risk for
+#'   the user-supplied covariate profiles. This will be stored in a 2- or
+#'   3-dimensional array, depending on the input (see details). If both
+#'   \code{time} and \code{newdata} were provided, returns the original data
 #'   with a new column containing the risk estimate at failure time.
 #' @export
 #' @examples
@@ -233,9 +239,11 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
         # output[1,-1] <- 0
         if (method == "numerical") {
             for (j in 1:nrow(newdata)) {
+                # Extract current obs
+                current_obs <- newdata[j,,drop = FALSE]
                 for (i in 2:length(time_ordered)) {
                     output[i, j + 1] <- integrate(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
-                                                  fit = object, newdata = newdata[j,,drop = FALSE],
+                                                  fit = object, newdata = current_obs,
                                                   subdivisions = nsamp)$value
                 }
                 output[,j + 1] <- cumsum(output[,j + 1])
@@ -245,12 +253,14 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
         if (method == "montecarlo") {
             sampledPoints <- runif(nsamp)
             for (j in 1:nrow(newdata)) {
+                # Extract current obs
+                current_obs <- newdata[j,,drop = FALSE]
                 for (i in 2:length(time_ordered)) {
                     # output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
                     #                                                                                                time_ordered[i - 1]) +
                     #                                                                               time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
                     output[i, j + 1] <- integrate_mc(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
-                                                     fit = object, newdata = newdata[j,,drop = FALSE],
+                                                     fit = object, newdata = current_obs,
                                                      subdivisions = nsamp)
                 }
                 output[,j + 1] <- cumsum(output[,j + 1])
