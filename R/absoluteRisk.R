@@ -40,8 +40,9 @@
 #' @param newdata Optionally, a data frame in which to look for variables with
 #'   which to predict. If omitted, the mean absolute risk is returned.
 #' @param method Method used for integration. Defaults to \code{"numerical"},
-#'   which simply calls the function \code{\link{integrate}}. The only other
-#'   option is \code{"montecarlo"}, which implements Monte-Carlo integration.
+#'   which uses the trapezoidal rule to integrate over all time points together.
+#'   The only other option is \code{"montecarlo"}, which implements Monte-Carlo
+#'   integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
 #' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
@@ -85,7 +86,8 @@ absoluteRisk <- function(object, ...) UseMethod("absoluteRisk")
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.default <- function(object, ...) {
-    stop("This function should be used with an object of class glm, cv.glmnet, gbm, or CompRisk",
+    stop(paste("object is of class", class(object),
+               "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
          call. = TRUE)
 }
 
@@ -105,7 +107,7 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "mon
         return(as.numeric(exp(pred)))
     }
 
-    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, ...))
     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
 }
 
@@ -125,7 +127,7 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("numerical", "mon
         return(as.numeric(exp(pred)))
     }
 
-    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, n.trees = n.trees, ...))
     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
 }
 
@@ -159,8 +161,7 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical"
             # newdata_matrix <- cbind(x, newdata)
             newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
             # newdata_matrix is organized to match the output from fitSmoothHazard.fit
-            newdata_matrix <- as.matrix(cbind(
-                                              model.matrix(update(fit$formula_time, ~ . -1),
+            newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
                                                            setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
 
             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
@@ -169,28 +170,28 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical"
         }
     }
 
-    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp))
+    return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, s = s, ...))
 }
 
 # Helper functions----
-call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method, nsamp) {
+call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method, nsamp, ...) {
     # Call the correct function with correct parameters
     if (missing(newdata)) {
         if (missing(time)) {
-            return(estimate_risk(lambda, object))
+            return(estimate_risk(lambda, object, ...))
         } else {
             return(estimate_risk_newtime(lambda, object, time,
-                                         method = method, nsamp = nsamp))
+                                         method = method, nsamp = nsamp, ...))
         }
     } else {
         return(estimate_risk_newtime(lambda, object, time,
-                                     newdata, method, nsamp))
+                                     newdata, method, nsamp, ...))
     }
 }
 
 # The absolute risk methods create the lambda function and pass it to
 # estimate_risk or estimate_risk_newtime
-estimate_risk <- function(lambda, object) {
+estimate_risk <- function(lambda, object, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
     # If both newdata and time are missing
@@ -214,11 +215,11 @@ estimate_risk <- function(lambda, object) {
     return(newdata)
 }
 
-estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) {
+estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
-            stop("Can't estimate the mean absolute risk without the original data. See documentation.",
+            stop("Cannot estimate the mean absolute risk without the original data. See documentation.",
                  call. = FALSE)
         }
         newdata <- object$originalData
@@ -238,15 +239,32 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp) 
     if (length(time_ordered) > 1) {
         # output[1,-1] <- 0
         if (method == "numerical") {
+            # Compute points at which we evaluate integral
+            # Note: there's probably a more efficient way of choosing the knots...
+            knots <- seq(0, max(time_ordered),
+                         length.out = (length(time_ordered) - 1) * nsamp)
+            knots <- unique(sort(c(knots, time_ordered)))
             for (j in 1:nrow(newdata)) {
                 # Extract current obs
                 current_obs <- newdata[j,,drop = FALSE]
-                for (i in 2:length(time_ordered)) {
-                    output[i, j + 1] <- integrate(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
-                                                  fit = object, newdata = current_obs,
-                                                  subdivisions = nsamp)$value
+                # Use trapezoidal rule for integration----
+                if (inherits(newdata, "matrix")) {
+                    newdata2 <- current_obs[,colnames(newdata) != object$timeVar, drop = FALSE]
+                    # newdata2 is organized to match the output from fitSmoothHazard.fit
+                    newdata2 <- as.matrix(cbind(model.matrix(update(object$formula_time, ~ . -1),
+                                                                   setNames(data.frame(knots), object$timeVar)),
+                                                as.data.frame(newdata2)))
+                } else {
+                    # Create data.table for prediction
+                    newdata2 <- data.table(current_obs)
+                    newdata2 <- newdata2[rep(1, length(knots))]
+                    # Set offset to zero
+                    newdata2[, "offset" := 0]
+                    newdata2[,object$timeVar := knots]
                 }
-                output[,j + 1] <- cumsum(output[,j + 1])
+                pred <- estimate_hazard(object, newdata2, ...)
+                # Compute integral using trapezoidal rule
+                output[,j + 1] <- trap_int(knots, exp(pred))[knots %in% c(0, time_ordered)]
             }
 
         }

@@ -258,3 +258,11 @@ expand_dot_formula <- function(formula, data = NULL) {
     formula
 }
 
+# Streamlined version of pracma::cumtrapz
+trap_int <- function(x, y) {
+    x <- as.matrix(c(x))
+    m <- length(x)
+    y <- as.matrix(y)
+    ct <- apply(diff(x)/2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
+    return(rbind(0, ct))
+}
