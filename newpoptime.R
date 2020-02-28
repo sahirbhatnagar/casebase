@@ -101,9 +101,9 @@ plot(popTimeData,
      add.base.series = TRUE,
      legend = TRUE,
      base.params = list(show.legend = TRUE))#,
-     # legend.params = list(name = element_blank(),
-     #                 breaks = c("Case series", "Competing event", "Base series"),
-     #                 values = cols))
+     legend.params = list(name = element_blank(),
+                     breaks = c("Case series", "Competing event", "Base series"),
+                     values = cols))
      # case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
      # base.params = list(mapping = aes(x = time, y = ycoord, colour = "controls")),
      # legend.params = list(breaks = c("Relapse", "controls"), values = c("Relapse" = "green","controls" = "red")))

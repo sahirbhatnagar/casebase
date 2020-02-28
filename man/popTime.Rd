@@ -253,6 +253,8 @@ But the following will not be recognized: \code{"diagtime","eventtime",
 }
 \examples{
 # change color of points, but don't produce a legend
+library(ggplot2)
+data("bmtcrr")
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
 cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
 plot(popTimeData,
@@ -268,13 +270,13 @@ plot(popTimeData,
                      values = cols),
      theme.params = list(legend.position = "none"))
 \dontrun{
-data(bmtccr)
-popTimeData <- popTime(data = bmtccr, time = "ftime", exposure = "D")
+data("bmtcrr")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 # p is an object of class gg and ggplot
 p <- plot(popTimeData)
 # you can further modify the object using all ggplot2 functions
 # here we modify the number of y-tick labels
-p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
+p + scale_y_continuous(breaks = seq(0, max(popTimeData$ycoord), 10))
 }
 }
 \seealso{

@@ -19,15 +19,13 @@ The support datasets track four response variables: hospital death, severe funct
 Data from the first phase of the SUPPORT study. We imputed the data-set using predictive mean matching, which resulted in 474 complete observations.
 }
 \examples{
-\dontrun{
 library(splines)
 library(casebase)
 data(support)
-mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time)+.-d.time, df = 3 +
+mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time),
                                    time = "d.time", event="death",
                                    data = support,
-                                   ratio = 100)
-}
+                                   ratio = 1)
 }
 \references{
 Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.

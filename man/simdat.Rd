@@ -38,16 +38,14 @@ log time. The true parameters are
 }
 }
 \examples{
-\dontrun{
+
 library(splines)
-library(casebase)
-data(simdat)
+data("simdat")
 mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
                                    trt:ns(log(eventtime),df=1),
                                    time = "eventtime",
                                    data = simdat,
-                                   ratio = 100)
-}
+                                   ratio = 1)
 }
 \references{
 Sam Brilleman (2019). simsurv: Simulate Survival Data. R package

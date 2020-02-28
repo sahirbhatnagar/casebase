@@ -95,6 +95,8 @@
 #'   \link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
 #' @examples
 #' # change color of points, but don't produce a legend
+#' library(ggplot2)
+#' data("bmtcrr")
 #' popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
 #' cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
 #' plot(popTimeData,
@@ -135,7 +137,7 @@ plot.popTime <- function(x, ...,
                          point.size,
                          point.colour) {
 
-    ycoord <- yc <- `event status` <- event <- NULL
+    ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
 
     if (!missing(line.colour)) {
         warning("line.colour argument deprecated. specify the fill argument instead
@@ -166,7 +168,7 @@ plot.popTime <- function(x, ...,
     p2 <- list(
 
         # Add poptime area --------------------------------------------------------
-        do.call("geom_ribbon", modifyList(
+        do.call("geom_ribbon", utils::modifyList(
             list(data = x,
                  mapping = aes(x = time, ymin = 0, ymax = ycoord),
                  fill = "grey80"),
@@ -175,7 +177,7 @@ plot.popTime <- function(x, ...,
 
         # Add case series ---------------------------------------------------------
         if (add.case.series)
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = x[event == 1],
                      mapping = aes(x = time, y = yc, colour = "Case series"),
                      show.legend = legend),
@@ -189,7 +191,7 @@ plot.popTime <- function(x, ...,
                                        comprisk = comprisk,
                                        censored.indicator = censored.indicator)
             # browser()
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = basedata[event == 0],
                      mapping = aes(x = time, y = ycoord, colour = "Base series"),
                      show.legend = legend),
@@ -215,7 +217,7 @@ plot.popTime <- function(x, ...,
 
             compdata <- popTime(data = newX, time = "time", event = "comprisk.event")
 
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = compdata[event == 1],
                      mapping = aes(x = time, y = yc, colour = "Competing event"),
                      show.legend = legend),
@@ -228,7 +230,7 @@ plot.popTime <- function(x, ...,
 
             cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
 
-            do.call("scale_colour_manual", modifyList(
+            do.call("scale_colour_manual", utils::modifyList(
                 list(name = element_blank(),
                      breaks = c("Case series", "Competing event", "Base series"),
                      values = cols), legend.params)
@@ -265,13 +267,13 @@ plot.popTime <- function(x, ...,
 #' @import ggplot2
 #' @examples
 #' \dontrun{
-#' data(bmtccr)
-#' popTimeData <- popTime(data = bmtccr, time = "ftime", exposure = "D")
+#' data("bmtcrr")
+#' popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 #' # p is an object of class gg and ggplot
 #' p <- plot(popTimeData)
 #' # you can further modify the object using all ggplot2 functions
 #' # here we modify the number of y-tick labels
-#' p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
+#' p + scale_y_continuous(breaks = seq(0, max(popTimeData$ycoord), 10))
 #' }
 #' @export
 #' @method plot popTimeExposure
@@ -302,7 +304,7 @@ plot.popTimeExposure <- function(x, ...,
                                  point.colour) {
 
     # ===========================
-    ycoord <- yc <- `event status` <- event <- NULL
+    ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
 
     expsoure_variable <- attr(x, "exposure")
 
@@ -341,7 +343,7 @@ plot.popTimeExposure <- function(x, ...,
     p2 <- list(
 
         # Add poptime area --------------------------------------------------------
-        do.call("geom_ribbon", modifyList(
+        do.call("geom_ribbon", utils::modifyList(
             list(data = x,
                  mapping = aes(x = time, ymin = 0, ymax = ycoord),
                  fill = "grey80"),
@@ -350,7 +352,7 @@ plot.popTimeExposure <- function(x, ...,
 
         # Add case series ---------------------------------------------------------
         if (add.case.series)
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = x[event == 1],
                      mapping = aes(x = time, y = yc, colour = "Case series"),
                      show.legend = legend),
@@ -364,7 +366,7 @@ plot.popTimeExposure <- function(x, ...,
                                        comprisk = comprisk,
                                        censored.indicator = censored.indicator)
             # browser()
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = basedata[event == 0],
                      mapping = aes(x = time, y = ycoord, colour = "Base series"),
                      show.legend = legend),
@@ -391,7 +393,7 @@ plot.popTimeExposure <- function(x, ...,
             compdata <- popTime(data = newX, time = "time", event = "comprisk.event",
                                 exposure = expsoure_variable)
 
-            do.call("geom_point", modifyList(
+            do.call("geom_point", utils::modifyList(
                 list(data = compdata[event == 1],
                      mapping = aes(x = time, y = yc, colour = "Competing event"),
                      show.legend = legend),
@@ -404,15 +406,15 @@ plot.popTimeExposure <- function(x, ...,
 
             cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
 
-            do.call("scale_colour_manual", modifyList(
+            do.call("scale_colour_manual", utils::modifyList(
                 list(name = element_blank(),
                      breaks = c("Case series", "Competing event", "Base series"),
                      values = cols), legend.params)
             )
         },
 
-        do.call("facet_wrap", modifyList(
-            list(facets = expsoure_variable),
+        do.call("facet_wrap", utils::modifyList(
+            list(facets = expsoure_variable, ncol = 1),
             facet.params
         )),
 
