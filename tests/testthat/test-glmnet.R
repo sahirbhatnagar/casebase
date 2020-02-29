@@ -83,6 +83,11 @@ risk_log <- try(absoluteRisk(fit_glmnet_log, time = 1,
                              newdata = new_x, nsamp = 100),
                 silent = TRUE)
 
+test_that("error with glm.fit",{
+    expect_error(absoluteRisk(fit_glm, time = 1,
+                              newdata = new_x, nsamp = 100))
+})
+
 test_that("no error in absoluteRisk with glmnet", {
 
     expect_false(inherits(risk, "try-error"))

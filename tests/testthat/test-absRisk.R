@@ -194,7 +194,7 @@ test_that("should compute risk when time and newdata aren't provided", {
     expect_true("risk" %in% names(absRiskDT))
 })
 
-# non-glm methods
+# non-glm methods----
 fitDF_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF, time = "ftime", family = "gam", ratio = 10)
 fitDT_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT, time = "ftime", family = "gam", ratio = 10)
 
@@ -216,9 +216,17 @@ test_that("no error in fitting gbm", {
                  silent = TRUE)
     riskDT <- try(absoluteRisk(fitDT_gbm, time = 0.5, newdata = newDT, n.trees = 100, nsamp = 500),
                  silent = TRUE)
+    riskDF_mc <- try(absoluteRisk(fitDF_gbm, time = 0.5, newdata = newDF, n.trees = 100, nsamp = 10,
+                                  method = "montecarlo"),
+                     silent = TRUE)
+    riskDT_mc <- try(absoluteRisk(fitDT_gbm, time = 0.5, newdata = newDT, n.trees = 100, nsamp = 10,
+                                  method = "montecarlo"),
+                     silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
     expect_false(inherits(riskDT, "try-error"))
+    expect_false(inherits(riskDF_mc, "try-error"))
+    expect_false(inherits(riskDT_mc, "try-error"))
 })
 
 extra_vars <- matrix(rnorm(10 * n), ncol = 10)
@@ -240,9 +248,17 @@ test_that("no error in fitting glmnet", {
                   silent = TRUE)
     riskDT <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext),
                   silent = TRUE)
+    riskDF_mc <- try(absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext, nsamp = 10,
+                                  method = "montecarlo"),
+                     silent = TRUE)
+    riskDT_mc <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext, nsamp = 10,
+                                  method = "montecarlo"),
+                     silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
     expect_false(inherits(riskDT, "try-error"))
+    expect_false(inherits(riskDF_mc, "try-error"))
+    expect_false(inherits(riskDT_mc, "try-error"))
 })
 
 test_that("no error in using custom lambda in glmnet", {

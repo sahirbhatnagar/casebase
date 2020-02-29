@@ -1,6 +1,6 @@
 context("plotHazard function")
-# Skip tests if in non-interactive session
-skip_if_not(interactive())
+# Uncomment next line to skip tests in non-interactive session
+# skip_if_not(interactive())
 
 library(splines)
 data("simdat")
