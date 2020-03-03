@@ -1,4 +1,5 @@
-context("Glmnet")
+context("Matrix interface")
+library(splines)
 
 N <- 1000; p <- 30
 nzc <- p/3
@@ -72,7 +73,8 @@ fit_glmnet_log <- fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
                                       time = "time", event = "status",
                                       family = "glmnet", ratio = 10,
                                       lambda = c(0, 0.5))
-# Test absoluteRisk
+# Test absoluteRisk----
+# Only family="glmnet" has been implemented
 new_x <- x[1:10, ]
 risk <- try(absoluteRisk(fit_glmnet, time = 1,
                          newdata = new_x, nsamp = 100),
@@ -80,6 +82,11 @@ risk <- try(absoluteRisk(fit_glmnet, time = 1,
 risk_log <- try(absoluteRisk(fit_glmnet_log, time = 1,
                              newdata = new_x, nsamp = 100),
                 silent = TRUE)
+
+test_that("error with glm.fit",{
+    expect_error(absoluteRisk(fit_glm, time = 1,
+                              newdata = new_x, nsamp = 100))
+})
 
 test_that("no error in absoluteRisk with glmnet", {
 
@@ -92,4 +99,25 @@ test_that("we get probabilities", {
     expect_true(all(risk <= 1))
     expect_true(all(risk_log >= 0))
     expect_true(all(risk_log <= 1))
+})
+
+# Test absoluteRisk--two time points
+risk <- try(absoluteRisk(fit_glmnet, time = c(1,2),
+                         newdata = new_x, nsamp = 100),
+            silent = TRUE)
+risk_log <- try(absoluteRisk(fit_glmnet_log, time = c(1,2),
+                             newdata = new_x, nsamp = 100),
+                silent = TRUE)
+
+test_that("no error in absoluteRisk with glmnet", {
+
+    expect_false(inherits(risk, "try-error"))
+    expect_false(inherits(risk_log, "try-error"))
+})
+
+test_that("we get probabilities", {
+    expect_true(all(risk[,-1] >= 0))
+    expect_true(all(risk[,-1] <= 1))
+    expect_true(all(risk_log[,-1] >= 0))
+    expect_true(all(risk_log[,-1] <= 1))
 })
