@@ -1,0 +1,86 @@
+url: http://sahirbhatnagar.com/casebase
+
+template:
+  params:
+    bootswatch: cosmo
+
+authors:
+  Sahir Bhatnagar:
+    href: http://sahirbhatnagar.com/
+  Maxime Turgeon:
+    href: http://maxturgeon.ca/
+  Jesse Islam:
+    href: https://www.jesseislam.com/
+  Olli Saarela:
+    href: http://individual.utoronto.ca/osaarela/
+  James Hanley:
+    href: http://www.medicine.mcgill.ca/epidemiology/hanley/
+
+development:
+  mode: auto
+
+reference:
+- title: Data Visualization
+  desc: >
+    Visualizing survival data with population time plots
+  contents:
+    - '`popTime`'
+    - '`plot.popTime`'
+    - '`plot.popTimeExposure`'
+- title: Model Fitting
+  desc: >
+    Main functions for fitting smooth hazard functions
+  contents:
+    - '`fitSmoothHazard`'
+    - '`absoluteRisk`'
+    - '`hazardPlot`'
+- title: Datasets
+  desc: >
+    Four datasets that ship with the package to illustrate usage
+  contents:
+    - '`ERSPC`'
+    - '`bmtcrr`'
+    - '`support`'
+    - '`simdat`'
+- title: Internal Utility Functions
+  desc: >
+    Functions not really meant for the user
+  contents:
+    - '`sampleCaseBase`'
+    - '`checkArgsEventIndicator`'
+    - '`CompRisk-class`'
+
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - articles
+    - reference
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    articles:
+      text: Vignettes
+      menu:
+      - text: Population Time Plots
+        href: articles/popTime.html
+      - text: Fitting smooth-in-time parametric hazard functions
+        href: articles/smoothHazard.html
+      - text: Competing risk analysis using case-base sampling
+        href: articles/competingRisk.html
+      - text: Customizing Population Time Plots
+        href: articles/customizingpopTime.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
+
+
+
