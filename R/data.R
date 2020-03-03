@@ -184,15 +184,11 @@
 #' }
 #' @source Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}. note: must unzip and process this data before use.
 #' @examples
-#' \dontrun{
-#' library(splines)
-#' library(casebase)
-#' data(support)
-#' mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time)+.-d.time, df = 3 +
+#' data("support")
+#' mod_cb <- casebase::fitSmoothHazard(death ~ .,
 #'                                    time = "d.time", event="death",
 #'                                    data = support,
-#'                                    ratio = 100)
-#' }
+#'                                    ratio = 10)
 #' @references Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.
 #' @references http://biostat.mc.vanderbilt.edu/wiki/Main/SupportDesc
 #' @references http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html
