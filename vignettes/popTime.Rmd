@@ -40,6 +40,7 @@ In this vignette we show how to create population-time plots for the two dataset
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
 library(casebase)
+library(ggplot2)
 library(data.table)
 ```
 
