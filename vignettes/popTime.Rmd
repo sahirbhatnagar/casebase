@@ -33,7 +33,7 @@ This will create an object of class `popTime` (or `popTimeExposure` if you speci
 
 2) Pass the object of class `popTime` (or `popTimeExposure`) to the `plot` function
 
-In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package.
+In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the _Customizing Population Time Plots_ vignette. 
 
 # Load Required Packages
 
@@ -135,7 +135,7 @@ plot(pt_object_strat,
      theme.params = list(legend.position = "bottom"))
 ```
 
-Note that the [`theme.params`](https://ggplot2.tidyverse.org/reference/theme.html) argument is a list of arguments passed to `ggplot2::theme()` function. 
+Note that the `theme.params` argument is a list of arguments passed to the [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html) function. 
 
 
 
@@ -236,7 +236,7 @@ plot(popTimeData,
 
 ## Stratified by Disease
 
-Next we stratified by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
+Next we stratify by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
 
 ```{r}
 # create 'popTimeExposure' object
@@ -253,6 +253,27 @@ plot(popTimeData,
      legend = TRUE)
 ```
 
+
+## Change color points and legend labels
+
+Here is some code to change color points and legend labels. For a more thorough description, please see the _Customizing Population Time Plots_ vignette. 
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE,
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
+     legend.params = list(name = "Legend Name",
+                          breaks = c("Relapse", "Base series", "Competing event"),
+                          values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+     theme.params = list(legend.position = "bottom"))
+```
 
 
 # Veteran Data
@@ -414,38 +435,6 @@ plot(popTimeData,
 ```
 
 
-
-# Customizing Population Time Plots
-
-The user can have greater control over the aesthetics of the plot by specifying these in the `.params` arguments. For example, suppose we want to change the color of the points and the legend labels. We can do so by overriding . We illustrate the inner workings of the `plot` method for objects of class `popTime` and `popTimeExposure` so that the user may further customize the plot aesthetics if they're not satisfied with the defaults. We use the `bmtcrr` dataset as the example in this section. 
-
-```{r}
-# this data ships with the casebase package
-data("bmtcrr")
-
-popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-plot(popTimeData,
-     add.case.series = TRUE,
-     add.base.series = TRUE,
-     add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE,
-     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-     legend.params = list(name = "Legend",
-                          breaks = c("Relapse", "Base series", "Competing event"),
-                          values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")))
-```
-
-
-
-# Session information
-
-```{r echo=FALSE, eval=TRUE}
-print(sessionInfo(), locale = F)
-```
 
 
 

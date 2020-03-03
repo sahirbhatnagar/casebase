@@ -306,7 +306,7 @@ plot.popTimeExposure <- function(x, ...,
     # ===========================
     ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
 
-    expsoure_variable <- attr(x, "exposure")
+    exposure_variable <- attr(x, "exposure")
 
     if (!missing(line.colour)) {
         warning("line.colour argument deprecated. specify the fill argument instead
@@ -391,7 +391,7 @@ plot.popTimeExposure <- function(x, ...,
             newX[, event := NULL]
 
             compdata <- popTime(data = newX, time = "time", event = "comprisk.event",
-                                exposure = expsoure_variable)
+                                exposure = exposure_variable)
 
             do.call("geom_point", utils::modifyList(
                 list(data = compdata[event == 1],
@@ -414,7 +414,7 @@ plot.popTimeExposure <- function(x, ...,
         },
 
         do.call("facet_wrap", utils::modifyList(
-            list(facets = expsoure_variable, ncol = 1),
+            list(facets = exposure_variable, ncol = 1),
             facet.params
         )),
 

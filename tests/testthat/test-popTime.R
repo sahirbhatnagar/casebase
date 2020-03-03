@@ -31,38 +31,108 @@ DFsim <- data.frame("z" = DTsim[,z],
                     "event" = DTsim[,event],
                     "time" = DTsim[,time])
 
-test_that("no error in popTime with data.frame or data.table", {
-    out1 <- try(popTime(data = DTsim, time = "time", event = "event"))
-    out2 <- try(popTime(data = DFsim, time = "time", event = "event"))
+# data.frames input
+out1 <- popTime(data = DFsim, time = "time", event = "event")
+out2 <- popTime(data = DFsim, time = "time", event = "event", exposure = "z")
 
-    expect_false(inherits(out1, "try-error"))
-    expect_false(inherits(out2, "try-error"))
+# data.table input
+out3 <- popTime(data = DTsim, time = "time", event = "event")
+out4 <- popTime(data = DTsim, time = "time", event = "event", exposure = "z")
+
+test_that("expect data.table or data.frame in popTime with data.frame or data.table input", {
+
+    expect_s3_class(out1, "data.frame")
+    expect_s3_class(out1, "data.table")
+    expect_s3_class(out1, "popTime")
+
+    expect_s3_class(out2, "data.frame")
+    expect_s3_class(out2, "data.table")
+    expect_s3_class(out2, "popTimeExposure")
+    expect_equal(attr(out2, "exposure"), "z")
+
+
+    expect_s3_class(out3, "data.frame")
+    expect_s3_class(out3, "data.table")
+    expect_s3_class(out3, "popTime")
+
+    expect_s3_class(out4, "data.frame")
+    expect_s3_class(out4, "data.table")
+    expect_s3_class(out4, "popTimeExposure")
+    expect_equal(attr(out4, "exposure"), "z")
+
 })
 
-test_that("no error in stratified popTime with data.frame or data.table", {
-    out1 <- try(popTime(data = DTsim, time = "time",
-                        event = "event", exposure = "z"))
-    out2 <- try(popTime(data = DFsim, time = "time",
-                        event = "event", exposure = "z"))
-
-    expect_false(inherits(out1, "try-error"))
-    expect_false(inherits(out2, "try-error"))
-})
 
 test_that("plot methods-no error in popTime with data.frame or data.table", {
-    out1 <- try(plot(popTime(data = DTsim, time = "time", event = "event")))
+    p1 <- try(plot(out1,
+                   add.case.series = F))
+    p2 <- try(plot(out1,
+                   add.case.series = T))
+    p3 <- try(plot(out1,
+                   add.case.series = T,
+                   add.base.series = T,
+                   ratio = 1,
+                   comprisk = T))
+
+    # this should give error because you didnt specify comprisk=T, even though you
+    # dont plot comprisk event
+    p4 <- try(plot(out1,
+                   add.case.series = T,
+                   add.base.series = T,
+                   ratio = 1))
+
+    # all three types plotted
+    p5 <- try(plot(out1,
+                   add.case.series = T,
+                   add.base.series = T,
+                   add.competing.event = T,
+                   ratio = 1,
+                   comprisk = T,
+                   legend = T,
+                   theme.params = list(legend.position = "bottom")))
+
+    # change points and labels
+    p6 <- try(plot(out1,
+                   add.case.series = TRUE,
+                   add.base.series = TRUE,
+                   add.competing.event = TRUE,
+                   ratio = 1,
+                   comprisk = TRUE,
+                   legend = TRUE,
+                   case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
+                   legend.params = list(name = "Legend Name",
+                                        breaks = c("Relapse", "Base series", "Competing event"),
+                                        values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                   theme.params = list(legend.position = "bottom")))
+
+
+    # change points and labels and exposure stratified
+    p7 <- try(plot(out2,
+                   add.case.series = TRUE,
+                   add.base.series = TRUE,
+                   add.competing.event = TRUE,
+                   ratio = 1,
+                   comprisk = TRUE,
+                   legend = TRUE,
+                   case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
+                   legend.params = list(name = "Legend Name",
+                                        breaks = c("Relapse", "Base series", "Competing event"),
+                                        values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                   theme.params = list(legend.position = "bottom")))
+
+
     out2 <- try(plot(popTime(data = DFsim, time = "time", event = "event")))
 
-    expect_false(inherits(out1, "try-error"))
-    expect_false(inherits(out2, "try-error"))
+    expect_false(inherits(p1, "try-error"))
+    expect_false(inherits(p2, "try-error"))
+    expect_false(inherits(p3, "try-error"))
+    expect_false(inherits(p5, "try-error"))
+    expect_false(inherits(p6, "try-error"))
+    expect_false(inherits(p7, "try-error"))
+    expect_true(inherits(p4, "try-error"))
 })
 
-test_that("plot methods-no error in stratified popTime with data.frame or data.table", {
-    out1 <- try(plot(popTime(data = DTsim, time = "time",
-                             event = "event", exposure = "z")))
-    out2 <- try(plot(popTime(data = DFsim, time = "time",
-                             event = "event", exposure = "z")))
-
-    expect_false(inherits(out1, "try-error"))
-    expect_false(inherits(out2, "try-error"))
-})
