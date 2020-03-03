@@ -30,3 +30,4 @@
 ^appveyor\.yml$
 ^R/new_poptime\.R$
 ^_pkgdown\.yml$
+^docs$

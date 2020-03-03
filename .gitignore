@@ -9,3 +9,4 @@ data-raw
 references
 .DS_Store
 tests/testthat/Rplots.pdf
+docs/
