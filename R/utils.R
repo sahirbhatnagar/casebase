@@ -76,48 +76,39 @@ checkArgsTimeEvent <- function(data, time, event) {
 #'
 #' @export
 #' @examples
-#'
-#' \dontrun{
 #' library(survival) # for veteran data
 #' checkArgsEventIndicator(data = veteran, event = "celltype", censored.indicator = "smallcell")
 #' checkArgsEventIndicator(data = veteran, event = "status")
-#' checkArgsEventIndicator(data = veteran, event = "trt") # returns error
-#'
-#' url <- "https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv"
-#' bmt <- read.csv(url)
-#' checkArgsEventIndicator(data = bmt, event = "Sex", censored.indicator = "M")
-#' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AML")
-#' checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AMLL") #returns error
-#' checkArgsEventIndicator(data = bmt, event = "Source")
-#' checkArgsEventIndicator(data = bmt, event = "Status")
-#' checkArgsEventIndicator(data = bmt, event = "Status", censored.indicator = 3)
-#' }
+#' data("bmtcrr") # from casebase
+#' checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
+#' checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
+#' checkArgsEventIndicator(data = bmtcrr, event = "Status")
 #'
 checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
-    isFactor <- is.factor(data[,event])
-    isNumeric <- is.numeric(data[,event])
-    isCharacter <- is.character(data[,event])
+    isFactor <- is.factor(data[[event]])
+    isNumeric <- is.numeric(data[[event]])
+    isCharacter <- is.character(data[[event]])
 
     if (!any(isFactor, isNumeric, isCharacter))
         stop(strwrap("event variable must be either a factor,
                      numeric or character variable", width = 60))
 
-    nLevels <- nlevels(factor(data[,event]))
+    nLevels <- nlevels(factor(data[[event]]))
     if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
 
     if (missing(censored.indicator) || is.null(censored.indicator)) {
 
         if (isFactor) {
-            slev <- levels(data[,event])
+            slev <- levels(data[[event]])
             warning(paste0("censor.indicator not specified. assuming ",
                            slev[1], " represents a censored observation and ",
                            slev[2], " is the event of interest"))
-            event.factored <- data[,event]
+            event.factored <- data[[event]]
         }
 
         if (isCharacter) {
-            event.factored <- factor(data[,event])
+            event.factored <- factor(data[[event]])
             slev <- levels(event.factored)
             warning(paste0("censor.indicator not specified. assuming ",
                            slev[1], " represents a censored observation and ",
@@ -126,14 +117,14 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
         if (isNumeric) {
 
-            slev <- sort(unique(data[,event]))
+            slev <- sort(unique(data[[event]]))
             if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
                                                 doesn't contain 0. if event is a numeric
                                                 it must contain some 0's
                                                 to indicate censored observations"))
-            event.factored <- if (nLevels == 2) factor(data[,event],
+            event.factored <- if (nLevels == 2) factor(data[[event]],
                                                        labels = c("censored","event")) else
-                                                           factor(data[,event],
+                                                           factor(data[[event]],
                                                                   labels = c("censored","event",
                                                                              paste0("competing event",
                                                                                     if (nLevels >= 4) 1:(nLevels - 2))))
@@ -141,20 +132,20 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
     } else {
 
-        if (!(censored.indicator %in% data[,event]) & any(isCharacter, isFactor))
+        if (!(censored.indicator %in% data[[event]]) & any(isCharacter, isFactor))
             stop(strwrap("censored.indicator not found in event variable of data"))
 
         if (isNumeric) {
             warning(strwrap("censored.indicator specified but ignored because
                                 event is a numeric variable"))
-            slev <- sort(unique(data[,event]))
+            slev <- sort(unique(data[[event]]))
             if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
                                         doesn't contain 0. if event is a numeric
                                         it must contain some 0's
                                         to indicate censored observations"))
-            event.factored <- if (nLevels == 2) factor(data[,event],
+            event.factored <- if (nLevels == 2) factor(data[[event]],
                                                        labels = c("censored","event")) else
-                                                           factor(data[,event],
+                                                           factor(data[[event]],
                                                                   labels = c("censored","event",
                                                                              paste0("competing event",
                                                                                     if (nLevels >= 4) 1:(nLevels - 2))))
@@ -163,7 +154,7 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
         if (isFactor | isCharacter) {
 
-            event.factored <- relevel(factor(data[,event]), censored.indicator)
+            event.factored <- relevel(factor(data[[event]]), censored.indicator)
             slev <- levels(event.factored)
             message(paste0("assuming ",
                            slev[1], " represents a censored observation and ",
@@ -258,3 +249,11 @@ expand_dot_formula <- function(formula, data = NULL) {
     formula
 }
 
+# Streamlined version of pracma::cumtrapz
+trap_int <- function(x, y) {
+    x <- as.matrix(c(x))
+    m <- length(x)
+    y <- as.matrix(y)
+    ct <- apply(diff(x)/2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
+    return(rbind(0, ct))
+}

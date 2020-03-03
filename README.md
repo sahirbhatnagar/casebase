@@ -1,6 +1,10 @@
 # casebase
 
+<!-- badges: start -->
 [![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](http://cran.rstudio.com/package=casebase) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+<!-- badges: end -->
 
 An R package for smooth-in-time fitting of parametric hazard functions and compute absolute risks.
 

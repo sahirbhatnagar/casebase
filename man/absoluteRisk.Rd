@@ -67,63 +67,70 @@ absoluteRisk(object, ...)
 \arguments{
 \item{object}{Output of function \code{\link{fitSmoothHazard}}.}
 
-\item{time}{A vector of time points at which we should compute the absolute risks.}
+\item{time}{A vector of time points at which we should compute the absolute
+risks.}
 
-\item{newdata}{Optionally, a data frame in which to look for variables with which to predict. If
-omitted, the mean absolute risk is returned.}
+\item{newdata}{Optionally, a data frame in which to look for variables with
+which to predict. If omitted, the mean absolute risk is returned.}
 
-\item{method}{Method used for integration. Defaults to \code{"montecarlo"}, which implements
-Monte-Carlo integration. The only other option is \code{"numerical"}, which simply calls the
-function \code{\link{integrate}}.}
+\item{method}{Method used for integration. Defaults to \code{"numerical"},
+which uses the trapezoidal rule to integrate over all time points together.
+The only other option is \code{"montecarlo"}, which implements Monte-Carlo
+integration.}
 
-\item{nsamp}{Maximal number of subdivisions (if \code{method = "numerical"}) or number of sampled
-points (if \code{method = "montecarlo"}).}
+\item{nsamp}{Maximal number of subdivisions (if \code{method = "numerical"})
+or number of sampled points (if \code{method = "montecarlo"}).}
 
-\item{onlyMain}{Logical. For competing risks, should we return absolute risks only for the main
-event of interest? Defaults to \code{TRUE}.}
+\item{onlyMain}{Logical. For competing risks, should we return absolute risks
+only for the main event of interest? Defaults to \code{TRUE}.}
 
 \item{...}{Extra parameters. Currently these are simply ignored.}
 
-\item{s}{Value of the penalty parameter lambda at which predictions are required (for class
-\code{cv.glmnet}).}
+\item{s}{Value of the penalty parameter lambda at which predictions are
+required (for class \code{cv.glmnet}).}
 
 \item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
 }
 \value{
-If \code{time} was provided, returns the estimated absolute risk for the user-supplied
-covariate profiles. This will be stored in a 2- or 3-dimensional array, depending on the input
-(see details). If both \code{time} and \code{newdata} were provided, returns the original data
+If \code{time} was provided, returns the estimated absolute risk for
+the user-supplied covariate profiles. This will be stored in a 2- or
+3-dimensional array, depending on the input (see details). If both
+\code{time} and \code{newdata} were provided, returns the original data
 with a new column containing the risk estimate at failure time.
 }
 \description{
-Using the output of the function \code{fitSmoothHazard}, we can compute absolute risks by
-integrating the fitted hazard function over a time period and then converting this to an
-estimated survival for each individual.
+Using the output of the function \code{fitSmoothHazard}, we can compute
+absolute risks by integrating the fitted hazard function over a time period
+and then converting this to an estimated survival for each individual.
 }
 \details{
-If the user supplies the original dataset through the parameter \code{newdata}, the mean absolute
-risk can be computed as the average of the output vector.
+If the user supplies the original dataset through the parameter
+\code{newdata}, the mean absolute risk can be computed as the average of the
+output vector.
 
-In general, if \code{time} is a vector of length greater than one, the output will include a
-column corresponding to the provided time points. Some modifications of the \code{time} vector
-are done: \code{time=0} is added, the time points are ordered, and duplicates are removed. All
-these modifications simplify the computations and give an output that can easily be used to plot
+In general, if \code{time} is a vector of length greater than one, the output
+will include a column corresponding to the provided time points. Some
+modifications of the \code{time} vector are done: \code{time=0} is added, the
+time points are ordered, and duplicates are removed. All these modifications
+simplify the computations and give an output that can easily be used to plot
 risk curves.
 
-On the other hand, if \code{time} corresponds to a single time point, the output does not include
-a column corresponding to time.
+On the other hand, if \code{time} corresponds to a single time point, the
+output does not include a column corresponding to time.
 
-If there is no competing risk, the output is a matrix where each column corresponds to the
-several covariate profiles, and where each row corresponds to a time point. If there are
-competing risks, the output will be a 3-dimensional array, with the third dimension corresponding
-to the different events.
+If there is no competing risk, the output is a matrix where each column
+corresponds to the several covariate profiles, and where each row corresponds
+to a time point. If there are competing risks, the output will be a
+3-dimensional array, with the third dimension corresponding to the different
+events.
 
-The numerical method should be good enough in most situation, but Monte Carlo integration can
-give more accurate results when the estimated hazard function is not smooth (e.g. when modeling
-with time-varying covariates). However, if there are competing risks, we strongly encourage the
-user to select Monte-Carlo integration, which is much faster than the numerical method. (This is
-due to the current implementation of the numerical method, and it may be improved in future
-versions.)
+The numerical method should be good enough in most situation, but Monte Carlo
+integration can give more accurate results when the estimated hazard function
+is not smooth (e.g. when modeling with time-varying covariates). However, if
+there are competing risks, we strongly encourage the user to select
+Monte-Carlo integration, which is much faster than the numerical method.
+(This is due to the current implementation of the numerical method, and it
+may be improved in future versions.)
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
@@ -147,8 +154,6 @@ DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
 out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
-out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
 
 linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
-log_risk <- absoluteRisk(out_log, time = 10, newdata = data.table("z"=c(0,1)))
 }

@@ -70,6 +70,8 @@
 #' }
 #' @rdname hazardPlot
 #' @export
+#' @importFrom graphics lines matplot par polygon
+#' @importFrom stats qnorm
 hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
                        ci.col = "grey", lty = par("lty"), add = FALSE,
@@ -123,6 +125,9 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     names(newdata)[names(newdata) == 'sequence_of_times'] <- object[["timeVar"]]
 
     newdata$offset <- 0
+    # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
+    # The following line silences this warning
+    if (obj_class == "gbm") attr(object$Terms, "offset") <- NULL
 
     preds <- switch (obj_class,
                      glm = {
@@ -205,7 +210,7 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         # rug(object[["originalData"]][[ object[["timeVar"]] ]], col = line.col)
         events <- object[["originalData"]][[object[["eventVar"]] ]]
         rug(object[["originalData"]][which(events==1),,drop=F][[ object[["timeVar"]]  ]],
-            col = line.col)
+            col = line.col, quiet = TRUE) # Silence warnings about clipped values
     }
     return(invisible(newdata))
 }

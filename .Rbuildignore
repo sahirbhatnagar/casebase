@@ -6,6 +6,7 @@
 ^\.travis\.yml$
 ^cr\.R$
 ^exercises5\.R$
+^newpoptime\.R$
 ^risksets\.R$
 ^vignettes\/bmtcrr\.csv$
 ^inst\/doc\/.*R$
@@ -26,3 +27,7 @@
 ^references$
 ^update_doc.R$
 ^cran-comments\.md$
+^appveyor\.yml$
+^R/new_poptime\.R$
+^_pkgdown\.yml$
+^docs$

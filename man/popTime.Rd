@@ -12,29 +12,56 @@
   ...,
   xlab = "Follow-up time",
   ylab = "Population",
-  line.width = 1,
-  line.colour = "grey80",
-  point.size = 1,
-  point.colour = "red",
+  add.case.series = TRUE,
+  add.base.series = FALSE,
+  add.competing.event = FALSE,
+  casebase.theme = TRUE,
+  ribbon.params = list(),
+  case.params = list(),
+  base.params = list(),
+  competing.params = list(),
+  legend.params = list(),
+  theme.params = list(),
+  ratio = 10,
+  censored.indicator,
+  comprisk = FALSE,
   legend = FALSE,
-  legend.position = c("bottom", "top", "left", "right")
+  legend.position,
+  line.width,
+  line.colour,
+  point.size,
+  point.colour
 )
 
 \method{plot}{popTimeExposure}(
   x,
   ...,
-  ncol = 1,
   xlab = "Follow-up time",
   ylab = "Population",
-  line.width = 1,
-  line.colour = "grey80",
-  point.size = 1,
-  point.colour = "red",
+  add.case.series = TRUE,
+  add.base.series = FALSE,
+  add.competing.event = FALSE,
+  casebase.theme = TRUE,
+  ribbon.params = list(),
+  case.params = list(),
+  base.params = list(),
+  competing.params = list(),
+  legend.params = list(),
+  theme.params = list(),
+  facet.params = list(),
+  ratio = 10,
+  censored.indicator,
+  comprisk = FALSE,
   legend = FALSE,
-  legend.position = c("bottom", "top", "left", "right")
+  ncol,
+  legend.position,
+  line.width,
+  line.colour,
+  point.size,
+  point.colour
 )
 
-popTime(data, time, event, censored.indicator, exposure)
+popTime(data, time, event, censored.indicator, exposure, percentile_number)
 
 checkArgsTimeEvent(data, time, event)
 }
@@ -43,10 +70,93 @@ checkArgsTimeEvent(data, time, event)
 
 \item{...}{Ignored.}
 
-\item{xlab, ylab, line.width, line.colour, point.size, point.colour, legend, legend.position}{See
-\code{\link[graphics]{par}}.}
+\item{xlab, ylab}{The title of the respective axis. Default: 'Follow-up time'
+for xlab and 'Population' for ylab}
 
-\item{ncol}{Number of columns.}
+\item{add.case.series}{Logical indicating if the case series should be added
+to the plot. Default: TRUE}
+
+\item{add.base.series}{Logical indicating if the base series should be added
+to the plot. Default: FALSE}
+
+\item{add.competing.event}{Logical indicating if the competing event should
+be added to the plot. Default: FALSE}
+
+\item{casebase.theme}{Logical indication if the casebase theme be used. The
+casebase theme uses \code{\link[ggplot2]{theme_minimal}}. Default: TRUE.}
+
+\item{ribbon.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{geom_ribbon}} which is used to plot the
+population-time area. These arguments will override the function defaults.
+For example, you can set \code{ribbon.params = list(colour = 'green')} if
+you want the area to be green.}
+
+\item{case.params, base.params, competing.params}{A list containing arguments
+that are passed to \code{\link[ggplot2]{geom_point}} which is used to plot
+the case series, base series, competing events. These arguments will
+override the function defaults. For example, you can set \code{case.params
+  = list(size = 1.5)} if you want to increase the point size for the case
+series points. Note: do not use this argument to change the color of the
+points. Doing so will result in unexpected results for the legend. See the
+\code{legend.params} argument, if you want to change the color of the
+points.}
+
+\item{legend.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{scale_color_manual}} which is used to plot the legend.
+Only used if \code{legend=TRUE}. These arguments will override the function
+defaults. Use this argument if you want to change the color of the points.
+See examples for more details.}
+
+\item{theme.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{theme}}. For example \code{theme.params =
+  list(legend.position = 'none')}.}
+
+\item{ratio}{If \code{add.base.series=TRUE}, integer, giving the ratio of the
+size of the base series to that of the case series. This argument is passed
+to the \code{\link{sampleCaseBase}} function. Default: 10.}
+
+\item{censored.indicator}{a character string of length 1 indicating which
+value in \code{event} is the censored. This function will use
+\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+reference level. This argument is ignored if the \code{event} variable is a
+numeric}
+
+\item{comprisk}{If \code{add.base.series=TRUE}, logical indicating whether we
+have multiple event types and that we want to consider some of them as
+competing risks. This argument is passed to the
+\code{\link{sampleCaseBase}} function. Note: should be \code{TRUE} if your
+data has competing risks, even if you dont want to add competing risk
+points (\code{add.competing.event=FALSE}). Default: FALSE}
+
+\item{legend}{Logical indicating if a legend should be added to the plot.
+Note that if you want to change the colors of the points, through the
+\code{legend.params} argument, then set \code{legend=TRUE}. If you want to
+change the color of the points but not have a legend, then set
+\code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
+Default: FALSE}
+
+\item{legend.position}{Deprecated. Specify the legend.position argument
+instead in the \code{theme.params} argument. e.g. \code{theme.params =
+  list(legend.position = 'bottom')}.}
+
+\item{line.width}{Deprecated.}
+
+\item{line.colour}{Deprecated. specify the fill argument instead in
+\code{ribbon.params}. e.g. \code{ribbon.params = list(fill = 'red')}.}
+
+\item{point.size}{Deprecated. specify the size argument instead in the
+\code{case.params} or \code{base.params} or \code{competing.params}
+argument. e.g. \code{case.params = list(size = 1.5)}.}
+
+\item{point.colour}{Deprecated. Specify the values argument instead in the
+\code{legend.params} argument. See examples for details.}
+
+\item{facet.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
+used if plotting exposure stratified population time plots. These arguments
+will override the function defaults.}
+
+\item{ncol}{Deprecated. Use \code{facet.params} instead.}
 
 \item{data}{a \code{data.frame} or \code{data.table} containing the source
 dataset.}
@@ -62,38 +172,64 @@ competing events. If event is a \code{factor} or \code{character} and
 \code{censored.indicator} is not specified, this function will assume the
 reference level is the censored indicator}
 
-\item{censored.indicator}{a character string of length 1 indicating which
-value in \code{event} is the censored. This function will use
-\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
-reference level. This argument is ignored if the \code{event} variable is a
-numeric}
-
 \item{exposure}{a character string of length 1 giving the name of the
 exposure variable which must be contained in \code{data}. Default is
 \code{NULL}. This is used to produced exposure stratified plots. If an
 \code{exposure} is specified, \code{popTime} returns an object of class
 \code{popTimeExposure}}
+
+\item{percentile_number}{Default=0.5. Give a value between 0-1. if the
+percentile number of available subjects at any given point is less than 10,
+then sample regardless of case status. Depending on distribution of
+survival times and events event points may not be evenly distributed with
+default value.}
 }
 \value{
-The methods for \code{plot} return a population time plot, stratified by exposure status
-in the case of \code{popTimeExposure}.
+The methods for \code{plot} return a population time plot, stratified
+by exposure status in the case of \code{popTimeExposure}. Note that these
+are \code{ggplot2} objects and can therefore be used in subsequent ggplot2
+type plots. See examples and vignette for details.
 
-The methods for \code{plot} return a population time plot, stratified by exposure status
-in the case of \code{popTimeExposure}.
+The methods for \code{plot} return a population time plot, stratified
+by exposure status in the case of \code{popTimeExposure}.
 
 An object of class \code{popTime} (or \code{popTimeExposure} if
 exposure is specified), \code{data.table} and \code{data.frame} in this
 order! The output of this function is to be used with the plot method for
 objects of class \code{popTime} or of class \code{popTimeExposure}, which
-will produce population time plots
+will produce population time plots. This dataset augments the original data
+with the following columns: \describe{\item{original.time}{value of the
+time variable in the original dataset - the one specified by the
+\code{time} user argument to this function}\item{original.event}{value of
+the event variable in the original dataset - the one specified by the
+\code{event} user argument to this function}\item{time}{renames the user
+specified time column to time}\item{event}{renames the user specified event
+argument to event}}
 }
 \description{
-\code{plot} method for objects of class \code{popTime} and \code{popTimeExposure}
+\code{plot} method for objects of class \code{popTime} and
+\code{popTimeExposure}
 
 Create a data frame for population time plots to give a visual representation
 of incidence density
 }
 \details{
+This function leverages the \code{ggplot2} package to build
+population time plots. It builds the plot by adding layers, starting with a
+layer for the area representing the population time. It then sequentially
+adds points to the plots to show the casebase sampling mechanism. This
+function gives user the flexibility to add any combination of the
+case.series, base.series and competing events. The case series and
+competing events are sampled at random vertically on the plot in order to
+visualise the incidence density using the \code{\link{popTime}} function.
+That is, imagine we draw a vertical line at a specific event time. We then
+plot the point at a randomly sampled y-coordinate along this vertical line.
+This is done to avoid having all points along the upper edge of the plot
+(because the subjects with the least amount of observation time are plotted
+at the top of the y-axis). By randomly distributing them, we can get a
+better sense of the inicidence density. The base series is sampled
+horizontally on the plot using the \code{\link{sampleCaseBase}} function.
+
 It is assumed that \code{data} contains the two columns
 corresponding to the supplied time and event variables. If either the
 \code{time} or \code{event} argument is missing, the function looks for
@@ -104,12 +240,10 @@ operation is important if for example the time variable is named
 \code{"event time"} and the event variable is named \code{"event
   indicator"}. This function will first (automatically) find the time
 variable and remove this as a possibility from subsequent searches of the
-event variable.
-The following regular expressions are used for the time and event
-variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
+event variable. The following regular expressions are used for the time and
+event variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
 \item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
-}
-This allows for \code{"time"} to be preceded or followed by one or more
+} This allows for \code{"time"} to be preceded or followed by one or more
 white space characters, one or more non-word characters or one or more
 underscores. For example, the following column names would be recognized by
 the function as the \code{"time"} variable: \code{"time of death",
@@ -118,16 +252,36 @@ But the following will not be recognized: \code{"diagtime","eventtime",
   "Timediag"}
 }
 \examples{
+# change color of points, but don't produce a legend
+library(ggplot2)
+data("bmtcrr")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+plot(popTimeData,
+     casebase.theme = TRUE,
+     add.case.series = TRUE,
+     ratio = 1,
+     add.base.series = TRUE,
+     legend = TRUE,
+     comprisk = TRUE,
+     add.competing.event = FALSE,
+     legend.params = list(name = element_blank(),
+                     breaks = c("Case series", "Competing event", "Base series"),
+                     values = cols),
+     theme.params = list(legend.position = "none"))
 \dontrun{
-data(bmtccr)
-popTimeData <- popTime(data = bmtccr, time = "ftime", exposure = "D")
+data("bmtcrr")
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 # p is an object of class gg and ggplot
 p <- plot(popTimeData)
 # you can further modify the object using all ggplot2 functions
 # here we modify the number of y-tick labels
-p + scale_y_continuous(breaks = seq(0, max(popTimeData$data$ycoord), 10))
+p + scale_y_continuous(breaks = seq(0, max(popTimeData$ycoord), 10))
 }
 }
 \seealso{
+\link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
+\link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
+
 \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
 }

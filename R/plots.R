@@ -24,6 +24,12 @@
 #'   \code{NULL}. This is used to produced exposure stratified plots. If an
 #'   \code{exposure} is specified, \code{popTime} returns an object of class
 #'   \code{popTimeExposure}
+#' @param percentile_number Default=0.5. Give a value between 0-1. if the
+#'   percentile number of available subjects at any given point is less than 10,
+#'   then sample regardless of case status. Depending on distribution of
+#'   survival times and events event points may not be evenly distributed with
+#'   default value.
+#'
 #'
 #' @details It is assumed that \code{data} contains the two columns
 #'   corresponding to the supplied time and event variables. If either the
@@ -35,12 +41,10 @@
 #'   \code{"event time"} and the event variable is named \code{"event
 #'   indicator"}. This function will first (automatically) find the time
 #'   variable and remove this as a possibility from subsequent searches of the
-#'   event variable.
-#'   The following regular expressions are used for the time and event
-#'   variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
+#'   event variable. The following regular expressions are used for the time and
+#'   event variables: \describe{ \item{time}{\code{"[\\s\\W_]+time|^time\\b"}}
 #'   \item{event}{\code{"[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b"}}
-#'    }
-#'   This allows for \code{"time"} to be preceded or followed by one or more
+#'    } This allows for \code{"time"} to be preceded or followed by one or more
 #'   white space characters, one or more non-word characters or one or more
 #'   underscores. For example, the following column names would be recognized by
 #'   the function as the \code{"time"} variable: \code{"time of death",
@@ -51,13 +55,20 @@
 #'   exposure is specified), \code{data.table} and \code{data.frame} in this
 #'   order! The output of this function is to be used with the plot method for
 #'   objects of class \code{popTime} or of class \code{popTimeExposure}, which
-#'   will produce population time plots
+#'   will produce population time plots. This dataset augments the original data
+#'   with the following columns: \describe{\item{original.time}{value of the
+#'   time variable in the original dataset - the one specified by the
+#'   \code{time} user argument to this function}\item{original.event}{value of
+#'   the event variable in the original dataset - the one specified by the
+#'   \code{event} user argument to this function}\item{time}{renames the user
+#'   specified time column to time}\item{event}{renames the user specified event
+#'   argument to event}}
 #' @seealso \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
 #'
 #' @import data.table
 #' @export
 popTime <- function(data, time, event, censored.indicator,
-                    exposure){
+                    exposure,percentile_number){
 
     #data <- DTsim;censored.indicator = NULL;exposure = "z" ; time = "time"; event = "event"
     #names(data)
@@ -67,6 +78,9 @@ popTime <- function(data, time, event, censored.indicator,
     ycoord <- yc <- n_available <- NULL
 
     DT <- data.table::as.data.table(data)
+    if (missing(percentile_number)) {
+        percentile_number <- 0.5
+    }
     if (missing(censored.indicator)) {
         censored.indicator <- NULL
     }
@@ -80,6 +94,7 @@ popTime <- function(data, time, event, censored.indicator,
 
         if (varNames$time != "time") setnames(DT,varNames$time, "time")
         if (varNames$event != "event") setnames(DT,varNames$event, "event")
+# browser()
         modifiedEvent <- checkArgsEventIndicator(data = data, event = varNames$event,
                                                  censored.indicator = censored.indicator)
 
@@ -109,7 +124,8 @@ popTime <- function(data, time, event, censored.indicator,
 
         # if the 50th percentile number of available subjects at any given
         # point is less than 10, then sample regardless of case status
-        if (DT[,quantile(n_available, probs = 0.5)] < 10) {
+        ###NEED TO MAKE THIS LESS STRINGENT##############??????
+        if (DT[,quantile(n_available, probs = percentile_number)] < 15) {
             # message("Sampling from all remaining individuals under study,
             #         regardless of event status")
             DT[event == 1,
@@ -138,6 +154,8 @@ popTime <- function(data, time, event, censored.indicator,
 
         }
         class(DT) <- c("popTime",class(DT))
+        attr(DT, "exposure") <- NULL
+        attr(DT, "call") <- match.call()
         return(DT)
 
     } else {
@@ -152,9 +170,9 @@ popTime <- function(data, time, event, censored.indicator,
         l <- lapply(l,
                 function(i) {
                     transform(i,
-                    event = checkArgsEventIndicator(data = i, event = varNames$event,
+                    event = checkArgsEventIndicator(data = i, event = "event",
                           censored.indicator = censored.indicator)$event.numeric,
-                   `event status` = checkArgsEventIndicator(data = i, event = varNames$event,
+                   `event status` = checkArgsEventIndicator(data = i, event = "event",
                               censored.indicator = censored.indicator)$event.factor
                         )
                     }
@@ -183,7 +201,7 @@ popTime <- function(data, time, event, censored.indicator,
 
             # if the 50th percentile number of available subjects at any given
             # point is less than 10, then sample regardless of case status
-            if (K[,quantile(n_available, probs = 0.5)] < 10) {
+            if (K[,quantile(n_available, probs = percentile_number)] < 10) {
                 # message("Sampling from all remaining individuals under study,
                 #     regardless of event status")
                 K[event == 1,
@@ -211,14 +229,14 @@ popTime <- function(data, time, event, censored.indicator,
                 K[event == 1 & n_available == 0, yc := ycoord]
 
             }
-
         }
         )
+
         lk <- data.table::rbindlist(l)
-        lkj <- list(data = lk, exposure = exposure)
-        class(lkj) <- c("popTimeExposure", class(lkj))
-        attr(lkj, "call") <- match.call()
-        return(lkj)
+        attr(lk, "exposure") <- exposure
+        class(lk) <- c("popTimeExposure", class(lk))
+        attr(lk, "call") <- match.call()
+        return(lk)
 
     }
 

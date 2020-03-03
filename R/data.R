@@ -132,8 +132,6 @@
 #'   clinicians. Bone Marrow Transplant. 2007 Aug;40(4):381-7. doi: 10.1038/sj.bmt.1705727.
 "bmtcrr"
 
-
-
 #'Simulated data under Weibull model with Time-Dependent Treatment Effect
 #'
 #'This simulated data is and description is taken verbatim from the [simsurv
@@ -164,16 +162,14 @@
 #'  \url{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' library(splines)
-#' library(casebase)
-#' data(simdat)
+#' data("simdat")
 #' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
 #'                                    trt:ns(log(eventtime),df=1),
 #'                                    time = "eventtime",
 #'                                    data = simdat,
-#'                                    ratio = 100)
-#' }
+#'                                    ratio = 1)
 #'@references Sam Brilleman (2019). simsurv: Simulate Survival Data. R package
 #'  version 0.2.3. https://CRAN.R-project.org/package=simsurv
 "simdat"
