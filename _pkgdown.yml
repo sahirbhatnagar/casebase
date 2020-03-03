@@ -17,7 +17,7 @@ authors:
     href: http://www.medicine.mcgill.ca/epidemiology/hanley/
 
 development:
-  mode: auto
+  mode: release
 
 reference:
 - title: Data Visualization
