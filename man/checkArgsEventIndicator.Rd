@@ -33,21 +33,12 @@ Checks for event categories and gives a warning message indicating which
 level is assumed to be the reference level.
 }
 \examples{
-
-\dontrun{
 library(survival) # for veteran data
 checkArgsEventIndicator(data = veteran, event = "celltype", censored.indicator = "smallcell")
 checkArgsEventIndicator(data = veteran, event = "status")
-checkArgsEventIndicator(data = veteran, event = "trt") # returns error
-
-url <- "https://raw.githubusercontent.com/sahirbhatnagar/casebase/master/inst/extdata/bmtcrr.csv"
-bmt <- read.csv(url)
-checkArgsEventIndicator(data = bmt, event = "Sex", censored.indicator = "M")
-checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AML")
-checkArgsEventIndicator(data = bmt, event = "D", censored.indicator = "AMLL") #returns error
-checkArgsEventIndicator(data = bmt, event = "Source")
-checkArgsEventIndicator(data = bmt, event = "Status")
-checkArgsEventIndicator(data = bmt, event = "Status", censored.indicator = 3)
-}
+data("bmtcrr") # from casebase
+checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
+checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
+checkArgsEventIndicator(data = bmtcrr, event = "Status")
 
 }

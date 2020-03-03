@@ -162,16 +162,14 @@
 #'  \url{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' library(splines)
-#' library(casebase)
-#' data(simdat)
+#' data("simdat")
 #' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
 #'                                    trt:ns(log(eventtime),df=1),
 #'                                    time = "eventtime",
 #'                                    data = simdat,
-#'                                    ratio = 100)
-#' }
+#'                                    ratio = 1)
 #'@references Sam Brilleman (2019). simsurv: Simulate Survival Data. R package
 #'  version 0.2.3. https://CRAN.R-project.org/package=simsurv
 "simdat"
@@ -186,15 +184,13 @@
 #' }
 #' @source Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support.tsv}
 #' @examples
-#' \dontrun{
 #' library(splines)
 #' library(casebase)
 #' data(support)
-#' mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time)+.-d.time, df = 3 +
+#' mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time),
 #'                                    time = "d.time", event="death",
 #'                                    data = support,
-#'                                    ratio = 100)
-#' }
+#'                                    ratio = 1)
 #' @references Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.
 #' @references http://biostat.mc.vanderbilt.edu/wiki/Main/SupportDesc
 #' @references http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html

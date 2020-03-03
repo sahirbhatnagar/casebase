@@ -12,9 +12,11 @@ output:
     toc_float: yes
 vignette: >
   %\VignetteIndexEntry{Population Time Plots}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 bibliography: reference.bib
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -31,13 +33,14 @@ This will create an object of class `popTime` (or `popTimeExposure` if you speci
 
 2) Pass the object of class `popTime` (or `popTimeExposure`) to the `plot` function
 
-In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package.
+In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the _Customizing Population Time Plots_ vignette. 
 
 # Load Required Packages
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
 library(casebase)
+library(ggplot2)
 library(data.table)
 ```
 
@@ -48,11 +51,6 @@ For our first example, we make use of the European Randomized Study of Prostate 
 ```{r}
 data("ERSPC")
 head(ERSPC)
-# Appropriately label the factor variable so that these labels appear in the 
-# stratified population time plot
-ERSPC$ScrArm <- factor(ERSPC$ScrArm, 
-                       levels = c(0,1), 
-                       labels = c("Control group", "Screening group"))
 ```
 
 We first pass this dataset to the `popTime` function. If you do not specify the `time` and `event` arguments, this function will try to guess them using regular expressions. See the **Details** section of `help("popTime", package = "casebase")` for how we try to guess these inputs. 
@@ -79,14 +77,18 @@ One benefit from these plots is that it allows you to see the incidence density.
 
 The unique 'step shape' of the population time plot is due to the randomization of the Finnish cohorts which were carried out on January 1 of each of the 4 years 1996 to 1999. This, coupled with the uniform December 31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8 years of follow-up.
 
-
-> It is important to note that the red points are random distributed across the grey area for each time of event. That is, imagine we draw a vertical line at a specific event time. We then plot the red point at a randomly sampled y-coordinate along this vertical line. This is done to avoid having all red points along the upper edge of the plot (because the subjects with the least amount of observation time are plotted at the top of the y-axis). By randomly distributing them, we can get a better sense of the inicidence density.
+It is important to note that the red points are random distributed across the grey area for each time of event. That is, imagine we draw a vertical line at a specific event time. We then plot the red point at a randomly sampled y-coordinate along this vertical line. This is done to avoid having all red points along the upper edge of the plot (because the subjects with the least amount of observation time are plotted at the top of the y-axis). By randomly distributing them, we can get a better sense of the inicidence density.
 
 ## Exposure Stratified Population Time Plot
 
 Often the observations in a study are in specific groups such as treatment arms. It may be of interest to compare the population time plots between these two groups. Here we compare the control group and the screening group. We create exposure stratified plots by specifying the `exposure` argument in the `popTime` function:
 
 ```{r}
+# Appropriately label the factor variable so that these labels appear in the 
+# stratified population time plot
+ERSPC$ScrArm <- factor(ERSPC$ScrArm, 
+                       levels = c(0,1), 
+                       labels = c("Control group", "Screening group"))
 pt_object_strat <- casebase::popTime(ERSPC, 
                                      event = "DeadOfPrCa", 
                                      exposure = "ScrArm")
@@ -99,60 +101,179 @@ head(pt_object_strat)
 class(pt_object_strat)
 ```
 
+
+We can also see that the `pt_object_strat` has an exposure attribute which contains the name of the exposure variable in the dataset:
+
+```{r}
+attr(pt_object_strat, "exposure")
+```
+
+
 The `casebase` package also has a `plot` method for objects of class `popTimeExposure`:
 
 ```{r}
 plot(pt_object_strat)
 ```
 
-We can also plot them side-by-side using the `ncol` argument:
+We can also plot them side-by-side using the `facet.params` argument, which is a list of arguments that are passed to the [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html) function in the `ggplot2` package:
 
 ```{r}
-plot(pt_object_strat, ncol = 2)
+plot(pt_object_strat,
+     facet.params = list(ncol = 2))
 ```
+
+
+## Plotting the base series
+
+To illustrate the casebase sampling methodology, we can also plot the base series using the `add.base.series` function:
+
+```{r}
+plot(pt_object_strat,
+     add.base.series = TRUE,
+     ratio = 1,
+     legend = TRUE,
+     theme.params = list(legend.position = "bottom"))
+```
+
+Note that the `theme.params` argument is a list of arguments passed to the [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html) function. 
+
 
 
 # Stem Cell Data
 
-Next we show population time plots on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the `casebase` package. See `help("bmtcrr", package = "casebase")` for more details.
+Next we show population time plots when there is a competing event. The `bmtcrr` dataset contains information on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the `casebase` package. See `help("bmtcrr", package = "casebase")` for more details. We will use this dataset to further illustrate the fundamental components of a population time plot, and how the `plot` method for objects of class `popTime` and `popTimeExposure` is highly customizeable.
 
-For this dataset, the `popTime` fails to identify a `time` variable if you didn't specify one:
+
+Note that for this dataset, the `popTime` fails to identify a `time` variable if you didn't specify one:
 ```{r, error=TRUE}
 # load data
 data(bmtcrr)
 str(bmtcrr)
 
+# table of event status by exposure
+table(bmtcrr$Status, bmtcrr$D)
+
 # error because it can't determine a time variable
 popTimeData <- popTime(data = bmtcrr)
 ```
 
-In this case, you must be explict about what the time variable is:
+In this case, you must be explicit about what the time variable is:
 ```{r}
 popTimeData <- popTime(data = bmtcrr, time = "ftime")
 class(popTimeData)
-plot(popTimeData)
+```
+
+## Plotting the follow-up times for each observation
+
+We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the [`ggplot2::geom_ribbon()`](https://ggplot2.tidyverse.org/reference/geom_ribbon.html) function. The following figure shows this area for the `bmtcrr` dataset:
+
+```{r}
+plot(popTimeData,
+     add.case.series = FALSE)
+```
+
+Note that we can change the aesthetics of the area by using the `ribbon.params()` argument as follows. These arguments are passed to the [`ggplot2::geom_ribbon()`](https://ggplot2.tidyverse.org/reference/geom_ribbon.html) function:
+
+```{r}
+plot(popTimeData,
+     add.case.series = FALSE,
+     ribbon.params = list(color = "red", fill = "blue", size = 2))
+```
+
+
+## Plot the Case Series
+
+Next we add the case series. Note that because the `Status` column has a competing event (coded as 2), we must specify `comprisk = TRUE` (even if you don't want to plot the competing event):
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE,
+     comprisk = TRUE)
 ```
 
 In the above plot we can clearly see many of the deaths occur at the beginning, so in this case, a constant hazard assumption isnt valid. This information is useful when deciding on the type of model to use.
 
+## Plot the Base Series
+
+We can now add the base series with the `add.base.series` argument. Internally, the `plot` method calls the `casebase::sampleCaseBase` function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the `ratio` argument. We also specify that we want a legend:
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE)
+```
+
+
+## Plot the Competing event
+
+We specify the `add.competing.event = TRUE` in order to also plot the competing event. Note, that like the case series, the competing event is sampled randomly on the vertical axis in order to see the incidence density.  
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE)
+```
+
+We can also only plot the case series and competing event (or any combination):
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = FALSE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE)
+```
+
+
 ## Stratified by Disease
 
-Next we stratified by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
+Next we stratify by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
 
 ```{r}
 # create 'popTimeExposure' object
 popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-class(popTimeData)
-plot(popTimeData)
+
+attr(popTimeData, "exposure")
+
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE)
 ```
 
-We can also stratify by gender:
+
+## Change color points and legend labels
+
+Here is some code to change color points and legend labels. For a more thorough description, please see the _Customizing Population Time Plots_ vignette. 
 
 ```{r}
-popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "Sex")
-plot(popTimeData)
+plot(popTimeData,
+     add.case.series = TRUE,
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE,
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
+     legend.params = list(name = "Legend Name",
+                          breaks = c("Relapse", "Base series", "Competing event"),
+                          values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+     theme.params = list(legend.position = "bottom"))
 ```
-
 
 
 # Veteran Data
@@ -185,6 +306,9 @@ popTimeData <- popTime(data = veteran, exposure = "trt")
 
 # object of class 'popTimeExposure'
 class(popTimeData)
+
+# has name of exposure variable as an attribute
+attr(popTimeData, "exposure")
 ```
 
 Again, we simply pass this object to the `plot` function to get an exposure stratified population time plot:
@@ -213,8 +337,7 @@ heart <- transform(heart,
 # stratify by transplant indicator
 popTimeData <- popTime(data = heart, exposure = "transplant")
 
-# can specify a legend
-plot(popTimeData, legend = TRUE)
+plot(popTimeData)
 ```
 
 
@@ -245,15 +368,13 @@ plot(popTimeData)
 
 ## Stratified by gender
 
-We can also change the plot aesthetics:
+We can also switch back to the default `ggplot2` theme by specifying `casebase.theme = FALSE`:
 
 ```{r}
 popTimeData <- popTime(data = cancer, exposure = "sex")
 
-# can change the plot aesthetics
 plot(popTimeData,
-     line.width = 0.2, line.colour = "black",
-     point.size = 1, point.colour = "cyan")
+     casebase.theme = FALSE)
 ```
 
 
@@ -265,7 +386,7 @@ Below is an example based on simulated data.
 
 ```{r}
 set.seed(1)
-nobs <- 5000
+nobs <- 500
 
 # simulation parameters
 a1 <- 1.0
@@ -308,15 +429,12 @@ plot(popTimeData)
 popTimeData <- popTime(data = DTsim, time = "time", event = "event", exposure = "z")
 
 # we can line up the plots side-by-side instead of one on top of the other
-plot(popTimeData, ncol = 2)
+# we can also change the theme by adding 
+plot(popTimeData,
+     facet.params = list(ncol = 2)) + theme_linedraw()
 ```
 
 
-# Session information
-
-```{r echo=FALSE, eval=TRUE}
-print(sessionInfo(), locale = F)
-```
 
 
 

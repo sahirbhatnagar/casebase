@@ -1,0 +1,226 @@
+---
+title: "Customizing Population Time Plots"
+author: "Sahir R. Bhatnagar"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    fig_height: 8
+    fig_width: 11
+    keep_md: yes
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+vignette: >
+  %\VignetteIndexEntry{Customizing Population Time Plots}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+bibliography: reference.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+
+# Setup
+
+```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
+library(survival)
+library(casebase)
+library(ggplot2)
+library(data.table)
+
+# create poptime exposure object for ERSPC data
+x <- popTime(ERSPC, time = "Follow.Up.Time", event = "DeadOfPrCa", exposure = "ScrArm")
+head(x)
+```
+
+
+
+# Introduction
+
+In this vignette, we explain in details how to customize population time plots. More specifically, we details the inner workings of the `plot` method for objects of class `popTime` and `popTimeExposure`. 
+
+
+# The `.params` arguments
+
+The user can have greater control over the aesthetics of a population plot by specifying these in the `.params` arguments. These need to be specified as lists and are subsequently passed on to the following `ggplot2` functions:
+
+- `ribbon.params` --> [`ggplot2::geom_ribbon()`](https://ggplot2.tidyverse.org/reference/geom_ribbon.html)
+- `case.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+- `base.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+- `competing.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+- `legend.params` --> [`ggplot2::scale_colour_manual()`](https://ggplot2.tidyverse.org/reference/scale_manual.html)
+- `theme.params` --> [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
+
+Following the suggestion from the [ggplot2 book](https://ggplot2-book.org/programming.html#multiple-components), we use the `utils::modifyList` function to replace the corresponding default values. For example, the default arguments passed to the `geom_ribbon` function for plotting the area are given by
+
+```{r, eval=TRUE}
+list(data = x,
+     mapping = aes(x = time, ymin = 0, ymax = ycoord),
+     fill = "grey80")
+```
+
+(Note that the variables `time` and `ycoord` are columns created by the `casebase::popTime` function). Suppose we want to change the fill color. We simply specify this color in the `ribbon.params` argument:
+
+```{r, eval=TRUE}
+ribbon.params <- list(fill = "#0072B2")
+```
+
+We then call the `utils::modifyList` function to override the function defaults:
+
+```{r, eval=TRUE}
+(new_ribbon_params <- utils::modifyList(list(data = x,
+                                            mapping = aes(x = time, ymin = 0, ymax = ycoord),
+                                            fill = "grey80"), 
+                                       ribbon.params))
+```
+
+
+Finally, we use `base::do.call` to execute the `geom_ribbon` function on this list:
+
+```{r, eval=TRUE}
+ggplot() + base::do.call("geom_ribbon", new_ribbon_params)
+```
+
+
+# Change the Facet Labels
+
+The default arguments to the `facet.params` argument is given by:
+
+```{r}
+exposure_variable <- attr(x, "exposure")
+default_facet_params <- list(facets = exposure_variable, ncol = 1)
+```
+
+The poulation time area stratified by treatment arm is then plotted using the following code
+
+```{r}
+ggplot() + 
+    base::do.call("geom_ribbon", new_ribbon_params) + 
+    base::do.call("facet_wrap", default_facet_params) 
+
+# this is equivalent to
+# plot(x, add.case.series = FALSE)
+```
+
+We can modify the facet labels by either changing the factor labels in the data or specifying the `labeller` argument. See [this blog post](https://sahirbhatnagar.com/blog/2016/02/08/math-expressions-with-facets-in-ggplot2/) for further details. Here is an example of how we can change the facet labels using the `plot` method provided by the casebase package:
+
+```{r}
+# Use character vectors as lookup tables:
+group_status <- c(
+  `0` = "Control Arm",
+  `1` = "Screening Arm"
+)
+
+plot(x, 
+     add.case.series = FALSE, # do not plot the case serires
+     facet.params = list(labeller = labeller(ScrArm = group_status), # change labels
+                         strip.position = "right") # change facet position
+     ) 
+```
+
+
+
+# Changing the Plot Aesthetics
+
+Suppose we want to change the color of the points and the legend labels. We use the `bmtcrr` dataset as the example in this section. 
+
+The default colors for the case series, base series and competing event are given by:
+
+```{r}
+cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
+```
+
+
+## Change only the point colors
+
+If you only want to change the color points, you must specify a named vector exactly as specified in the `cols` object created above. Note that the names `Case series`, `Base Series` and `Competing event` must remain the same, otherwise the function won't know how to map the colors to the corresponding points. This is because the `colour` aesthetic mapping in the `geom_point` functions have been set to `Case series`, `Base Series` and `Competing event`. For example, the default call to `geom_point` for the case series is given by:
+
+```{r}
+ggplot() + do.call("geom_point", list(data = x[event == 1],
+                     mapping = aes(x = time, y = yc, colour = "Case series")))
+```
+
+
+We define a new set of colors:
+
+```{r}
+new_cols <- c("Case series" = "red", "Competing event" = "orange", "Base series" = "blue")
+```
+
+We then pass `new_cols` to the `legend.params` argument. Internally, this gets passed to the [`ggplot2::scale_color_manual`](https://ggplot2.tidyverse.org/reference/scale_manual.html) function:
+
+```{r, eval=FALSE}
+do.call("scale_colour_manual", utils::modifyList(
+  list(name = element_blank(),
+       breaks = c("Case series", "Competing event", "Base series"),
+       values = cols), list(values = new_cols))
+)
+```
+
+Here is the code to only change the colors:
+
+```{r}
+# this data ships with the casebase package
+data("bmtcrr")
+
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
+plot(popTimeData,
+     add.case.series = TRUE, 
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE,
+     legend.params = list(values = new_cols))
+```
+
+
+
+## Change Point Color and Legend Labels
+
+In order to change both the point colors and legend labels, we must modify the aesthetic mapping of the `geom_point` calls as follows:
+
+```{r}
+# this data ships with the casebase package
+data("bmtcrr")
+
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
+plot(popTimeData,
+     add.case.series = TRUE, 
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
+     ratio = 1,
+     comprisk = TRUE,
+     legend = TRUE,
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
+     legend.params = list(name = "Legend Name",
+                          breaks = c("Relapse", "Base series", "Competing event"),
+                          values = c("Relapse" = "blue", "Competing event" = "hotpink", "Base series" = "orange")))
+```
+
+
+NOTE: the lists being passed to the `.params` arguments must be named arguments, otherwise they will give unexpected behavior. For example
+
+```{r, eval=FALSE}
+# this will work because mapping is the name of the 
+# argument of the list 
+case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse"))
+```
+
+```{r, eval=FALSE}
+# this will NOT work because the argument of the list has no name
+# and therefore utils::modifyList, will not override the defaults. 
+case.params = list(aes(x = time, y = yc, colour = "Relapse"))
+```
+
+
+
+
+# Session information
+
+```{r echo=FALSE, eval=TRUE}
+print(sessionInfo(), locale = F)
+```
+
