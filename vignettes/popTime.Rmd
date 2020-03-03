@@ -386,7 +386,7 @@ Below is an example based on simulated data.
 
 ```{r}
 set.seed(1)
-nobs <- 5000
+nobs <- 500
 
 # simulation parameters
 a1 <- 1.0

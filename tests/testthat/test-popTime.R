@@ -74,13 +74,6 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = T))
 
-    # this should give error because you didnt specify comprisk=T, even though you
-    # dont plot comprisk event
-    p4 <- try(plot(out1,
-                   add.case.series = T,
-                   add.base.series = T,
-                   ratio = 1))
-
     # all three types plotted
     p5 <- try(plot(out1,
                    add.case.series = T,
@@ -124,15 +117,12 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                                         values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
                    theme.params = list(legend.position = "bottom")))
 
-
-    out2 <- try(plot(popTime(data = DFsim, time = "time", event = "event")))
-
     expect_false(inherits(p1, "try-error"))
     expect_false(inherits(p2, "try-error"))
     expect_false(inherits(p3, "try-error"))
     expect_false(inherits(p5, "try-error"))
     expect_false(inherits(p6, "try-error"))
     expect_false(inherits(p7, "try-error"))
-    expect_true(inherits(p4, "try-error"))
+
 })
 
