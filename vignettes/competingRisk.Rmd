@@ -3,12 +3,11 @@ title: "Competing risk analysis using case-base sampling"
 author: "Maxime Turgeon"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  rmarkdown::html_vignette:
     fig_height: 8
     fig_width: 11
     toc: yes
     toc_depth: 4
-    toc_float: yes
 vignette: >
   %\VignetteIndexEntry{Competing risk analysis}
   %\VignetteEngine{knitr::rmarkdown}

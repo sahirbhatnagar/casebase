@@ -15,7 +15,7 @@ See simsurv vignette:
 simdat
 }
 \description{
-This simulated data is and description is taken verbatim from the \href{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}{simsurv package}
+This simulated data is and description is taken verbatim from the \href{https://CRAN.r-project.org/package=simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}{simsurv package}
 Simulated data under a standard Weibull survival model that incorporates a
 time-dependent treatment effect (i.e. non-proportional hazards). For the
 time-dependent effect we included a single binary covariate (e.g. a treatment

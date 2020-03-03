@@ -135,7 +135,7 @@
 #'Simulated data under Weibull model with Time-Dependent Treatment Effect
 #'
 #'This simulated data is and description is taken verbatim from the [simsurv
-#'package](https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects)
+#'package](https://CRAN.r-project.org/package=simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects)
 #'Simulated data under a standard Weibull survival model that incorporates a
 #'time-dependent treatment effect (i.e. non-proportional hazards). For the
 #'time-dependent effect we included a single binary covariate (e.g. a treatment

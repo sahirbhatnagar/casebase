@@ -3,12 +3,11 @@ title: "Fitting smooth-in-time parametric hazard functions"
 author: "Maxime Turgeon"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  rmarkdown::html_vignette:
     fig_height: 8
     fig_width: 11
     toc: yes
     toc_depth: 4
-    toc_float: yes
 vignette: >
   %\VignetteIndexEntry{Introduction to casebase sampling}
   %\VignetteEngine{knitr::rmarkdown}
@@ -28,8 +27,7 @@ The theoretical properties of this approach have been studied in [Saarela and Ar
 
 The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
 
-```{r eval=TRUE, echo=-1}
-rm(list = ls())
+```{r eval=TRUE}
 set.seed(12345)
 
 library(survival)

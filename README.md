@@ -8,7 +8,7 @@
 
 An R package for smooth-in-time fitting of parametric hazard functions and compute absolute risks.
 
-![](hernan_HR_tweet.png)
+![](man/figures/hernan_HR_tweet.png)
 
 ## Installation
 
@@ -25,9 +25,10 @@ pacman::p_install_gh("sahirbhatnagar/casebase")
 
 See the [package website](http://sahirbhatnagar.com/casebase/) for example usage of the functions. This includes
 
-1. [Fitting Smooth Hazard Functions](http://sahirbhatnagar.com/casebase/smoothHazard/)
-2. [Competing Risks Analysis](http://sahirbhatnagar.com/casebase/competingRisk/)
-3. [Population Time Plots](http://sahirbhatnagar.com/casebase/popTime/)
+1. [Fitting Smooth Hazard Functions](http://sahirbhatnagar.com/casebase/articles/smoothHazard.html)
+2. [Competing Risks Analysis](http://sahirbhatnagar.com/casebase/articles/competingRisk.html)
+3. [Population Time Plots](http://sahirbhatnagar.com/casebase/articles/popTime.html)
+4. [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html)
 
 ## Credit
 

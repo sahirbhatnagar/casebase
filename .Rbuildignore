@@ -14,7 +14,6 @@
 ^casebase\.Rproj$
 ^_config\.yml$
 ^test\.rds$
-^hernan_HR_tweet\.png$
 
 ^data-raw$
 ^CONTRIBUTE_HOWTO$
