@@ -155,7 +155,11 @@
 <p>http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"support"</span>)
+<span class='no'>mod_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='http://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>death</span> ~ <span class='no'>.</span>,
+                                   <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>, <span class='kw'>event</span><span class='kw'>=</span><span class='st'>"death"</span>,
+                                   <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>support</span>,
+                                   <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
