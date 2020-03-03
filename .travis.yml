@@ -5,12 +5,6 @@ r:
 sudo: false
 cache: packages
 
-before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
-  deploy:
-    provider: script
-    script: Rscript -e 'pkgdown::deploy_site_github()'
-    skip_cleanup: true
-
 r_packages:
   - knitr
   - devtools
@@ -23,7 +17,23 @@ r_packages:
 after_success:
   - Rscript -e 'library(covr); codecov()'
 
+
+before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
+deploy:
+  provider: script
+  script: Rscript -e 'pkgdown::deploy_site_github()'
+  skip_cleanup: true
+
+before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
+  deploy:
+    provider: script
+    script: Rscript -e 'pkgdown::deploy_site_github()'
+    skip_cleanup: true
+
 notifications:
   email:
     - turgeonmaxime@gmail.com
     - sahir.bhatnagar@gmail.com
+
+
+
