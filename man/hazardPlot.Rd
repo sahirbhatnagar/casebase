@@ -4,10 +4,24 @@
 \alias{hazardPlot}
 \title{Plot Fitted Hazard Curve as a Funtion of Time}
 \usage{
-hazardPlot(object, newdata, type = c("hazard"), xlab = NULL,
-  breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
-  ci.col = "grey", lty = par("lty"), add = FALSE, ci = !add,
-  rug = !add, s = c("lambda.1se", "lambda.min"), times = NULL, ...)
+hazardPlot(
+  object,
+  newdata,
+  type = c("hazard"),
+  xlab = NULL,
+  breaks = 100,
+  ci.lvl = 0.95,
+  ylab = NULL,
+  line.col = 1,
+  ci.col = "grey",
+  lty = par("lty"),
+  add = FALSE,
+  ci = !add,
+  rug = !add,
+  s = c("lambda.1se", "lambda.min"),
+  times = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This
