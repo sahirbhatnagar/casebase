@@ -24,8 +24,7 @@ editor_options:
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
-# library(casebase)
-devtools::load_all()
+library(casebase)
 library(data.table)
 
 # create poptime exposure object for ERSPC data

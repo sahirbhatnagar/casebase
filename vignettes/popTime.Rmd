@@ -39,8 +39,7 @@ In this vignette we show how to create population-time plots for the two dataset
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
-# library(casebase)
-devtools::load_all()
+library(casebase)
 library(data.table)
 ```
 
