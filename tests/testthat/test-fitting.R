@@ -80,3 +80,11 @@ test_that("allow dot notation in formula", {
 
     expect_false(inherits(model, "try-error"))
 })
+
+test_that("sampling first and then fitting", {
+    data_cb <- sampleCaseBase(ERSPC, time='Follow.Up.Time', ratio = 10, event = "DeadOfPrCa")
+    try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = data_cb),
+        silent = TRUE)
+
+    expect_false(inherits(model, "try-error"))
+})

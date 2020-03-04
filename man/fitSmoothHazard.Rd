@@ -46,7 +46,7 @@ is the censored. This function will use \code{\link[stats]{relevel}} to set
 \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
 variable is a numeric.}
 
-\item{ratio}{nteger, giving the ratio of the size of the base series to that of the case series.
+\item{ratio}{integer, giving the ratio of the size of the base series to that of the case series.
 Defaults to 100.}
 
 \item{...}{Additional parameters passed to fitting functions (e.g. \code{glm}, \code{glmnet},
@@ -96,8 +96,7 @@ ignored).
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
 library(data.table)
-set.seed(12345)
-nobs <- 5000
+nobs <- 500
 tlim <- 20
 
 # simulation parameters
@@ -116,4 +115,10 @@ DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
 out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
+
+# Use GAMs
+library(mgcv)
+DT[event == 2, event := 1]
+out_gam <- fitSmoothHazard(event ~ s(time) + z, DT, ratio = 10,
+                           family = "gam")
 }

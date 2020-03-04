@@ -40,7 +40,7 @@
 #'   is the censored. This function will use \code{\link[stats]{relevel}} to set
 #'   \code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
 #'   variable is a numeric.
-#' @param ratio nteger, giving the ratio of the size of the base series to that of the case series.
+#' @param ratio integer, giving the ratio of the size of the base series to that of the case series.
 #'   Defaults to 100.
 #' @param ... Additional parameters passed to fitting functions (e.g. \code{glm}, \code{glmnet},
 #'   \code{gam}).
@@ -52,8 +52,7 @@
 #' @examples
 #' # Simulate censored survival data for two outcome types from exponential distributions
 #' library(data.table)
-#' set.seed(12345)
-#' nobs <- 5000
+#' nobs <- 500
 #' tlim <- 20
 #'
 #' # simulation parameters
@@ -72,6 +71,12 @@
 #'
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 #' out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
+#'
+#' # Use GAMs
+#' library(mgcv)
+#' DT[event == 2, event := 1]
+#' out_gam <- fitSmoothHazard(event ~ s(time) + z, DT, ratio = 10,
+#'                            family = "gam")
 #' @importMethodsFrom VGAM summary predict
 #' @importFrom VGAM vglm multinomial summaryvglm
 #' @importFrom mgcv s te ti t2
@@ -97,9 +102,8 @@ fitSmoothHazard <- function(formula, data, time,
         timeVar <- varNames$time
     } else timeVar <- time
 
-
     typeEvents <- sort(unique(data[[eventVar]]))
-    # Call sampleCaseBase
+    # Call sampleCaseBase if class is not cbData
     if (!inherits(data, "cbData")) {
         originalData <- as.data.frame(data)
         if (missing(censored.indicator)) {
@@ -112,12 +116,14 @@ fitSmoothHazard <- function(formula, data, time,
                                          censored.indicator, ratio)
         }
     } else {
+        # If class is cbData we no longer have the original data
         originalData <- NULL
         sampleData <- data
     }
 
     if (family != "glmnet") {
         # Update formula to add offset term
+        # glmnet is handled as separate argument
         formula <- update(formula, ~ . + offset(offset))
     }
 
@@ -138,6 +144,10 @@ fitSmoothHazard <- function(formula, data, time,
 
     } else {
         # Otherwise fit a multinomial regression
+        if (!family %in% c("glm", "glmnet")) {
+            stop(sprintf("Competing-risk analysis is not available for family=%s", family),
+                 .call = FALSE)
+        }
         fittingFunction <- switch(family,
                                   "glm" = function(formula) VGAM::vglm(formula, data = sampleData,
                                                                        family = multinomial(refLevel = 1)),
@@ -146,9 +156,12 @@ fitSmoothHazard <- function(formula, data, time,
         # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
         if (family == "glmnet") formula <- remove_offset(formula)
 
+        # Turn off warnings from VGAM::vglm.fitter
         withCallingHandlers(model <- fittingFunction(formula),
                             warning = handler_fitter)
 
+        # The output is an S4 object that extends vglm-class when family='glm'
+        # Otherwise it's just an S3 object like above
         out <- switch(family,
                       "glm" = new("CompRisk", model,
                                   originalData = originalData,
@@ -222,6 +235,7 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
                                      comprisk = (length(typeEvents) > 2),
                                      censored.indicator, ratio)
     }
+    # Format everything into matrices and expend variables that need to be expended
     sample_event <- as.matrix(sampleData[,eventVar])
     sample_time <- if (family %in% c("glmnet", "gbm")) {
         model.matrix(update(formula_time, ~ . -1),
@@ -272,4 +286,3 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     }
     return(out)
 }
-
