@@ -5,6 +5,7 @@ inst/doc/*
 vignettes/*
 !vignettes/*.Rmd
 test.rds
+data-raw
 references
 .DS_Store
 tests/testthat/Rplots.pdf
