@@ -44,64 +44,71 @@
 #' # event type 0-censored, 1-event of interest, 2-competing event
 #' # t observed time/endpoint
 #' # z is a binary covariate
-#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
-#' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
-#'           "t_comp" = rweibull(nobs, 1, b2))]
-#' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
-#'          "time" = pmin(t_event, t_comp))]
+#' DT <- data.table(z = rbinom(nobs, 1, 0.5))
+#' DT[, `:=`(
+#'   "t_event" = rweibull(nobs, 1, b1),
+#'   "t_comp" = rweibull(nobs, 1, b2)
+#' )]
+#' DT[, `:=`(
+#'   "event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+#'   "time" = pmin(t_event, t_comp)
+#' )]
 #' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 #'
 #' out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
-
 sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, censored.indicator) {
-    # Get the variables names for time and event
-    varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
-    timeVar <- varNames$time
-    eventName <- varNames$event
-    # Check the event categories
-    modifiedEvent <- checkArgsEventIndicator(data, eventName, censored.indicator)
-    eventVar <- modifiedEvent$event.numeric
-    # Check if we have competing events
-    if (!comprisk && modifiedEvent$nLevels > 2) {
-        stop(paste("For more than one event type, you should have compRisk=TRUE,",
-                   "or reformat your data so that there is only one event of interest."),
-             call. = FALSE)
-    }
-    # Create survival object from dataset
-    if (comprisk) surv_type <- "mstate" else surv_type <- "right"
-    survObj <- survival::Surv(data[[timeVar]],
-                              eventVar,
-                              type = surv_type)
+  # Get the variables names for time and event
+  varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
+  timeVar <- varNames$time
+  eventName <- varNames$event
+  # Check the event categories
+  modifiedEvent <- checkArgsEventIndicator(data, eventName, censored.indicator)
+  eventVar <- modifiedEvent$event.numeric
+  # Check if we have competing events
+  if (!comprisk && modifiedEvent$nLevels > 2) {
+    stop(paste(
+      "For more than one event type, you should have compRisk=TRUE,",
+      "or reformat your data so that there is only one event of interest."
+    ),
+    call. = FALSE
+    )
+  }
+  # Create survival object from dataset
+  if (comprisk) surv_type <- "mstate" else surv_type <- "right"
+  survObj <- survival::Surv(data[[timeVar]],
+    eventVar,
+    type = surv_type
+  )
 
-    n <- nrow(survObj) # no. of subjects
-    B <- sum(survObj[, "time"]) # total person-time in base
-    c <- sum(survObj[, "status"] != 0) # no. of cases (events)
-    b <- ratio * c # size of base series
-    offset <- log(B/b) # offset so intercept = log(ID | x, t = 0 )
+  n <- nrow(survObj) # no. of subjects
+  B <- sum(survObj[, "time"]) # total person-time in base
+  c <- sum(survObj[, "status"] != 0) # no. of cases (events)
+  b <- ratio * c # size of base series
+  offset <- log(B / b) # offset so intercept = log(ID | x, t = 0 )
 
-    # We select person-moments from individual proportional
-    # to their total follow-up time
-    prob_select <- survObj[, "time"]/B
-    which_pm <- sample(n, b, replace = TRUE, prob = prob_select)
-    bSeries <- as.matrix(survObj[which_pm, ])
-    bSeries[, "status"] <- 0
-    bSeries[, "time"] <- runif(b) * bSeries[, "time"]
+  # We select person-moments from individual proportional
+  # to their total follow-up time
+  prob_select <- survObj[, "time"] / B
+  which_pm <- sample(n, b, replace = TRUE, prob = prob_select)
+  bSeries <- as.matrix(survObj[which_pm, ])
+  bSeries[, "status"] <- 0
+  bSeries[, "time"] <- runif(b) * bSeries[, "time"]
 
-    # Combine base series with covariate data
-    selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
-    bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[which_pm,,drop = FALSE])
-    # Rename columns appropriately
-    names(bSeries)[names(bSeries) == "status"] <- eventName
-    names(bSeries)[names(bSeries) == "time"] <- timeVar
+  # Combine base series with covariate data
+  selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
+  bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[which_pm, , drop = FALSE])
+  # Rename columns appropriately
+  names(bSeries)[names(bSeries) == "status"] <- eventName
+  names(bSeries)[names(bSeries) == "time"] <- timeVar
 
-    cSeries <- data[which(subset(data, select = (names(data) == eventName)) != 0),]
+  cSeries <- data[which(subset(data, select = (names(data) == eventName)) != 0), ]
 
-    # Combine case and base series
-    cbSeries <- rbind(cSeries, bSeries)
-    # Add offset to dataset
-    cbSeries <- cbind(cbSeries, rep_len(offset, nrow(cbSeries)))
-    names(cbSeries)[ncol(cbSeries)] <- "offset"
+  # Combine case and base series
+  cbSeries <- rbind(cSeries, bSeries)
+  # Add offset to dataset
+  cbSeries <- cbind(cbSeries, rep_len(offset, nrow(cbSeries)))
+  names(cbSeries)[ncol(cbSeries)] <- "offset"
 
-    class(cbSeries) <- c("cbData", class(cbSeries))
-    return(cbSeries)
+  class(cbSeries) <- c("cbData", class(cbSeries))
+  return(cbSeries)
 }

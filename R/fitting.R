@@ -62,11 +62,15 @@
 #' # event type 0-censored, 1-event of interest, 2-competing event
 #' # t observed time/endpoint
 #' # z is a binary covariate
-#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
-#' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
-#'           "t_comp" = rweibull(nobs, 1, b2))]
-#' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
-#'          "time" = pmin(t_event, t_comp))]
+#' DT <- data.table(z = rbinom(nobs, 1, 0.5))
+#' DT[, `:=`(
+#'   "t_event" = rweibull(nobs, 1, b1),
+#'   "t_comp" = rweibull(nobs, 1, b2)
+#' )]
+#' DT[, `:=`(
+#'   "event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+#'   "time" = pmin(t_event, t_comp)
+#' )]
 #' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 #'
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
@@ -75,112 +79,135 @@
 #' # Use GAMs
 #' library(mgcv)
 #' DT[event == 2, event := 1]
-#' out_gam <- fitSmoothHazard(event ~ s(time) + z, DT, ratio = 10,
-#'                            family = "gam")
+#' out_gam <- fitSmoothHazard(event ~ s(time) + z, DT,
+#'   ratio = 10,
+#'   family = "gam"
+#' )
 #' @importMethodsFrom VGAM summary predict
 #' @importFrom VGAM vglm multinomial summaryvglm
 #' @importFrom mgcv s te ti t2
 fitSmoothHazard <- function(formula, data, time,
                             family = c("glm", "gam", "gbm", "glmnet"),
                             censored.indicator, ratio = 100, ...) {
-    family <- match.arg(family)
-    if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-        stop("Pkg gbm needed for this function to work. Please install it.",
-             call. = FALSE)
-    }
-    if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
-        stop("Pkg glmnet needed for this function to work. Please install it.",
-             call. = FALSE)
-    }
-    formula <- expand_dot_formula(formula, data = data)
-    # Infer name of event variable from LHS of formula
-    # eventVar <- as.character(attr(terms(formula), "variables")[[2]])
-    eventVar <- all.vars(formula[[2]])
+  family <- match.arg(family)
+  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+    stop("Pkg gbm needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  }
+  if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
+    stop("Pkg glmnet needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  }
+  formula <- expand_dot_formula(formula, data = data)
+  # Infer name of event variable from LHS of formula
+  # eventVar <- as.character(attr(terms(formula), "variables")[[2]])
+  eventVar <- all.vars(formula[[2]])
 
-    if (missing(time)) {
-        varNames <- checkArgsTimeEvent(data = data, event = eventVar)
-        timeVar <- varNames$time
-    } else timeVar <- time
+  if (missing(time)) {
+    varNames <- checkArgsTimeEvent(data = data, event = eventVar)
+    timeVar <- varNames$time
+  } else {
+    timeVar <- time
+  }
 
-    typeEvents <- sort(unique(data[[eventVar]]))
-    # Call sampleCaseBase if class is not cbData
-    if (!inherits(data, "cbData")) {
-        originalData <- as.data.frame(data)
-        if (missing(censored.indicator)) {
-            sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
-                                         comprisk = (length(typeEvents) > 2),
-                                         ratio)
-        } else {
-            sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
-                                         comprisk = (length(typeEvents) > 2),
-                                         censored.indicator, ratio)
-        }
+  typeEvents <- sort(unique(data[[eventVar]]))
+  # Call sampleCaseBase if class is not cbData
+  if (!inherits(data, "cbData")) {
+    originalData <- as.data.frame(data)
+    if (missing(censored.indicator)) {
+      sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+        comprisk = (length(typeEvents) > 2),
+        ratio
+      )
     } else {
-        # If class is cbData we no longer have the original data
-        originalData <- NULL
-        sampleData <- data
+      sampleData <- sampleCaseBase(originalData, timeVar, eventVar,
+        comprisk = (length(typeEvents) > 2),
+        censored.indicator, ratio
+      )
     }
+  } else {
+    # If class is cbData we no longer have the original data
+    originalData <- NULL
+    sampleData <- data
+  }
 
-    if (family != "glmnet") {
-        # Update formula to add offset term
-        # glmnet is handled as separate argument
-        formula <- update(formula, ~ . + offset(offset))
+  if (family != "glmnet") {
+    # Update formula to add offset term
+    # glmnet is handled as separate argument
+    formula <- update(formula, ~ . + offset(offset))
+  }
+
+  # Fit a binomial model if there are no competing risks
+  if (length(typeEvents) == 2) {
+    fittingFunction <- switch(family,
+      "glm" = function(formula) glm(formula, data = sampleData, family = binomial),
+      "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
+      "gam" = function(formula) mgcv::gam(formula, sampleData, family = "binomial", ...),
+      "gbm" = function(formula) gbm::gbm(formula, sampleData, distribution = "bernoulli", ...)
+    )
+
+    out <- fittingFunction(formula)
+    out$originalData <- originalData
+    out$typeEvents <- typeEvents
+    out$timeVar <- timeVar
+    out$eventVar <- eventVar
+    if (family == "glmnet") out$formula <- formula
+  } else {
+    # Otherwise fit a multinomial regression
+    if (!family %in% c("glm", "glmnet")) {
+      stop(sprintf("Competing-risk analysis is not available for family=%s", family),
+        .call = FALSE
+      )
     }
+    fittingFunction <- switch(family,
+      "glm" = function(formula) {
+        VGAM::vglm(formula,
+          data = sampleData,
+          family = multinomial(refLevel = 1)
+        )
+      },
+      "glmnet" = function(formula) {
+        cv.glmnet.formula(formula, sampleData,
+          event = eventVar,
+          competingRisk = TRUE, ...
+        )
+      }
+    )
+    # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
+    if (family == "glmnet") formula <- remove_offset(formula)
 
-    # Fit a binomial model if there are no competing risks
-    if (length(typeEvents) == 2) {
-        fittingFunction <- switch(family,
-                                  "glm" = function(formula) glm(formula, data = sampleData, family = binomial),
-                                  "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
-                                  "gam" = function(formula) mgcv::gam(formula, sampleData, family = "binomial", ...),
-                                  "gbm" = function(formula) gbm::gbm(formula, sampleData, distribution = "bernoulli", ...))
+    # Turn off warnings from VGAM::vglm.fitter
+    withCallingHandlers(model <- fittingFunction(formula),
+      warning = handler_fitter
+    )
 
-        out <- fittingFunction(formula)
-        out$originalData <- originalData
-        out$typeEvents <- typeEvents
-        out$timeVar <- timeVar
-        out$eventVar <- eventVar
-        if (family == "glmnet") out$formula <- formula
-
-    } else {
-        # Otherwise fit a multinomial regression
-        if (!family %in% c("glm", "glmnet")) {
-            stop(sprintf("Competing-risk analysis is not available for family=%s", family),
-                 .call = FALSE)
-        }
-        fittingFunction <- switch(family,
-                                  "glm" = function(formula) VGAM::vglm(formula, data = sampleData,
-                                                                       family = multinomial(refLevel = 1)),
-                                  "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar,
-                                                                                 competingRisk = TRUE, ...))
-        # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
-        if (family == "glmnet") formula <- remove_offset(formula)
-
-        # Turn off warnings from VGAM::vglm.fitter
-        withCallingHandlers(model <- fittingFunction(formula),
-                            warning = handler_fitter)
-
-        # The output is an S4 object that extends vglm-class when family='glm'
-        # Otherwise it's just an S3 object like above
-        out <- switch(family,
-                      "glm" = new("CompRisk", model,
-                                  originalData = originalData,
-                                  typeEvents = typeEvents,
-                                  timeVar = timeVar,
-                                  eventVar = eventVar),
-                      "glmnet" = structure(
-                          c(model,
-                            list(
-                                "originalData" = originalData,
-                                "typeEvents" = typeEvents,
-                                "timeVar" = timeVar,
-                                "eventVar" = eventVar,
-                                "formula" = formula
-                                   )),
-                          class = c("CompRiskGlmnet", class(model))
-                          ))
-    }
-    return(out)
+    # The output is an S4 object that extends vglm-class when family='glm'
+    # Otherwise it's just an S3 object like above
+    out <- switch(family,
+      "glm" = new("CompRisk", model,
+        originalData = originalData,
+        typeEvents = typeEvents,
+        timeVar = timeVar,
+        eventVar = eventVar
+      ),
+      "glmnet" = structure(
+        c(
+          model,
+          list(
+            "originalData" = originalData,
+            "typeEvents" = typeEvents,
+            "timeVar" = timeVar,
+            "eventVar" = eventVar,
+            "formula" = formula
+          )
+        ),
+        class = c("CompRiskGlmnet", class(model))
+      )
+    )
+  }
+  return(out)
 }
 
 #' @export
@@ -192,97 +219,113 @@ fitSmoothHazard <- function(formula, data, time,
 #' @importFrom stats glm.fit
 fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm", "gbm", "glmnet"),
                                 censored.indicator, ratio = 100, ...) {
-    family <- match.arg(family)
-    if (family == "gam") stop("The matrix interface is not available for gam")
-    if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-        stop("Pkg gbm needed for this function to work. Please install it.",
-             call. = FALSE)
-    }
-    if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
-        stop("Pkg glmnet needed for this function to work. Please install it.",
-             call. = FALSE)
-    }
+  family <- match.arg(family)
+  if (family == "gam") stop("The matrix interface is not available for gam")
+  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+    stop("Pkg gbm needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  }
+  if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
+    stop("Pkg glmnet needed for this function to work. Please install it.",
+      call. = FALSE
+    )
+  }
 
-    # Default to linear term
-    if (missing(formula_time)) {
-        formula_time <- formula(paste("~", time))
-        timeVar <- time
-    } else {
-        timeVar <- if (length(formula_time) == 3) all.vars(formula_time[[3]]) else all.vars(formula_time)
-    }
-    # There should only be one time variable
-    stopifnot(length(timeVar) == 1)
+  # Default to linear term
+  if (missing(formula_time)) {
+    formula_time <- formula(paste("~", time))
+    timeVar <- time
+  } else {
+    timeVar <- if (length(formula_time) == 3) all.vars(formula_time[[3]]) else all.vars(formula_time)
+  }
+  # There should only be one time variable
+  stopifnot(length(timeVar) == 1)
 
-    # Try to infer event from
-    if (missing(event)) {
-        varNames <- checkArgsTimeEvent(data = as.data.frame(y), time = timeVar)
-        eventVar <- varNames$event
-    } else eventVar <- event
+  # Try to infer event from
+  if (missing(event)) {
+    varNames <- checkArgsTimeEvent(data = as.data.frame(y), time = timeVar)
+    eventVar <- varNames$event
+  } else {
+    eventVar <- event
+  }
 
-    typeEvents <- sort(unique(y[,eventVar]))
-    # Call sampleCaseBase
-    originalData <- list("x" = x,
-                         "y" = y)
-    class(originalData) <- c(class(originalData), "data.fit")
-    if (missing(censored.indicator)) {
-        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
-                                     timeVar, eventVar,
-                                     comprisk = (length(typeEvents) > 2),
-                                     ratio)
-    } else {
-        sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
-                                     timeVar, eventVar,
-                                     comprisk = (length(typeEvents) > 2),
-                                     censored.indicator, ratio)
-    }
-    # Format everything into matrices and expend variables that need to be expended
-    sample_event <- as.matrix(sampleData[,eventVar])
-    sample_time <- if (family %in% c("glmnet", "gbm")) {
-        model.matrix(update(formula_time, ~ . -1),
-                     sampleData)
-    } else {
-        model.matrix(formula_time, sampleData)
-    }
-    sample_time_x <- cbind(sample_time,
-                           as.matrix(sampleData[,!names(sampleData) %in% c(eventVar, timeVar, "offset")]))
-    sample_offset <- sampleData$offset
+  typeEvents <- sort(unique(y[, eventVar]))
+  # Call sampleCaseBase
+  originalData <- list(
+    "x" = x,
+    "y" = y
+  )
+  class(originalData) <- c(class(originalData), "data.fit")
+  if (missing(censored.indicator)) {
+    sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+      timeVar, eventVar,
+      comprisk = (length(typeEvents) > 2),
+      ratio
+    )
+  } else {
+    sampleData <- sampleCaseBase(as.data.frame(cbind(y, x)),
+      timeVar, eventVar,
+      comprisk = (length(typeEvents) > 2),
+      censored.indicator, ratio
+    )
+  }
+  # Format everything into matrices and expend variables that need to be expended
+  sample_event <- as.matrix(sampleData[, eventVar])
+  sample_time <- if (family %in% c("glmnet", "gbm")) {
+    model.matrix(
+      update(formula_time, ~ . - 1),
+      sampleData
+    )
+  } else {
+    model.matrix(formula_time, sampleData)
+  }
+  sample_time_x <- cbind(
+    sample_time,
+    as.matrix(sampleData[, !names(sampleData) %in% c(eventVar, timeVar, "offset")])
+  )
+  sample_offset <- sampleData$offset
 
-    # Fit a binomial model if there are no competing risks
-    if (length(typeEvents) == 2) {
-        out <- switch(family,
-                      "glm" = glm.fit(sample_time_x, sample_event,
-                                      family = binomial(),
-                                      offset = sample_offset),
-                      "glmnet" = cv.glmnet_offset_hack(sample_time_x, sample_event,
-                                                       family = "binomial",
-                                                       offset = sample_offset, ...),
-                      "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
-                                           distribution = "bernoulli",
-                                           offset = sample_offset,
-                                           verbose = FALSE, ...))
+  # Fit a binomial model if there are no competing risks
+  if (length(typeEvents) == 2) {
+    out <- switch(family,
+      "glm" = glm.fit(sample_time_x, sample_event,
+        family = binomial(),
+        offset = sample_offset
+      ),
+      "glmnet" = cv.glmnet_offset_hack(sample_time_x, sample_event,
+        family = "binomial",
+        offset = sample_offset, ...
+      ),
+      "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
+        distribution = "bernoulli",
+        offset = sample_offset,
+        verbose = FALSE, ...
+      )
+    )
 
-        out$originalData <- originalData
-        out$typeEvents <- typeEvents
-        out$timeVar <- timeVar
-        out$eventVar <- eventVar
-        out$matrix.fit <- TRUE
-        out$formula_time <- formula_time
+    out$originalData <- originalData
+    out$typeEvents <- typeEvents
+    out$timeVar <- timeVar
+    out$eventVar <- eventVar
+    out$matrix.fit <- TRUE
+    out$formula_time <- formula_time
+  } else {
+    if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
+    if (family != "glmnet") stop("Not implemented yet")
+    # because of glmnet parametrization, constant offsets are dropped
+    out <- glmnet::cv.glmnet(sample_time_x, sample_event,
+      family = "multinomial",
+      type.multinomial = "grouped", ...
+    )
 
-    } else {
-        if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
-        if (family != "glmnet") stop("Not implemented yet")
-        # because of glmnet parametrization, constant offsets are dropped
-        out <- glmnet::cv.glmnet(sample_time_x, sample_event,
-                                 family = "multinomial",
-                                 type.multinomial = "grouped", ...)
-
-        out$originalData <- originalData
-        out$typeEvents <- typeEvents
-        out$timeVar <- timeVar
-        out$eventVar <- eventVar
-        out$matrix.fit <- TRUE
-        out$formula_time <- formula_time
-        class(out) <- c("CompRiskGlmnet", class(out))
-    }
-    return(out)
+    out$originalData <- originalData
+    out$typeEvents <- typeEvents
+    out$timeVar <- timeVar
+    out$eventVar <- eventVar
+    out$matrix.fit <- TRUE
+    out$formula_time <- formula_time
+    class(out) <- c("CompRiskGlmnet", class(out))
+  }
+  return(out)
 }
