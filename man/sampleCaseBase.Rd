@@ -53,6 +53,13 @@ supplied time and event variables. If either the \code{time} or \code{event}
 argument is missing, the function looks for columns with appropriate-looking
 names (see \code{\link{checkArgsTimeEvent}}).
 }
+\section{Warning}{
+ The offset is calculated using the total follow-up time for
+all individuals in the study. Therefore, we need \code{time} to be on the
+original scale, not a transformed scale (e.g. logarithmic). Otherwise, the
+offset and the estimation will be wrong.
+}
+
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
 library(data.table)

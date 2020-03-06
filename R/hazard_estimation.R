@@ -7,7 +7,7 @@ estimate_hazard <- function(object, newdata, ci = FALSE, plot = FALSE, ...) {
     UseMethod("estimate_hazard")
 }
 
-estimate_hazard_default <- function(object, newdata, ci, plot, ...) {
+estimate_hazard.default <- function(object, newdata, ci, plot, ...) {
     stop("This function should be used with an object of class glm, cv.glmnet, gbm",
          call. = TRUE)
 }

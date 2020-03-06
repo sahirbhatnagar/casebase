@@ -28,29 +28,32 @@ fitSmoothHazard.fit(
 )
 }
 \arguments{
-\item{formula}{an object of class "formula" (or one that can be coerced to that class): a
-symbolic description of the model to be fitted. The details of model specification are given
-under Details.}
+\item{formula}{an object of class "formula" (or one that can be coerced to
+that class): a symbolic description of the model to be fitted. The details
+of model specification are given under Details.}
 
-\item{data}{a data frame, list or environment containing the variables in the model. If not found
-in data, the variables are taken from \code{environment(formula)}, typically the environment
-from which \code{fitSmoothHazard} is called.}
+\item{data}{a data frame, list or environment containing the variables in the
+model. If not found in data, the variables are taken from
+\code{environment(formula)}, typically the environment from which
+\code{fitSmoothHazard} is called.}
 
-\item{time}{a character string giving the name of the time variable. See Details.}
+\item{time}{a character string giving the name of the time variable. See
+Details.}
 
-\item{family}{a character string specifying the family of regression models used to fit the
-hazard.}
+\item{family}{a character string specifying the family of regression models
+used to fit the hazard.}
 
-\item{censored.indicator}{a character string of length 1 indicating which value in \code{event}
-is the censored. This function will use \code{\link[stats]{relevel}} to set
-\code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
-variable is a numeric.}
+\item{censored.indicator}{a character string of length 1 indicating which
+value in \code{event} is the censored. This function will use
+\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+reference level. This argument is ignored if the \code{event} variable is a
+numeric.}
 
-\item{ratio}{integer, giving the ratio of the size of the base series to that of the case series.
-Defaults to 100.}
+\item{ratio}{integer, giving the ratio of the size of the base series to that
+of the case series. Defaults to 100.}
 
-\item{...}{Additional parameters passed to fitting functions (e.g. \code{glm}, \code{glmnet},
-\code{gam}).}
+\item{...}{Additional parameters passed to fitting functions (e.g.
+\code{glm}, \code{glmnet}, \code{gam}).}
 
 \item{x}{Matrix containing covariates.}
 
@@ -61,37 +64,44 @@ Defaults to 100.}
 \item{event}{a character string giving the name of the event variable.}
 }
 \value{
-An object of \code{glm} and \code{lm} when there is only one event of interest, or of
-class \code{\link{CompRisk}}, which inherits from \code{vglm}, for a competing risk analysis.
-As such, functions like \code{summary}, \code{deviance} and \code{coefficients} give familiar
+An object of \code{glm} and \code{lm} when there is only one event of
+interest, or of class \code{\link{CompRisk}}, which inherits from
+\code{vglm}, for a competing risk analysis. As such, functions like
+\code{summary}, \code{deviance} and \code{coefficients} give familiar
 results.
 }
 \description{
-Miettinen and Hanley (2009) explained how case-base sampling can be used to estimate
-smooth-in-time parametric hazard functions. The idea is to sample person-moments, which may or
-may not correspond to an event, and then fit the hazard using logistic regression.
+Miettinen and Hanley (2009) explained how case-base sampling can be used to
+estimate smooth-in-time parametric hazard functions. The idea is to sample
+person-moments, which may or may not correspond to an event, and then fit the
+hazard using logistic regression.
 }
 \details{
-The object \code{data} should either be the output of the function \code{\link{sampleCaseBase}}
-or the source dataset on which case-base sampling will be performed. In the latter case, it is
-assumed that \code{data} contains the two columns corresponding to the supplied time and event
-variables. If \code{time} is missing, the function looks for a column named \code{"time"} in the
-data. Note that the event variable is inferred from \code{formula}, since it is the left hand
-side.
+The object \code{data} should either be the output of the function
+\code{\link{sampleCaseBase}} or the source dataset on which case-base
+sampling will be performed. In the latter case, it is assumed that
+\code{data} contains the two columns corresponding to the supplied time and
+event variables. The variable \code{time} is used for the sampling the base
+series, and therefore it should represent the time variable on its original
+(i.e. non transformed) scale. If \code{time} is missing, the function looks
+for a column named \code{"time"} in the data. Note that the event variable is
+inferred from \code{formula}, since it is the left hand side.
 
-For single-event survival analysis, it is possible to fit the hazard function using
-\code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family is controled by the
-parameter \code{family}. The default value is \code{glm}, which corresponds to logistic
-regression. For competing risk analysis, only \code{glm} and \code{glmnet} are allowed.
+For single-event survival analysis, it is possible to fit the hazard function
+using \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family
+is controled by the parameter \code{family}. The default value is \code{glm},
+which corresponds to logistic regression. For competing risk analysis, only
+\code{glm} and \code{glmnet} are allowed.
 
-We also provide a matrix interface through \code{fitSmoothHazard.fit}, which mimics
-\code{glm.fit} and \code{gbm.fit}. This is mostly convenient for \code{family = "glmnet"}, since
-a formula interface becomes quickly cumbersome as the number of variables increases. In this
-setting, the matrix \code{y} should have two columns and contain the time and event variables
-(e.g. like the output of \code{survival::Surv}). We need this linear function of time in order to
-perform case-base sampling. Therefore, nonlinear functions of time should be specified as a
-one-sided formula through the argument \code{formula_time} (the left-hand side is always
-ignored).
+We also provide a matrix interface through \code{fitSmoothHazard.fit}, which
+mimics \code{glm.fit} and \code{gbm.fit}. This is mostly convenient for
+\code{family = "glmnet"}, since a formula interface becomes quickly
+cumbersome as the number of variables increases. In this setting, the matrix
+\code{y} should have two columns and contain the time and event variables
+(e.g. like the output of \code{survival::Surv}). We need this linear function
+of time in order to perform case-base sampling. Therefore, nonlinear
+functions of time should be specified as a one-sided formula through the
+argument \code{formula_time} (the left-hand side is always ignored).
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions

@@ -12,6 +12,11 @@
 #' argument is missing, the function looks for columns with appropriate-looking
 #' names (see \code{\link{checkArgsTimeEvent}}).
 #'
+#' @section Warning: The offset is calculated using the total follow-up time for
+#'   all individuals in the study. Therefore, we need \code{time} to be on the
+#'   original scale, not a transformed scale (e.g. logarithmic). Otherwise, the
+#'   offset and the estimation will be wrong.
+#'
 #' @param data a data.frame or data.table containing the source dataset.
 #' @param time a character string giving the name of the time variable. See
 #'   Details.
