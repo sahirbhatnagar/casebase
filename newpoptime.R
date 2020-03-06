@@ -5,7 +5,51 @@ str(bmtcrr)
 
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status", exposure = "D")
 # popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+data("ERSPC")
+head(ERSPC)
 
+modcb <- fitSmoothHazard(DeadOfPrCa ~ bs(Follow.Up.Time)*ScrArm, data = ERSPC)
+hazardPlot(modcb, newdata = data.frame(ScrArm = 0), ci = F)
+hazardPlot(modcb, newdata = data.frame(ScrArm = 1), add = T)
+
+pacman::p_load(ggeffects)
+pacman::p_load(effects)
+ggeffects::ggpredict(modcb, terms = "ScrArm")
+dat <- ggpredict(modcb, terms = c("ScrArm"), data = ERSPC)
+
+modcb
+
+plot(dat, facet = TRUE)
+
+library(survival)
+data(veteran)
+head(veteran)
+veteran$status %>% table
+
+modcb <- fitSmoothHazard(status ~ ., data = veteran)
+summary(modcb)
+
+data("simdat")
+library(splines)
+mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+                                        trt:ns(log(eventtime),df=1),
+                                    time = "eventtime",
+                                    data = simdat,
+                                    ratio = 100,
+                                    family = "glm")
+
+results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
+                       ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+head(results0)
+hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+           ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
+legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
+
+
+summary(modcb)
+hazardPlot(modcb, newdata = ERSPC)
+?fitSmoothHazard
+?hazardPlot
 attr(popTimeData, "exposure")
 attr(popTimeData, "call")
 
