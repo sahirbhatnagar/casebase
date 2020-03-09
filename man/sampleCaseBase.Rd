@@ -16,43 +16,55 @@ sampleCaseBase(
 \arguments{
 \item{data}{a data.frame or data.table containing the source dataset.}
 
-\item{time}{a character string giving the name of the time variable. See Details.}
+\item{time}{a character string giving the name of the time variable. See
+Details.}
 
-\item{event}{a character string giving the name of the event variable. See Details.}
+\item{event}{a character string giving the name of the event variable. See
+Details.}
 
-\item{ratio}{Integer, giving the ratio of the size of the base series to that of the case series.
-Defaults to 10.}
+\item{ratio}{Integer, giving the ratio of the size of the base series to that
+of the case series. Defaults to 10.}
 
-\item{comprisk}{Logical. Indicates whether we have multiple event types and that we want to
-consider some of them as competing risks.}
+\item{comprisk}{Logical. Indicates whether we have multiple event types and
+that we want to consider some of them as competing risks.}
 
-\item{censored.indicator}{a character string of length 1 indicating which value in \code{event}
-is the censored. This function will use \code{\link[stats]{relevel}} to set
-\code{censored.indicator} as the reference level. This argument is ignored if the \code{event}
-variable is a numeric}
+\item{censored.indicator}{a character string of length 1 indicating which
+value in \code{event} is the censored. This function will use
+\code{\link[stats]{relevel}} to set \code{censored.indicator} as the
+reference level. This argument is ignored if the \code{event} variable is a
+numeric}
 }
 \value{
-The function returns a dataset, with the same format as the source dataset, and where
-each row corresponds to a person-moment sampled from the case or the base series. otherwise)
+The function returns a dataset, with the same format as the source
+dataset, and where each row corresponds to a person-moment sampled from the
+case or the base series.
 }
 \description{
-This function implements the case-base sampling approach described in Hanley and Miettinen, Int J
-Biostatistics 2009. It can be used to fit smooth-in-time parametric functions easily, via
-logistic regression.
+This function implements the case-base sampling approach described in Hanley
+and Miettinen (2009). It can be used to fit smooth-in-time parametric
+functions easily via logistic regression.
 }
 \details{
-The base series is sampled using a multinomial scheme: individuals are sampled proportionally to
-their follow-up time.
+The base series is sampled using a multinomial scheme: individuals are
+sampled proportionally to their follow-up time.
 
-It is assumed that \code{data} contains the two columns corresponding to the supplied time and
-event variables. If either the \code{time} or \code{event} argument is missing, the function
-looks for columns with appropriate-looking names (see \code{\link{checkArgsTimeEvent}}).
+It is assumed that \code{data} contains the two columns corresponding to the
+supplied time and event variables. If either the \code{time} or \code{event}
+argument is missing, the function looks for columns with appropriate-looking
+names (see \code{\link{checkArgsTimeEvent}}).
 }
+\section{Warning}{
+ The offset is calculated using the total follow-up time for
+all individuals in the study. Therefore, we need \code{time} to be on the
+original scale, not a transformed scale (e.g. logarithmic). Otherwise, the
+offset and the estimation will be wrong.
+}
+
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
 library(data.table)
 set.seed(12345)
-nobs <- 5000
+nobs <- 500
 tlim <- 10
 
 # simulation parameters

@@ -6,8 +6,8 @@ Date: 2019-8-1
 Authors@R: c(
   person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
   role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
-  person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
-  role = c("aut"), comment = "http://maxturgeon.ca/"),
+  person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
+  role = c("aut"), comment = "https://maxturgeon.ca/"),
   person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
   role = c("aut"), comment = "https://www.jesseislam.com/"),
   person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",

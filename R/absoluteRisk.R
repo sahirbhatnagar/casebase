@@ -264,7 +264,10 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, 
                 }
                 pred <- estimate_hazard(object, newdata2, ...)
                 # Compute integral using trapezoidal rule
-                output[,j + 1] <- trap_int(knots, exp(pred))[knots %in% c(0, time_ordered)]
+                # First remove infinite values (e.g. with log(t))
+                pred_exp <- exp(pred)
+                pred_exp[which(pred_exp %in% c(Inf, -Inf))] <- 0
+                output[,j + 1] <- trap_int(knots, pred_exp)[knots %in% c(0, time_ordered)]
             }
 
         }

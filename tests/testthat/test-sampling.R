@@ -1,9 +1,8 @@
 context("Sampling")
 
-nobs <- 5000
+# Create simulated data with competing risks----
+nobs <- 500
 tlim <- 10
-
-# simulation parameters
 b1 <- 200
 b2 <- 50
 
@@ -28,6 +27,11 @@ DF[DF$time >= tlim, ]$time <- tlim
 DF$t_event <- NULL
 DF$t_comp <- NULL
 
+test_that("Expect error with competing risk but compRisk is not specified", {
+    expect_error(sampleCaseBase(DT, time = "time", event = "event"))
+    expect_error(sampleCaseBase(DF, time = "time", event = "event"))
+})
+
 test_that("no error in sampling with data.frame or data.table", {
     out1 <- try(sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE))
     out2 <- try(sampleCaseBase(DF, time = "time", event = "event", comprisk = TRUE))
@@ -50,4 +54,20 @@ test_that("detect event variable within data.frame or data.table", {
 
     expect_false(inherits(out1, "try-error"))
     expect_false(inherits(out2, "try-error"))
+})
+
+# Test checkArgsEventIndicator----
+data("bmtcrr") # from casebase
+bmtcrr$Sex <- as.character(bmtcrr$Sex)
+
+test_that("no error with different types of event variables", {
+    out1 <- try(checkArgsEventIndicator(data = veteran, event = "celltype",
+                                        censored.indicator = "smallcell"))
+    out2 <- try(checkArgsEventIndicator(data = veteran, event = "status"))
+    out3 <- try(checkArgsEventIndicator(data = bmtcrr, event = "Sex",
+                                        censored.indicator = "M"))
+
+    expect_false(inherits(out1, "try-error"))
+    expect_false(inherits(out2, "try-error"))
+    expect_false(inherits(out3, "try-error"))
 })
