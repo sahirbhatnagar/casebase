@@ -14,7 +14,7 @@ jobs:
       provider: script
       script: Rscript -e 'if (Sys.getenv("TRAVIS_REPO_SLUG", "") == "sahirbhatnagar/casebase") pkgdown::deploy_site_github(ssh_id = Sys.getenv("TRAVIS_DEPLOY_KEY", ""))'
       # script: Rscript -e 'pkgdown::deploy_site_github()'
-      cleanup: false
+      skip_cleanup: true
 
 r_packages:
   - knitr
