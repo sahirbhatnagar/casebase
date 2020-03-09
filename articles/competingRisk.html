@@ -87,7 +87,7 @@
       <h1>Competing risk analysis using case-base sampling</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-03-06</h4>
+            <h4 class="date">2020-03-09</h4>
       
       
       <div class="hidden name"><code>competingRisk.Rmd</code></div>
@@ -188,7 +188,7 @@
 <a class="sourceLine" id="cb5-13" data-line-number="13">yCoords &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(yCoords, nobs <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(yCoords))</a>
 <a class="sourceLine" id="cb5-14" data-line-number="14"></a>
 <a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co"># Plot only at-risk</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
 <a class="sourceLine" id="cb5-17" data-line-number="17">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
 <a class="sourceLine" id="cb5-18" data-line-number="18"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb5-19" data-line-number="19">        <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs, yCoords[,<span class="dv">4</span>], <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">col =</span> <span class="st">"grey90"</span>)</a>
@@ -202,7 +202,7 @@
 <p>We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.</p>
 <p>To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Plot at-risk and events</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </a>
 <a class="sourceLine" id="cb6-5" data-line-number="5">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>), </a>
@@ -220,7 +220,7 @@
 <a class="sourceLine" id="cb6-17" data-line-number="17">       <span class="dt">pch =</span> <span class="dv">15</span>)</a></code></pre></div>
 <p><img src="competingRisk_files/figure-html/poptime2-1.png" width="700"></p>
 <p>Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can’t differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, nobs, nobs), <span class="dt">col =</span> <span class="st">"white"</span>)</a>
@@ -422,7 +422,7 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">linearRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model1, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a>
 <a class="sourceLine" id="cb14-2" data-line-number="2">logRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model2, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a>
 <a class="sourceLine" id="cb14-3" data-line-number="3">splineRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model3, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(linearRisk, logRisk,</a>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(linearRisk, logRisk,</a>
 <a class="sourceLine" id="cb15-2" data-line-number="2">     <span class="dt">xlab =</span> <span class="st">"Linear"</span>, <span class="dt">ylab =</span> <span class="st">"Log/Spline"</span>, <span class="dt">pch =</span> <span class="dv">19</span>,</a>
 <a class="sourceLine" id="cb15-3" data-line-number="3">     <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">col =</span> <span class="st">'red'</span>)</a>
 <a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>(linearRisk, splineRisk,</a>
@@ -443,7 +443,7 @@
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h2>
-<pre><code>## R Under development (unstable) (2020-03-05 r77909)
+<pre><code>## R Under development (unstable) (2020-03-09 r77918)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 16.04.6 LTS
 ## 
@@ -460,7 +460,7 @@
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.3        compiler_4.0.0    pillar_1.4.3      tools_4.0.0      
 ##  [5] digest_0.6.25     lattice_0.20-40   evaluate_0.14     memoise_1.1.0    
-##  [9] lifecycle_0.1.0   tibble_2.1.3      gtable_0.3.0      nlme_3.1-145     
+##  [9] lifecycle_0.2.0   tibble_2.1.3      gtable_0.3.0      nlme_3.1-145     
 ## [13] mgcv_1.8-31       pkgconfig_2.0.3   rlang_0.4.5       Matrix_1.2-18    
 ## [17] yaml_2.2.1        pkgdown_1.4.1     xfun_0.12         stringr_1.4.0    
 ## [21] knitr_1.28        desc_1.2.0        fs_1.3.1          stats4_4.0.0     

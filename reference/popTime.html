@@ -140,7 +140,7 @@ of incidence density</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for popTime</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
   <span class='no'>x</span>,
   <span class='no'>...</span>,
   <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Follow-up time"</span>,
@@ -167,7 +167,7 @@ of incidence density</p>
 )
 
 <span class='co'># S3 method for popTimeExposure</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
   <span class='no'>x</span>,
   <span class='no'>...</span>,
   <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Follow-up time"</span>,
@@ -448,7 +448,7 @@ But the following will not be recognized: <code>"diagtime","eventtime",
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"bmtcrr"</span>)
 <span class='no'>popTimeData</span> <span class='kw'>&lt;-</span> <span class='fu'>popTime</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"ftime"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"Status"</span>)
 <span class='no'>cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Case series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Competing event"</span> <span class='kw'>=</span> <span class='st'>"#009E73"</span>, <span class='st'>"Base series"</span> <span class='kw'>=</span> <span class='st'>"#0072B2"</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>popTimeData</span>,
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>popTimeData</span>,
      <span class='kw'>casebase.theme</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
      <span class='kw'>add.case.series</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
      <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>,
@@ -463,7 +463,7 @@ But the following will not be recognized: <code>"diagtime","eventtime",
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"bmtcrr"</span>)
 <span class='no'>popTimeData</span> <span class='kw'>&lt;-</span> <span class='fu'>popTime</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"ftime"</span>, <span class='kw'>exposure</span> <span class='kw'>=</span> <span class='st'>"D"</span>)
 <span class='co'># p is an object of class gg and ggplot</span>
-<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>popTimeData</span>)
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>popTimeData</span>)
 <span class='co'># you can further modify the object using all ggplot2 functions</span>
 <span class='co'># here we modify the number of y-tick labels</span>
 <span class='no'>p</span> + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_continuous</a></span>(<span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='no'>popTimeData</span>$<span class='no'>ycoord</span>), <span class='fl'>10</span>))

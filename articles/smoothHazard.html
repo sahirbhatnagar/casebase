@@ -87,7 +87,7 @@
       <h1>Fitting smooth-in-time parametric hazard functions</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-03-06</h4>
+            <h4 class="date">2020-03-09</h4>
       
       
       <div class="hidden name"><code>smoothHazard.Rmd</code></div>
@@ -244,7 +244,7 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(pt_veteran)</a></code></pre></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="co"># plot method for objects of class 'popTime'</span></a>
-<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_veteran)</a></code></pre></div>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(pt_veteran)</a></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual’s follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.</p>
 <p>Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.</p>
@@ -411,7 +411,7 @@
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">linearRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model4, <span class="dt">time =</span> <span class="dv">90</span>, <span class="dt">newdata =</span> veteran)</a>
 <a class="sourceLine" id="cb37-2" data-line-number="2">splineRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model6, <span class="dt">time =</span> <span class="dv">90</span>, <span class="dt">newdata =</span> veteran)</a>
 <a class="sourceLine" id="cb37-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(linearRisk, splineRisk,</a>
+<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(linearRisk, splineRisk,</a>
 <a class="sourceLine" id="cb37-5" data-line-number="5">     <span class="dt">xlab =</span> <span class="st">"Linear"</span>, <span class="dt">ylab =</span> <span class="st">"Splines"</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</a>
 <a class="sourceLine" id="cb37-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="dt">a =</span> <span class="dv">0</span>, <span class="dt">b =</span> <span class="dv">1</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">'red'</span>)</a></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
@@ -593,7 +593,7 @@ trttest
 <a class="sourceLine" id="cb38-11" data-line-number="11">                            <span class="dt">newdata =</span> new_data)</a>
 <a class="sourceLine" id="cb38-12" data-line-number="12"></a>
 <a class="sourceLine" id="cb38-13" data-line-number="13"><span class="co"># cumulative incidence function for the Cox model</span></a>
-<a class="sourceLine" id="cb38-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(model3, <span class="dt">newdata =</span> new_data),</a>
+<a class="sourceLine" id="cb38-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="kw"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(model3, <span class="dt">newdata =</span> new_data),</a>
 <a class="sourceLine" id="cb38-15" data-line-number="15">     <span class="dt">xlab =</span> <span class="st">"Days"</span>, <span class="dt">ylab =</span> <span class="st">"Cumulative Incidence (%)"</span>, <span class="dt">fun =</span> <span class="st">"event"</span>,</a>
 <a class="sourceLine" id="cb38-16" data-line-number="16">     <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">300</span>), <span class="dt">conf.int =</span> F, <span class="dt">col =</span> <span class="st">"red"</span>, </a>
 <a class="sourceLine" id="cb38-17" data-line-number="17">     <span class="dt">main =</span> <span class="kw"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"Estimated Cumulative Incidence (risk) of Lung Cancer</span><span class="ch">\n</span><span class="st">trt = test, celltype = adeno, karno = %g,</span><span class="ch">\n</span><span class="st">diagtime = %g, age = %g, prior = no"</span>, <span class="kw"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(veteran<span class="op">$</span>karno), <span class="kw"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(veteran<span class="op">$</span>diagtime), </a>
@@ -611,7 +611,7 @@ trttest
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-information" class="anchor"></a>Session information</h2>
-<pre><code>## R Under development (unstable) (2020-03-05 r77909)
+<pre><code>## R Under development (unstable) (2020-03-09 r77918)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Ubuntu 16.04.6 LTS
 ## 
@@ -629,7 +629,7 @@ trttest
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_1.0.3        highr_0.8         compiler_4.0.0    pillar_1.4.3     
 ##  [5] tools_4.0.0       digest_0.6.25     nlme_3.1-145      evaluate_0.14    
-##  [9] memoise_1.1.0     lifecycle_0.1.0   tibble_2.1.3      gtable_0.3.0     
+##  [9] memoise_1.1.0     lifecycle_0.2.0   tibble_2.1.3      gtable_0.3.0     
 ## [13] lattice_0.20-40   mgcv_1.8-31       pkgconfig_2.0.3   rlang_0.4.5      
 ## [17] Matrix_1.2-18     yaml_2.2.1        pkgdown_1.4.1     xfun_0.12        
 ## [21] stringr_1.4.0     knitr_1.28        desc_1.2.0        fs_1.3.1         
