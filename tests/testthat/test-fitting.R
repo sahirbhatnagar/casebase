@@ -88,3 +88,32 @@ test_that("sampling first and then fitting", {
 
     expect_false(inherits(model, "try-error"))
 })
+
+##################
+form <- formula(event ~ exposure + time)
+form_bs <- formula(event ~ exposure + bs(time))
+form_log <- formula(event ~ exposure + log(time))
+form_int <- formula(event ~ exposure*time)
+
+test_that("detecting non-linear functions of time", {
+    expect_false(detect_nonlinear_time(form, "time"))
+    expect_true(detect_nonlinear_time(form_bs, "time"))
+    expect_true(detect_nonlinear_time(form_log, "time"))
+    expect_false(detect_nonlinear_time(form_int, "time"))
+})
+
+test_that("detecting interactions with time", {
+    expect_false(detect_interaction_time(form, "time"))
+    expect_false(detect_interaction_time(form_bs, "time"))
+    expect_false(detect_interaction_time(form_log, "time"))
+    expect_true(detect_interaction_time(form_int, "time"))
+})
+
+test_that("warnings when using gbm witn non-linear functions of time or interactions", {
+    expect_warning(fitSmoothHazard(event ~ log(ftime) + Z,
+                                   data = DF, time = "ftime", family = "gbm"),
+                   regexp = "gbm may throw an error")
+    expect_warning(fitSmoothHazard(event ~ ftime*Z,
+                                   data = DF, time = "ftime", family = "gbm"),
+                   regexp = "gbm may throw an error")
+})

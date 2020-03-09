@@ -39,10 +39,10 @@ test_that("no error in using nonlinear functions of time", {
                                           family = "glmnet", ratio = 10,
                                           lambda = c(0, 0.5)),
                       silent = TRUE)
-    fit_gbm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
-                                       time = "time", event = "status",
-                                       family = "gbm", ratio = 10),
-                   silent = TRUE)
+    # fit_gbm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+    #                                    time = "time", event = "status",
+    #                                    family = "gbm", ratio = 10),
+    #                silent = TRUE)
 
     fit_glm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
                                                time = "time", event = "status", ratio = 10),
@@ -52,18 +52,29 @@ test_that("no error in using nonlinear functions of time", {
                                                   family = "glmnet", ratio = 10,
                                                   lambda = c(0, 0.5)),
                               silent = TRUE)
-    fit_gbm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
-                                               time = "time", event = "status",
-                                               family = "gbm", ratio = 10),
-                           silent = TRUE)
+    # fit_gbm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+    #                                            time = "time", event = "status",
+    #                                            family = "gbm", ratio = 10),
+    #                        silent = TRUE)
 
     expect_false(inherits(fit_glm, "try-error"))
     expect_false(inherits(fit_glmnet, "try-error"))
-    expect_false(inherits(fit_gbm, "try-error"))
+    # expect_false(inherits(fit_gbm, "try-error"))
 
     expect_false(inherits(fit_glm_splines, "try-error"))
     expect_false(inherits(fit_glmnet_splines, "try-error"))
-    expect_false(inherits(fit_gbm_splines, "try-error"))
+    # expect_false(inherits(fit_gbm_splines, "try-error"))
+})
+
+test_that("warnings when using gbm witn non-linear functions of time or interactions", {
+    expect_warning(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
+                                       time = "time", event = "status",
+                                       family = "gbm", ratio = 10),
+                   regexp = "gbm may throw an error")
+    expect_warning(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+                                       time = "time", event = "status",
+                                       family = "gbm", ratio = 10),
+                   regexp = "gbm may throw an error")
 })
 
 fit_glmnet <- fitSmoothHazard.fit(x, y, time = "time", event = "status",
