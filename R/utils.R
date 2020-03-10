@@ -260,13 +260,23 @@ trap_int <- function(x, y) {
 
 # Detect if formula contains a function of time or interaction----
 detect_nonlinear_time <- function(formula, timeVar) {
-    # Regex: formulas of time will include parentheses
-    # around the variable name
-    pattern <- paste0("\\(\\s*", timeVar, "\\s*\\)")
+    # Two regular expressions
+    # 1. Find function arguments
+    pattern_args <- "\\(\\s*([^)]+?)\\s*\\)"
+    # 2. Find exactly time as the clean string
+    time_regex <- paste0("^", timeVar, "$")
     # Extract variables in RHS of formula
     terms <- attr(terms(formula), "term.labels")
-    # Check if any term contains the regex
-    any(grepl(pattern, terms))
+    # Then extract the arguments of any function
+    matches <- regmatches(terms, regexpr(pattern_args, terms))
+    # Check if one of these arguments is timeVar
+    contain_time <- lapply(strsplit(matches, ","),
+                           function(str) {
+                               clean_str <- gsub(".*=", "", # Remove equal signs if they exist
+                                                 gsub("(\\(\\s*|\\s*\\))", "", str)) # Remove parentheses
+                               any(grepl(time_regex, trimws(clean_str)))
+                           })
+    any(unlist(contain_time))
 }
 
 # Detect if formula contains a function of time or interaction----
