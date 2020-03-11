@@ -88,3 +88,58 @@ test_that("sampling first and then fitting", {
 
     expect_false(inherits(model, "try-error"))
 })
+
+##################
+form <- formula(event ~ exposure + time)
+form_bs <- formula(event ~ exposure + bs(time))
+form_log <- formula(event ~ exposure + log(time))
+form_int <- formula(event ~ exposure*time)
+
+form_bs_extra <- formula(event ~ exposure + bs(time, df = 3))
+form_bs_named <- formula(event ~ exposure + bs(x = time))
+
+test_that("detecting non-linear functions of time", {
+    expect_false(detect_nonlinear_time(form, "time"))
+    expect_true(detect_nonlinear_time(form_bs, "time"))
+    expect_true(detect_nonlinear_time(form_log, "time"))
+    expect_false(detect_nonlinear_time(form_int, "time"))
+    expect_true(detect_nonlinear_time(form_bs_extra, "time"))
+    expect_true(detect_nonlinear_time(form_bs_named, "time"))
+})
+
+wrong <- formula(event ~ exposure + time + wrongtime)
+wrong_bs <- formula(event ~ exposure + time + bs(wrongtime))
+wrong_log <- formula(event ~ exposure + time + log(wrongtime))
+wrong_int <- formula(event ~ exposure*wrongtime + time)
+
+wrong2 <- formula(event ~ exposure + time + timewrong)
+wrong2_bs <- formula(event ~ exposure + time + bs(timewrong))
+wrong2_log <- formula(event ~ exposure + time + log(timewrong))
+wrong2_int <- formula(event ~ exposure*timewrong + time)
+
+test_that("Making sure we don't pick up anything that looks like time", {
+    expect_false(detect_nonlinear_time(wrong, "time"))
+    expect_false(detect_nonlinear_time(wrong_bs, "time"))
+    expect_false(detect_nonlinear_time(wrong_log, "time"))
+    expect_false(detect_nonlinear_time(wrong_int, "time"))
+    expect_false(detect_nonlinear_time(wrong2, "time"))
+    expect_false(detect_nonlinear_time(wrong2_bs, "time"))
+    expect_false(detect_nonlinear_time(wrong2_log, "time"))
+    expect_false(detect_nonlinear_time(wrong2_int, "time"))
+})
+
+test_that("detecting interactions with time", {
+    expect_false(detect_interaction(form))
+    expect_false(detect_interaction(form_bs))
+    expect_false(detect_interaction(form_log))
+    expect_true(detect_interaction(form_int))
+})
+
+test_that("warnings when using gbm witn non-linear functions of time or interactions", {
+    expect_warning(fitSmoothHazard(event ~ log(ftime) + Z,
+                                   data = DF, time = "ftime", family = "gbm"),
+                   regexp = "gbm may throw an error")
+    expect_warning(fitSmoothHazard(event ~ ftime*Z,
+                                   data = DF, time = "ftime", family = "gbm"),
+                   regexp = "gbm may throw an error")
+})

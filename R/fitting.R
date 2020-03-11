@@ -137,6 +137,19 @@ fitSmoothHazard <- function(formula, data, time,
         formula <- update(formula, ~ . + offset(offset))
     }
 
+    # gbm doesn't play nice with interactions and functions of time
+    if (family == "gbm") {
+        # So warn the user
+        if(detect_nonlinear_time(formula, timeVar)) {
+            warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
+                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        }
+        if(detect_interaction(formula)) {
+            warning("gbm may throw an error when using interaction terms",
+                    call. = FALSE)
+        }
+    }
+
     # Fit a binomial model if there are no competing risks
     if (length(typeEvents) == 2) {
         fittingFunction <- switch(family,
@@ -228,6 +241,19 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
         varNames <- checkArgsTimeEvent(data = as.data.frame(y), time = timeVar)
         eventVar <- varNames$event
     } else eventVar <- event
+
+    # gbm doesn't play nice with interactions and functions of time
+    if (family == "gbm") {
+        # So warn the user
+        if(detect_nonlinear_time(formula_time, timeVar)) {
+            warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
+                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        }
+        if(detect_interaction(formula_time)) {
+            warning("gbm may throw an error when using interaction terms",
+                    call. = FALSE)
+        }
+    }
 
     typeEvents <- sort(unique(y[,eventVar]))
     # Call sampleCaseBase

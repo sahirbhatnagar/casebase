@@ -257,3 +257,31 @@ trap_int <- function(x, y) {
     ct <- apply(diff(x)/2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
     return(rbind(0, ct))
 }
+
+# Detect if formula contains a function of time or interaction----
+detect_nonlinear_time <- function(formula, timeVar) {
+    # Two regular expressions
+    # 1. Find function arguments
+    pattern_args <- "\\(\\s*([^)]+?)\\s*\\)"
+    # 2. Find exactly time as the clean string
+    time_regex <- paste0("^", timeVar, "$")
+    # Extract variables in RHS of formula
+    terms <- attr(terms(formula), "term.labels")
+    # Then extract the arguments of any function
+    matches <- regmatches(terms, regexpr(pattern_args, terms))
+    # Check if one of these arguments is timeVar
+    contain_time <- lapply(strsplit(matches, ","),
+                           function(str) {
+                               clean_str <- gsub(".*=", "", # Remove equal signs if they exist
+                                                 gsub("(\\(\\s*|\\s*\\))", "", str)) # Remove parentheses
+                               any(grepl(time_regex, trimws(clean_str)))
+                           })
+    any(unlist(contain_time))
+}
+
+detect_interaction <- function(formula) {
+    # Extract the order of the terms
+    orders <- attr(terms(formula), "order")
+    # Check if terms of order > 1
+    any(orders > 1)
+}
