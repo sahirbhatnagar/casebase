@@ -129,10 +129,10 @@ test_that("Making sure we don't pick up anything that looks like time", {
 })
 
 test_that("detecting interactions with time", {
-    expect_false(detect_interaction_time(form, "time"))
-    expect_false(detect_interaction_time(form_bs, "time"))
-    expect_false(detect_interaction_time(form_log, "time"))
-    expect_true(detect_interaction_time(form_int, "time"))
+    expect_false(detect_interaction(form))
+    expect_false(detect_interaction(form_bs))
+    expect_false(detect_interaction(form_log))
+    expect_true(detect_interaction(form_int))
 })
 
 test_that("warnings when using gbm witn non-linear functions of time or interactions", {

@@ -144,9 +144,9 @@ fitSmoothHazard <- function(formula, data, time,
             warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
                           "gbm may throw an error.", collapse = "\n"), call. = FALSE)
         }
-        if(detect_interaction_time(formula, timeVar)) {
-            warning(paste(sprintf("You may be using an interaction term with %s.", timeVar),
-                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        if(detect_interaction(formula)) {
+            warning("gbm may throw an error when using interaction terms",
+                    call. = FALSE)
         }
     }
 
@@ -249,9 +249,9 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
             warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
                           "gbm may throw an error.", collapse = "\n"), call. = FALSE)
         }
-        if(detect_interaction_time(formula_time, timeVar)) {
-            warning(paste(sprintf("You may be using an interaction term with %s.", timeVar),
-                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        if(detect_interaction(formula_time)) {
+            warning("gbm may throw an error when using interaction terms",
+                    call. = FALSE)
         }
     }
 

@@ -279,12 +279,9 @@ detect_nonlinear_time <- function(formula, timeVar) {
     any(unlist(contain_time))
 }
 
-# Detect if formula contains a function of time or interaction----
-detect_interaction_time <- function(formula, timeVar) {
-    # Extract variables in RHS of formula
-    terms <- attr(terms(formula), "term.labels")
-    # Extract their order
+detect_interaction <- function(formula) {
+    # Extract the order of the terms
     orders <- attr(terms(formula), "order")
-    # Check if any timeVar appears in terms of order > 1
-    any(grepl(timeVar, terms) & (orders > 1))
+    # Check if terms of order > 1
+    any(orders > 1)
 }
