@@ -269,9 +269,11 @@ argument <code>formula_time</code> (the left-hand side is always ignored).</p>
 <span class='co'># event type 0-censored, 1-event of interest, 2-competing event</span>
 <span class='co'># t observed time/endpoint</span>
 <span class='co'># z is a binary covariate</span>
-<span class='no'>DT</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>))
-<span class='no'>DT</span>[,<span class='fu'>`:=`</span> (<span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
-          <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>))]</div><div class='output co'>#&gt;      z   t_event    t_comp
+<span class='no'>DT</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>))
+<span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
+  <span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
+  <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>)
+)]</div><div class='output co'>#&gt;      z   t_event    t_comp
 #&gt;   1: 1 217.96303 26.933538
 #&gt;   2: 1  59.76338 17.216329
 #&gt;   3: 0 204.77071  2.056982
@@ -282,8 +284,10 @@ argument <code>formula_time</code> (the left-hand side is always ignored).</p>
 #&gt; 497: 0 116.17601  5.115265
 #&gt; 498: 1 229.51968 15.852303
 #&gt; 499: 0  13.11169  5.597849
-#&gt; 500: 1 682.02976 12.787557</div><div class='input'><span class='no'>DT</span>[,<span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
-         <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>))]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt; 500: 1 682.02976 12.787557</div><div class='input'><span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
+  <span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
+  <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>)
+)]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
 #&gt;   1: 1 217.96303 26.933538     2 26.933538
 #&gt;   2: 1  59.76338 17.216329     2 17.216329
 #&gt;   3: 0 204.77071  2.056982     2  2.056982
@@ -319,8 +323,10 @@ argument <code>formula_time</code> (the left-hand side is always ignored).</p>
 #&gt; 497: 0 116.17601  5.115265     1  5.115265
 #&gt; 498: 1 229.51968 15.852303     1 15.852303
 #&gt; 499: 0  13.11169  5.597849     1  5.597849
-#&gt; 500: 1 682.02976 12.787557     1 12.787557</div><div class='input'><span class='no'>out_gam</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/s.html'>s</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-                           <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gam"</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div></pre>
+#&gt; 500: 1 682.02976 12.787557     1 12.787557</div><div class='input'><span class='no'>out_gam</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/s.html'>s</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>,
+  <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gam"</span>
+)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
