@@ -40,5 +40,4 @@ data("bmtcrr") # from casebase
 checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
 checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
 checkArgsEventIndicator(data = bmtcrr, event = "Status")
-
 }

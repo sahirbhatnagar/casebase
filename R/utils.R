@@ -6,15 +6,15 @@
 
 # Handling warning messages coming from predictvglm when offset = 0
 handler_offset <- function(msg) {
-    if (any(grepl("offset", msg))) invokeRestart("muffleWarning")
+  if (any(grepl("offset", msg))) invokeRestart("muffleWarning")
 }
 # Handling warning messages coming from predictvglm when using b-splines
 handler_bsplines <- function(msg) {
-    if (any(grepl("ill-conditioned bases", msg))) invokeRestart("muffleWarning")
+  if (any(grepl("ill-conditioned bases", msg))) invokeRestart("muffleWarning")
 }
 # Handling warning messages coming from vglm.fitter
 handler_fitter <- function(msg) {
-    if (any(grepl("vglm.fitter", msg))) invokeRestart("muffleWarning")
+  if (any(grepl("vglm.fitter", msg))) invokeRestart("muffleWarning")
 }
 
 # Check if provided time and event variables are in the dataset
@@ -22,46 +22,61 @@ handler_fitter <- function(msg) {
 #' @rdname popTime
 #' @export
 checkArgsTimeEvent <- function(data, time, event) {
-
-    if (missing(time)) {
-        if (any(grepl("[\\s\\W_]+time|^time\\b", names(data),
-                      ignore.case = TRUE, perl = TRUE))) {
-            time <- grep("[\\s\\W_]+time|^time\\b", names(data),
-                         ignore.case = TRUE, value = TRUE, perl = TRUE)
-            if (length(time) > 1)
-                warning(paste0("The following variables for time were found in
-                              the data: ",paste0(time, collapse = ", "),". '", time[1],
-                               "' will be used as the time variable" )) else
-                                   message(paste0("'",time,"'",
-                                                  " will be used as the time variable"))
-        } else {
-            stop("data does not contain time variable")
-        }
+  if (missing(time)) {
+    if (any(grepl("[\\s\\W_]+time|^time\\b", names(data),
+      ignore.case = TRUE, perl = TRUE
+    ))) {
+      time <- grep("[\\s\\W_]+time|^time\\b", names(data),
+        ignore.case = TRUE, value = TRUE, perl = TRUE
+      )
+      if (length(time) > 1) {
+        warning(paste0(
+          "The following variables for time were found in
+                              the data: ", paste0(time, collapse = ", "), ". '", time[1],
+          "' will be used as the time variable"
+        ))
+      } else {
+        message(paste0(
+          "'", time, "'",
+          " will be used as the time variable"
+        ))
+      }
+    } else {
+      stop("data does not contain time variable")
     }
+  }
 
-    if (missing(event)) {
-        if (any(grepl("[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b",
-                      names(data)[-which(colnames(data) == time[1])],
-                      ignore.case = TRUE, perl = TRUE))) {
-            event <- grep("[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b",
-                          names(data)[-which(colnames(data) == time[1])],
-                          ignore.case = TRUE, value = TRUE, perl = TRUE)
-            if (length(event) > 1)
-                warning(paste0("The following variables for event were found in
-                              the data: ",paste0(event, collapse = ", "),". '", event[1],
-                               "' will be used as the event variable" )) else
-                                   message(paste0("'",event,"'",
-                                                  " will be used as the event variable"))
-        } else {
-            stop("data does not contain event or status variable")
-        }
+  if (missing(event)) {
+    if (any(grepl("[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b",
+      names(data)[-which(colnames(data) == time[1])],
+      ignore.case = TRUE, perl = TRUE
+    ))) {
+      event <- grep("[\\s\\W_]+event|^event\\b|[\\s\\W_]+status|^status\\b",
+        names(data)[-which(colnames(data) == time[1])],
+        ignore.case = TRUE, value = TRUE, perl = TRUE
+      )
+      if (length(event) > 1) {
+        warning(paste0(
+          "The following variables for event were found in
+                              the data: ", paste0(event, collapse = ", "), ". '", event[1],
+          "' will be used as the event variable"
+        ))
+      } else {
+        message(paste0(
+          "'", event, "'",
+          " will be used as the event variable"
+        ))
+      }
+    } else {
+      stop("data does not contain event or status variable")
     }
+  }
 
-    if (!all(c(time, event) %in% colnames(data))) {
-        stop("data does not contain supplied time and/or event variables")
-    }
+  if (!all(c(time, event) %in% colnames(data))) {
+    stop("data does not contain supplied time and/or event variables")
+  }
 
-    return(list(time = time[1], event = event[1]))
+  return(list(time = time[1], event = event[1]))
 }
 
 
@@ -83,179 +98,204 @@ checkArgsTimeEvent <- function(data, time, event) {
 #' checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
 #' checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
 #' checkArgsEventIndicator(data = bmtcrr, event = "Status")
-#'
 checkArgsEventIndicator <- function(data, event, censored.indicator) {
+  isFactor <- is.factor(data[[event]])
+  isNumeric <- is.numeric(data[[event]])
+  isCharacter <- is.character(data[[event]])
 
-    isFactor <- is.factor(data[[event]])
-    isNumeric <- is.numeric(data[[event]])
-    isCharacter <- is.character(data[[event]])
-
-    if (!any(isFactor, isNumeric, isCharacter))
-        stop(strwrap("event variable must be either a factor,
+  if (!any(isFactor, isNumeric, isCharacter)) {
+    stop(strwrap("event variable must be either a factor,
                      numeric or character variable", width = 60))
+  }
 
-    nLevels <- nlevels(factor(data[[event]]))
-    if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
+  nLevels <- nlevels(factor(data[[event]]))
+  if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
 
-    if (missing(censored.indicator) || is.null(censored.indicator)) {
+  if (missing(censored.indicator) || is.null(censored.indicator)) {
+    if (isFactor) {
+      slev <- levels(data[[event]])
+      warning(paste0(
+        "censor.indicator not specified. assuming ",
+        slev[1], " represents a censored observation and ",
+        slev[2], " is the event of interest"
+      ))
+      event.factored <- data[[event]]
+    }
 
-        if (isFactor) {
-            slev <- levels(data[[event]])
-            warning(paste0("censor.indicator not specified. assuming ",
-                           slev[1], " represents a censored observation and ",
-                           slev[2], " is the event of interest"))
-            event.factored <- data[[event]]
-        }
+    if (isCharacter) {
+      event.factored <- factor(data[[event]])
+      slev <- levels(event.factored)
+      warning(paste0(
+        "censor.indicator not specified. assuming ",
+        slev[1], " represents a censored observation and ",
+        slev[2], " is the event of interest"
+      ))
+    }
 
-        if (isCharacter) {
-            event.factored <- factor(data[[event]])
-            slev <- levels(event.factored)
-            warning(paste0("censor.indicator not specified. assuming ",
-                           slev[1], " represents a censored observation and ",
-                           slev[2], " is the event of interest"))
-        }
-
-        if (isNumeric) {
-
-            slev <- sort(unique(data[[event]]))
-            if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
+    if (isNumeric) {
+      slev <- sort(unique(data[[event]]))
+      if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
                                                 doesn't contain 0. if event is a numeric
                                                 it must contain some 0's
                                                 to indicate censored observations"))
-            event.factored <- if (nLevels == 2) factor(data[[event]],
-                                                       labels = c("censored","event")) else
-                                                           factor(data[[event]],
-                                                                  labels = c("censored","event",
-                                                                             paste0("competing event",
-                                                                                    if (nLevels >= 4) 1:(nLevels - 2))))
-        }
+      event.factored <- if (nLevels == 2) {
+        factor(data[[event]],
+          labels = c("censored", "event")
+        )
+      } else {
+        factor(data[[event]],
+          labels = c(
+            "censored", "event",
+            paste0(
+              "competing event",
+              if (nLevels >= 4) 1:(nLevels - 2)
+            )
+          )
+        )
+      }
+    }
+  } else {
+    if (!(censored.indicator %in% data[[event]]) & any(isCharacter, isFactor)) {
+      stop(strwrap("censored.indicator not found in event variable of data"))
+    }
 
-    } else {
-
-        if (!(censored.indicator %in% data[[event]]) & any(isCharacter, isFactor))
-            stop(strwrap("censored.indicator not found in event variable of data"))
-
-        if (isNumeric) {
-            warning(strwrap("censored.indicator specified but ignored because
+    if (isNumeric) {
+      warning(strwrap("censored.indicator specified but ignored because
                                 event is a numeric variable"))
-            slev <- sort(unique(data[[event]]))
-            if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
+      slev <- sort(unique(data[[event]]))
+      if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
                                         doesn't contain 0. if event is a numeric
                                         it must contain some 0's
                                         to indicate censored observations"))
-            event.factored <- if (nLevels == 2) factor(data[[event]],
-                                                       labels = c("censored","event")) else
-                                                           factor(data[[event]],
-                                                                  labels = c("censored","event",
-                                                                             paste0("competing event",
-                                                                                    if (nLevels >= 4) 1:(nLevels - 2))))
-
-        }
-
-        if (isFactor | isCharacter) {
-
-            event.factored <- relevel(factor(data[[event]]), censored.indicator)
-            slev <- levels(event.factored)
-            message(paste0("assuming ",
-                           slev[1], " represents a censored observation and ",
-                           slev[2], " is the event of interest"))
-        }
+      event.factored <- if (nLevels == 2) {
+        factor(data[[event]],
+          labels = c("censored", "event")
+        )
+      } else {
+        factor(data[[event]],
+          labels = c(
+            "censored", "event",
+            paste0(
+              "competing event",
+              if (nLevels >= 4) 1:(nLevels - 2)
+            )
+          )
+        )
+      }
     }
 
-    return(list(event.factored = event.factored,
-                event.numeric = as.numeric((event.factored)) - 1,
-                nLevels = nLevels))
+    if (isFactor | isCharacter) {
+      event.factored <- relevel(factor(data[[event]]), censored.indicator)
+      slev <- levels(event.factored)
+      message(paste0(
+        "assuming ",
+        slev[1], " represents a censored observation and ",
+        slev[2], " is the event of interest"
+      ))
+    }
+  }
 
+  return(list(
+    event.factored = event.factored,
+    event.numeric = as.numeric((event.factored)) - 1,
+    nLevels = nLevels
+  ))
 }
 
 
 # Fill in a templated function with default parameter values
 # This is pryr::partial almost verbatim
 partialize <- function(`_f`, ...) {
-    stopifnot(is.function(`_f`))
-    fcall <- as.call(c(substitute(`_f`), list(...)))
-    fcall[[length(fcall) + 1]] <- quote(...)
-    args <- as.pairlist(list(... = quote(expr = )))
-    stopifnot(is.language(fcall))
-    eval(call("function", args, fcall), parent.frame())
+  stopifnot(is.function(`_f`))
+  fcall <- as.call(c(substitute(`_f`), list(...)))
+  fcall[[length(fcall) + 1]] <- quote(...)
+  args <- as.pairlist(list(... = quote(expr = )))
+  stopifnot(is.language(fcall))
+  eval(call("function", args, fcall), parent.frame())
 }
 
 # Remove offset from formula
 # https://stackoverflow.com/a/40313732/2836971
 remove_offset <- function(x) {
-    proc <- function(x) {
-        if (length(x) == 1) return(x)
-        if (x[[1]] == as.name("offset")) return(x[[1]])
-        replace(x, -1, lapply(x[-1], proc))
-        }
-    update(proc(x), . ~ . - offset)
+  proc <- function(x) {
+    if (length(x) == 1) {
+      return(x)
+    }
+    if (x[[1]] == as.name("offset")) {
+      return(x[[1]])
+    }
+    replace(x, -1, lapply(x[-1], proc))
+  }
+  update(proc(x), . ~ . - offset)
 }
 
 # Add a formula interface to cv.glmnet
 #' @importFrom stats model.matrix
 cv.glmnet.formula <- function(formula, data, event, competingRisk = FALSE, ...) {
-    X <- model.matrix(update(formula, ~ . -1), data)
-    Y <- data[,event]
-    offset <- data[,"offset"]
-    if (competingRisk) {
-        fam <- "multinomial"
-        offset <- NULL
-    } else {
-        fam <- "binomial"
-        offset <- data[,"offset"]
-    }
-    cv.glmnet_offset_hack(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
+  X <- model.matrix(update(formula, ~ . - 1), data)
+  Y <- data[, event]
+  offset <- data[, "offset"]
+  if (competingRisk) {
+    fam <- "multinomial"
+    offset <- NULL
+  } else {
+    fam <- "binomial"
+    offset <- data[, "offset"]
+  }
+  cv.glmnet_offset_hack(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
 }
 
 cv.glmnet_offset_hack <- function(x, y, offset, ...) {
-    # For some values of the offset, cv.glmnet does not converge
-    # For constant offset, we can use the hack below
-    if (diff(range(offset)) > 1e-06) {
-        stop("Glmnet is only available with constant offset",
-             call. = FALSE)
-    }
+  # For some values of the offset, cv.glmnet does not converge
+  # For constant offset, we can use the hack below
+  if (diff(range(offset)) > 1e-06) {
+    stop("Glmnet is only available with constant offset",
+      call. = FALSE
+    )
+  }
 
-    offset_value <- unique(offset)[1]
-    # 1. Fit without offset
-    out <- glmnet::cv.glmnet(x, y, ...)
-    # 2. Fix the intercept
-    out$glmnet.fit$a0 <- out$glmnet.fit$a0 - offset_value
+  offset_value <- unique(offset)[1]
+  # 1. Fit without offset
+  out <- glmnet::cv.glmnet(x, y, ...)
+  # 2. Fix the intercept
+  out$glmnet.fit$a0 <- out$glmnet.fit$a0 - offset_value
 
-    return(out)
+  return(out)
 }
 
 # Montecarlo Integration
 # Mimic the interface of integrate
 integrate_mc <- function(f, lower, upper, ..., subdivisions = 100L) {
-    sampledPoints <- runif(subdivisions,
-                           min = lower,
-                           max = upper)
-    return((upper - lower) * mean(f(sampledPoints, ...)))
+  sampledPoints <- runif(subdivisions,
+    min = lower,
+    max = upper
+  )
+  return((upper - lower) * mean(f(sampledPoints, ...)))
 }
 
 # Taken from brms package
 expand_dot_formula <- function(formula, data = NULL) {
-    if (isTRUE("." %in% all.vars(formula))) {
-        att <- attributes(formula)
-        try_terms <- try(
-            stats::terms(formula, data = data),
-            silent = TRUE
-        )
-        if (!is(try_terms, "try-error")) {
-            formula <- formula(try_terms)
-        }
-        attributes(formula) <- att
+  if (isTRUE("." %in% all.vars(formula))) {
+    att <- attributes(formula)
+    try_terms <- try(
+      stats::terms(formula, data = data),
+      silent = TRUE
+    )
+    if (!is(try_terms, "try-error")) {
+      formula <- formula(try_terms)
     }
-    formula
+    attributes(formula) <- att
+  }
+  formula
 }
 
 # Streamlined version of pracma::cumtrapz
 trap_int <- function(x, y) {
-    x <- as.matrix(c(x))
-    m <- length(x)
-    y <- as.matrix(y)
-    ct <- apply(diff(x)/2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
-    return(rbind(0, ct))
+  x <- as.matrix(c(x))
+  m <- length(x)
+  y <- as.matrix(y)
+  ct <- apply(diff(x) / 2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
+  return(rbind(0, ct))
 }
 
 # Detect if formula contains a function of time or interaction----
