@@ -208,6 +208,14 @@ test_that("no error in fitting gam", {
     expect_false(inherits(riskDT, "try-error"))
 })
 
+test_that("should compute risk when time and newdata aren't provided", {
+    absRiskDF_gam <- absoluteRisk(fitDF_gam)
+    absRiskDT_gam <- absoluteRisk(fitDT_gam)
+
+    expect_true("risk" %in% names(absRiskDF_gam))
+    expect_true("risk" %in% names(absRiskDT_gam))
+})
+
 fitDF_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm", ratio = 10)
 fitDT_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm", ratio = 10)
 
@@ -228,6 +236,14 @@ test_that("no error in fitting gbm", {
     expect_false(inherits(riskDF_mc, "try-error"))
     expect_false(inherits(riskDT_mc, "try-error"))
 })
+
+# test_that("should compute risk when time and newdata aren't provided", {
+#     absRiskDF_gbm <- absoluteRisk(fitDF_gbm)
+#     absRiskDT_gbm <- absoluteRisk(fitDT_gbm)
+#
+#     expect_true("risk" %in% names(absRiskDF_gbm))
+#     expect_true("risk" %in% names(absRiskDT_gbm))
+# })
 
 extra_vars <- matrix(rnorm(10 * n), ncol = 10)
 DF_ext <- cbind(DF, as.data.frame(extra_vars))
@@ -298,3 +314,11 @@ test_that("output probabilities", {
     expect_true(all(riskDF_glmnet <= 1))
     expect_true(all(riskDT_glmnet <= 1))
 })
+
+# test_that("should compute risk when time and newdata aren't provided", {
+#     absRiskDF <- absoluteRisk(fitDF)
+#     absRiskDT <- absoluteRisk(fitDT)
+#
+#     expect_true("risk" %in% names(absRiskDF))
+#     expect_true("risk" %in% names(absRiskDT))
+# })

@@ -96,16 +96,17 @@ absoluteRisk.default <- function(object, ...) {
 absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, ...) {
     method <- match.arg(method)
 
-    # Create hazard function
-    lambda <- function(x, fit, newdata) {
-            # Note: the offset should be set to zero when estimating the hazard.
-            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[fit$timeVar] <- x
-        withCallingHandlers(pred <- predict(fit, newdata2),
-                            warning = handler_bsplines)
-        return(as.numeric(exp(pred)))
-    }
+    # # Create hazard function
+    # lambda <- function(x, fit, newdata) {
+    #         # Note: the offset should be set to zero when estimating the hazard.
+    #         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+    #                            row.names = as.character(1:length(x)))
+    #     newdata2[fit$timeVar] <- x
+    #     withCallingHandlers(pred <- predict(fit, newdata2),
+    #                         warning = handler_bsplines)
+    #     return(as.numeric(exp(pred)))
+    # }
+    lambda <- NULL
 
     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, ...))
     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
@@ -116,16 +117,17 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "mon
 absoluteRisk.gbm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, n.trees, ...) {
     method <- match.arg(method)
 
-    # Create hazard function
-    lambda <- function(x, fit, newdata) {
-            # Note: the offset should be set to zero when estimating the hazard.
-            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[fit$timeVar] <- x
-        withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
-                                warning = handler_offset)
-        return(as.numeric(exp(pred)))
-    }
+    # # Create hazard function
+    # lambda <- function(x, fit, newdata) {
+    #         # Note: the offset should be set to zero when estimating the hazard.
+    #         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+    #                            row.names = as.character(1:length(x)))
+    #     newdata2[fit$timeVar] <- x
+    #     withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
+    #                             warning = handler_offset)
+    #     return(as.numeric(exp(pred)))
+    # }
+    lambda <- NULL
 
     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, n.trees = n.trees, ...))
     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
@@ -143,32 +145,33 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical"
         s <- match.arg(s)
     }
 
-    # Create hazard function
-    if (is.null(object$matrix.fit)) {
-        lambda <- function(x, fit, newdata) {
-                # Note: the offset should be set to zero when estimating the hazard.
-                newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                                   row.names = as.character(1:length(x)))
-            newdata2[fit$timeVar] <- x
-            formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
-            newdata_matrix <- model.matrix(formula_pred, newdata2)
-                pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-            return(as.numeric(exp(pred)))
-        }
-    } else {
-        lambda <- function(x, fit, newdata) {
-                # Note: the offset should be set to zero when estimating the hazard.
-            # newdata_matrix <- cbind(x, newdata)
-            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
-            # newdata_matrix is organized to match the output from fitSmoothHazard.fit
-            newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
-                                                           setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
-
-                pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-
-            return(as.numeric(exp(pred)))
-        }
-    }
+    # # Create hazard function
+    # if (is.null(object$matrix.fit)) {
+    #     lambda <- function(x, fit, newdata) {
+    #             # Note: the offset should be set to zero when estimating the hazard.
+    #             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+    #                                row.names = as.character(1:length(x)))
+    #         newdata2[fit$timeVar] <- x
+    #         formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
+    #         newdata_matrix <- model.matrix(formula_pred, newdata2)
+    #             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+    #         return(as.numeric(exp(pred)))
+    #     }
+    # } else {
+    #     lambda <- function(x, fit, newdata) {
+    #             # Note: the offset should be set to zero when estimating the hazard.
+    #         # newdata_matrix <- cbind(x, newdata)
+    #         newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
+    #         # newdata_matrix is organized to match the output from fitSmoothHazard.fit
+    #         newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
+    #                                                        setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
+    #
+    #             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+    #
+    #         return(as.numeric(exp(pred)))
+    #     }
+    # }
+    lambda <- NULL
 
     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, s = s, ...))
 }
@@ -194,18 +197,28 @@ call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method,
 estimate_risk <- function(lambda, object, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
-    # If both newdata and time are missing
-    # compute risk at failure times
+    # Create risk variable and make sure it doesn't already exist
     riskVar <- "risk"
     while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
-
+    # If both newdata and time are missing
+    # compute risk at failure times
     time_vector <- if (is.null(object$matrix.fit)) {
         newdata[object$timeVar][[1]]
         } else object$originalData$y[,object$timeVar]
+    # Create a vectorised lambda function
+    lambda <- function(x, fit, newdata, ...) {
+        # Note: the offset should be set to zero when estimating the hazard.
+        newdata2 <- data.frame(newdata)
+        newdata2 <- newdata2[rep(1, length(x)),]
+        newdata2[fit$timeVar] <- x
+        pred <- estimate_hazard(fit, newdata2, ...)
+        return(as.numeric(exp(pred)))
+    }
     risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
         integrate(lambda, lower = 0, upper = time_vector[j],
                   fit = object, newdata = newdata[j,,drop = FALSE])$value
     })
+
     if (is.data.frame(newdata)) {
         newdata[,riskVar] <- 1 - exp(-risk_res)
     } else {
