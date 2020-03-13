@@ -270,23 +270,33 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, 
 
         }
         if (method == "montecarlo") {
-            sampledPoints <- runif(nsamp)
+            # Sample points at which we evaluate function
+            knots <- runif(n = length(time_ordered)* nsamp,
+                           min = 0, max = max(time_ordered))
             for (j in 1:nrow(newdata)) {
                 # Extract current obs
                 current_obs <- newdata[j,,drop = FALSE]
-                for (i in 2:length(time_ordered)) {
-                    # output[i, j + 1] <- (time_ordered[i] - time_ordered[i - 1]) * mean(lambda(sampledPoints * (time_ordered[i] -
-                    #                                                                                                time_ordered[i - 1]) +
-                    #                                                                               time_ordered[i - 1], fit = object, newdata = newdata[j,,drop = FALSE]))
-                    output[i, j + 1] <- integrate_mc(lambda, lower = time_ordered[i - 1], upper = time_ordered[i],
-                                                     fit = object, newdata = current_obs,
-                                                     subdivisions = nsamp)
-                }
-                output[,j + 1] <- cumsum(output[,j + 1])
+                # Create data.table for prediction
+                newdata2 <- data.table(current_obs)
+                newdata2 <- newdata2[rep(1, length(knots))]
+                newdata2[,object$timeVar := knots]
+                pred <- estimate_hazard(object, newdata2, ...)
+                # Compute integral using MC integration
+                pred_exp <- exp(pred)
+                pred_exp[which(pred_exp %in% c(Inf, -Inf))] <- NA
+                mean_values <- sapply(split(pred_exp, cut(knots, breaks = time_ordered)),
+                                      mean, na.rm = TRUE)
+                integral_estimates <- mean_values * diff(time_ordered)
+                output[,j + 1] <- cumsum(c(0, integral_estimates))
             }
         }
         output[,-1] <- exp(-output[,-1])
         output[,-1] <- 1 - output[,-1]
+    }
+    # Sometimes montecarlo integration gives nonsensical probability estimates
+    if (method == "montecarlo" && (any(output[,-1] < 0) | any(output[,-1] > 1))) {
+        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration",
+                call. = FALSE)
     }
 
     # Reformat output when only one time point
@@ -298,10 +308,6 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, 
         }
         rownames(output) <- time
     }
-    # Sometimes montecarlo integration gives nonsensical probability estimates
-    if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
-        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration",
-                call. = FALSE)
-    }
+
     return(output)
 }
