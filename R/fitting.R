@@ -90,9 +90,7 @@
 #' library(mgcv)
 #' DT[event == 2, event := 1]
 #' out_gam <- fitSmoothHazard(event ~ s(time) + z, DT,
-#'   ratio = 10,
-#'   family = "gam"
-#' )
+#'                            ratio = 10, family = "gam")
 #' @importMethodsFrom VGAM summary predict
 #' @importFrom VGAM vglm multinomial summaryvglm
 #' @importFrom mgcv s te ti t2

@@ -20,12 +20,7 @@ Data from the first phase of the SUPPORT study. We imputed the data-set using de
 }
 \examples{
 data("support")
-mod_cb <- casebase::fitSmoothHazard(death ~ .,
-                                    time = "d.time", event = "death",
-                                    data = support,
-                                    ratio = 5)
-
-# Or with the matrix interface and log of time
+# Using the matrix interface and log of time
 x <- model.matrix(death ~ . - d.time - 1, data = support)
 y <- with(support, cbind(death, d.time))
 

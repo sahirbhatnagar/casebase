@@ -98,8 +98,8 @@ absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "mon
 
     # Create hazard function
     lambda <- function(x, fit, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+            # Note: the offset should be set to zero when estimating the hazard.
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
         newdata2[fit$timeVar] <- x
         withCallingHandlers(pred <- predict(fit, newdata2),
@@ -118,12 +118,12 @@ absoluteRisk.gbm <- function(object, time, newdata, method = c("numerical", "mon
 
     # Create hazard function
     lambda <- function(x, fit, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+            # Note: the offset should be set to zero when estimating the hazard.
+            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
         newdata2[fit$timeVar] <- x
         withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
-                            warning = handler_offset)
+                                warning = handler_offset)
         return(as.numeric(exp(pred)))
     }
 
@@ -146,25 +146,25 @@ absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical"
     # Create hazard function
     if (is.null(object$matrix.fit)) {
         lambda <- function(x, fit, newdata) {
-            # Note: the offset should be set to zero when estimating the hazard.
-            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+                # Note: the offset should be set to zero when estimating the hazard.
+                newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                    row.names = as.character(1:length(x)))
             newdata2[fit$timeVar] <- x
             formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
             newdata_matrix <- model.matrix(formula_pred, newdata2)
-            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+                pred <- predict(fit, newdata_matrix, s, newoffset = 0)
             return(as.numeric(exp(pred)))
         }
     } else {
         lambda <- function(x, fit, newdata) {
-            # Note: the offset should be set to zero when estimating the hazard.
+                # Note: the offset should be set to zero when estimating the hazard.
             # newdata_matrix <- cbind(x, newdata)
             newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
             # newdata_matrix is organized to match the output from fitSmoothHazard.fit
             newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
                                                            setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
 
-            pred <- predict(fit, newdata_matrix, s, newoffset = 0)
+                pred <- predict(fit, newdata_matrix, s, newoffset = 0)
 
             return(as.numeric(exp(pred)))
         }
@@ -258,8 +258,6 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, 
                     # Create data.table for prediction
                     newdata2 <- data.table(current_obs)
                     newdata2 <- newdata2[rep(1, length(knots))]
-                    # Set offset to zero
-                    newdata2[, "offset" := 0]
                     newdata2[,object$timeVar := knots]
                 }
                 pred <- estimate_hazard(object, newdata2, ...)
@@ -302,7 +300,8 @@ estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp, 
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
-        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
+        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration",
+                call. = FALSE)
     }
     return(output)
 }
