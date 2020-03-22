@@ -38,7 +38,8 @@ In this vignette we show how to create population-time plots for the two dataset
 
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
-library(casebase)
+# library(casebase)
+devtools::load_all()
 library(ggplot2)
 library(data.table)
 ```
@@ -69,7 +70,11 @@ The `casebase` package has a `plot` method for objects of class `popTime`:
 
 ```{r}
 # plot method for objects of class 'popTime'
+devtools::load_all()
 plot(pt_object)
+plot(pt_object, add.case.series = FALSE)
+plot(pt_object, add.case.series = TRUE)
+plot(pt_object, add.case.series = TRUE, add.base.series = TRUE)
 ```
 
 One benefit from these plots is that it allows you to see the incidence density. This can be seen from the distribution of the red dots in the above plot. We can see that more events are observed later on in time. Therefore a constant hazard model would not be appropriate in this instance as it would overestimate the cumulative incidence earlier on in time, and underestimate it later on. 
@@ -255,7 +260,7 @@ plot(popTimeData,
 
 ## Change color points and legend labels
 
-Here is some code to change color points and legend labels. For a more thorough description, please see the _Customizing Population Time Plots_ vignette. 
+Here is some code to change color points and legend labels. For a more thorough description, please see the [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html) vignette. 
 
 ```{r}
 plot(popTimeData,

@@ -2,7 +2,6 @@
 % Please edit documentation in R/methods.R, R/plots.R, R/utils.R
 \name{plot.popTime}
 \alias{plot.popTime}
-\alias{plot.popTimeExposure}
 \alias{popTime}
 \alias{checkArgsTimeEvent}
 \title{Population Time Plot}
@@ -22,37 +21,11 @@
   competing.params = list(),
   legend.params = list(),
   theme.params = list(),
-  ratio = 10,
-  censored.indicator,
-  comprisk = FALSE,
-  legend = FALSE,
-  legend.position,
-  line.width,
-  line.colour,
-  point.size,
-  point.colour
-)
-
-\method{plot}{popTimeExposure}(
-  x,
-  ...,
-  xlab = "Follow-up time",
-  ylab = "Population",
-  add.case.series = TRUE,
-  add.base.series = FALSE,
-  add.competing.event = FALSE,
-  casebase.theme = TRUE,
-  ribbon.params = list(),
-  case.params = list(),
-  base.params = list(),
-  competing.params = list(),
-  legend.params = list(),
-  theme.params = list(),
   facet.params = list(),
-  ratio = 10,
+  ratio = 1,
   censored.indicator,
   comprisk = FALSE,
-  legend = FALSE,
+  legend = TRUE,
   ncol,
   legend.position,
   line.width,
@@ -111,6 +84,11 @@ See examples for more details.}
 \code{\link[ggplot2]{theme}}. For example \code{theme.params =
   list(legend.position = 'none')}.}
 
+\item{facet.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
+used if plotting exposure stratified population time plots. These arguments
+will override the function defaults.}
+
 \item{ratio}{If \code{add.base.series=TRUE}, integer, giving the ratio of the
 size of the base series to that of the case series. This argument is passed
 to the \code{\link{sampleCaseBase}} function. Default: 10.}
@@ -135,6 +113,8 @@ change the color of the points but not have a legend, then set
 \code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
 Default: FALSE}
 
+\item{ncol}{Deprecated. Use \code{facet.params} instead.}
+
 \item{legend.position}{Deprecated. Specify the legend.position argument
 instead in the \code{theme.params} argument. e.g. \code{theme.params =
   list(legend.position = 'bottom')}.}
@@ -150,13 +130,6 @@ argument. e.g. \code{case.params = list(size = 1.5)}.}
 
 \item{point.colour}{Deprecated. Specify the values argument instead in the
 \code{legend.params} argument. See examples for details.}
-
-\item{facet.params}{A list containing arguments that are passed to
-\code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
-used if plotting exposure stratified population time plots. These arguments
-will override the function defaults.}
-
-\item{ncol}{Deprecated. Use \code{facet.params} instead.}
 
 \item{data}{a \code{data.frame} or \code{data.table} containing the source
 dataset.}
@@ -189,9 +162,6 @@ The methods for \code{plot} return a population time plot, stratified
 by exposure status in the case of \code{popTimeExposure}. Note that these
 are \code{ggplot2} objects and can therefore be used in subsequent ggplot2
 type plots. See examples and vignette for details.
-
-The methods for \code{plot} return a population time plot, stratified
-by exposure status in the case of \code{popTimeExposure}.
 
 An object of class \code{popTime} (or \code{popTimeExposure} if
 exposure is specified), \code{data.table} and \code{data.frame} in this
@@ -269,15 +239,6 @@ plot(popTimeData,
                      breaks = c("Case series", "Competing event", "Base series"),
                      values = cols),
      theme.params = list(legend.position = "none"))
-\dontrun{
-data("bmtcrr")
-popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-# p is an object of class gg and ggplot
-p <- plot(popTimeData)
-# you can further modify the object using all ggplot2 functions
-# here we modify the number of y-tick labels
-p + scale_y_continuous(breaks = seq(0, max(popTimeData$ycoord), 10))
-}
 }
 \seealso{
 \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
