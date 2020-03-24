@@ -109,7 +109,6 @@
 #' # change color of points
 #' library(ggplot2)
 #' data("bmtcrr")
-#' devtools::load_all()
 #' popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
 #' fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
 #' color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
@@ -164,9 +163,12 @@ plot.popTime <- function(x, ...,
     # color_cols <- c("#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#696969")
 
     # cbbPalette
-    fill_cols <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-    # darken(fill_cols, 0.3) %>% dput
-    color_cols <- c("#696969", "#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#954000", "#984B77")
+    # fill_cols <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    # colorspace::qualitative_hcl(n = 3, palette = "Dark3") %>% put
+    fill_cols <- c("#E16A86", "#50A315", "#009ADE")
+    # colorspace::darken(fill_cols, 0.3) %>% dput
+    # color_cols <- c("#696969", "#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#954000", "#984B77")
+    color_cols <- c("#AB3A59", "#347004", "#026A9A")
     # par(mfrow=c(1,2))
     # plot(seq_along(color_cols),col = color_cols, pch = 19, cex = 2.5)
     # plot(seq_along(fill_cols),col = fill_cols, pch = 19, cex = 2.5)
@@ -203,6 +205,18 @@ plot.popTime <- function(x, ...,
                 e.g. facet.params = list(ncol = 1).")
     }
 
+    if (length(fill.params) > 0 & length(color.params) == 0) {
+        warning("fill.params has been specified by the user but color.params has not.
+                Setting color.params to be equal to fill.params.")
+        color.params <- fill.params
+    }
+
+    if (length(color.params) > 0 & length(fill.params) == 0) {
+        warning("color.params has been specified by the user but fill.params has not.
+                Setting fill.params to be equal to color.params.")
+        fill.params <- color.params
+    }
+
     exposure_variable <- attr(x, "exposure")
 
     p2 <- list(
@@ -222,7 +236,7 @@ plot.popTime <- function(x, ...,
                 list(data = x[event == 1],
                      mapping = aes(x = time, y = yc, color = "Case series", fill = "Case series"),
                      show.legend = legend,
-                     # size = 1.5,
+                     size = 1.5,
                      alpha = 0.5,
                      shape = 21),
                 case.params)
@@ -239,7 +253,7 @@ plot.popTime <- function(x, ...,
                 list(data = basedata[event == 0],
                      mapping = aes(x = time, y = ycoord, colour = "Base series", fill = "Base series"),
                      show.legend = legend,
-                     # size = 1.5,
+                     size = 1.5,
                      alpha = 0.5,
                      shape = 21),
                 base.params)
@@ -273,7 +287,7 @@ plot.popTime <- function(x, ...,
                 list(data = compdata[event == 1],
                      mapping = aes(x = time, y = yc, colour = "Competing event", fill = "Competing event"),
                      show.legend = legend,
-                     # size = 1.5,
+                     size = 1.5,
                      alpha = 0.5,
                      shape = 21),
                 competing.params)
@@ -283,9 +297,13 @@ plot.popTime <- function(x, ...,
         # Add legend --------------------------------------------------------------
         if (legend) {
 
-            cols <- c("Case series" = color_cols[7],
-                      "Competing event" = color_cols[4],
-                      "Base series" = color_cols[6])
+            # cols <- c("Case series" = color_cols[7],
+            #           "Competing event" = color_cols[4],
+            #           "Base series" = color_cols[6])
+
+            cols <- c("Case series" = color_cols[1],
+                      "Competing event" = color_cols[3],
+                      "Base series" = color_cols[2])
 
             do.call("scale_colour_manual", utils::modifyList(
                 list(name = element_blank(),
@@ -296,9 +314,13 @@ plot.popTime <- function(x, ...,
 
         if (legend) {
 
-            cols <- c("Case series" = fill_cols[7],
-                      "Competing event" = fill_cols[4],
-                      "Base series" = fill_cols[6])
+            # cols <- c("Case series" = fill_cols[7],
+            #           "Competing event" = fill_cols[4],
+            #           "Base series" = fill_cols[6])
+
+            cols <- c("Case series" = fill_cols[1],
+                      "Competing event" = fill_cols[3],
+                      "Base series" = fill_cols[2])
 
             do.call("scale_fill_manual", utils::modifyList(
                 list(name = element_blank(),

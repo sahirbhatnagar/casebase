@@ -63,8 +63,13 @@
 #'   \code{event} user argument to this function}\item{time}{renames the user
 #'   specified time column to time}\item{event}{renames the user specified event
 #'   argument to event}}
-#' @seealso \code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
-#'
+#' @seealso \code{\link{plot.popTime}}
+#' @examples
+#' data("bmtcrr")
+#' popTimeData <- popTime(data = bmtcrr, time = "ftime")
+#' class(popTimeData)
+#' popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
+#' attr(popTimeData, "exposure")
 #' @import data.table
 #' @export
 popTime <- function(data, time, event, censored.indicator,

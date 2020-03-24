@@ -19,7 +19,8 @@
   case.params = list(),
   base.params = list(),
   competing.params = list(),
-  legend.params = list(),
+  color.params = list(),
+  fill.params = list(),
   theme.params = list(),
   facet.params = list(),
   ratio = 1,
@@ -71,11 +72,17 @@ override the function defaults. For example, you can set \code{case.params
   = list(size = 1.5)} if you want to increase the point size for the case
 series points. Note: do not use this argument to change the color of the
 points. Doing so will result in unexpected results for the legend. See the
-\code{legend.params} argument, if you want to change the color of the
-points.}
+\code{color.params} and \code{fill.params} arguments, if you want to change
+the color of the points.}
 
-\item{legend.params}{A list containing arguments that are passed to
+\item{color.params}{A list containing arguments that are passed to
 \code{\link[ggplot2]{scale_color_manual}} which is used to plot the legend.
+Only used if \code{legend=TRUE}. These arguments will override the function
+defaults. Use this argument if you want to change the color of the points.
+See examples for more details.}
+
+\item{fill.params}{A list containing arguments that are passed to
+\code{\link[ggplot2]{scale_fill_manual}} which is used to plot the legend.
 Only used if \code{legend=TRUE}. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.}
@@ -108,10 +115,10 @@ points (\code{add.competing.event=FALSE}). Default: FALSE}
 
 \item{legend}{Logical indicating if a legend should be added to the plot.
 Note that if you want to change the colors of the points, through the
-\code{legend.params} argument, then set \code{legend=TRUE}. If you want to
-change the color of the points but not have a legend, then set
-\code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
-Default: FALSE}
+\code{color.params} and \code{fill.params} arguments, then set
+\code{legend=TRUE}. If you want to change the color of the points but not
+have a legend, then set \code{legend=TRUE} and \code{theme.params =
+  list(legend.position = 'none'}. Default: FALSE}
 
 \item{ncol}{Deprecated. Use \code{facet.params} instead.}
 
@@ -129,7 +136,8 @@ instead in the \code{theme.params} argument. e.g. \code{theme.params =
 argument. e.g. \code{case.params = list(size = 1.5)}.}
 
 \item{point.colour}{Deprecated. Specify the values argument instead in the
-\code{legend.params} argument. See examples for details.}
+\code{color.params} and \code{fill.params} argument. See examples for
+details.}
 
 \item{data}{a \code{data.frame} or \code{data.table} containing the source
 dataset.}
@@ -222,27 +230,36 @@ But the following will not be recognized: \code{"diagtime","eventtime",
   "Timediag"}
 }
 \examples{
-# change color of points, but don't produce a legend
+# change color of points
 library(ggplot2)
 data("bmtcrr")
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
-cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
+
 plot(popTimeData,
-     casebase.theme = TRUE,
      add.case.series = TRUE,
-     ratio = 1,
      add.base.series = TRUE,
+     add.competing.event = FALSE,
      legend = TRUE,
      comprisk = TRUE,
-     add.competing.event = FALSE,
-     legend.params = list(name = element_blank(),
-                     breaks = c("Case series", "Competing event", "Base series"),
-                     values = cols),
-     theme.params = list(legend.position = "none"))
+     fill.params = list(name = element_blank(),
+                        breaks = c("Case series", "Competing event", "Base series"),
+                        values = fill_cols),
+     color.params = list(name = element_blank(),
+                         breaks = c("Case series", "Competing event", "Base series"),
+                         values = color_cols)
+)
+data("bmtcrr")
+popTimeData <- popTime(data = bmtcrr, time = "ftime")
+class(popTimeData)
+popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
+attr(popTimeData, "exposure")
 }
 \seealso{
 \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
-\link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
+\link[ggplot2]{scale_colour_manual}, \link[ggplot2]{scale_fill_manual},
+\link{sampleCaseBase}
 
-\code{\link{plot.popTime}}, \code{\link{plot.popTimeExposure}}
+\code{\link{plot.popTime}}
 }
