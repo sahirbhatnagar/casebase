@@ -70,7 +70,7 @@ The `casebase` package has a `plot` method for objects of class `popTime`:
 
 ```{r}
 # plot method for objects of class 'popTime'
-devtools::load_all()
+# devtools::load_all()
 plot(pt_object)
 plot(pt_object, add.case.series = FALSE)
 plot(pt_object, add.case.series = TRUE)
@@ -133,10 +133,7 @@ To illustrate the casebase sampling methodology, we can also plot the base serie
 
 ```{r}
 plot(pt_object_strat,
-     add.base.series = TRUE,
-     ratio = 1,
-     legend = TRUE,
-     theme.params = list(legend.position = "bottom"))
+     add.base.series = TRUE)
 ```
 
 Note that the `theme.params` argument is a list of arguments passed to the [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html) function. 
@@ -181,7 +178,7 @@ Note that we can change the aesthetics of the area by using the `ribbon.params()
 ```{r}
 plot(popTimeData,
      add.case.series = FALSE,
-     ribbon.params = list(color = "red", fill = "blue", size = 2))
+     ribbon.params = list(color = "red", fill = "blue", size = 2, alpha = 0.2))
 ```
 
 
@@ -205,9 +202,7 @@ We can now add the base series with the `add.base.series` argument. Internally, 
 plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
@@ -220,9 +215,7 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 We can also only plot the case series and competing event (or any combination):
@@ -232,9 +225,7 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = FALSE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
@@ -252,9 +243,7 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
@@ -267,15 +256,16 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
      comprisk = TRUE,
-     legend = TRUE,
-     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-     legend.params = list(name = "Legend Name",
-                          breaks = c("Relapse", "Base series", "Competing event"),
-                          values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse", fill = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series", fill = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event", fill = "Competing event")),
+     fill.params = list(name = "Legend Name",
+                        breaks = c("Relapse", "Base series", "Competing event"),
+                        values = c("Relapse" = "blue", "Competing event" = "pink", "Base series" = "orange")),
+     color.params = list(name = "Legend Name",
+                         breaks = c("Relapse", "Base series", "Competing event"),
+                         values = c("Relapse" = "blue", "Competing event" = "pink", "Base series" = "orange")),
      theme.params = list(legend.position = "bottom"))
 ```
 

@@ -29,10 +29,15 @@
 #'   = list(size = 1.5)} if you want to increase the point size for the case
 #'   series points. Note: do not use this argument to change the color of the
 #'   points. Doing so will result in unexpected results for the legend. See the
-#'   \code{legend.params} argument, if you want to change the color of the
-#'   points.
-#' @param legend.params A list containing arguments that are passed to
+#'   \code{color.params} and \code{fill.params} arguments, if you want to change
+#'   the color of the points.
+#' @param color.params A list containing arguments that are passed to
 #'   \code{\link[ggplot2]{scale_color_manual}} which is used to plot the legend.
+#'   Only used if \code{legend=TRUE}. These arguments will override the function
+#'   defaults. Use this argument if you want to change the color of the points.
+#'   See examples for more details.
+#' @param fill.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{scale_fill_manual}} which is used to plot the legend.
 #'   Only used if \code{legend=TRUE}. These arguments will override the function
 #'   defaults. Use this argument if you want to change the color of the points.
 #'   See examples for more details.
@@ -59,10 +64,10 @@
 #'   points (\code{add.competing.event=FALSE}). Default: FALSE
 #' @param legend Logical indicating if a legend should be added to the plot.
 #'   Note that if you want to change the colors of the points, through the
-#'   \code{legend.params} argument, then set \code{legend=TRUE}. If you want to
-#'   change the color of the points but not have a legend, then set
-#'   \code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
-#'   Default: FALSE
+#'   \code{color.params} and \code{fill.params} arguments, then set
+#'   \code{legend=TRUE}. If you want to change the color of the points but not
+#'   have a legend, then set \code{legend=TRUE} and \code{theme.params =
+#'   list(legend.position = 'none'}. Default: FALSE
 #' @param legend.position Deprecated. Specify the legend.position argument
 #'   instead in the \code{theme.params} argument. e.g. \code{theme.params =
 #'   list(legend.position = 'bottom')}.
@@ -73,7 +78,8 @@
 #'   \code{case.params} or \code{base.params} or \code{competing.params}
 #'   argument. e.g. \code{case.params = list(size = 1.5)}.
 #' @param point.colour Deprecated. Specify the values argument instead in the
-#'   \code{legend.params} argument. See examples for details.
+#'   \code{color.params} and \code{fill.params} argument. See examples for
+#'   details.
 #' @param ncol Deprecated. Use \code{facet.params} instead.
 #' @return The methods for \code{plot} return a population time plot, stratified
 #'   by exposure status in the case of \code{popTimeExposure}. Note that these
@@ -96,26 +102,31 @@
 #'   horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 #' @import ggplot2
 #' @seealso
-#'   \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
-#'   \link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
+#' \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
+#' \link[ggplot2]{scale_colour_manual}, \link[ggplot2]{scale_fill_manual},
+#' \link{sampleCaseBase}
 #' @examples
-#' # change color of points, but don't produce a legend
+#' # change color of points
 #' library(ggplot2)
 #' data("bmtcrr")
+#' devtools::load_all()
 #' popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
-#' cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+#' fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+#' color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
+#'
 #' plot(popTimeData,
-#'      casebase.theme = TRUE,
 #'      add.case.series = TRUE,
-#'      ratio = 1,
 #'      add.base.series = TRUE,
+#'      add.competing.event = FALSE,
 #'      legend = TRUE,
 #'      comprisk = TRUE,
-#'      add.competing.event = FALSE,
-#'      legend.params = list(name = element_blank(),
-#'                      breaks = c("Case series", "Competing event", "Base series"),
-#'                      values = cols),
-#'      theme.params = list(legend.position = "none"))
+#'      fill.params = list(name = element_blank(),
+#'                         breaks = c("Case series", "Competing event", "Base series"),
+#'                         values = fill_cols),
+#'      color.params = list(name = element_blank(),
+#'                          breaks = c("Case series", "Competing event", "Base series"),
+#'                          values = color_cols)
+#' )
 #' @export
 #' @method plot popTime
 #' @rdname popTime
@@ -130,7 +141,8 @@ plot.popTime <- function(x, ...,
                          case.params = list(),
                          base.params = list(),
                          competing.params = list(),
-                         legend.params = list(),
+                         color.params = list(),
+                         fill.params = list(),
                          theme.params = list(),
                          facet.params = list(),
                          ratio = 1,
@@ -155,7 +167,9 @@ plot.popTime <- function(x, ...,
     fill_cols <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
     # darken(fill_cols, 0.3) %>% dput
     color_cols <- c("#696969", "#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#954000", "#984B77")
-    # plot(seq_along(cbPalette),col = cbPalette, pch = 19, cex = 2.5)
+    # par(mfrow=c(1,2))
+    # plot(seq_along(color_cols),col = color_cols, pch = 19, cex = 2.5)
+    # plot(seq_along(fill_cols),col = fill_cols, pch = 19, cex = 2.5)
 
     if (!missing(line.colour)) {
         warning("line.colour argument deprecated. specify the fill argument instead
@@ -174,7 +188,7 @@ plot.popTime <- function(x, ...,
 
     if (!missing(point.colour)) {
         warning("point.colour argument deprecated. specify the values argument instead
-                in the legend.params argument. see examples for details.")
+                in the fill.params and color.params arguments. see examples for details.")
     }
 
     if (!missing(legend.position)) {
@@ -248,7 +262,12 @@ plot.popTime <- function(x, ...,
             newX[event == 2, comprisk.event := 1]
             newX[, event := NULL]
 
-            compdata <- popTime(data = newX, time = "time", event = "comprisk.event")
+            if (is.null(exposure_variable)) {
+                compdata <- popTime(data = newX, time = "time", event = "comprisk.event")
+            } else {
+                compdata <- popTime(data = newX, time = "time", event = "comprisk.event",
+                                    exposure = exposure_variable)
+            }
 
             do.call("geom_point", utils::modifyList(
                 list(data = compdata[event == 1],
@@ -271,20 +290,20 @@ plot.popTime <- function(x, ...,
             do.call("scale_colour_manual", utils::modifyList(
                 list(name = element_blank(),
                      breaks = c("Case series", "Competing event", "Base series"),
-                     values = cols), legend.params)
+                     values = cols), color.params)
             )
         },
 
         if (legend) {
 
             cols <- c("Case series" = fill_cols[7],
-                      "Competing event" = fill_cols[6],
-                      "Base series" = fill_cols[4])
+                      "Competing event" = fill_cols[4],
+                      "Base series" = fill_cols[6])
 
             do.call("scale_fill_manual", utils::modifyList(
                 list(name = element_blank(),
                      breaks = c("Case series", "Competing event", "Base series"),
-                     values = cols), legend.params)
+                     values = cols), fill.params)
             )
         },
 
