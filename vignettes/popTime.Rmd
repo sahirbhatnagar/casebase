@@ -28,11 +28,11 @@ Population time plots can be extremely informative graphical displays of surviva
 * the event status 
 * exposure (optional)
 
-This will create an object of class `popTime` (or `popTimeExposure` if you specify a value for the `exposure` argument)
+This will create an object of class `popTime` with an exposure attribute if you specify a value for the `exposure` argument.
 
-2) Pass the object of class `popTime` (or `popTimeExposure`) to the `plot` function
+2) Pass the object of class `popTime` to the `plot` function
 
-In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the _Customizing Population Time Plots_ vignette. 
+In this vignette we show how to create population-time plots for the two datasets that ship with the `casebase` package, as well as several well known survival datasets from the `survival` package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html) vignette. 
 
 # Load Required Packages
 
@@ -93,13 +93,12 @@ pt_object_strat <- casebase::popTime(ERSPC,
                                      exposure = "ScrArm")
 ```
 
-We can see its contents and its class:
+We can see its contents, class and that it has an exposure attribute:
 
 ```{r}
 head(pt_object_strat)
 class(pt_object_strat)
 ```
-
 
 We can also see that the `pt_object_strat` has an exposure attribute which contains the name of the exposure variable in the dataset:
 
@@ -107,8 +106,7 @@ We can also see that the `pt_object_strat` has an exposure attribute which conta
 attr(pt_object_strat, "exposure")
 ```
 
-
-The `casebase` package also has a `plot` method for objects of class `popTimeExposure`:
+The plot method for objects of class `popTime` will use this exposure attribute to create exposure stratified population time plots:
 
 ```{r}
 plot(pt_object_strat)
@@ -128,10 +126,7 @@ To illustrate the casebase sampling methodology, we can also plot the base serie
 
 ```{r}
 plot(pt_object_strat,
-     add.base.series = TRUE,
-     ratio = 1,
-     legend = TRUE,
-     theme.params = list(legend.position = "bottom"))
+     add.base.series = TRUE)
 ```
 
 Note that the `theme.params` argument is a list of arguments passed to the [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html) function. 
@@ -140,10 +135,11 @@ Note that the `theme.params` argument is a list of arguments passed to the [`ggp
 
 # Stem Cell Data
 
-Next we show population time plots when there is a competing event. The `bmtcrr` dataset contains information on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the `casebase` package. See `help("bmtcrr", package = "casebase")` for more details. We will use this dataset to further illustrate the fundamental components of a population time plot, and how the `plot` method for objects of class `popTime` and `popTimeExposure` is highly customizeable.
+Next we show population time plots when there is a competing event. The `bmtcrr` dataset contains information on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the `casebase` package. See `help("bmtcrr", package = "casebase")` for more details. We will use this dataset to further illustrate the fundamental components of a population time plot.
 
 
 Note that for this dataset, the `popTime` fails to identify a `time` variable if you didn't specify one:
+
 ```{r, error=TRUE}
 # load data
 data(bmtcrr)
@@ -164,7 +160,7 @@ class(popTimeData)
 
 ## Plotting the follow-up times for each observation
 
-We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the [`ggplot2::geom_ribbon()`](https://ggplot2.tidyverse.org/reference/geom_ribbon.html) function. The following figure shows this area for the `bmtcrr` dataset:
+We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the [`ggplot2::geom_ribbon()`](https://ggplot2.tidyverse.org/reference/geom_ribbon.html) function. The following figure shows this area for the `bmtcrr` dataset. Note that we must specify `add.case.series = FALSE` because the default is to add the case series:
 
 ```{r}
 plot(popTimeData,
@@ -176,7 +172,7 @@ Note that we can change the aesthetics of the area by using the `ribbon.params()
 ```{r}
 plot(popTimeData,
      add.case.series = FALSE,
-     ribbon.params = list(color = "red", fill = "blue", size = 2))
+     ribbon.params = list(color = "red", fill = "blue", size = 2, alpha = 0.2))
 ```
 
 
@@ -194,15 +190,13 @@ In the above plot we can clearly see many of the deaths occur at the beginning, 
 
 ## Plot the Base Series
 
-We can now add the base series with the `add.base.series` argument. Internally, the `plot` method calls the `casebase::sampleCaseBase` function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the `ratio` argument. We also specify that we want a legend:
+We can now add the base series with the `add.base.series` argument. Internally, the `plot` method calls the `casebase::sampleCaseBase` function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the `ratio` argument which we will leave at its default of 1. A legend is also added by default:
 
 ```{r}
 plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
@@ -215,9 +209,7 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 We can also only plot the case series and competing event (or any combination):
@@ -227,9 +219,7 @@ plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = FALSE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
@@ -238,40 +228,37 @@ plot(popTimeData,
 Next we stratify by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
 
 ```{r}
-# create 'popTimeExposure' object
+# create 'popTime' object
 popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-
 attr(popTimeData, "exposure")
 
 plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
-     comprisk = TRUE,
-     legend = TRUE)
+     comprisk = TRUE)
 ```
 
 
 ## Change color points and legend labels
 
-Here is some code to change color points and legend labels. For a more thorough description, please see the _Customizing Population Time Plots_ vignette. 
+Here is some code to change color points and legend labels. For a more thorough description, please see the [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html) vignette. 
 
 ```{r}
 plot(popTimeData,
      add.case.series = TRUE,
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
      comprisk = TRUE,
-     legend = TRUE,
-     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-     legend.params = list(name = "Legend Name",
-                          breaks = c("Relapse", "Base series", "Competing event"),
-                          values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
-     theme.params = list(legend.position = "bottom"))
+     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse", fill = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series", fill = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event", fill = "Competing event")),
+     fill.params = list(name = "Legend Name",
+                        breaks = c("Relapse", "Base series", "Competing event"),
+                        values = c("Relapse" = "blue", 
+                                   "Competing event" = "red", 
+                                   "Base series" = "orange"))
+     )
 ```
 
 
@@ -300,10 +287,10 @@ In this example we compare the standard and test treatment groups. A reminder th
 veteran <- transform(veteran, trt = factor(trt, levels = 1:2,
                                            labels = c("standard", "test")))
 
-# create 'popTimeExposure' object
+# create 'popTime' object
 popTimeData <- popTime(data = veteran, exposure = "trt")
 
-# object of class 'popTimeExposure'
+# object of class 'popTime'
 class(popTimeData)
 
 # has name of exposure variable as an attribute
@@ -313,7 +300,7 @@ attr(popTimeData, "exposure")
 Again, we simply pass this object to the `plot` function to get an exposure stratified population time plot:
 
 ```{r}
-# plot method for objects of class 'popTimeExposure'
+# plot method for objects of class 'popTime'
 plot(popTimeData)
 ```
 
