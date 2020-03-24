@@ -87,7 +87,7 @@
       <h1>Customizing Population Time Plots</h1>
                         <h4 class="author">Sahir R. Bhatnagar</h4>
             
-            <h4 class="date">2020-03-12</h4>
+            <h4 class="date">2020-03-24</h4>
       
       
       <div class="hidden name"><code>customizingpopTime.Rmd</code></div>
@@ -103,10 +103,11 @@
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(casebase)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(data.table)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># create poptime exposure object for ERSPC data</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">x &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(ERSPC, <span class="dt">time =</span> <span class="st">"Follow.Up.Time"</span>, <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>, <span class="dt">exposure =</span> <span class="st">"ScrArm"</span>)</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(x)</a></code></pre></div>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(colorspace)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># create poptime object for ERSPC data with exposure attribute</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">x &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(ERSPC, <span class="dt">time =</span> <span class="st">"Follow.Up.Time"</span>, <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>, <span class="dt">exposure =</span> <span class="st">"ScrArm"</span>)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(x)</a></code></pre></div>
 <pre><code>##    ScrArm   time event original.time original.event event status ycoord yc
 ## 1:      0 0.0027     0        0.0027              0     censored  88232  0
 ## 2:      0 0.0027     0        0.0027              0     censored  88231  0
@@ -125,7 +126,7 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>In this vignette, we explain in details how to customize population time plots. More specifically, we details the inner workings of the <code>plot</code> method for objects of class <code>popTime</code> and <code>popTimeExposure</code>.</p>
+<p>In this vignette, we explain in details how to customize population time plots. More specifically, we details the inner workings of the <code>plot</code> method for objects of class <code>popTime</code>.</p>
 </div>
 <div id="the--params-arguments" class="section level1">
 <h1 class="hasAnchor">
@@ -145,7 +146,10 @@
 <code>competing.params</code> –&gt; <a href="https://ggplot2.tidyverse.org/reference/geom_point.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">ggplot2::geom_point()</a></code></a>
 </li>
 <li>
-<code>legend.params</code> –&gt; <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_colour_manual()</a></code></a>
+<code>fill.params</code> –&gt; <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_fill_manual()</a></code></a>
+</li>
+<li>
+<code>color.params</code> –&gt; <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_colour_manual()</a></code></a>
 </li>
 <li>
 <code>theme.params</code> –&gt; <a href="https://ggplot2.tidyverse.org/reference/theme.html"><code><a href="https://ggplot2.tidyverse.org/reference/theme.html">ggplot2::theme()</a></code></a>
@@ -154,7 +158,8 @@
 <p>Following the suggestion from the <a href="https://ggplot2-book.org/programming.html#multiple-components">ggplot2 book</a>, we use the <code><a href="https://rdrr.io/r/utils/modifyList.html">utils::modifyList</a></code> function to replace the corresponding default values. For example, the default arguments passed to the <code>geom_ribbon</code> function for plotting the area are given by</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">data =</span> x,</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">     <span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">ymax =</span> ycoord),</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">     <span class="dt">fill =</span> <span class="st">"grey80"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb3-3" data-line-number="3">     <span class="dt">fill =</span> <span class="st">"grey80"</span>,</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">     <span class="dt">alpha =</span> <span class="fl">0.5</span>)</a></code></pre></div>
 <pre><code>## $data
 ##         ScrArm    time event original.time original.event event status ycoord
 ##      1:      0  0.0027     0        0.0027              0     censored  88232
@@ -188,14 +193,18 @@
 ## * `ymax` -&gt; `ycoord`
 ## 
 ## $fill
-## [1] "grey80"</code></pre>
-<p>(Note that the variables <code>time</code> and <code>ycoord</code> are columns created by the <code><a href="../reference/popTime.html">casebase::popTime</a></code> function). Suppose we want to change the fill color. We simply specify this color in the <code>ribbon.params</code> argument:</p>
+## [1] "grey80"
+## 
+## $alpha
+## [1] 0.5</code></pre>
+<p>Note that the variables <code>time</code> and <code>ycoord</code> are columns created by the <code><a href="../reference/popTime.html">casebase::popTime</a></code> function, so we should always leave these specified as is. Suppose we want to change the fill color. We simply specify this color in the <code>ribbon.params</code> argument:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">ribbon.params &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">fill =</span> <span class="st">"#0072B2"</span>)</a></code></pre></div>
 <p>We then call the <code><a href="https://rdrr.io/r/utils/modifyList.html">utils::modifyList</a></code> function to override the function defaults:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">(new_ribbon_params &lt;-<span class="st"> </span>utils<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/utils/modifyList.html">modifyList</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">data =</span> x,</a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">                                            <span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">ymax =</span> ycoord),</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                                            <span class="dt">fill =</span> <span class="st">"grey80"</span>), </a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                                       ribbon.params))</a></code></pre></div>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                                            <span class="dt">fill =</span> <span class="st">"grey80"</span>,</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                                            <span class="dt">alpha =</span> <span class="fl">0.5</span>), </a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">                                       ribbon.params))</a></code></pre></div>
 <pre><code>## $data
 ##         ScrArm    time event original.time original.event event status ycoord
 ##      1:      0  0.0027     0        0.0027              0     censored  88232
@@ -229,7 +238,10 @@
 ## * `ymax` -&gt; `ycoord`
 ## 
 ## $fill
-## [1] "#0072B2"</code></pre>
+## [1] "#0072B2"
+## 
+## $alpha
+## [1] 0.5</code></pre>
 <p>Finally, we use <code><a href="https://rdrr.io/r/base/do.call.html">base::do.call</a></code> to execute the <code>geom_ribbon</code> function on this list:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() <span class="op">+</span><span class="st"> </span>base<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"geom_ribbon"</span>, new_ribbon_params)</a></code></pre></div>
 <p><img src="customizingpopTime_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
@@ -265,69 +277,120 @@
 <h1 class="hasAnchor">
 <a href="#changing-the-plot-aesthetics" class="anchor"></a>Changing the Plot Aesthetics</h1>
 <p>Suppose we want to change the color of the points and the legend labels. We use the <code>bmtcrr</code> dataset as the example in this section.</p>
-<p>The default colors for the case series, base series and competing event are given by:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">cols &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> "#D55E00"</span>, <span class="st">"Competing event"</span> =<span class="st"> "#009E73"</span>, <span class="st">"Base series"</span> =<span class="st"> "#0072B2"</span>)</a></code></pre></div>
+<p>The reason there are both <code>fill.params</code> and <code>color.params</code> arguments, is because by default, we use <code>shape = 21</code> which is a filled circle (see the <code>pch</code> argument of the <code><a href="https://rdrr.io/r/graphics/points.html">graphics::points</a></code> function for details). Shapes from 21 to 25 can be colored and filled with different colors: <code>color.params</code> gives the border color and <code>fill.params</code> gives the fill color (sometimes referred to as the background color).</p>
+<p>The default fill colors for the case series, base series and competing event are given by the qualitative palette from the <a href="https://cran.r-project.org/package=colorspace"><code>colorspace</code></a> R package:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">fill_cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">qualitative_hcl</a></span>(<span class="dt">n =</span> <span class="dv">3</span>, <span class="dt">palette =</span> <span class="st">"Dark3"</span>)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">(fill_colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> </span>fill_cols[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">                 <span class="st">"Competing event"</span> =<span class="st"> </span>fill_cols[<span class="dv">3</span>],</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">                 <span class="st">"Base series"</span> =<span class="st"> </span>fill_cols[<span class="dv">2</span>]))</a></code></pre></div>
+<pre><code>##     Case series Competing event     Base series 
+##       "#E16A86"       "#009ADE"       "#50A315"</code></pre>
+<p>The corresponding default border colors are given by the <code><a href="http://colorspace.R-Forge.R-project.org//reference/lighten.html">colorspace::darken</a></code> function applied to the fill colors above:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">color_cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/lighten.html">darken</a></span>(<span class="dt">col =</span> fill_cols, <span class="dt">amount =</span> <span class="fl">0.3</span>)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">(color_colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> </span>color_cols[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">                   <span class="st">"Competing event"</span> =<span class="st"> </span>color_cols[<span class="dv">3</span>],</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">                   <span class="st">"Base series"</span> =<span class="st"> </span>color_cols[<span class="dv">2</span>]))</a></code></pre></div>
+<pre><code>##     Case series Competing event     Base series 
+##       "#AB3A59"       "#026A9A"       "#347004"</code></pre>
+<p>This is what the points look like:</p>
+<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <div id="change-only-the-point-colors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-only-the-point-colors" class="anchor"></a>Change only the point colors</h2>
-<p>If you only want to change the color points, you must specify a named vector exactly as specified in the <code>cols</code> object created above. Note that the names <code>Case series</code>, <code>Base Series</code> and <code>Competing event</code> must remain the same, otherwise the function won’t know how to map the colors to the corresponding points. This is because the <code>colour</code> aesthetic mapping in the <code>geom_point</code> functions have been set to <code>Case series</code>, <code>Base Series</code> and <code>Competing event</code>. For example, the default call to <code>geom_point</code> for the case series is given by:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"geom_point"</span>, <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">data =</span> x[event <span class="op">==</span><span class="st"> </span><span class="dv">1</span>],</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">                     <span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Case series"</span>)))</a></code></pre></div>
-<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<p>We define a new set of colors:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">new_cols &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> "red"</span>, <span class="st">"Competing event"</span> =<span class="st"> "orange"</span>, <span class="st">"Base series"</span> =<span class="st"> "blue"</span>)</a></code></pre></div>
-<p>We then pass <code>new_cols</code> to the <code>legend.params</code> argument. Internally, this gets passed to the <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_color_manual</a></code></a> function:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"scale_colour_manual"</span>, utils<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/utils/modifyList.html">modifyList</a></span>(</a>
-<a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3">       <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span>, <span class="st">"Competing event"</span>, <span class="st">"Base series"</span>),</a>
-<a class="sourceLine" id="cb16-4" data-line-number="4">       <span class="dt">values =</span> cols), <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> new_cols))</a>
-<a class="sourceLine" id="cb16-5" data-line-number="5">)</a></code></pre></div>
+<p>If you only want to change the color points, you must specify a named vector exactly as specified in the <code>fill_colors</code> object created above. Note that the names <code>Case series</code>, <code>Base Series</code> and <code>Competing event</code> must remain the same, otherwise the function won’t know how to map the colors to the corresponding points. This is because the <code>colour</code> and <code>fill</code> aesthetic mappings in the <code>geom_point</code> functions have been set to <code>Case series</code>, <code>Base Series</code> and <code>Competing event</code>. For example, the default call to <code>geom_point</code> for the case series is given by:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"geom_point"</span>, <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">data =</span> x[event <span class="op">==</span><span class="st"> </span><span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">                     <span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, </a>
+<a class="sourceLine" id="cb17-3" data-line-number="3">                                   <span class="dt">colour =</span> <span class="st">"Case series"</span>, <span class="dt">fill =</span> <span class="st">"Case series"</span>),</a>
+<a class="sourceLine" id="cb17-4" data-line-number="4">                     <span class="dt">size =</span> <span class="fl">1.5</span>,</a>
+<a class="sourceLine" id="cb17-5" data-line-number="5">                     <span class="dt">alpha =</span> <span class="fl">0.5</span>,</a>
+<a class="sourceLine" id="cb17-6" data-line-number="6">                     <span class="dt">shape =</span> <span class="dv">21</span>))</a></code></pre></div>
+<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p>We define a new set of colors using a sequential (multi-hue) palette:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">fill_cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/hcl_palettes.html">sequential_hcl</a></span>(<span class="dt">n =</span> <span class="dv">3</span>, <span class="dt">palette =</span> <span class="st">"Viridis"</span>)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb18-3" data-line-number="3">(fill_colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> </span>fill_cols[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4">                 <span class="st">"Competing event"</span> =<span class="st"> </span>fill_cols[<span class="dv">3</span>],</a>
+<a class="sourceLine" id="cb18-5" data-line-number="5">                 <span class="st">"Base series"</span> =<span class="st"> </span>fill_cols[<span class="dv">2</span>]))</a></code></pre></div>
+<pre><code>##     Case series Competing event     Base series 
+##       "#4B0055"       "#FDE333"       "#009B95"</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">color_cols &lt;-<span class="st"> </span>colorspace<span class="op">::</span><span class="kw"><a href="http://colorspace.R-Forge.R-project.org//reference/lighten.html">darken</a></span>(<span class="dt">col =</span> fill_cols, <span class="dt">amount =</span> <span class="fl">0.3</span>)</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">(color_colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span> =<span class="st"> </span>color_cols[<span class="dv">1</span>],</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">                   <span class="st">"Competing event"</span> =<span class="st"> </span>color_cols[<span class="dv">3</span>],</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">                   <span class="st">"Base series"</span> =<span class="st"> </span>color_cols[<span class="dv">2</span>]))</a></code></pre></div>
+<pre><code>##     Case series Competing event     Base series 
+##       "#3A0142"       "#AC9900"       "#0A6B66"</code></pre>
+<p>We then pass <code>fill_cols</code> and <code>color_cols</code> to the <code>fill.params</code> and <code>color.params</code> arguments, respectively. Internally, this gets passed to the <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_fill_manual</a></code></a> and <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html"><code><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html">ggplot2::scale_color_manual</a></code></a> functions, respectively:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"scale_fill_manual"</span>, utils<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/utils/modifyList.html">modifyList</a></span>(</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2">  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb22-3" data-line-number="3">       <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span>, <span class="st">"Competing event"</span>, <span class="st">"Base series"</span>),</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4">       <span class="dt">values =</span> old_cols), <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> fill_colors))</a>
+<a class="sourceLine" id="cb22-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="st">"scale_colour_manual"</span>, utils<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/utils/modifyList.html">modifyList</a></span>(</a>
+<a class="sourceLine" id="cb22-8" data-line-number="8">  <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span>(),</a>
+<a class="sourceLine" id="cb22-9" data-line-number="9">       <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Case series"</span>, <span class="st">"Competing event"</span>, <span class="st">"Base series"</span>),</a>
+<a class="sourceLine" id="cb22-10" data-line-number="10">       <span class="dt">values =</span> old_cols), <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> color_colors))</a>
+<a class="sourceLine" id="cb22-11" data-line-number="11">)</a></code></pre></div>
 <p>Here is the code to only change the colors:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># this data ships with the casebase package</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"bmtcrr"</span>)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb17-4" data-line-number="4">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># this data ships with the casebase package</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"bmtcrr"</span>)</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</a></code></pre></div>
 <pre><code>## 'Status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb19-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb19-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb19-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb19-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb19-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb19-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb19-8" data-line-number="8">     <span class="dt">legend.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> new_cols))</a></code></pre></div>
-<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">     <span class="dt">fill.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> fill_colors),</a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">     <span class="dt">color.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">value =</span> color_colors))</a></code></pre></div>
+<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p>Note that if you only specify one of the <code>fill.params</code> or <code>color.params</code> arguments, the plot method will automatically set one equal to the other and return a warning message:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
+<a class="sourceLine" id="cb26-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb26-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb26-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb26-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb26-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb26-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb26-8" data-line-number="8">     <span class="dt">fill.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">values =</span> fill_colors))</a></code></pre></div>
+<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series = TRUE, : fill.params has been specified by the user but color.params has not.
+##                 Setting color.params to be equal to fill.params.</code></pre>
+<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div id="change-point-color-and-legend-labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-point-color-and-legend-labels" class="anchor"></a>Change Point Color and Legend Labels</h2>
 <p>In order to change both the point colors and legend labels, we must modify the aesthetic mapping of the <code>geom_point</code> calls as follows:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co"># this data ships with the casebase package</span></a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"bmtcrr"</span>)</a>
-<a class="sourceLine" id="cb20-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb20-4" data-line-number="4">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="co"># this data ships with the casebase package</span></a>
+<a class="sourceLine" id="cb28-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"bmtcrr"</span>)</a>
+<a class="sourceLine" id="cb28-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb28-4" data-line-number="4">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</a></code></pre></div>
 <pre><code>## 'Status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb22-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb22-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb22-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb22-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb22-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb22-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb22-8" data-line-number="8">     <span class="dt">case.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>)),</a>
-<a class="sourceLine" id="cb22-9" data-line-number="9">     <span class="dt">base.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> ycoord, <span class="dt">colour =</span> <span class="st">"Base series"</span>)),</a>
-<a class="sourceLine" id="cb22-10" data-line-number="10">     <span class="dt">competing.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Competing event"</span>)),</a>
-<a class="sourceLine" id="cb22-11" data-line-number="11">     <span class="dt">legend.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="st">"Legend Name"</span>,</a>
-<a class="sourceLine" id="cb22-12" data-line-number="12">                          <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Base series"</span>, <span class="st">"Competing event"</span>),</a>
-<a class="sourceLine" id="cb22-13" data-line-number="13">                          <span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span> =<span class="st"> "blue"</span>, <span class="st">"Competing event"</span> =<span class="st"> "hotpink"</span>, <span class="st">"Base series"</span> =<span class="st"> "orange"</span>)))</a></code></pre></div>
-<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">     <span class="dt">case.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">fill =</span> <span class="st">"Relapse"</span>, <span class="dt">colour =</span> <span class="st">"Relapse"</span>)),</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">     <span class="dt">base.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> ycoord, <span class="dt">fill =</span> <span class="st">"Base series"</span>, <span class="dt">colour =</span> <span class="st">"Base series"</span>)),</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">     <span class="dt">competing.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">fill =</span> <span class="st">"Competing event"</span>, <span class="dt">colour =</span> <span class="st">"Competing event"</span>)),</a>
+<a class="sourceLine" id="cb30-9" data-line-number="9">     <span class="dt">fill.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="st">"Legend Name"</span>,</a>
+<a class="sourceLine" id="cb30-10" data-line-number="10">                          <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Base series"</span>, <span class="st">"Competing event"</span>),</a>
+<a class="sourceLine" id="cb30-11" data-line-number="11">                          <span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span> =<span class="st"> "blue"</span>, <span class="st">"Competing event"</span> =<span class="st"> "hotpink"</span>, <span class="st">"Base series"</span> =<span class="st"> "orange"</span>)))</a></code></pre></div>
+<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series = TRUE, : fill.params has been specified by the user but color.params has not.
+##                 Setting color.params to be equal to fill.params.</code></pre>
+<p><img src="customizingpopTime_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 <p>NOTE: the lists being passed to the <code>.params</code> arguments must be named arguments, otherwise they will give unexpected behavior. For example</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># this will work because mapping is the name of the </span></a>
-<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="co"># argument of the list </span></a>
-<a class="sourceLine" id="cb23-3" data-line-number="3">case.params =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># this will NOT work because the argument of the list has no name</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="co"># and therefore utils::modifyList, will not override the defaults. </span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3">case.params =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># this will work because mapping is the name of the </span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="co"># argument of the list </span></a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">case.params =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>, <span class="dt">fill =</span> <span class="st">"Relapse"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># this will NOT work because the argument of the list has no name</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="co"># and therefore utils::modifyList, will not override the defaults. </span></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">case.params =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>, <span class="dt">fill =</span> <span class="st">"Relapse"</span>))</a></code></pre></div>
 </div>
 </div>
 <div id="session-information" class="section level1">
@@ -345,11 +408,11 @@
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] data.table_1.12.8   ggplot2_3.3.0       casebase_0.2.1.9001
-## [4] survival_3.1-8     
+## [1] colorspace_1.4-1    data.table_1.12.8   ggplot2_3.3.0      
+## [4] casebase_0.2.1.9001 survival_3.1-8     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.3       compiler_3.6.2   pillar_1.4.3     tools_3.6.2     
+##  [1] Rcpp_1.0.4       compiler_3.6.2   pillar_1.4.3     tools_3.6.2     
 ##  [5] digest_0.6.25    nlme_3.1-142     evaluate_0.14    memoise_1.1.0   
 ##  [9] lifecycle_0.2.0  tibble_2.1.3     gtable_0.3.0     lattice_0.20-38 
 ## [13] mgcv_1.8-31      pkgconfig_2.0.3  rlang_0.4.5      Matrix_1.2-18   
@@ -358,8 +421,8 @@
 ## [25] stats4_3.6.2     rprojroot_1.3-2  grid_3.6.2       glue_1.3.2      
 ## [29] R6_2.4.1         VGAM_1.1-2       rmarkdown_2.1    farver_2.0.3    
 ## [33] magrittr_1.5     backports_1.1.5  scales_1.1.0     htmltools_0.4.0 
-## [37] MASS_7.3-51.4    splines_3.6.2    assertthat_0.2.1 colorspace_1.4-1
-## [41] labeling_0.3     stringi_1.4.6    munsell_0.5.0    crayon_1.3.4</code></pre>
+## [37] MASS_7.3-51.4    splines_3.6.2    assertthat_0.2.1 labeling_0.3    
+## [41] stringi_1.4.6    munsell_0.5.0    crayon_1.3.4</code></pre>
 </div>
   </div>
 
