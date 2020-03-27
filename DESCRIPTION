@@ -7,7 +7,7 @@ Authors@R: c(
   person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
   role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
   person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
-  role = c("aut"), comment = "https://maxturgeon.ca/"),
+  role = c("aut"), comment = c(ORCID = "0000-0003-4863-6035")),
   person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
   role = c("aut"), comment = "https://www.jesseislam.com/"),
   person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
@@ -41,6 +41,7 @@ Suggests:
     knitr,
     rmarkdown,
     splines,
+    colorspace,
     testthat
 VignetteBuilder: knitr
 URL: http://sahirbhatnagar.com/casebase/

@@ -28,7 +28,7 @@ y <- with(support, cbind(death, d.time))
 
 fit_cb <- casebase::fitSmoothHazard.fit(x, y, time = "d.time", event = "death",
                                         formula_time = ~ log(d.time),
-                                        ratio = 5)
+                                        ratio = 1)
 }
 \references{
 Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.
