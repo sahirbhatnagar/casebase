@@ -4,7 +4,7 @@
 #'   group between the ages of 55 and 69 years at entry.
 #'
 #' @format A data frame with 159,893 observations on the following 3 variables: \describe{
-#'   \item{ScrArm}{Whether in Screening Arm (1) or non-Screening arm (0) [numeric]}
+#'   \item{ScrArm}{Whether in Screening Arm (1) or non-Screening arm (0) (\code{numeric})}
 #'   \item{Follow.Up.Time}{The time, measured in years from randomization, at which follow-up was
 #'   terminated} \item{DeadOfPrCa}{Whether follow-up was terminated by Death from Prostate Cancer
 #'   (1) or by death from other causes, or administratively (0)} }
@@ -185,12 +185,7 @@
 #' @source Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}. note: must unzip and process this data before use.
 #' @examples
 #' data("support")
-#' mod_cb <- casebase::fitSmoothHazard(death ~ .,
-#'                                     time = "d.time", event = "death",
-#'                                     data = support,
-#'                                     ratio = 1)
-#'
-#' # Or with the matrix interface and log of time
+#' # Using the matrix interface and log of time
 #' x <- model.matrix(death ~ . - d.time - 1, data = support)
 #' y <- with(support, cbind(death, d.time))
 #'

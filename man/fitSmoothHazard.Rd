@@ -134,7 +134,5 @@ out_log <- fitSmoothHazard(event ~ log(time) + z, DT, ratio = 10)
 library(mgcv)
 DT[event == 2, event := 1]
 out_gam <- fitSmoothHazard(event ~ s(time) + z, DT,
-  ratio = 10,
-  family = "gam"
-)
+                           ratio = 10, family = "gam")
 }

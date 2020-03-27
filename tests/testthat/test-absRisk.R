@@ -86,74 +86,74 @@ test_that("no error in absolute risk with data tables - new data", {
 
 # Make sure we get probabilities
 test_that("should output probabilities with data frames", {
-    # absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[1,],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[1,],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[1,],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskMC >= 0))
     expect_true(all(absRiskNI >= 0))
-    # expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskMC <= 1))
     expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data tables", {
-    # absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[1,],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[1,],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[1,],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskMC >= 0))
     expect_true(all(absRiskNI >= 0))
-    # expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskMC <= 1))
     expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data frames - two time points", {
-    # absRiskMC <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] >= 0))
     expect_true(all(absRiskNI[,-1] >= 0))
-    # expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskMC[,-1] <= 1))
     expect_true(all(absRiskNI[,-1] <= 1))
 })
 
 test_that("should output probabilities with data tables - two time points", {
-    # absRiskMC <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] >= 0))
     expect_true(all(absRiskNI[,-1] >= 0))
-    # expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskMC[,-1] <= 1))
     expect_true(all(absRiskNI[,-1] <= 1))
 })
 
 test_that("should output probabilities with data frames - two covariate profile", {
-    # absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1),],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1),],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1),],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskMC >= 0))
     expect_true(all(absRiskNI >= 0))
-    # expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskMC <= 1))
     expect_true(all(absRiskNI <= 1))
 })
 
 test_that("should output probabilities with data tables - two covariate profile", {
-    # absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1),],
-    #                           method = "montecarlo")
+    absRiskMC <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1),],
+                              method = "montecarlo")
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1),],
                               method = "numerical")
 
-    # expect_true(all(absRiskMC >= 0))
+    expect_true(all(absRiskMC >= 0))
     expect_true(all(absRiskNI >= 0))
-    # expect_true(all(absRiskMC <= 1))
+    expect_true(all(absRiskMC <= 1))
     expect_true(all(absRiskNI <= 1))
 })
 
@@ -208,6 +208,14 @@ test_that("no error in fitting gam", {
     expect_false(inherits(riskDT, "try-error"))
 })
 
+test_that("should compute risk when time and newdata aren't provided", {
+    absRiskDF_gam <- absoluteRisk(fitDF_gam)
+    absRiskDT_gam <- absoluteRisk(fitDT_gam)
+
+    expect_true("risk" %in% names(absRiskDF_gam))
+    expect_true("risk" %in% names(absRiskDT_gam))
+})
+
 fitDF_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime", family = "gbm", ratio = 10)
 fitDT_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime", family = "gbm", ratio = 10)
 
@@ -227,6 +235,24 @@ test_that("no error in fitting gbm", {
     expect_false(inherits(riskDT, "try-error"))
     expect_false(inherits(riskDF_mc, "try-error"))
     expect_false(inherits(riskDT_mc, "try-error"))
+})
+
+test_that("should compute risk when time and newdata aren't provided", {
+    # To pass the test, I had to increase nsamp
+    # This may have something to do with the way we use gbm
+    # or it could be that the estimated hazard is highly non-smooth
+    # In any case, we will have to test gbm more to see what's going on.
+    skip_on_cran()
+    fitDF_gbm_red <- fitDF_gbm
+    fitDF_gbm_red$originalData <- fitDF_gbm$originalData[c(1:5, 101:105),]
+    absRiskDF_gbm <- absoluteRisk(fitDF_gbm_red, n.trees = 100, nsamp = 500)
+
+    fitDT_gbm_red <- fitDT_gbm
+    fitDT_gbm_red$originalData <- fitDT_gbm$originalData[c(1:5, 101:105),]
+    absRiskDT_gbm <- absoluteRisk(fitDT_gbm_red, n.trees = 100, nsamp = 500)
+
+    expect_true("risk" %in% names(absRiskDF_gbm))
+    expect_true("risk" %in% names(absRiskDT_gbm))
 })
 
 extra_vars <- matrix(rnorm(10 * n), ncol = 10)
@@ -298,3 +324,11 @@ test_that("output probabilities", {
     expect_true(all(riskDF_glmnet <= 1))
     expect_true(all(riskDT_glmnet <= 1))
 })
+
+# test_that("should compute risk when time and newdata aren't provided", {
+#     absRiskDF <- absoluteRisk(fitDF)
+#     absRiskDT <- absoluteRisk(fitDT)
+#
+#     expect_true("risk" %in% names(absRiskDF))
+#     expect_true("risk" %in% names(absRiskDT))
+# })
