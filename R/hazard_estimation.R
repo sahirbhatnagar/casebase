@@ -1,29 +1,12 @@
-estimate_hazard <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95, ...) {
-    # For hazardPlot, we only want one row in newdata
-    if (nrow(newdata) > 1 && plot) {
-        newdata <- newdata[1, , drop = FALSE]
-        warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
-    }
-    if (ci) {
-        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
-            stop("ci.lvl must be between 0 and 1")
-        if (!inherits(object, "glm")) {
-            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",
-                            class(object)[1]))
-            ci <- FALSE
-        }
-        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
-            stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
-    }
-    UseMethod("estimate_hazard")
-}
+estimate_hazard <- function(object, ...) UseMethod("estimate_hazard")
 
-estimate_hazard.default <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95, ...) {
+estimate_hazard.default <- function(object, ...) {
     stop("This function should be used with an object of class glm, cv.glmnet, gbm",
          call. = TRUE)
 }
 
 estimate_hazard.glm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95, ...) {
+    check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
     # Set offset to zero
     newdata$offset <- 0
     # Silence warnings about splines at t=0
@@ -33,7 +16,8 @@ estimate_hazard.glm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lv
 }
 
 estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95,
-                                   s = c("lambda.1se","lambda.min"), ...) {
+                                      s = c("lambda.1se", "lambda.min"), ...) {
+    check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
     if (is.numeric(s))
         s <- s[1]
     else if (is.character(s)) {
@@ -51,7 +35,9 @@ estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE,
     return(pred)
 }
 
-estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95, n.trees, ...) {
+estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95,
+                                n.trees, s = NULL, ...) {
+    check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
     # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
     # The following line silences this warning
     attr(object$Terms, "offset") <- NULL
@@ -61,4 +47,24 @@ estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lv
                                         n.trees, ...),
                         warning = handler_offset)
     return(pred)
+}
+
+check_arguments_hazard <- function(object, newdata, plot, ci, ci.lvl) {
+    # For hazardPlot, we only want one row in newdata
+    if (nrow(newdata) > 1 && plot) {
+        newdata <- newdata[1, , drop = FALSE]
+        warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
+    }
+    if (ci) {
+        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
+            stop("ci.lvl must be between 0 and 1")
+        if (!inherits(object, "glm")) {
+            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",
+                            class(object)[1]))
+            ci <- FALSE
+        }
+        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
+            stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
+    }
+    invisible(NULL)
 }

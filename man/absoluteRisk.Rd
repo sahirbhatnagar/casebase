@@ -2,15 +2,10 @@
 % Please edit documentation in R/absoluteRisk-cr.R, R/absoluteRisk.R
 \name{absoluteRisk.CompRisk}
 \alias{absoluteRisk.CompRisk}
-\alias{absoluteRisk.CompRiskGlmnet}
 \alias{absoluteRisk}
-\alias{absoluteRisk.default}
-\alias{absoluteRisk.glm}
-\alias{absoluteRisk.gbm}
-\alias{absoluteRisk.cv.glmnet}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
-\method{absoluteRisk}{CompRisk}(
+absoluteRisk.CompRisk(
   object,
   time,
   newdata,
@@ -20,47 +15,15 @@
   ...
 )
 
-\method{absoluteRisk}{CompRiskGlmnet}(
+absoluteRisk(
   object,
   time,
   newdata,
   method = c("numerical", "montecarlo"),
   nsamp = 100,
-  onlyMain = TRUE,
   s = c("lambda.1se", "lambda.min"),
-  ...
-)
-
-absoluteRisk(object, ...)
-
-\method{absoluteRisk}{default}(object, ...)
-
-\method{absoluteRisk}{glm}(
-  object,
-  time,
-  newdata,
-  method = c("numerical", "montecarlo"),
-  nsamp = 100,
-  ...
-)
-
-\method{absoluteRisk}{gbm}(
-  object,
-  time,
-  newdata,
-  method = c("numerical", "montecarlo"),
-  nsamp = 100,
   n.trees,
-  ...
-)
-
-\method{absoluteRisk}{cv.glmnet}(
-  object,
-  time,
-  newdata,
-  method = c("numerical", "montecarlo"),
-  nsamp = 100,
-  s = c("lambda.1se", "lambda.min"),
+  onlyMain = TRUE,
   ...
 )
 }
@@ -126,11 +89,7 @@ events.
 
 The numerical method should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
-is not smooth (e.g. when modeling with time-varying covariates). However, if
-there are competing risks, we strongly encourage the user to select
-Monte-Carlo integration, which is much faster than the numerical method.
-(This is due to the current implementation of the numerical method, and it
-may be improved in future versions.)
+is not smooth (e.g. when modeling with time-varying covariates).
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
