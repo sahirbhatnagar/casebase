@@ -4,8 +4,10 @@
 \name{support}
 \alias{support}
 \title{Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT)}
-\format{A dataframe with 9104 observations and 30 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept. \describe{ \item{Age}{ Stores a double representing age. } \item{death}{ Death at any time up to NDI date: 31DEC94. } \item{sex}{ 0=female, 1=male. } \item{hospdead}{ 1=dead in hospital, 0= has not died in hospital. } \item{slos}{ Days from study entry to discharge. } \item{d.time}{ days of follow-up. } \item{dzgroup}{ Each level of dzgroup: ARF/MOSF w/Sepsis, COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with malignancy. } \item{dzclass}{ ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer disease classes. } \item{num.co}{ the number of comorbidities. } \item{edu}{ years of education of patient. } \item{scoma}{ The SUPPORT coma score based on Glasgow D3. } \item{avtisst}{ Average TISS, days 3-25. } \item{race}{ Indicates race. White, black, asian, hispanic or other. } \item{meanbp}{ Mean Arterial Blood Pressure Day 3. } \item{wblc}{ White blood cell count on day 3. } \item{hrt}{ Heart rate day 3. } \item{resp}{ Respiration Rate day 3. } \item{temp}{ Temperature, in celcius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{ Serum albumin day 3. } \item{bili}{ Bilirubin Day 3. } \item{crea}{ Serum creatinine day 3. } \item{sod}{ Serum sodium day 3. } \item{ph}{ Serum pH (in arteries) day 3. } \item{glucose}{ Serum glucose day 3. } \item{bun}{  BUN day 3. } \item{urine}{ urine output day 3. } \item{adlp}{ ADL patient day 3. } \item{adls}{ ADL surrogate day 3. } \item{adlsc}{ Imputed ADL calibrated to surrogate, if a surrogate was used for a follow up.} \item{sps}{SUPPORT physiology score} \item{aps}{Apache III physiology score}
-}}
+\format{
+A dataframe with 9104 observations and 34 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept. \describe{ \item{Age}{ Stores a double representing age. } \item{death}{ Death at any time up to NDI date: 31DEC94. } \item{sex}{ 0=female, 1=male. } \item{slos}{ Days from study entry to discharge. } \item{d.time}{ days of follow-up. } \item{dzgroup}{ Each level of dzgroup: ARF/MOSF w/Sepsis, COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with malignancy. } \item{dzclass}{ ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer disease classes. } \item{num.co}{ the number of comorbidities. } \item{edu}{ years of education of patient. } \item{scoma}{ The SUPPORT coma score based on Glasgow D3. } \item{avtisst}{ Average TISS, days 3-25. } \item{race}{ Indicates race. White, black, asian, hispanic or other. } \item{hday}{Day in Hospital at Study Admit} \item{diabetes}{Diabetes (Com 27-28, Dx 73)} \item{dementia}{Dementia (Comorbidity 6) } \item{ca}{Cancer State} \item{meanbp}{ Mean Arterial Blood Pressure Day 3. } \item{wblc}{ White blood cell count on day 3. } \item{hrt}{ Heart rate day 3. } \item{resp}{ Respiration Rate day 3. } \item{temp}{ Temperature, in celcius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{ Serum albumin day 3. } \item{bili}{ Bilirubin Day 3. } \item{crea}{ Serum creatinine day 3. } \item{sod}{ Serum sodium day 3. } \item{ph}{ Serum pH (in arteries) day 3. } \item{glucose}{ Serum glucose day 3. } \item{bun}{  BUN day 3. } \item{urine}{ urine output day 3. } \item{adlp}{ ADL patient day 3. }  \item{adlsc}{ Imputed ADL calibrated to surrogate, if a surrogate was used for a follow up.} \item{sps}{SUPPORT physiology score} \item{aps}{Apache III physiology score}
+}
+}
 \source{
 Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}. note: must unzip and process this data before use.
 }
@@ -13,17 +15,20 @@ Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/p
 support
 }
 \description{
-The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death, where the patients are followed for up to 5.56 years.
+The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death
 }
 \details{
-Data from the first phase of the SUPPORT study. We imputed the data-set using predictive mean matching, which resulted in 474 complete observations.
+Data from the first phase of the SUPPORT study. We imputed the data-set using default settings in mice package.
 }
 \examples{
 data("support")
-mod_cb <- casebase::fitSmoothHazard(death ~ .,
-                                   time = "d.time", event="death",
-                                   data = support,
-                                   ratio = 10)
+# Using the matrix interface and log of time
+x <- model.matrix(death ~ . - d.time - 1, data = support)
+y <- with(support, cbind(death, d.time))
+
+fit_cb <- casebase::fitSmoothHazard.fit(x, y, time = "d.time", event = "death",
+                                        formula_time = ~ log(d.time),
+                                        ratio = 1)
 }
 \references{
 Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.

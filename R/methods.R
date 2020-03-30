@@ -29,16 +29,25 @@
 #'   = list(size = 1.5)} if you want to increase the point size for the case
 #'   series points. Note: do not use this argument to change the color of the
 #'   points. Doing so will result in unexpected results for the legend. See the
-#'   \code{legend.params} argument, if you want to change the color of the
-#'   points.
-#' @param legend.params A list containing arguments that are passed to
+#'   \code{color.params} and \code{fill.params} arguments, if you want to change
+#'   the color of the points.
+#' @param color.params A list containing arguments that are passed to
 #'   \code{\link[ggplot2]{scale_color_manual}} which is used to plot the legend.
+#'   Only used if \code{legend=TRUE}. These arguments will override the function
+#'   defaults. Use this argument if you want to change the color of the points.
+#'   See examples for more details.
+#' @param fill.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{scale_fill_manual}} which is used to plot the legend.
 #'   Only used if \code{legend=TRUE}. These arguments will override the function
 #'   defaults. Use this argument if you want to change the color of the points.
 #'   See examples for more details.
 #' @param theme.params A list containing arguments that are passed to
 #'   \code{\link[ggplot2]{theme}}. For example \code{theme.params =
 #'   list(legend.position = 'none')}.
+#' @param facet.params A list containing arguments that are passed to
+#'   \code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
+#'   used if plotting exposure stratified population time plots. These arguments
+#'   will override the function defaults.
 #' @param ratio If \code{add.base.series=TRUE}, integer, giving the ratio of the
 #'   size of the base series to that of the case series. This argument is passed
 #'   to the \code{\link{sampleCaseBase}} function. Default: 10.
@@ -55,10 +64,10 @@
 #'   points (\code{add.competing.event=FALSE}). Default: FALSE
 #' @param legend Logical indicating if a legend should be added to the plot.
 #'   Note that if you want to change the colors of the points, through the
-#'   \code{legend.params} argument, then set \code{legend=TRUE}. If you want to
-#'   change the color of the points but not have a legend, then set
-#'   \code{legend=TRUE} and \code{theme.params = list(legend.position = 'none'}.
-#'   Default: FALSE
+#'   \code{color.params} and \code{fill.params} arguments, then set
+#'   \code{legend=TRUE}. If you want to change the color of the points but not
+#'   have a legend, then set \code{legend=TRUE} and \code{theme.params =
+#'   list(legend.position = 'none'}. Default: FALSE
 #' @param legend.position Deprecated. Specify the legend.position argument
 #'   instead in the \code{theme.params} argument. e.g. \code{theme.params =
 #'   list(legend.position = 'bottom')}.
@@ -69,7 +78,9 @@
 #'   \code{case.params} or \code{base.params} or \code{competing.params}
 #'   argument. e.g. \code{case.params = list(size = 1.5)}.
 #' @param point.colour Deprecated. Specify the values argument instead in the
-#'   \code{legend.params} argument. See examples for details.
+#'   \code{color.params} and \code{fill.params} argument. See examples for
+#'   details.
+#' @param ncol Deprecated. Use \code{facet.params} instead.
 #' @return The methods for \code{plot} return a population time plot, stratified
 #'   by exposure status in the case of \code{popTimeExposure}. Note that these
 #'   are \code{ggplot2} objects and can therefore be used in subsequent ggplot2
@@ -91,26 +102,30 @@
 #'   horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 #' @import ggplot2
 #' @seealso
-#'   \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
-#'   \link[ggplot2]{scale_colour_manual}, \link{sampleCaseBase}
+#' \link[ggplot2]{geom_point},\link[ggplot2]{geom_ribbon},\link[ggplot2]{theme},
+#' \link[ggplot2]{scale_colour_manual}, \link[ggplot2]{scale_fill_manual},
+#' \link{sampleCaseBase}
 #' @examples
-#' # change color of points, but don't produce a legend
+#' # change color of points
 #' library(ggplot2)
 #' data("bmtcrr")
 #' popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
-#' cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+#' fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
+#' color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
+#'
 #' plot(popTimeData,
-#'      casebase.theme = TRUE,
 #'      add.case.series = TRUE,
-#'      ratio = 1,
 #'      add.base.series = TRUE,
+#'      add.competing.event = FALSE,
 #'      legend = TRUE,
 #'      comprisk = TRUE,
-#'      add.competing.event = FALSE,
-#'      legend.params = list(name = element_blank(),
-#'                      breaks = c("Case series", "Competing event", "Base series"),
-#'                      values = cols),
-#'      theme.params = list(legend.position = "none"))
+#'      fill.params = list(name = element_blank(),
+#'                         breaks = c("Case series", "Competing event", "Base series"),
+#'                         values = fill_cols),
+#'      color.params = list(name = element_blank(),
+#'                          breaks = c("Case series", "Competing event", "Base series"),
+#'                          values = color_cols)
+#' )
 #' @export
 #' @method plot popTime
 #' @rdname popTime
@@ -125,19 +140,38 @@ plot.popTime <- function(x, ...,
                          case.params = list(),
                          base.params = list(),
                          competing.params = list(),
-                         legend.params = list(),
+                         color.params = list(),
+                         fill.params = list(),
                          theme.params = list(),
-                         ratio = 10,
+                         facet.params = list(),
+                         ratio = 1,
                          censored.indicator,
                          comprisk = FALSE,
-                         legend = FALSE,
-                         legend.position,
-                         line.width,
-                         line.colour,
-                         point.size,
-                         point.colour) {
+                         legend = TRUE,
+                         ncol, #Deprecated
+                         legend.position, #Deprecated
+                         line.width, #Deprecated
+                         line.colour, #Deprecated
+                         point.size, #Deprecated
+                         point.colour){ #Deprecated
 
     ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
+
+    # Okabe Ito colors
+    # fill_cols <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#999999")
+    # colorspace::darken(fill_cols, 0.3)
+    # color_cols <- c("#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#696969")
+
+    # cbbPalette
+    # fill_cols <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    # colorspace::qualitative_hcl(n = 3, palette = "Dark3") %>% put
+    fill_cols <- c("#E16A86", "#50A315", "#009ADE")
+    # colorspace::darken(fill_cols, 0.3) %>% dput
+    # color_cols <- c("#696969", "#9D6C06", "#077DAA", "#026D4E", "#A39A09", "#044F7E", "#954000", "#984B77")
+    color_cols <- c("#AB3A59", "#347004", "#026A9A")
+    # par(mfrow=c(1,2))
+    # plot(seq_along(color_cols),col = color_cols, pch = 19, cex = 2.5)
+    # plot(seq_along(fill_cols),col = fill_cols, pch = 19, cex = 2.5)
 
     if (!missing(line.colour)) {
         warning("line.colour argument deprecated. specify the fill argument instead
@@ -156,171 +190,13 @@ plot.popTime <- function(x, ...,
 
     if (!missing(point.colour)) {
         warning("point.colour argument deprecated. specify the values argument instead
-                in the legend.params argument. see examples for details.")
+                in the fill.params and color.params arguments. see examples for details.")
     }
 
     if (!missing(legend.position)) {
         warning("legend.position argument deprecated. specify the legend.position argument instead
                 in the theme.params argument.
                 e.g. theme.params = list(legend.position = 'bottom').")
-    }
-
-    p2 <- list(
-
-        # Add poptime area --------------------------------------------------------
-        do.call("geom_ribbon", utils::modifyList(
-            list(data = x,
-                 mapping = aes(x = time, ymin = 0, ymax = ycoord),
-                 fill = "grey80"),
-            ribbon.params)
-        ),
-
-        # Add case series ---------------------------------------------------------
-        if (add.case.series)
-            do.call("geom_point", utils::modifyList(
-                list(data = x[event == 1],
-                     mapping = aes(x = time, y = yc, colour = "Case series"),
-                     show.legend = legend),
-                case.params)
-            ),
-
-
-        # Add base series ---------------------------------------------------------
-        if (add.base.series) {
-            basedata <- sampleCaseBase(data = x, time = "time", event = "event", ratio = ratio,
-                                       comprisk = comprisk,
-                                       censored.indicator = censored.indicator)
-            # browser()
-            do.call("geom_point", utils::modifyList(
-                list(data = basedata[event == 0],
-                     mapping = aes(x = time, y = ycoord, colour = "Base series"),
-                     show.legend = legend),
-                base.params)
-            )
-        },
-
-
-        # Add competing event -----------------------------------------------------
-        if (add.competing.event) {
-
-            newX <- data.table::copy(x)
-            newX[, `:=`(original.time = NULL,
-                        original.event = NULL,
-                        `event status` = NULL,
-                        ycoord = NULL,
-                        yc = NULL,
-                        n_available = NULL)]
-            newX[event == 0, comprisk.event := 0]
-            newX[event == 1, comprisk.event := 2]
-            newX[event == 2, comprisk.event := 1]
-            newX[, event := NULL]
-
-            compdata <- popTime(data = newX, time = "time", event = "comprisk.event")
-
-            do.call("geom_point", utils::modifyList(
-                list(data = compdata[event == 1],
-                     mapping = aes(x = time, y = yc, colour = "Competing event"),
-                     show.legend = legend),
-                competing.params)
-            )
-        },
-
-        # Add legend --------------------------------------------------------------
-        if (legend) {
-
-            cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
-
-            do.call("scale_colour_manual", utils::modifyList(
-                list(name = element_blank(),
-                     breaks = c("Case series", "Competing event", "Base series"),
-                     values = cols), legend.params)
-            )
-        },
-
-        # Use casebase theme or not -----------------------------------------------
-        if (casebase.theme)
-            theme_minimal(),
-
-
-        # add theme stuff  --------------------------------------------------------
-        do.call("theme", theme.params)
-    )
-
-
-    # cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-    # plot(seq_along(cbPalette),col = cbPalette, pch = 19, cex = 2.5)
-
-    p1 <- ggplot()
-
-    p1 + p2 + xlab(xlab) + ylab(ylab)
-}
-
-
-
-#' @param ncol Deprecated. Use \code{facet.params} instead.
-#' @param facet.params A list containing arguments that are passed to
-#'   \code{\link[ggplot2]{facet_wrap}} which is used to create facet plots. Only
-#'   used if plotting exposure stratified population time plots. These arguments
-#'   will override the function defaults.
-#' @return The methods for \code{plot} return a population time plot, stratified
-#'   by exposure status in the case of \code{popTimeExposure}.
-#' @import ggplot2
-#' @examples
-#' \dontrun{
-#' data("bmtcrr")
-#' popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
-#' # p is an object of class gg and ggplot
-#' p <- plot(popTimeData)
-#' # you can further modify the object using all ggplot2 functions
-#' # here we modify the number of y-tick labels
-#' p + scale_y_continuous(breaks = seq(0, max(popTimeData$ycoord), 10))
-#' }
-#' @export
-#' @method plot popTimeExposure
-#' @rdname popTime
-plot.popTimeExposure <- function(x, ...,
-                                 xlab = "Follow-up time",
-                                 ylab = "Population",
-                                 add.case.series = TRUE,
-                                 add.base.series = FALSE,
-                                 add.competing.event = FALSE,
-                                 casebase.theme = TRUE,
-                                 ribbon.params = list(),
-                                 case.params = list(),
-                                 base.params = list(),
-                                 competing.params = list(),
-                                 legend.params = list(),
-                                 theme.params = list(),
-                                 facet.params = list(),
-                                 ratio = 10,
-                                 censored.indicator,
-                                 comprisk = FALSE,
-                                 legend = FALSE,
-                                 ncol,
-                                 legend.position,
-                                 line.width,
-                                 line.colour,
-                                 point.size,
-                                 point.colour) {
-
-    # ===========================
-    ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
-
-    exposure_variable <- attr(x, "exposure")
-
-    if (!missing(line.colour)) {
-        warning("line.colour argument deprecated. specify the fill argument instead
-                in the ribbon.params. e.g. ribbon.params = list(fill = 'red').")
-    }
-
-    if (!missing(line.width)) {
-        warning("line.width argument deprecated.")
-    }
-
-    if (!missing(point.size)) {
-        warning("point.size argument deprecated. specify the size argument instead
-                in the case.params or base.params or competing.params argument.
-                e.g. case.params = list(size = 1.5).")
     }
 
     if (!missing(ncol)) {
@@ -329,16 +205,19 @@ plot.popTimeExposure <- function(x, ...,
                 e.g. facet.params = list(ncol = 1).")
     }
 
-    if (!missing(point.colour)) {
-        warning("point.colour argument deprecated. specify the values argument instead
-                in the legend.params argument. see examples for details.")
+    if (length(fill.params) > 0 & length(color.params) == 0) {
+        warning("fill.params has been specified by the user but color.params has not.
+                Setting color.params to be equal to fill.params.")
+        color.params <- fill.params
     }
 
-    if (!missing(legend.position)) {
-        warning("legend.position argument deprecated. specify the legend.position argument instead
-                in the theme.params argument.
-                e.g. theme.params = list(legend.position = 'bottom').")
+    if (length(color.params) > 0 & length(fill.params) == 0) {
+        warning("color.params has been specified by the user but fill.params has not.
+                Setting fill.params to be equal to color.params.")
+        fill.params <- color.params
     }
+
+    exposure_variable <- attr(x, "exposure")
 
     p2 <- list(
 
@@ -346,7 +225,8 @@ plot.popTimeExposure <- function(x, ...,
         do.call("geom_ribbon", utils::modifyList(
             list(data = x,
                  mapping = aes(x = time, ymin = 0, ymax = ycoord),
-                 fill = "grey80"),
+                 fill = "grey80",
+                 alpha = 0.5),
             ribbon.params)
         ),
 
@@ -354,8 +234,11 @@ plot.popTimeExposure <- function(x, ...,
         if (add.case.series)
             do.call("geom_point", utils::modifyList(
                 list(data = x[event == 1],
-                     mapping = aes(x = time, y = yc, colour = "Case series"),
-                     show.legend = legend),
+                     mapping = aes(x = time, y = yc, color = "Case series", fill = "Case series"),
+                     show.legend = legend,
+                     size = 1.5,
+                     alpha = 0.5,
+                     shape = 21),
                 case.params)
             ),
 
@@ -368,8 +251,11 @@ plot.popTimeExposure <- function(x, ...,
             # browser()
             do.call("geom_point", utils::modifyList(
                 list(data = basedata[event == 0],
-                     mapping = aes(x = time, y = ycoord, colour = "Base series"),
-                     show.legend = legend),
+                     mapping = aes(x = time, y = ycoord, colour = "Base series", fill = "Base series"),
+                     show.legend = legend,
+                     size = 1.5,
+                     alpha = 0.5,
+                     shape = 21),
                 base.params)
             )
         },
@@ -390,13 +276,20 @@ plot.popTimeExposure <- function(x, ...,
             newX[event == 2, comprisk.event := 1]
             newX[, event := NULL]
 
-            compdata <- popTime(data = newX, time = "time", event = "comprisk.event",
-                                exposure = exposure_variable)
+            if (is.null(exposure_variable)) {
+                compdata <- popTime(data = newX, time = "time", event = "comprisk.event")
+            } else {
+                compdata <- popTime(data = newX, time = "time", event = "comprisk.event",
+                                    exposure = exposure_variable)
+            }
 
             do.call("geom_point", utils::modifyList(
                 list(data = compdata[event == 1],
-                     mapping = aes(x = time, y = yc, colour = "Competing event"),
-                     show.legend = legend),
+                     mapping = aes(x = time, y = yc, colour = "Competing event", fill = "Competing event"),
+                     show.legend = legend,
+                     size = 1.5,
+                     alpha = 0.5,
+                     shape = 21),
                 competing.params)
             )
         },
@@ -404,38 +297,71 @@ plot.popTimeExposure <- function(x, ...,
         # Add legend --------------------------------------------------------------
         if (legend) {
 
-            cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
+            # cols <- c("Case series" = color_cols[7],
+            #           "Competing event" = color_cols[4],
+            #           "Base series" = color_cols[6])
+
+            cols <- c("Case series" = color_cols[1],
+                      "Competing event" = color_cols[3],
+                      "Base series" = color_cols[2])
 
             do.call("scale_colour_manual", utils::modifyList(
                 list(name = element_blank(),
                      breaks = c("Case series", "Competing event", "Base series"),
-                     values = cols), legend.params)
+                     values = cols), color.params)
             )
         },
 
-        do.call("facet_wrap", utils::modifyList(
-            list(facets = exposure_variable, ncol = 1),
-            facet.params
-        )),
+        if (legend) {
+
+            # cols <- c("Case series" = fill_cols[7],
+            #           "Competing event" = fill_cols[4],
+            #           "Base series" = fill_cols[6])
+
+            cols <- c("Case series" = fill_cols[1],
+                      "Competing event" = fill_cols[3],
+                      "Base series" = fill_cols[2])
+
+            do.call("scale_fill_manual", utils::modifyList(
+                list(name = element_blank(),
+                     breaks = c("Case series", "Competing event", "Base series"),
+                     values = cols), fill.params)
+            )
+        },
+
+
+        # Exposure stratified -----------------------------------------------------
+        if (!is.null(exposure_variable)) {
+            do.call("facet_wrap", utils::modifyList(
+                list(facets = exposure_variable, ncol = 1),
+                facet.params)
+            )
+        },
 
         # Use casebase theme or not -----------------------------------------------
-        if (casebase.theme)
-            theme_minimal(),
-
+        if (casebase.theme) {
+            if (!is.null(exposure_variable)) {
+                theme_cb() + panelBorder()
+            } else {
+                theme_cb()
+            }
+        },
 
         # add theme stuff  --------------------------------------------------------
-        do.call("theme", theme.params)
+        do.call("theme", utils::modifyList(
+            list(legend.position = "bottom"),
+            theme.params)
+        )
     )
-
-
-    # cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-    # plot(seq_along(cbPalette),col = cbPalette, pch = 19, cex = 2.5)
 
     p1 <- ggplot()
 
     p1 + p2 + xlab(xlab) + ylab(ylab)
-
 }
+
+
+
+
 
 #' @import methods
 #' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms

@@ -74,8 +74,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 
 }
 
-#' @rdname absoluteRisk
-#' @export
+# #' @rdname absoluteRisk
+# #' @export
 absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                                         nsamp = 100, onlyMain = TRUE, s = c("lambda.1se","lambda.min"),
                                         ...) {

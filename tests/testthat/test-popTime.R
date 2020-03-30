@@ -47,7 +47,7 @@ test_that("expect data.table or data.frame in popTime with data.frame or data.ta
 
     expect_s3_class(out2, "data.frame")
     expect_s3_class(out2, "data.table")
-    expect_s3_class(out2, "popTimeExposure")
+    expect_s3_class(out2, "popTime")
     expect_equal(attr(out2, "exposure"), "z")
 
 
@@ -57,7 +57,7 @@ test_that("expect data.table or data.frame in popTime with data.frame or data.ta
 
     expect_s3_class(out4, "data.frame")
     expect_s3_class(out4, "data.table")
-    expect_s3_class(out4, "popTimeExposure")
+    expect_s3_class(out4, "popTime")
     expect_equal(attr(out4, "exposure"), "z")
 
 })
@@ -82,7 +82,7 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = T,
                    legend = T,
-                   theme.params = list(legend.position = "bottom")))
+                   theme.params = list(legend.position = "top")))
 
     # change points and labels
     p6 <- try(plot(out1,
@@ -92,13 +92,16 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = TRUE,
                    legend = TRUE,
-                   case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-                   base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-                   competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-                   legend.params = list(name = "Legend Name",
+                   case.params = list(mapping = aes(x = time, y = yc, color = "Relapse", fill = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord, color = "Base series", fill = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc, color = "Competing event", fill = "Competing event")),
+                   fill.params = list(name = "Legend Name",
                                         breaks = c("Relapse", "Base series", "Competing event"),
                                         values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
-                   theme.params = list(legend.position = "bottom")))
+                   color.params = list(name = "Legend Name",
+                                      breaks = c("Relapse", "Base series", "Competing event"),
+                                      values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                   theme.params = list(legend.position = "right")))
 
 
     # change points and labels and exposure stratified
@@ -109,13 +112,16 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = TRUE,
                    legend = TRUE,
-                   case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-                   base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-                   competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-                   legend.params = list(name = "Legend Name",
+                   case.params = list(mapping = aes(x = time, y = yc, color = "Relapse", fill = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord, color = "Base series", fill = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc, color = "Competing event", fill = "Competing event")),
+                   fill.params = list(name = "Legend Name",
                                         breaks = c("Relapse", "Base series", "Competing event"),
                                         values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
-                   theme.params = list(legend.position = "bottom")))
+                   color.params = list(name = "Legend Name",
+                                      breaks = c("Relapse", "Base series", "Competing event"),
+                                      values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                   casebase.theme = FALSE))
 
     expect_false(inherits(p1, "try-error"))
     expect_false(inherits(p2, "try-error"))

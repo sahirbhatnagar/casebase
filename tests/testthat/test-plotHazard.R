@@ -25,7 +25,7 @@ mod_glmnet <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3
                                     ratio = 10,
                                     family = "glmnet")
 
-mod_gbm <- casebase::fitSmoothHazard(status ~ trt + log(eventtime),
+mod_gbm <- casebase::fitSmoothHazard(status ~ trt + eventtime,
                                      time = "eventtime",
                                      interaction.depth = 2,
                                      data = simdat,

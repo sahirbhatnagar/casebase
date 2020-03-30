@@ -26,8 +26,9 @@ library(survival)
 library(casebase)
 library(ggplot2)
 library(data.table)
+library(colorspace)
 
-# create poptime exposure object for ERSPC data
+# create poptime object for ERSPC data with exposure attribute
 x <- popTime(ERSPC, time = "Follow.Up.Time", event = "DeadOfPrCa", exposure = "ScrArm")
 head(x)
 ```
@@ -36,7 +37,7 @@ head(x)
 
 # Introduction
 
-In this vignette, we explain in details how to customize population time plots. More specifically, we details the inner workings of the `plot` method for objects of class `popTime` and `popTimeExposure`. 
+In this vignette, we explain in details how to customize population time plots. More specifically, we details the inner workings of the `plot` method for objects of class `popTime`. 
 
 
 # The `.params` arguments
@@ -47,7 +48,8 @@ The user can have greater control over the aesthetics of a population plot by sp
 - `case.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
 - `base.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
 - `competing.params` --> [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-- `legend.params` --> [`ggplot2::scale_colour_manual()`](https://ggplot2.tidyverse.org/reference/scale_manual.html)
+- `fill.params` --> [`ggplot2::scale_fill_manual()`](https://ggplot2.tidyverse.org/reference/scale_manual.html)
+- `color.params` --> [`ggplot2::scale_colour_manual()`](https://ggplot2.tidyverse.org/reference/scale_manual.html)
 - `theme.params` --> [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html)
 
 Following the suggestion from the [ggplot2 book](https://ggplot2-book.org/programming.html#multiple-components), we use the `utils::modifyList` function to replace the corresponding default values. For example, the default arguments passed to the `geom_ribbon` function for plotting the area are given by
@@ -55,10 +57,11 @@ Following the suggestion from the [ggplot2 book](https://ggplot2-book.org/progra
 ```{r, eval=TRUE}
 list(data = x,
      mapping = aes(x = time, ymin = 0, ymax = ycoord),
-     fill = "grey80")
+     fill = "grey80",
+     alpha = 0.5)
 ```
 
-(Note that the variables `time` and `ycoord` are columns created by the `casebase::popTime` function). Suppose we want to change the fill color. We simply specify this color in the `ribbon.params` argument:
+Note that the variables `time` and `ycoord` are columns created by the `casebase::popTime` function, so we should always leave these specified as is. Suppose we want to change the fill color. We simply specify this color in the `ribbon.params` argument:
 
 ```{r, eval=TRUE}
 ribbon.params <- list(fill = "#0072B2")
@@ -69,7 +72,8 @@ We then call the `utils::modifyList` function to override the function defaults:
 ```{r, eval=TRUE}
 (new_ribbon_params <- utils::modifyList(list(data = x,
                                             mapping = aes(x = time, ymin = 0, ymax = ycoord),
-                                            fill = "grey80"), 
+                                            fill = "grey80",
+                                            alpha = 0.5), 
                                        ribbon.params))
 ```
 
@@ -123,36 +127,92 @@ plot(x,
 
 Suppose we want to change the color of the points and the legend labels. We use the `bmtcrr` dataset as the example in this section. 
 
-The default colors for the case series, base series and competing event are given by:
+The reason there are both `fill.params` and `color.params` arguments, is because by default, we use `shape = 21` which is a filled circle (see the `pch` argument of the `graphics::points` function for details). Shapes from 21 to 25 can be colored and filled with different colors: `color.params` gives the border color and `fill.params` gives the fill color (sometimes referred to as the background color). 
+
+The default fill colors for the case series, base series and competing event are given by the qualitative palette from the [`colorspace`](https://cran.r-project.org/package=colorspace) R package:
 
 ```{r}
-cols <- c("Case series" = "#D55E00", "Competing event" = "#009E73", "Base series" = "#0072B2")
+fill_cols <- colorspace::qualitative_hcl(n = 3, palette = "Dark3")
+
+(fill_colors <- c("Case series" = fill_cols[1],
+                 "Competing event" = fill_cols[3],
+                 "Base series" = fill_cols[2]))
+```
+
+The corresponding default border colors are given by the `colorspace::darken` function applied to the fill colors above:
+
+```{r}
+color_cols <- colorspace::darken(col = fill_cols, amount = 0.3)
+
+(color_colors <- c("Case series" = color_cols[1],
+                   "Competing event" = color_cols[3],
+                   "Base series" = color_cols[2]))
+```
+
+This is what the points look like:
+
+```{r, echo=FALSE}
+plot(seq_along(fill_colors), 
+     c(1 ,1 ,2),
+     main = "Default colors in casebase population time plots",
+     type = "n",
+     bty = "n",
+     xaxt = "n",
+     xlim = c(0,3),
+     yaxt = "n",
+     xlab = "",
+     ylab = "")
+points(c(0.5, 1.5, 2.5), c(1.5,1.5,1.5),
+       pch = 21, col = color_colors, 
+       bg = fill_colors, 
+       cex = 8)
+text(c(0.5, 1.5, 2.5), c(1.5,1.5,1.5)*1.2,
+     labels = names(fill_colors))
 ```
 
 
 ## Change only the point colors
 
-If you only want to change the color points, you must specify a named vector exactly as specified in the `cols` object created above. Note that the names `Case series`, `Base Series` and `Competing event` must remain the same, otherwise the function won't know how to map the colors to the corresponding points. This is because the `colour` aesthetic mapping in the `geom_point` functions have been set to `Case series`, `Base Series` and `Competing event`. For example, the default call to `geom_point` for the case series is given by:
+If you only want to change the color points, you must specify a named vector exactly as specified in the `fill_colors` object created above. Note that the names `Case series`, `Base Series` and `Competing event` must remain the same, otherwise the function won't know how to map the colors to the corresponding points. This is because the `colour` and `fill` aesthetic mappings in the `geom_point` functions have been set to `Case series`, `Base Series` and `Competing event`. For example, the default call to `geom_point` for the case series is given by:
 
 ```{r}
 ggplot() + do.call("geom_point", list(data = x[event == 1],
-                     mapping = aes(x = time, y = yc, colour = "Case series")))
+                     mapping = aes(x = time, y = yc, 
+                                   colour = "Case series", fill = "Case series"),
+                     size = 1.5,
+                     alpha = 0.5,
+                     shape = 21))
 ```
 
-
-We define a new set of colors:
+We define a new set of colors using a sequential (multi-hue) palette:
 
 ```{r}
-new_cols <- c("Case series" = "red", "Competing event" = "orange", "Base series" = "blue")
+fill_cols <- colorspace::sequential_hcl(n = 3, palette = "Viridis")
+
+(fill_colors <- c("Case series" = fill_cols[1],
+                 "Competing event" = fill_cols[3],
+                 "Base series" = fill_cols[2]))
+
+color_cols <- colorspace::darken(col = fill_cols, amount = 0.3)
+
+(color_colors <- c("Case series" = color_cols[1],
+                   "Competing event" = color_cols[3],
+                   "Base series" = color_cols[2]))
 ```
 
-We then pass `new_cols` to the `legend.params` argument. Internally, this gets passed to the [`ggplot2::scale_color_manual`](https://ggplot2.tidyverse.org/reference/scale_manual.html) function:
+We then pass `fill_cols` and `color_cols` to the `fill.params` and `color.params` arguments, respectively. Internally, this gets passed to the [`ggplot2::scale_fill_manual`](https://ggplot2.tidyverse.org/reference/scale_manual.html) and  [`ggplot2::scale_color_manual`](https://ggplot2.tidyverse.org/reference/scale_manual.html) functions, respectively:
 
 ```{r, eval=FALSE}
+do.call("scale_fill_manual", utils::modifyList(
+  list(name = element_blank(),
+       breaks = c("Case series", "Competing event", "Base series"),
+       values = old_cols), list(values = fill_colors))
+)
+
 do.call("scale_colour_manual", utils::modifyList(
   list(name = element_blank(),
        breaks = c("Case series", "Competing event", "Base series"),
-       values = cols), list(values = new_cols))
+       values = old_cols), list(values = color_colors))
 )
 ```
 
@@ -167,12 +227,23 @@ plot(popTimeData,
      add.case.series = TRUE, 
      add.base.series = TRUE,
      add.competing.event = TRUE,
+     comprisk = TRUE,
+     fill.params = list(values = fill_colors),
+     color.params = list(value = color_colors))
+```
+
+Note that if you only specify one of the `fill.params` or `color.params` arguments, the plot method will automatically set one equal to the other and return a warning message:
+
+```{r}
+plot(popTimeData,
+     add.case.series = TRUE, 
+     add.base.series = TRUE,
+     add.competing.event = TRUE,
      ratio = 1,
      comprisk = TRUE,
      legend = TRUE,
-     legend.params = list(values = new_cols))
+     fill.params = list(values = fill_colors))
 ```
-
 
 
 ## Change Point Color and Legend Labels
@@ -188,30 +259,27 @@ plot(popTimeData,
      add.case.series = TRUE, 
      add.base.series = TRUE,
      add.competing.event = TRUE,
-     ratio = 1,
      comprisk = TRUE,
-     legend = TRUE,
-     case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse")),
-     base.params = list(mapping = aes(x = time, y = ycoord, colour = "Base series")),
-     competing.params = list(mapping = aes(x = time, y = yc, colour = "Competing event")),
-     legend.params = list(name = "Legend Name",
+     case.params = list(mapping = aes(x = time, y = yc, fill = "Relapse", colour = "Relapse")),
+     base.params = list(mapping = aes(x = time, y = ycoord, fill = "Base series", colour = "Base series")),
+     competing.params = list(mapping = aes(x = time, y = yc, fill = "Competing event", colour = "Competing event")),
+     fill.params = list(name = "Legend Name",
                           breaks = c("Relapse", "Base series", "Competing event"),
                           values = c("Relapse" = "blue", "Competing event" = "hotpink", "Base series" = "orange")))
 ```
-
 
 NOTE: the lists being passed to the `.params` arguments must be named arguments, otherwise they will give unexpected behavior. For example
 
 ```{r, eval=FALSE}
 # this will work because mapping is the name of the 
 # argument of the list 
-case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse"))
+case.params = list(mapping = aes(x = time, y = yc, colour = "Relapse", fill = "Relapse"))
 ```
 
 ```{r, eval=FALSE}
 # this will NOT work because the argument of the list has no name
 # and therefore utils::modifyList, will not override the defaults. 
-case.params = list(aes(x = time, y = yc, colour = "Relapse"))
+case.params = list(aes(x = time, y = yc, colour = "Relapse", fill = "Relapse"))
 ```
 
 

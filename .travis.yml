@@ -1,13 +1,23 @@
 language: r
-r:
-  - release
-  - devel
-sudo: false
 cache: packages
+os: linux
+
+jobs:
+  include:
+  - r: devel
+  - r: release
+    after_success:
+    - Rscript -e 'covr::codecov()'
+    before_cache:
+    - Rscript -e 'remotes::install_cran("pkgdown")'
+    deploy:
+      provider: script
+      script: Rscript -e 'if (Sys.getenv("TRAVIS_REPO_SLUG", "") == "sahirbhatnagar/casebase") pkgdown::deploy_site_github(ssh_id = Sys.getenv("TRAVIS_DEPLOY_KEY", ""))'
+      # script: Rscript -e 'pkgdown::deploy_site_github()'
+      skip_cleanup: true
 
 r_packages:
   - knitr
-  - devtools
   - ggplot2
   - gbm
   - glmnet
@@ -15,21 +25,7 @@ r_packages:
   - covr
   - remotes
 
-after_success:
-  - Rscript -e 'library(covr); codecov()'
-
-
-before_cache: Rscript -e 'remotes::install_cran("pkgdown")'
-deploy:
-  provider: script
-  script: Rscript -e 'pkgdown::deploy_site_github(ssh_id = Sys.getenv("TRAVIS_DEPLOY_KEY", ""))'
-  # script: Rscript -e 'pkgdown::deploy_site_github()'
-  skip_cleanup: true
-
 notifications:
   email:
     - turgeonmaxime@gmail.com
     - sahir.bhatnagar@gmail.com
-
-
-
