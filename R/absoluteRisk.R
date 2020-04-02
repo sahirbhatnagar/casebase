@@ -99,7 +99,6 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     else if (is.character(s)) {
         s <- match.arg(s)
     }
-    lambda <- NULL
     if (inherits(object, "gbm")) {
         if(missing(n.trees)) stop("n.trees is missing")
     } else n.trees <- NULL
@@ -107,14 +106,16 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     # Call the correct function with correct parameters
     if (missing(newdata)) {
         if (missing(time)) {
-            return(estimate_risk(lambda, object, method, nsamp, s, n.trees, ...))
+            # If newdata and time are missing, compute risk for each subject
+            # at their failure/censoring times
+            return(estimate_risk(object, method, nsamp, s, n.trees, ...))
         } else {
-            return(estimate_risk_newtime(lambda, object, time,
+            return(estimate_risk_newtime(object, time,
                                          method = method, nsamp = nsamp,
                                          s = s, n.trees = n.trees, ...))
         }
     } else {
-        return(estimate_risk_newtime(lambda, object, time, newdata,
+        return(estimate_risk_newtime(object, time, newdata,
                                      method, nsamp, s, n.trees, ...))
     }
 }
@@ -229,9 +230,7 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
 #     }
 # }
 
-# The absolute risk methods create the lambda function and pass it to
-# estimate_risk or estimate_risk_newtime
-estimate_risk <- function(lambda, object, method, nsamp, s, n.trees, ...) {
+estimate_risk <- function(object, method, nsamp, s, n.trees, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
     # Create risk variable and make sure it doesn't already exist
@@ -242,8 +241,8 @@ estimate_risk <- function(lambda, object, method, nsamp, s, n.trees, ...) {
     time_vector <- if (is.null(object$matrix.fit)) {
         newdata[object$timeVar][[1]]
         } else object$originalData$y[,object$timeVar]
-    # Create a vectorised lambda function
-    lambda <- function(x, fit, newdata, s, n.trees, ...) {
+    # Create a vectorised hazard function
+    hazard <- function(x, fit, newdata, s, n.trees, ...) {
         # Note: the offset should be set to zero when estimating the hazard.
         newdata2 <- data.frame(newdata)
         newdata2 <- newdata2[rep(1, length(x)),]
@@ -253,10 +252,10 @@ estimate_risk <- function(lambda, object, method, nsamp, s, n.trees, ...) {
         return(as.numeric(exp(pred)))
     }
     risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
-        integrate(lambda, lower = 0, upper = time_vector[j],
+        integrate(hazard, lower = 0, upper = time_vector[j],
                   fit = object, subdivisions = nsamp,
                   newdata = newdata[j,,drop = FALSE],
-                  s = s, n.trees = n.trees,)$value
+                  s = s, n.trees = n.trees)$value
     })
 
     if (is.data.frame(newdata)) {
@@ -268,7 +267,7 @@ estimate_risk <- function(lambda, object, method, nsamp, s, n.trees, ...) {
     return(newdata)
 }
 
-estimate_risk_newtime <- function(lambda, object, time, newdata, method, nsamp,
+estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                   s, n.trees, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
