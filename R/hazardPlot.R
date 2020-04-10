@@ -97,15 +97,15 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     if (any(names(newdata) %in% object[["timeVar"]]))
         stop("%s cannot be used as a colunm name in newdata. remove it.",object[["timeVar"]])
 
-    obj_class <- class(object)[1]
+    obj_class <- class(object)[2]
 
-    if (obj_class %ni%  c("glm", "gam", "gbm", "cv.glmnet"))
+    if (!inherits(object, c("glm", "gam", "gbm", "cv.glmnet")))
         stop("object must be of class glm, gam, gbm or cv.glmnet")
 
     if (ci) {
         if (!between(ci.lvl, 0,1, incbounds = FALSE))
             stop("ci.lvl must be between 0 and 1")
-        if (obj_class %ni% c("glm","gam")) {
+        if (!inherits(object, c("glm", "gam"))) {
             warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",obj_class))
             ci <- FALSE
         }
@@ -127,7 +127,7 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     newdata$offset <- 0
     # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
     # The following line silences this warning
-    if (obj_class == "gbm") attr(object$Terms, "offset") <- NULL
+    if (!inherits(object, "gbm")) attr(object$Terms, "offset") <- NULL
 
     preds <- switch (obj_class,
                      glm = {
@@ -162,6 +162,9 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                      },
 
                      gbm = {
+                         # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
+                         # The following line silences this warning
+                         attr(object$Terms, "offset") <- NULL
                          pp <- predict(object, newdata, n.trees = object$n.trees)
                          newdata$predictedloghazard <- pp
                          pp
