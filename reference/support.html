@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,7 +41,6 @@
 
 <meta property="og:title" content="Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT) — support" />
 <meta property="og:description" content="The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -55,7 +58,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -110,7 +113,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/sahirbhatnagar/casebase/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -125,7 +133,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT)</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>support.Rd</code></div>
     </div>
 
@@ -138,10 +146,11 @@
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A dataframe with 9104 observations and 34 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept.</p><dl class='dl-horizontal'>
+    <p>A dataframe with 9104 observations and 34 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept.</p><dl'>
 <dt>Age</dt><dd><p>Stores a double representing age.</p></dd> <dt>death</dt><dd><p>Death at any time up to NDI date: 31DEC94.</p></dd> <dt>sex</dt><dd><p>0=female, 1=male.</p></dd> <dt>slos</dt><dd><p>Days from study entry to discharge.</p></dd> <dt>d.time</dt><dd><p>days of follow-up.</p></dd> <dt>dzgroup</dt><dd><p>Each level of dzgroup: ARF/MOSF w/Sepsis, COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with malignancy.</p></dd> <dt>dzclass</dt><dd><p>ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer disease classes.</p></dd> <dt>num.co</dt><dd><p>the number of comorbidities.</p></dd> <dt>edu</dt><dd><p>years of education of patient.</p></dd> <dt>scoma</dt><dd><p>The SUPPORT coma score based on Glasgow D3.</p></dd> <dt>avtisst</dt><dd><p>Average TISS, days 3-25.</p></dd> <dt>race</dt><dd><p>Indicates race. White, black, asian, hispanic or other.</p></dd> <dt>hday</dt><dd><p>Day in Hospital at Study Admit</p></dd> <dt>diabetes</dt><dd><p>Diabetes (Com 27-28, Dx 73)</p></dd> <dt>dementia</dt><dd><p>Dementia (Comorbidity 6)</p></dd> <dt>ca</dt><dd><p>Cancer State</p></dd> <dt>meanbp</dt><dd><p>Mean Arterial Blood Pressure Day 3.</p></dd> <dt>wblc</dt><dd><p>White blood cell count on day 3.</p></dd> <dt>hrt</dt><dd><p>Heart rate day 3.</p></dd> <dt>resp</dt><dd><p>Respiration Rate day 3.</p></dd> <dt>temp</dt><dd><p>Temperature, in celcius, on day 3.</p></dd> <dt>pafi</dt><dd><p>PaO2/(0.01*FiO2) Day 3.</p></dd> <dt>alb</dt><dd><p>Serum albumin day 3.</p></dd> <dt>bili</dt><dd><p>Bilirubin Day 3.</p></dd> <dt>crea</dt><dd><p>Serum creatinine day 3.</p></dd> <dt>sod</dt><dd><p>Serum sodium day 3.</p></dd> <dt>ph</dt><dd><p>Serum pH (in arteries) day 3.</p></dd> <dt>glucose</dt><dd><p>Serum glucose day 3.</p></dd> <dt>bun</dt><dd><p>BUN day 3.</p></dd> <dt>urine</dt><dd><p>urine output day 3.</p></dd> <dt>adlp</dt><dd><p>ADL patient day 3.</p></dd>  <dt>adlsc</dt><dd><p>Imputed ADL calibrated to surrogate, if a surrogate was used for a follow up.</p></dd> <dt>sps</dt><dd><p>SUPPORT physiology score</p></dd> <dt>aps</dt><dd><p>Apache III physiology score</p></dd>
 
 </dl>
+
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
     <p>Available at the following website: <a href='http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip'>http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip</a>. note: must unzip and process this data before use.</p>
@@ -156,29 +165,18 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"support"</span>)
-<span class='no'>mod_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='http://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>death</span> ~ <span class='no'>.</span>,
-                                    <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"death"</span>,
-                                    <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>support</span>,
-                                    <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-
-<span class='co'># Or with the matrix interface and log of time</span>
+<span class='co'># Using the matrix interface and log of time</span>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/model.matrix.html'>model.matrix</a></span>(<span class='no'>death</span> ~ <span class='no'>.</span> - <span class='no'>d.time</span> - <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>support</span>)
 <span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span>(<span class='no'>support</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>death</span>, <span class='no'>d.time</span>))
 
-<span class='no'>fit_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='http://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html'>fitSmoothHazard.fit</a></span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"death"</span>,
+<span class='no'>fit_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard.fit</a></span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"death"</span>,
                                         <span class='kw'>formula_time</span> <span class='kw'>=</span> ~ <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>d.time</span>),
                                         <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#format">Format</a></li>
-      <li><a href="#source">Source</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#references">References</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -189,7 +187,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

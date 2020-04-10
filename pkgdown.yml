@@ -1,11 +1,12 @@
 pandoc: '2.2'
-pkgdown: 1.4.1
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
   competingRisk: competingRisk.html
   customizingpopTime: customizingpopTime.html
   popTime: popTime.html
   smoothHazard: smoothHazard.html
+last_built: 2020-04-10T23:44Z
 urls:
   reference: http://sahirbhatnagar.com/casebase/reference
   article: http://sahirbhatnagar.com/casebase/articles
