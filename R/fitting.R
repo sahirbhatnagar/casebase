@@ -175,6 +175,11 @@ fitSmoothHazard <- function(formula, data, time,
     out$timeVar <- timeVar
     out$eventVar <- eventVar
     if (family == "glmnet") out$formula <- formula
+    # Reset offset for absolute risk estimation, but keep track of it
+    out$offset <- out$data$offset
+    out$data$offset <- 0
+    # Add new class
+    class(out) <- c("singleEventCB", class(out))
   } else {
     # Otherwise fit a multinomial regression
     if (!family %in% c("glm", "glmnet")) {
@@ -304,7 +309,7 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
       censored.indicator, ratio
     )
   }
-  # Format everything into matrices and expend variables that need to be expended
+  # Format everything into matrices and expand variables that need to be expanded
   sample_event <- as.matrix(sampleData[, eventVar])
   sample_time <- if (family %in% c("glmnet", "gbm")) {
     model.matrix(
@@ -344,6 +349,9 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     out$eventVar <- eventVar
     out$matrix.fit <- TRUE
     out$formula_time <- formula_time
+    out$offset <- sample_offset
+    # Add new class
+    class(out) <- c("singleEventCB", class(out))
   } else {
     if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
     if (family != "glmnet") stop("Not implemented yet")
