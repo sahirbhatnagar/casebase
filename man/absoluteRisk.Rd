@@ -90,6 +90,7 @@ events.
 The numerical method should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
 is not smooth (e.g. when modeling with time-varying covariates).
+z
 }
 \examples{
 # Simulate censored survival data for two outcome types from exponential distributions
