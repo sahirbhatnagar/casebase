@@ -18,7 +18,16 @@ support
 The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death
 }
 \details{
-Data from the first phase of the SUPPORT study. We imputed the data-set using default settings in mice package.
+Before imputation, there were a total of 9105 individuals and 47 variables. Of those variables, a few were removed before imputation. We removed three
+response variables: hospital charges, patient ratio of costs to charges and patient micro-costs. Next, we removed hospital death as it was directly informative
+of our event of interest, death. We also removed functional disability and income as they are ordinal covariates, because ordinal variables are treated as factors
+in our current model. Finally, we removed 8 covariates relating to the results of previous findings: we removed SUPPORT day 3 physiology score (sps), 	APACHE III
+day 3 physiology score (aps),	SUPPORT model 2-month survival estimate, SUPPORT model 6-month survival estimate, Physician's 2-month survival estimate for pt.,
+Physician's 6-month survival estimate for pt., Patient had Do Not Resuscitate (DNR) order and Day of DNR order (<0 if before study). Of these, sps and aps were
+added on after imputation, as they were missing only 1 observation and permitted us to compare findings between our model and their's. First we impute manually
+using recommended normal values for physiological measures \link{@harrell_2020}. Next, we impute a single dataset using \pkg{mice} with default settings. After
+imputation, we noted that the covariate for surrogate activities of daily living was not imputed. This is due to colinearity between the other two covariates
+for activities of daily living. As such, surrogate activites of daily living was removed from our model.
 }
 \examples{
 data("support")
