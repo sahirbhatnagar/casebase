@@ -46,6 +46,9 @@
 #'   required (for class \code{cv.glmnet}).
 #' @param onlyMain Logical. For competing risks, should we return absolute risks
 #'   only for the main event of interest? Defaults to \code{TRUE}.
+#' @param type Type of output. Can be \code{"CI"} (output is on the cumulative
+#'   incidence scale) or \code{"survival"} (output is on the survival scale,
+#'   i.e. 1- CI)
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return If \code{time} was provided, returns the estimated absolute risk for
 #'   the user-supplied covariate profiles. This will be stored in a 2- or
@@ -80,20 +83,20 @@
 #' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
 absoluteRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                          nsamp = 100, s = c("lambda.1se","lambda.min"),
-                         n.trees, onlyMain = TRUE, ...) {
+                         n.trees, onlyMain = TRUE, type = c("CI", "survival"), ...) {
     if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
                    "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
              call. = TRUE)
     }
-
     if (inherits(object, "CompRisk")) {
         return(absoluteRisk.CompRisk(object, time, newdata, method,
-                                     nsamp = 100, onlyMain = onlyMain))
+                                     nsamp = 100, onlyMain = onlyMain, type = type))
     }
 
     # Parse arguments
     method <- match.arg(method)
+    type <- match.arg(type)
     if (is.numeric(s))
         s <- s[1]
     else if (is.character(s)) {
@@ -108,15 +111,15 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
         if (missing(time)) {
             # If newdata and time are missing, compute risk for each subject
             # at their failure/censoring times
-            return(estimate_risk(object, method, nsamp, s, n.trees, ...))
+            return(estimate_risk(object, method, nsamp, s, n.trees, type = type, ...))
         } else {
             return(estimate_risk_newtime(object, time,
                                          method = method, nsamp = nsamp,
-                                         s = s, n.trees = n.trees, ...))
+                                         s = s, n.trees = n.trees, type = type, ...))
         }
     } else {
         return(estimate_risk_newtime(object, time, newdata,
-                                     method, nsamp, s, n.trees, ...))
+                                     method, nsamp, s, n.trees, type = type, ...))
     }
 }
 
@@ -230,11 +233,11 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
 #     }
 # }
 
-estimate_risk <- function(object, method, nsamp, s, n.trees, ...) {
+estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
     # Create risk variable and make sure it doesn't already exist
-    riskVar <- "risk"
+    riskVar <- ifelse(type == "CI", "risk", "survival")
     while (riskVar %in% names(newdata)) riskVar <- paste0(".", riskVar)
     # If both newdata and time are missing
     # compute risk at failure times
@@ -259,16 +262,18 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, ...) {
     })
 
     if (is.data.frame(newdata)) {
-        newdata[,riskVar] <- 1 - exp(-risk_res)
+        newdata[,riskVar] <- ifelse(type == "CI", 1 - exp(-risk_res), exp(-risk_res))
     } else {
-        newdata <- cbind(1 - exp(-risk_res), newdata)
+        newdata <- ifelse(type == "CI",
+                          cbind(1 - exp(-risk_res), newdata),
+                          cbind(exp(-risk_res), newdata))
         colnames(newdata)[1] <- riskVar
     }
     return(newdata)
 }
 
 estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
-                                  s, n.trees, ...) {
+                                  s, n.trees, type, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
@@ -348,7 +353,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
             }
         }
         output[,-1] <- exp(-output[,-1])
-        output[,-1] <- 1 - output[,-1]
+        if (type == "CI") output[,-1] <- 1 - output[,-1]
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output[,-1] < 0) | any(output[,-1] > 1))) {
