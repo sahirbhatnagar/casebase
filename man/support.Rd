@@ -25,9 +25,9 @@ in our current model. Finally, we removed 8 covariates relating to the results o
 day 3 physiology score (aps),	SUPPORT model 2-month survival estimate, SUPPORT model 6-month survival estimate, Physician's 2-month survival estimate for pt.,
 Physician's 6-month survival estimate for pt., Patient had Do Not Resuscitate (DNR) order and Day of DNR order (<0 if before study). Of these, sps and aps were
 added on after imputation, as they were missing only 1 observation and permitted us to compare findings between our model and their's. First we impute manually
-using recommended normal values for physiological measures \link{@harrell_2020}. Next, we impute a single dataset using \pkg{mice} with default settings. After
+using recommended normal values for physiological measures by Knaus et al. (1995). Next, we impute a single dataset using \pkg{mice} with default settings. After
 imputation, we noted that the covariate for surrogate activities of daily living was not imputed. This is due to colinearity between the other two covariates
-for activities of daily living. As such, surrogate activites of daily living was removed from our model.
+for activities of daily living. As such, surrogate activites of daily living was removed.
 }
 \examples{
 data("support")
