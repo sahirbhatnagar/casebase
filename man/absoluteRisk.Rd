@@ -12,7 +12,8 @@ absoluteRisk.CompRisk(
   method = c("numerical", "montecarlo"),
   nsamp = 100,
   onlyMain = TRUE,
-  type = c("CI", "survival")
+  type = c("CI", "survival"),
+  addZero = TRUE
 )
 
 absoluteRisk(
@@ -25,6 +26,7 @@ absoluteRisk(
   n.trees,
   onlyMain = TRUE,
   type = c("CI", "survival"),
+  addZero = TRUE,
   ...
 )
 }
@@ -51,6 +53,9 @@ only for the main event of interest? Defaults to \code{TRUE}.}
 \item{type}{Type of output. Can be \code{"CI"} (output is on the cumulative
 incidence scale) or \code{"survival"} (output is on the survival scale,
 i.e. 1- CI)}
+
+\item{addZero}{Logical. Should we add time = 0 at the beginning of the
+output? Defaults to \code{TRUE}.}
 
 \item{s}{Value of the penalty parameter lambda at which predictions are
 required (for class \code{cv.glmnet}).}

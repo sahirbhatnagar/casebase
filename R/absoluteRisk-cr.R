@@ -1,7 +1,8 @@
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-                                  nsamp = 100, onlyMain = TRUE, type = c("CI", "survival")) {
+                                  nsamp = 100, onlyMain = TRUE, type = c("CI", "survival"),
+                                  addZero = TRUE) {
     method <- match.arg(method)
     type <- match.arg(type)
 
@@ -71,7 +72,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 
     return(estimate_risk_cr(object, time, newdata, method,
                             nsamp, onlyMain, subdensities,
-                            hazard_vec, timeVar, typeEvents, type))
+                            hazard_vec, timeVar, typeEvents,
+                            type, addZero))
 
 }
 
@@ -79,7 +81,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 # #' @export
 absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                                         nsamp = 100, onlyMain = TRUE, s = c("lambda.1se","lambda.min"),
-                                        type = c("CI", "survival"), ...) {
+                                        type = c("CI", "survival"), addZero = TRUE, ...) {
     # The current implementation doesn't work
     stop(paste("object is of class", class(object),
                "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
@@ -196,7 +198,8 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
 
 estimate_risk_cr <- function(object, time, newdata, method,
                              nsamp, onlyMain, subdensities,
-                             hazard_vec, timeVar, typeEvents, type) {
+                             hazard_vec, timeVar, typeEvents,
+                             type, addZero) {
     # Create output array
     J <- length(typeEvents) - 1
     time_ordered <- unique(c(0, sort(time)))
@@ -271,11 +274,7 @@ estimate_risk_cr <- function(object, time, newdata, method,
 
     # Switch to survival scale?
     if (type == "survival") {
-        if (onlyMain) {
-            output[,-1,1] <- 1 - output[,-1, 1]
-        } else {
-            for (j in seq_len(J)) output[,-1,j] <- 1 - output[,-1, j]
-        }
+        output[,-1,] <- 1 - output[,-1,]
     }
 
     # Reformat output when only one time point
@@ -286,7 +285,10 @@ estimate_risk_cr <- function(object, time, newdata, method,
             output <- output[2,-1,,drop = FALSE]
         }
         dimnames(output)[[1]] <- time
+    } else {
+        if (!addZero) output <- output[-1,,,drop = FALSE]
     }
+
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
         warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)

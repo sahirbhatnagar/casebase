@@ -49,6 +49,8 @@
 #' @param type Type of output. Can be \code{"CI"} (output is on the cumulative
 #'   incidence scale) or \code{"survival"} (output is on the survival scale,
 #'   i.e. 1- CI)
+#' @param addZero Logical. Should we add time = 0 at the beginning of the
+#'   output? Defaults to \code{TRUE}.
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return If \code{time} was provided, returns the estimated absolute risk for
 #'   the user-supplied covariate profiles. This will be stored in a 2- or
@@ -83,7 +85,8 @@
 #' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
 absoluteRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                          nsamp = 100, s = c("lambda.1se","lambda.min"),
-                         n.trees, onlyMain = TRUE, type = c("CI", "survival"), ...) {
+                         n.trees, onlyMain = TRUE, type = c("CI", "survival"),
+                         addZero = TRUE, ...) {
     if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
                    "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
@@ -91,7 +94,8 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     }
     if (inherits(object, "CompRisk")) {
         return(absoluteRisk.CompRisk(object, time, newdata, method,
-                                     nsamp = 100, onlyMain = onlyMain, type = type))
+                                     nsamp = nsamp, onlyMain = onlyMain, type = type,
+                                     addZero = addZero))
     }
 
     # Parse arguments
@@ -111,15 +115,18 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
         if (missing(time)) {
             # If newdata and time are missing, compute risk for each subject
             # at their failure/censoring times
-            return(estimate_risk(object, method, nsamp, s, n.trees, type = type, ...))
+            return(estimate_risk(object, method, nsamp, s, n.trees, type = type,
+                                 ...))
         } else {
             return(estimate_risk_newtime(object, time,
                                          method = method, nsamp = nsamp,
-                                         s = s, n.trees = n.trees, type = type, ...))
+                                         s = s, n.trees = n.trees, type = type,
+                                         addZero = addZero, ...))
         }
     } else {
         return(estimate_risk_newtime(object, time, newdata,
-                                     method, nsamp, s, n.trees, type = type, ...))
+                                     method, nsamp, s, n.trees, type = type,
+                                     addZero = addZero, ...))
     }
 }
 
@@ -273,7 +280,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
 }
 
 estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
-                                  s, n.trees, type, ...) {
+                                  s, n.trees, type, addZero, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
@@ -369,6 +376,8 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
             output <- output[2,-1,drop = FALSE]
         }
         rownames(output) <- time
+    } else {
+        if (!addZero) output <- output[-1,,drop = FALSE]
     }
 
     return(output)
