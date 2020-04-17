@@ -182,27 +182,32 @@ fitSmoothHazard <- function(formula, data, time,
     class(out) <- c("singleEventCB", class(out))
   } else {
     # Otherwise fit a multinomial regression
-    if (!family %in% c("glm", "glmnet")) {
+    if (!family %in% c("glm")) {
       stop(sprintf("Competing-risk analysis is not available for family=%s", family),
         .call = FALSE
       )
     }
-    fittingFunction <- switch(family,
-      "glm" = function(formula) {
-        VGAM::vglm(formula,
-          data = sampleData,
-          family = multinomial(refLevel = 1)
-        )
-      },
-      "glmnet" = function(formula) {
-        cv.glmnet.formula(formula, sampleData,
-          event = eventVar,
-          competingRisk = TRUE, ...
-        )
+    # fittingFunction <- switch(family,
+    #   "glm" = function(formula) {
+    #     VGAM::vglm(formula,
+    #       data = sampleData,
+    #       family = multinomial(refLevel = 1)
+    #     )
+    #   },
+    #   "glmnet" = function(formula) {
+    #     cv.glmnet.formula(formula, sampleData,
+    #       event = eventVar,
+    #       competingRisk = TRUE, ...
+    #     )
+    #   }
+    # )
+    # # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
+    # if (family == "glmnet") formula <- remove_offset(formula)
+    fittingFunction <- function(formula) {
+      VGAM::vglm(formula,
+                 data = sampleData,
+                 family = multinomial(refLevel = 1))
       }
-    )
-    # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
-    if (family == "glmnet") formula <- remove_offset(formula)
 
     # Turn off warnings from VGAM::vglm.fitter
     withCallingHandlers(model <- fittingFunction(formula),
@@ -353,21 +358,22 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     # Add new class
     class(out) <- c("singleEventCB", class(out))
   } else {
-    if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
-    if (family != "glmnet") stop("Not implemented yet")
-    # because of glmnet parametrization, constant offsets are dropped
-    out <- glmnet::cv.glmnet(sample_time_x, sample_event,
-      family = "multinomial",
-      type.multinomial = "grouped", ...
-    )
-
-    out$originalData <- originalData
-    out$typeEvents <- typeEvents
-    out$timeVar <- timeVar
-    out$eventVar <- eventVar
-    out$matrix.fit <- TRUE
-    out$formula_time <- formula_time
-    class(out) <- c("CompRiskGlmnet", class(out))
+    stop("The matrix interface is not available for competing risks")
+    # if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
+    # if (family != "glmnet") stop("Not implemented yet")
+    # # because of glmnet parametrization, constant offsets are dropped
+    # out <- glmnet::cv.glmnet(sample_time_x, sample_event,
+    #   family = "multinomial",
+    #   type.multinomial = "grouped", ...
+    # )
+    #
+    # out$originalData <- originalData
+    # out$typeEvents <- typeEvents
+    # out$timeVar <- timeVar
+    # out$eventVar <- eventVar
+    # out$matrix.fit <- TRUE
+    # out$formula_time <- formula_time
+    # class(out) <- c("CompRiskGlmnet", class(out))
   }
   return(out)
 }

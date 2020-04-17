@@ -53,6 +53,32 @@ test_that("no error in absolute risk with data tables", {
     expect_false(inherits(foo2, "try-error"))
 })
 
+test_that("no error in absolute risk with data frames - no newdata", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDF, time = 1,
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDF, time = 1,
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_false(inherits(foo1, "try-error"))
+    expect_false(inherits(foo2, "try-error"))
+})
+
+test_that("no error in absolute risk with data tables - no newdata", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDT, time = 1,
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDT, time = 1,
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_false(inherits(foo1, "try-error"))
+    expect_false(inherits(foo2, "try-error"))
+})
+
 # Using new data
 newDT <- data.table("Z" = c(0,1))
 newDF <- data.frame("Z" = c(0,1))
@@ -83,6 +109,31 @@ test_that("no error in absolute risk with data tables - new data", {
     expect_false(inherits(foo2, "try-error"))
 })
 
+test_that("error in absolute risk with data frames - new data but no time", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDF, newdata = newDF,
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDF, newdata = newDF,
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_true(inherits(foo1, "try-error"))
+    expect_true(inherits(foo2, "try-error"))
+})
+
+test_that("error in absolute risk with data tables - new data but no time", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDT, newdata = newDT,
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDT, newdata = newDT,
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_true(inherits(foo1, "try-error"))
+    expect_true(inherits(foo2, "try-error"))
+})
 
 # Make sure we get probabilities
 test_that("should output probabilities with data frames", {
@@ -192,4 +243,57 @@ test_that("should compute risk when time and newdata aren't provided", {
 
     expect_true("risk" %in% names(absRiskDF))
     expect_true("risk" %in% names(absRiskDT))
+})
+
+# Control output----
+test_that("should output probabilities with data frames - two time points", {
+    absRiskMC <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
+                              method = "montecarlo", type = "survival")
+    absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
+                              method = "numerical", type = "survival")
+
+    expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskNI[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskNI[,-1] <= 1))
+})
+
+test_that("should output probabilities with data tables - two time points", {
+    absRiskMC <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
+                              method = "montecarlo", type = "survival")
+    absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
+                              method = "numerical", type = "survival")
+
+    expect_true(all(absRiskMC[,-1] >= 0))
+    expect_true(all(absRiskNI[,-1] >= 0))
+    expect_true(all(absRiskMC[,-1] <= 1))
+    expect_true(all(absRiskNI[,-1] <= 1))
+})
+
+test_that("should compute survival when time and newdata aren't provided", {
+    absRiskDF <- absoluteRisk(fitDF, type = "survival")
+    absRiskDT <- absoluteRisk(fitDT, type = "survival")
+
+    expect_true("survival" %in% names(absRiskDF))
+    expect_true("survival" %in% names(absRiskDT))
+})
+
+test_that("shouldn't output time zero with data frames - two time points", {
+    absRiskMC <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
+                              method = "montecarlo", addZero = FALSE)
+    absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1,],
+                              method = "numerical", addZero = FALSE)
+
+    expect_true(nrow(absRiskMC) == 2)
+    expect_true(nrow(absRiskNI) == 2)
+})
+
+test_that("shouldn't output time zero with data tables - two time points", {
+    absRiskMC <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
+                              method = "montecarlo", addZero = FALSE)
+    absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1,],
+                              method = "numerical", addZero = FALSE)
+
+    expect_true(nrow(absRiskMC) == 2)
+    expect_true(nrow(absRiskNI) == 2)
 })

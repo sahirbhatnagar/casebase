@@ -1,4 +1,4 @@
-context("plotHazard function")
+context("plotHazard")
 # Uncomment next line to skip tests in non-interactive session
 # skip_if_not(interactive())
 skip_if_not_installed("glmnet")
@@ -38,15 +38,18 @@ mod_gbm <- casebase::fitSmoothHazard(status ~ trt + eventtime,
 
 
 test_that("no error in hazardPlot for glm, gbm, gam, glmnet using default times", {
-    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),add = FALSE,
-                           ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2))
-    outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),add = F,
-                           ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 2, lwd = 2))
-    outgam <- try(hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),add = F,
-                           ci.lvl = 0.95, ci = F, lty = 1, line.col = 3, lwd = 2))
-    outglmnet <- try(hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),add = F,
-                                s = "lambda.min",
-                           ci.lvl = 0.95, ci = F, lty = 1, line.col = 4, lwd = 2))
+    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
+                             add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
+                             line.col = 1, lwd = 2))
+    outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),
+                             add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
+                             line.col = 2, lwd = 2))
+    outgam <- try(hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),
+                             add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
+                             line.col = 3, lwd = 2))
+    outglmnet <- try(hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),
+                                add = FALSE, s = "lambda.min", ci.lvl = 0.95,
+                                ci = FALSE, lty = 1, line.col = 4, lwd = 2))
 
     expect_false(inherits(outgbm, "try-error"))
     expect_false(inherits(outglm, "try-error"))
@@ -55,73 +58,21 @@ test_that("no error in hazardPlot for glm, gbm, gam, glmnet using default times"
 })
 
 test_that("no error in hazardPlot for glm, gbm, gam, glmnet using user-defined times", {
-    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),add = FALSE,
-                             times = runif(10,0,3),
-                             ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2))
-    outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),add = F,
-                             times = runif(10,0,3),
-                             ci.lvl = 0.95, ci = T, lty = 1, line.col = 2, lwd = 2))
-    outgam <- try(hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),add = F,
-                             times = runif(10,0,3),
-                             ci.lvl = 0.95, ci = T, lty = 1, line.col = 3, lwd = 2))
-    outglmnet <- try(hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),add = F,
-                                s = "lambda.min",
-                                times = runif(10,0,3),
-                                ci.lvl = 0.95, ci = F, lty = 1, line.col = 4, lwd = 2))
+    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
+                             add = FALSE, times = runif(10,0,3), ci.lvl = 0.95,
+                             ci = FALSE, lty = 1, line.col = 1, lwd = 2))
+    outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),
+                             add = FALSE, times = runif(10,0,3), ci.lvl = 0.95,
+                             ci = TRUE, lty = 1, line.col = 2, lwd = 2))
+    outgam <- try(hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),
+                             add = FALSE, times = runif(10,0,3), ci.lvl = 0.95,
+                             ci = TRUE, lty = 1, line.col = 3, lwd = 2))
+    outglmnet <- try(hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),
+                                add = FALSE, s = "lambda.min", times = runif(10,0,3),
+                                ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 4, lwd = 2))
 
     expect_false(inherits(outgbm, "try-error"))
     expect_false(inherits(outglm, "try-error"))
     expect_false(inherits(outgam, "try-error"))
     expect_false(inherits(outglmnet, "try-error"))
 })
-
-
-# par(mfrow=c(1,2))
-# hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),add = FALSE,main="trt=0",
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2)
-# hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),add = T,
-#            ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 2, lwd = 2)
-# hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),add = TRUE,
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 3, lwd = 2)
-# hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),add = TRUE,s = "lambda.min",
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 4, lwd = 2)
-# legend("topleft", c("GBM","GLM","GAM","GLMNET"),
-#        lty=1,col=1:4,bty="y", lwd = 2)
-#
-#
-# hazardPlot(object = mod_gbm, newdata = data.frame(trt = 1),add = FALSE,main="trt=1",
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2)
-# hazardPlot(object = mod_glm, newdata = data.frame(trt = 1),add = T,
-#            ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 2, lwd = 2)
-# hazardPlot(object = mod_gam, newdata = data.frame(trt = 1),add = TRUE,
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 3, lwd = 2)
-# hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 1),add = TRUE,s = "lambda.min",
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 4, lwd = 2)
-# legend("topleft", c("GBM","GLM","GAM","GLMNET"),
-#        lty=1,col=1:4,bty="y", lwd = 2)
-# dev.off()
-# par(mfrow=c(2,2))
-# hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),add = FALSE,
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2, main = "GBM")
-# hazardPlot(object = mod_gbm, newdata = data.frame(trt = 1),add = T,
-#            ci.lvl = 0.95, ci = F, lty = 2, line.col = 2, lwd = 2)
-# legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
-#
-# hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),add = FALSE,
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2, main = "GLM")
-# hazardPlot(object = mod_glm, newdata = data.frame(trt = 1),add = T,
-#            ci.lvl = 0.95, ci = F, lty = 2, line.col = 2, lwd = 2)
-# legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
-#
-# hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),add = FALSE,
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2, main = "GAM")
-# hazardPlot(object = mod_gam, newdata = data.frame(trt = 1),add = T,
-#            ci.lvl = 0.95, ci = F, lty = 2, line.col = 2, lwd = 2)
-# legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
-#
-# hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),add = FALSE,s = "lambda.min",
-#            ci.lvl = 0.95, ci = F, lty = 1, line.col = 1, lwd = 2, main = "GLMNET")
-# hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 1),add = T,s = "lambda.min",
-#            ci.lvl = 0.95, ci = F, lty = 2, line.col = 2, lwd = 2)
-# legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
-# dev.off()
