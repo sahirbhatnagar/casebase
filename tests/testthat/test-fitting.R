@@ -29,51 +29,6 @@ test_that("no error in fitting with data.frame and data.table", {
     expect_false(inherits(fitDT, "try-error"))
 })
 
-# non-glm methods
-extra_vars <- matrix(rnorm(10 * n), ncol = 10)
-DF_ext <- cbind(DF, as.data.frame(extra_vars))
-DT_ext <- cbind(DT, as.data.table(extra_vars))
-formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
-                                  paste0("V", 1:10)),
-                                collapse = " + "))
-
-test_that("no error in fitting glmnet", {
-    fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet"),
-                 silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet"),
-                 silent = TRUE)
-
-    expect_false(inherits(fitDF, "try-error"))
-    expect_false(inherits(fitDT, "try-error"))
-})
-
-formula_gam <- formula(paste(c("event ~ s(ftime)", "Z",
-                                paste0("V", 1:10)),
-                              collapse = " + "))
-
-test_that("no error in fitting gam", {
-    fitDF <- try(fitSmoothHazard(formula_gam, data = DF_ext, time = "ftime", family = "gam"),
-                 silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_gam, data = DT_ext, time = "ftime", family = "gam"),
-                 silent = TRUE)
-
-    expect_false(inherits(fitDF, "try-error"))
-    expect_false(inherits(fitDT, "try-error"))
-})
-
-formula_gbm <- formula(paste(c("event ~ ftime", "Z",
-                               paste0("V", 1:10)),
-                             collapse = " + "))
-test_that("no error in fitting gbm", {
-    fitDF <- try(fitSmoothHazard(formula_gbm, data = DF_ext, time = "ftime", family = "gbm"),
-                 silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_gbm, data = DT_ext, time = "ftime", family = "gbm"),
-                 silent = TRUE)
-
-    expect_false(inherits(fitDF, "try-error"))
-    expect_false(inherits(fitDT, "try-error"))
-})
-
 test_that("allow dot notation in formula", {
     try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = ERSPC, time='Follow.Up.Time', ratio = 100),
         silent = TRUE)
@@ -89,7 +44,8 @@ test_that("sampling first and then fitting", {
     expect_false(inherits(model, "try-error"))
 })
 
-##################
+#####################
+# Formula parsing----
 form <- formula(event ~ exposure + time)
 form_bs <- formula(event ~ exposure + bs(time))
 form_log <- formula(event ~ exposure + log(time))
@@ -133,13 +89,4 @@ test_that("detecting interactions with time", {
     expect_false(detect_interaction(form_bs))
     expect_false(detect_interaction(form_log))
     expect_true(detect_interaction(form_int))
-})
-
-test_that("warnings when using gbm witn non-linear functions of time or interactions", {
-    expect_warning(fitSmoothHazard(event ~ log(ftime) + Z,
-                                   data = DF, time = "ftime", family = "gbm"),
-                   regexp = "gbm may throw an error")
-    expect_warning(fitSmoothHazard(event ~ ftime*Z,
-                                   data = DF, time = "ftime", family = "gbm"),
-                   regexp = "gbm may throw an error")
 })

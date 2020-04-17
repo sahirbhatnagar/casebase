@@ -1,6 +1,10 @@
 context("plotHazard function")
 # Uncomment next line to skip tests in non-interactive session
 # skip_if_not(interactive())
+skip_if_not_installed("glmnet")
+skip_if_not_installed("mgcv")
+skip_if_not_installed("gbm")
+skip_if_not_installed("splines")
 
 library(splines)
 data("simdat")
