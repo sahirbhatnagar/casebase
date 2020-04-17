@@ -152,7 +152,8 @@ and then converting this to an estimated survival for each individual.</p>
   <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
   <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
+  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
 
 <span class='fu'>absoluteRisk</span>(
@@ -164,6 +165,8 @@ and then converting this to an estimated survival for each individual.</p>
   <span class='kw'>s</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span>),
   <span class='no'>n.trees</span>,
   <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
+  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -202,8 +205,15 @@ or number of sampled points (if <code>method = "montecarlo"</code>).</p></td>
 only for the main event of interest? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Extra parameters. Currently these are simply ignored.</p></td>
+      <th>type</th>
+      <td><p>Type of output. Can be <code>"CI"</code> (output is on the cumulative
+incidence scale) or <code>"survival"</code> (output is on the survival scale,
+i.e. 1- CI)</p></td>
+    </tr>
+    <tr>
+      <th>addZero</th>
+      <td><p>Logical. Should we add time = 0 at the beginning of the
+output? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>s</th>
@@ -213,6 +223,10 @@ required (for class <code>cv.glmnet</code>).</p></td>
     <tr>
       <th>n.trees</th>
       <td><p>Number of trees used in the prediction (for class <code>gbm</code>).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Extra parameters. Currently these are simply ignored.</p></td>
     </tr>
     </table>
 
