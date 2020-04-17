@@ -18,9 +18,10 @@ estimate_hazard.glm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lv
 estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95,
                                       s = c("lambda.1se", "lambda.min"), ...) {
     check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
-    if (is.numeric(s))
+    if (is.numeric(s)) {
         s <- s[1]
-    else if (is.character(s)) {
+        if (length(s) > 1) warning("More than one value for s has been supplied. Only first entry will be used")
+    } else if (is.character(s)) {
         s <- match.arg(s)
     }
     if (!inherits(newdata, "matrix")) {

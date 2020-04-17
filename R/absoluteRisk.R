@@ -29,7 +29,7 @@
 #' The numerical method should be good enough in most situation, but Monte Carlo
 #' integration can give more accurate results when the estimated hazard function
 #' is not smooth (e.g. when modeling with time-varying covariates).
-#'z
+#'
 #' @param object Output of function \code{\link{fitSmoothHazard}}.
 #' @param time A vector of time points at which we should compute the absolute
 #'   risks.

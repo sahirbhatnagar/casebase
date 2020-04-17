@@ -7,22 +7,26 @@
 \format{
 A dataframe with 1000 observations and 4 variables: \describe{
 \item{id}{patient id} \item{eventtime}{time of event} \item{status}{event
-indicator (1 = event, 0 = censored)} \item{trt}{binary treatment indicator}}
+indicator (1 = event, 0 = censored)} \item{trt}{binary treatment
+indicator}}
 }
 \source{
-See simsurv vignette:
+See \code{simsurv} vignette:
 \url{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}
 }
 \usage{
 simdat
 }
 \description{
-This simulated data is and description is taken verbatim from the \href{https://CRAN.r-project.org/package=simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}{simsurv package}
+This simulated data is and description is taken verbatim from the
+\code{simsurv}.
+}
+\details{
 Simulated data under a standard Weibull survival model that incorporates a
 time-dependent treatment effect (i.e. non-proportional hazards). For the
 time-dependent effect we included a single binary covariate (e.g. a treatment
-indicator) with a protective effect (i.e. a negative log hazard ratio), but we
-will allow the effect of the covariate to diminish over time. The data
+indicator) with a protective effect (i.e. a negative log hazard ratio), but
+we will allow the effect of the covariate to diminish over time. The data
 generating model will be \deqn{h_i(t) = \gamma \lambda (t ^{\gamma - 1})
 exp(\beta_0 X_i + \beta_1 X_i x log(t))} where where Xi is the binary
 treatment indicator for individual i, \eqn{\lambda} and \eqn{\gamma} are the
@@ -31,13 +35,8 @@ the log hazard ratio for treatment when t=1 (i.e. when log(t)=0), and
 \eqn{\beta_1} quantifies the amount by which the log hazard ratio for
 treatment changes for each one unit increase in log(t). Here we are assuming
 the time-dependent effect is induced by interacting the log hazard ratio with
-log time. The true parameters are
-\enumerate{
-\item \eqn{\beta_0} = -0.5
-\item \eqn{\beta_1} = 0.15
-\item \eqn{\lambda} = 0.1
-\item \eqn{\gamma} = 1.5
-}
+log time. The true parameters are 1. \eqn{\beta_0} = -0.5 2. \eqn{\beta_1} =
+0.15 3. \eqn{\lambda} = 0.1 4. \eqn{\gamma} = 1.5
 }
 \examples{
 
