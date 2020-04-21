@@ -169,7 +169,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
             return(as.numeric(exp(pred)))
         }
     }
-
+    # Compute cumulative hazard at each failure time
     risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
         integrate(hazard, lower = 0, upper = time_vector[j],
                   fit = object, subdivisions = nsamp,
@@ -177,8 +177,9 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
                   s = s, n.trees = n.trees)$value
     })
 
+    # Format the output depending on type
     if (is.data.frame(newdata)) {
-        newdata[,riskVar] <- ifelse(type == "CI", 1 - exp(-risk_res), exp(-risk_res))
+        newdata[,riskVar] <- if(type == "CI") 1 - exp(-risk_res) else exp(-risk_res)
     } else {
         newdata <- if(type == "CI") {
             cbind(1 - exp(-risk_res), newdata)
