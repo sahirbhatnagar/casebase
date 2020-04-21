@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT) — support • casebase</title>
+<title>Study to Understand Prognoses Preferences Outcomes and Risks of Treatment
+(SUPPORT) — support • casebase</title>
 
 
 <!-- jquery -->
@@ -39,8 +40,12 @@
 
 
 
-<meta property="og:title" content="Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT) — support" />
-<meta property="og:description" content="The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death" />
+<meta property="og:title" content="Study to Understand Prognoses Preferences Outcomes and Risks of Treatment
+(SUPPORT) — support" />
+<meta property="og:description" content="The SUPPORT dataset tracks four response variables: hospital
+death, severe functional disability, hospital costs, and time until death
+and death itself. The patients are followed for up to 5.56 years. Data
+included only tracks follow-up time and death." />
 
 
 
@@ -132,13 +137,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT)</h1>
+    <h1>Study to Understand Prognoses Preferences Outcomes and Risks of Treatment
+(SUPPORT)</h1>
     <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>support.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death</p>
+    <p>The SUPPORT dataset tracks four response variables: hospital
+death, severe functional disability, hospital costs, and time until death
+and death itself. The patients are followed for up to 5.56 years. Data
+included only tracks follow-up time and death.</p>
     </div>
 
     <pre class="usage"><span class='no'>support</span></pre>
@@ -146,29 +155,67 @@
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A dataframe with 9104 observations and 34 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept.</p><dl'>
-<dt>Age</dt><dd><p>Stores a double representing age.</p></dd> <dt>death</dt><dd><p>Death at any time up to NDI date: 31DEC94.</p></dd> <dt>sex</dt><dd><p>0=female, 1=male.</p></dd> <dt>slos</dt><dd><p>Days from study entry to discharge.</p></dd> <dt>d.time</dt><dd><p>days of follow-up.</p></dd> <dt>dzgroup</dt><dd><p>Each level of dzgroup: ARF/MOSF w/Sepsis, COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with malignancy.</p></dd> <dt>dzclass</dt><dd><p>ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer disease classes.</p></dd> <dt>num.co</dt><dd><p>the number of comorbidities.</p></dd> <dt>edu</dt><dd><p>years of education of patient.</p></dd> <dt>scoma</dt><dd><p>The SUPPORT coma score based on Glasgow D3.</p></dd> <dt>avtisst</dt><dd><p>Average TISS, days 3-25.</p></dd> <dt>race</dt><dd><p>Indicates race. White, black, asian, hispanic or other.</p></dd> <dt>hday</dt><dd><p>Day in Hospital at Study Admit</p></dd> <dt>diabetes</dt><dd><p>Diabetes (Com 27-28, Dx 73)</p></dd> <dt>dementia</dt><dd><p>Dementia (Comorbidity 6)</p></dd> <dt>ca</dt><dd><p>Cancer State</p></dd> <dt>meanbp</dt><dd><p>Mean Arterial Blood Pressure Day 3.</p></dd> <dt>wblc</dt><dd><p>White blood cell count on day 3.</p></dd> <dt>hrt</dt><dd><p>Heart rate day 3.</p></dd> <dt>resp</dt><dd><p>Respiration Rate day 3.</p></dd> <dt>temp</dt><dd><p>Temperature, in celcius, on day 3.</p></dd> <dt>pafi</dt><dd><p>PaO2/(0.01*FiO2) Day 3.</p></dd> <dt>alb</dt><dd><p>Serum albumin day 3.</p></dd> <dt>bili</dt><dd><p>Bilirubin Day 3.</p></dd> <dt>crea</dt><dd><p>Serum creatinine day 3.</p></dd> <dt>sod</dt><dd><p>Serum sodium day 3.</p></dd> <dt>ph</dt><dd><p>Serum pH (in arteries) day 3.</p></dd> <dt>glucose</dt><dd><p>Serum glucose day 3.</p></dd> <dt>bun</dt><dd><p>BUN day 3.</p></dd> <dt>urine</dt><dd><p>urine output day 3.</p></dd> <dt>adlp</dt><dd><p>ADL patient day 3.</p></dd>  <dt>adlsc</dt><dd><p>Imputed ADL calibrated to surrogate, if a surrogate was used for a follow up.</p></dd> <dt>sps</dt><dd><p>SUPPORT physiology score</p></dd> <dt>aps</dt><dd><p>Apache III physiology score</p></dd>
-
+    <p>A dataframe with 9104 observations and 34 variables after imputation
+and the removal of response variables like hospital charges, patient ratio
+of costs to charges and micro-costs. Ordinal variables, namely functional
+disability and income, were also removed. Finally, Surrogate activities of
+daily living were removed due to sparsity. There were 6 other model scores
+in the data-set and they were removed; only aps and sps were kept.</p><dl'>
+<dt>Age</dt><dd><p>Stores a double representing age.</p></dd> <dt>death</dt><dd><p>Death at any time up to NDI date: 31DEC94.</p></dd> <dt>sex</dt><dd><p>0=female, 1=male.</p></dd> <dt>slos</dt><dd><p>Days from study entry to discharge.</p></dd> <dt>d.time</dt><dd><p>days of
+follow-up.</p></dd> <dt>dzgroup</dt><dd><p>Each level of dzgroup: ARF/MOSF w/Sepsis,
+COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with
+malignancy.</p></dd> <dt>dzclass</dt><dd><p>ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer
+disease classes.</p></dd> <dt>num.co</dt><dd><p>the number of comorbidities.</p></dd>
+<dt>edu</dt><dd><p>years of education of patient.</p></dd> <dt>scoma</dt><dd><p>The SUPPORT coma
+score based on Glasgow D3.</p></dd> <dt>avtisst</dt><dd><p>Average TISS, days 3-25.</p></dd>
+<dt>race</dt><dd><p>Indicates race. White, black, asian, hispanic or other.</p></dd>
+<dt>hday</dt><dd><p>Day in Hospital at Study Admit</p></dd> <dt>diabetes</dt><dd><p>Diabetes (Com
+27-28, Dx 73)</p></dd> <dt>dementia</dt><dd><p>Dementia (Comorbidity 6)</p></dd> <dt>ca</dt><dd><p>Cancer
+State</p></dd> <dt>meanbp</dt><dd><p>Mean Arterial Blood Pressure Day 3.</p></dd> <dt>wblc</dt><dd><p>White blood cell count on day 3.</p></dd> <dt>hrt</dt><dd><p>Heart rate day 3.</p></dd>
+<dt>resp</dt><dd><p>Respiration Rate day 3.</p></dd> <dt>temp</dt><dd><p>Temperature, in
+celcius, on day 3.</p></dd> <dt>pafi</dt><dd><p>PaO2/(0.01*FiO2) Day 3.</p></dd> <dt>alb</dt><dd><p>Serum albumin day 3.</p></dd> <dt>bili</dt><dd><p>Bilirubin Day 3.</p></dd> <dt>crea</dt><dd><p>Serum
+creatinine day 3.</p></dd> <dt>sod</dt><dd><p>Serum sodium day 3.</p></dd> <dt>ph</dt><dd><p>Serum pH
+(in arteries) day 3.</p></dd> <dt>glucose</dt><dd><p>Serum glucose day 3.</p></dd> <dt>bun</dt><dd><p>BUN day 3.</p></dd> <dt>urine</dt><dd><p>urine output day 3.</p></dd> <dt>adlp</dt><dd><p>ADL patient
+day 3.</p></dd>  <dt>adlsc</dt><dd><p>Imputed ADL calibrated to surrogate, if a surrogate
+was used for a follow up.</p></dd> <dt>sps</dt><dd><p>SUPPORT physiology score</p></dd>
+<dt>aps</dt><dd><p>Apache III physiology score</p></dd> 
 </dl>
 
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Available at the following website: <a href='http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip'>http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip</a>. note: must unzip and process this data before use.</p>
+    <p>Available at the following website:
+<a href='http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip'>http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip</a>.
+note: must unzip and process this data before use.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Before imputation, there were a total of 9105 individuals and 47 variables. Of those variables, a few were removed before imputation. We removed three
-response variables: hospital charges, patient ratio of costs to charges and patient micro-costs. Next, we removed hospital death as it was directly informative
-of our event of interest, death. We also removed functional disability and income as they are ordinal covariates, because ordinal variables are treated as factors
-in our current model. Finally, we removed 8 covariates relating to the results of previous findings: we removed SUPPORT day 3 physiology score (sps), 	APACHE III
-day 3 physiology score (aps),	SUPPORT model 2-month survival estimate, SUPPORT model 6-month survival estimate, Physician's 2-month survival estimate for pt.,
-Physician's 6-month survival estimate for pt., Patient had Do Not Resuscitate (DNR) order and Day of DNR order (&lt;0 if before study). Of these, sps and aps were
-added on after imputation, as they were missing only 1 observation and permitted us to compare findings between our model and their's. First we impute manually
-using recommended normal values for physiological measures by Knaus et al. (1995). Next, we impute a single dataset using <span class="pkg">mice</span> with default settings. After
-imputation, we noted that the covariate for surrogate activities of daily living was not imputed. This is due to colinearity between the other two covariates
-for activities of daily living. As such, surrogate activites of daily living was removed.</p>
+    <p>Some of the original data was missing. Before imputation, there were
+a total of 9105 individuals and 47 variables. Of those variables, a few
+were removed before imputation. We removed three response variables:
+hospital charges, patient ratio of costs to charge,s and patient
+micro-costs. Next, we removed hospital death as it was directly informative
+of our event of interest, namely death. We also removed functional
+disability and income as they are ordinal covariates. Finally, we removed 8
+covariates related to the results of previous findings: we removed SUPPORT
+day 3 physiology score (<code>sps</code>), APACHE III day 3 physiology score
+(<code>aps</code>), SUPPORT model 2-month survival estimate, SUPPORT model
+6-month survival estimate, Physician's 2-month survival estimate for pt.,
+Physician's 6-month survival estimate for pt., Patient had Do Not
+Resuscitate (DNR) order, and Day of DNR order (&lt;0 if before study). Of
+these, <code>sps</code> and <code>aps</code> were added on after imputation, as they
+were missing only 1 observation. First we imputed manually using the normal
+values for physiological measures recommended by Knaus et al. (1995). Next,
+we imputed a single dataset using <span class="pkg">mice</span> with default settings. After
+imputation, we noted that the covariate for surrogate activities of daily
+living was not imputed. This is due to collinearity between the other two
+covariates for activities of daily living. Therefore, surrogate activites
+of daily living was removed.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.</p>
+    <p>Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT
+prognostic model: Objective estimates of survival for seriously ill
+hospitalized adults. Annals of Internal Medicine 122:191-203.
+doi: <a href='https://doi.org/10.7326/0003-4819-122-3-199502010-00007'>10.7326/0003-4819-122-3-199502010-00007</a>
+.</p>
 <p>http://biostat.mc.vanderbilt.edu/wiki/Main/SupportDesc</p>
 <p>http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html</p>
 

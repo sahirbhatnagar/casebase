@@ -40,27 +40,8 @@
 
 
 <meta property="og:title" content="Simulated data under Weibull model with Time-Dependent Treatment Effect — simdat" />
-<meta property="og:description" content="This simulated data is and description is taken verbatim from the simsurv package
-Simulated data under a standard Weibull survival model that incorporates a
-time-dependent treatment effect (i.e. non-proportional hazards). For the
-time-dependent effect we included a single binary covariate (e.g. a treatment
-indicator) with a protective effect (i.e. a negative log hazard ratio), but we
-will allow the effect of the covariate to diminish over time. The data
-generating model will be $$h_i(t) = \gamma \lambda (t ^{\gamma - 1})
-exp(\beta_0 X_i + \beta_1 X_i x log(t))$$ where where Xi is the binary
-treatment indicator for individual i, \(\lambda\) and \(\gamma\) are the
-scale and shape parameters for the Weibull baseline hazard, \(\beta_0\) is
-the log hazard ratio for treatment when t=1 (i.e. when log(t)=0), and
-\(\beta_1\) quantifies the amount by which the log hazard ratio for
-treatment changes for each one unit increase in log(t). Here we are assuming
-the time-dependent effect is induced by interacting the log hazard ratio with
-log time. The true parameters are
-\(\beta_0\) = -0.5
-\(\beta_1\) = 0.15
-\(\lambda\) = 0.1
-\(\gamma\) = 1.5
-
-" />
+<meta property="og:description" content="This simulated data is and description is taken verbatim from the
+simsurv." />
 
 
 
@@ -158,27 +139,8 @@ log time. The true parameters are
     </div>
 
     <div class="ref-description">
-    <p>This simulated data is and description is taken verbatim from the <a href='https://CRAN.r-project.org/package=simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects'>simsurv package</a>
-Simulated data under a standard Weibull survival model that incorporates a
-time-dependent treatment effect (i.e. non-proportional hazards). For the
-time-dependent effect we included a single binary covariate (e.g. a treatment
-indicator) with a protective effect (i.e. a negative log hazard ratio), but we
-will allow the effect of the covariate to diminish over time. The data
-generating model will be $$h_i(t) = \gamma \lambda (t ^{\gamma - 1})
-exp(\beta_0 X_i + \beta_1 X_i x log(t))$$ where where Xi is the binary
-treatment indicator for individual i, \(\lambda\) and \(\gamma\) are the
-scale and shape parameters for the Weibull baseline hazard, \(\beta_0\) is
-the log hazard ratio for treatment when t=1 (i.e. when log(t)=0), and
-\(\beta_1\) quantifies the amount by which the log hazard ratio for
-treatment changes for each one unit increase in log(t). Here we are assuming
-the time-dependent effect is induced by interacting the log hazard ratio with
-log time. The true parameters are</p><ol>
-<li><p>\(\beta_0\) = -0.5</p></li>
-<li><p>\(\beta_1\) = 0.15</p></li>
-<li><p>\(\lambda\) = 0.1</p></li>
-<li><p>\(\gamma\) = 1.5</p></li>
-</ol>
-
+    <p>This simulated data is and description is taken verbatim from the
+<code>simsurv</code>.</p>
     </div>
 
     <pre class="usage"><span class='no'>simdat</span></pre>
@@ -188,13 +150,31 @@ log time. The true parameters are</p><ol>
 
     <p>A dataframe with 1000 observations and 4 variables:</p><dl'>
 <dt>id</dt><dd><p>patient id</p></dd> <dt>eventtime</dt><dd><p>time of event</p></dd> <dt>status</dt><dd><p>event
-indicator (1 = event, 0 = censored)</p></dd> <dt>trt</dt><dd><p>binary treatment indicator</p></dd>
+indicator (1 = event, 0 = censored)</p></dd> <dt>trt</dt><dd><p>binary treatment
+indicator</p></dd>
 </dl>
 
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>See simsurv vignette:
+    <p>See <code>simsurv</code> vignette:
 <a href='https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects'>https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects</a></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Simulated data under a standard Weibull survival model that incorporates a
+time-dependent treatment effect (i.e. non-proportional hazards). For the
+time-dependent effect we included a single binary covariate (e.g. a treatment
+indicator) with a protective effect (i.e. a negative log hazard ratio), but
+we will allow the effect of the covariate to diminish over time. The data
+generating model will be $$h_i(t) = \gamma \lambda (t ^{\gamma - 1})
+exp(\beta_0 X_i + \beta_1 X_i x log(t))$$ where where Xi is the binary
+treatment indicator for individual i, \(\lambda\) and \(\gamma\) are the
+scale and shape parameters for the Weibull baseline hazard, \(\beta_0\) is
+the log hazard ratio for treatment when t=1 (i.e. when log(t)=0), and
+\(\beta_1\) quantifies the amount by which the log hazard ratio for
+treatment changes for each one unit increase in log(t). Here we are assuming
+the time-dependent effect is induced by interacting the log hazard ratio with
+log time. The true parameters are 1. \(\beta_0\) = -0.5 2. \(\beta_1\) =
+0.15 3. \(\lambda\) = 0.1 4. \(\gamma\) = 1.5</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Sam Brilleman (2019). simsurv: Simulate Survival Data. R package
