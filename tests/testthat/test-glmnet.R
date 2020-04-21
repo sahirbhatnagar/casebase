@@ -167,6 +167,20 @@ test_that("we get probabilities", {
     expect_true(all(risk_log <= 1))
 })
 
+test_that("should compute risk when time and newdata aren't provided", {
+    fit_glmnet_red <- fit_glmnet
+    fit_glmnet_red$originalData$x <- fit_glmnet_red$originalData$x[c(1:2, 101:102),]
+    risk <- try(absoluteRisk(fit_glmnet_red, nsamp = 10),
+                silent = TRUE)
+    fit_glmnet_log_red <- fit_glmnet_log
+    fit_glmnet_log_red$originalData$x <- fit_glmnet_log_red$originalData$x[c(1:2, 101:102),]
+    risk_log <- try(absoluteRisk(fit_glmnet_log_red, nsamp = 100),
+                    silent = TRUE)
+
+    expect_false(inherits(risk, "try-error"))
+    expect_false(inherits(risk_log, "try-error"))
+})
+
 # Test absoluteRisk--two time points
 risk <- try(absoluteRisk(fit_glmnet, time = c(1,2),
                          newdata = new_x, nsamp = 100),
