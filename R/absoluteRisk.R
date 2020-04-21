@@ -29,7 +29,7 @@
 #' The numerical method should be good enough in most situation, but Monte Carlo
 #' integration can give more accurate results when the estimated hazard function
 #' is not smooth (e.g. when modeling with time-varying covariates).
-#'z
+#'
 #' @param object Output of function \code{\link{fitSmoothHazard}}.
 #' @param time A vector of time points at which we should compute the absolute
 #'   risks.
@@ -101,9 +101,10 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     # Parse arguments
     method <- match.arg(method)
     type <- match.arg(type)
-    if (is.numeric(s))
+    if (is.numeric(s)) {
         s <- s[1]
-    else if (is.character(s)) {
+        if (length(s) > 1) warning("More than one value for s has been supplied. Only first entry will be used")
+    } else if (is.character(s)) {
         s <- match.arg(s)
     }
     if (inherits(object, "gbm")) {
@@ -130,116 +131,7 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     }
 }
 
-
-# #' @rdname absoluteRisk
-# #' @export
-# absoluteRisk.default <- function(object, ...) {
-#     stop(paste("object is of class", class(object),
-#                "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
-#          call. = TRUE)
-# }
-
-# #' @rdname absoluteRisk
-# #' @export
-# absoluteRisk.glm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, ...) {
-#     method <- match.arg(method)
-#
-#     # # Create hazard function
-#     # lambda <- function(x, fit, newdata) {
-#     #         # Note: the offset should be set to zero when estimating the hazard.
-#     #         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-#     #                            row.names = as.character(1:length(x)))
-#     #     newdata2[fit$timeVar] <- x
-#     #     withCallingHandlers(pred <- predict(fit, newdata2),
-#     #                         warning = handler_bsplines)
-#     #     return(as.numeric(exp(pred)))
-#     # }
-#     lambda <- NULL
-#
-#     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, ...))
-#     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
-# }
-
-# #' @rdname absoluteRisk
-# #' @export
-# absoluteRisk.gbm <- function(object, time, newdata, method = c("numerical", "montecarlo"), nsamp = 100, n.trees, ...) {
-#     method <- match.arg(method)
-#
-#     # # Create hazard function
-#     # lambda <- function(x, fit, newdata) {
-#     #         # Note: the offset should be set to zero when estimating the hazard.
-#     #         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-#     #                            row.names = as.character(1:length(x)))
-#     #     newdata2[fit$timeVar] <- x
-#     #     withCallingHandlers(pred <- predict(fit, newdata2, n.trees, ...),
-#     #                             warning = handler_offset)
-#     #     return(as.numeric(exp(pred)))
-#     # }
-#     lambda <- NULL
-#
-#     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, n.trees = n.trees, ...))
-#     # return(estimate_risk(lambda, object, time, newdata, method, nsamp))
-# }
-
-# #' @rdname absoluteRisk
-# #' @importFrom stats formula delete.response setNames
-# #' @export
-# absoluteRisk.cv.glmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-#                                    nsamp = 100, s = c("lambda.1se","lambda.min"), ...) {
-#     method <- match.arg(method)
-#     if (is.numeric(s))
-#         s <- s[1]
-#     else if (is.character(s)) {
-#         s <- match.arg(s)
-#     }
-#
-#     # # Create hazard function
-#     # if (is.null(object$matrix.fit)) {
-#     #     lambda <- function(x, fit, newdata) {
-#     #             # Note: the offset should be set to zero when estimating the hazard.
-#     #             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-#     #                                row.names = as.character(1:length(x)))
-#     #         newdata2[fit$timeVar] <- x
-#     #         formula_pred <- update(formula(delete.response(terms(fit$formula))), ~ . -1)
-#     #         newdata_matrix <- model.matrix(formula_pred, newdata2)
-#     #             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-#     #         return(as.numeric(exp(pred)))
-#     #     }
-#     # } else {
-#     #     lambda <- function(x, fit, newdata) {
-#     #             # Note: the offset should be set to zero when estimating the hazard.
-#     #         # newdata_matrix <- cbind(x, newdata)
-#     #         newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
-#     #         # newdata_matrix is organized to match the output from fitSmoothHazard.fit
-#     #         newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
-#     #                                                        setNames(data.frame(x), fit$timeVar)),as.data.frame(newdata_matrix)))
-#     #
-#     #             pred <- predict(fit, newdata_matrix, s, newoffset = 0)
-#     #
-#     #         return(as.numeric(exp(pred)))
-#     #     }
-#     # }
-#     lambda <- NULL
-#
-#     return(call_correct_estimate_risk_fn(lambda, object, time, newdata, method, nsamp, s = s, ...))
-# }
-
 # Helper functions----
-# call_correct_estimate_risk_fn <- function(lambda, object, time, newdata, method, nsamp, ...) {
-#     # Call the correct function with correct parameters
-#     if (missing(newdata)) {
-#         if (missing(time)) {
-#             return(estimate_risk(lambda, object, ...))
-#         } else {
-#             return(estimate_risk_newtime(lambda, object, time,
-#                                          method = method, nsamp = nsamp, ...))
-#         }
-#     } else {
-#         return(estimate_risk_newtime(lambda, object, time,
-#                                      newdata, method, nsamp, ...))
-#     }
-# }
-
 estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
@@ -252,15 +144,32 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
         newdata[object$timeVar][[1]]
         } else object$originalData$y[,object$timeVar]
     # Create a vectorised hazard function
-    hazard <- function(x, fit, newdata, s, n.trees, ...) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata)
-        newdata2 <- newdata2[rep(1, length(x)),]
-        newdata2[fit$timeVar] <- x
-        pred <- estimate_hazard(fit, newdata2, plot = FALSE, ci = FALSE,
-                                s, n.trees, ...)
-        return(as.numeric(exp(pred)))
+    if (inherits(object, "cv.glmnet") && !is.null(object$matrix.fit)) {
+        hazard <- function(x, fit, newdata, s, n.trees, ...) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            # newdata_matrix <- cbind(x, newdata)
+            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
+            # newdata_matrix is organized to match the output from fitSmoothHazard.fit
+            newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
+                                                           setNames(data.frame(x), fit$timeVar)),
+                                              as.data.frame(newdata_matrix)))
+
+            pred <- estimate_hazard(fit, newdata_matrix, plot = FALSE, ci = FALSE,
+                                    s = s, n.trees = n.trees, ...)
+            return(as.numeric(exp(pred)))
+        }
+    } else {
+        hazard <- function(x, fit, newdata, s, n.trees, ...) {
+            # Note: the offset should be set to zero when estimating the hazard.
+            newdata2 <- data.frame(newdata)
+            newdata2 <- newdata2[rep(1, length(x)),]
+            newdata2[fit$timeVar] <- x
+            pred <- estimate_hazard(fit, newdata2, plot = FALSE, ci = FALSE,
+                                    s = s, n.trees = n.trees, ...)
+            return(as.numeric(exp(pred)))
+        }
     }
+    # Compute cumulative hazard at each failure time
     risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
         integrate(hazard, lower = 0, upper = time_vector[j],
                   fit = object, subdivisions = nsamp,
@@ -268,12 +177,13 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
                   s = s, n.trees = n.trees)$value
     })
 
+    # Format the output depending on type
     if (is.data.frame(newdata)) {
-        newdata[,riskVar] <- ifelse(type == "CI", 1 - exp(-risk_res), exp(-risk_res))
+        newdata[,riskVar] <- if(type == "CI") 1 - exp(-risk_res) else exp(-risk_res)
     } else {
-        newdata <- ifelse(type == "CI",
-                          cbind(1 - exp(-risk_res), newdata),
-                          cbind(exp(-risk_res), newdata))
+        newdata <- if(type == "CI") {
+            cbind(1 - exp(-risk_res), newdata)
+        } else cbind(exp(-risk_res), newdata)
         colnames(newdata)[1] <- riskVar
     }
     return(newdata)

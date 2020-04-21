@@ -15,18 +15,25 @@ estimate_hazard.glm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lv
     return(pred)
 }
 
+# The next function below makes the following assumption:
+# Either time is already part of newdata (if it's a matrix)
+# Or it's part of object$formula and will be added to newdata when we expand.
+# Therefore, we need to make sure that assumption is verified before calling it.
 estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lvl = 0.95,
                                       s = c("lambda.1se", "lambda.min"), ...) {
     check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
-    if (is.numeric(s))
+    if (is.numeric(s)) {
         s <- s[1]
-    else if (is.character(s)) {
+        if (length(s) > 1) warning("More than one value for s has been supplied. Only first entry will be used")
+    } else if (is.character(s)) {
         s <- match.arg(s)
     }
     if (!inherits(newdata, "matrix")) {
-        # Remove the intercept to get the right design matrix
-        formula_pred <- update(formula(delete.response(terms(object$formula))), ~ . -1)
+        # Remove response variable because it won't be in newdata
+        formula_pred <- formula(delete.response(terms(object$formula)))
         newdata_matrix <- model.matrix(formula_pred, newdata)
+        # Remove the intercept to get the right design matrix
+        newdata_matrix <- newdata_matrix[,which(colnames(newdata_matrix) != "(Intercept)")]
     } else {
         newdata_matrix <- newdata
     }
@@ -56,7 +63,7 @@ check_arguments_hazard <- function(object, newdata, plot, ci, ci.lvl) {
         warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
     }
     if (ci) {
-        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
+        if (!data.table::between(ci.lvl, 0, 1, incbounds = FALSE))
             stop("ci.lvl must be between 0 and 1")
         if (!inherits(object, "glm")) {
             warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",
