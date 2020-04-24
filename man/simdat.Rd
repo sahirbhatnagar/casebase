@@ -4,12 +4,9 @@
 \name{simdat}
 \alias{simdat}
 \title{Simulated data under Weibull model with Time-Dependent Treatment Effect}
-\format{
-A dataframe with 1000 observations and 4 variables: \describe{
+\format{A dataframe with 1000 observations and 4 variables: \describe{
 \item{id}{patient id} \item{eventtime}{time of event} \item{status}{event
-indicator (1 = event, 0 = censored)} \item{trt}{binary treatment
-indicator}}
-}
+indicator (1 = event, 0 = censored)} \item{trt}{binary treatment indicator}}}
 \source{
 See \code{simsurv} vignette:
 \url{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}

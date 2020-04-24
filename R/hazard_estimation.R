@@ -23,8 +23,8 @@ estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE,
                                       s = c("lambda.1se", "lambda.min"), ...) {
     check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
     if (is.numeric(s)) {
-        s <- s[1]
         if (length(s) > 1) warning("More than one value for s has been supplied. Only first entry will be used")
+        s <- s[1]
     } else if (is.character(s)) {
         s <- match.arg(s)
     }

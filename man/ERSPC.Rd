@@ -4,14 +4,11 @@
 \name{ERSPC}
 \alias{ERSPC}
 \title{Data on the men in the European Randomized Study of Prostate Cancer Screening}
-\format{
-A data frame with 159,893 observations on the following 3 variables:
-\describe{ \item{ScrArm}{Whether in Screening Arm (1) or non-Screening arm
-(0) (\code{numeric})} \item{Follow.Up.Time}{The time, measured in years
-from randomization, at which follow-up was terminated}
-\item{DeadOfPrCa}{Whether follow-up was terminated by Death from Prostate
-Cancer (1) or by death from other causes, or administratively (0)} }
-}
+\format{A data frame with 159,893 observations on the following 3 variables: \describe{
+\item{ScrArm}{Whether in Screening Arm (1) or non-Screening arm (0) (\code{numeric})}
+\item{Follow.Up.Time}{The time, measured in years from randomization, at which follow-up was
+terminated} \item{DeadOfPrCa}{Whether follow-up was terminated by Death from Prostate Cancer
+(1) or by death from other causes, or administratively (0)} }}
 \source{
 The individual censored values were recovered by James Hanley from
 the Postcript code that the NEJM article (Schroder et al., 2009) used to
