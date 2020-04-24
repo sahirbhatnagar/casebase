@@ -71,3 +71,19 @@ test_that("no error with different types of event variables", {
     expect_false(inherits(out2, "try-error"))
     expect_false(inherits(out3, "try-error"))
 })
+
+test_that("warning when baseline not specified", {
+    expect_warning(checkArgsEventIndicator(data = veteran, event = "celltype"),
+                   regexp = "censor.indicator not specified")
+    expect_warning(checkArgsEventIndicator(data = bmtcrr, event = "Sex"),
+                   regexp = "censor.indicator not specified")
+})
+
+test_that("warning when baseline is specified for numeric", {
+    expect_warning(checkArgsEventIndicator(data = veteran, event = "status",
+                                           censored.indicator = 0L),
+                   regexp = "censored.indicator specified but ignored")
+    expect_warning(checkArgsEventIndicator(data = bmtcrr, event = "Status",
+                                           censored.indicator = 0L),
+                   regexp = "censored.indicator specified but ignored")
+})

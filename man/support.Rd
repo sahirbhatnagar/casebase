@@ -3,22 +3,75 @@
 \docType{data}
 \name{support}
 \alias{support}
-\title{Study to Understand Prognoses Preferences Outcomes and Risks of Treatment (SUPPORT)}
+\title{Study to Understand Prognoses Preferences Outcomes and Risks of Treatment
+(SUPPORT)}
 \format{
-A dataframe with 9104 observations and 34 variables after imputation and the removal of response variables like hospital charges, patient ratio of costs to charges and micro-costs. Ordinal variables, namely functional disability and income were removed. Finally, Surrogate activities of daily living were removed due to sparsity. There were 6 other model scores in the data-set and they were removed; only aps and sps were kept. \describe{ \item{Age}{ Stores a double representing age. } \item{death}{ Death at any time up to NDI date: 31DEC94. } \item{sex}{ 0=female, 1=male. } \item{slos}{ Days from study entry to discharge. } \item{d.time}{ days of follow-up. } \item{dzgroup}{ Each level of dzgroup: ARF/MOSF w/Sepsis, COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with malignancy. } \item{dzclass}{ ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer disease classes. } \item{num.co}{ the number of comorbidities. } \item{edu}{ years of education of patient. } \item{scoma}{ The SUPPORT coma score based on Glasgow D3. } \item{avtisst}{ Average TISS, days 3-25. } \item{race}{ Indicates race. White, black, asian, hispanic or other. } \item{hday}{Day in Hospital at Study Admit} \item{diabetes}{Diabetes (Com 27-28, Dx 73)} \item{dementia}{Dementia (Comorbidity 6) } \item{ca}{Cancer State} \item{meanbp}{ Mean Arterial Blood Pressure Day 3. } \item{wblc}{ White blood cell count on day 3. } \item{hrt}{ Heart rate day 3. } \item{resp}{ Respiration Rate day 3. } \item{temp}{ Temperature, in celcius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{ Serum albumin day 3. } \item{bili}{ Bilirubin Day 3. } \item{crea}{ Serum creatinine day 3. } \item{sod}{ Serum sodium day 3. } \item{ph}{ Serum pH (in arteries) day 3. } \item{glucose}{ Serum glucose day 3. } \item{bun}{  BUN day 3. } \item{urine}{ urine output day 3. } \item{adlp}{ ADL patient day 3. }  \item{adlsc}{ Imputed ADL calibrated to surrogate, if a surrogate was used for a follow up.} \item{sps}{SUPPORT physiology score} \item{aps}{Apache III physiology score}
-}
+A dataframe with 9104 observations and 34 variables after imputation
+and the removal of response variables like hospital charges, patient ratio
+of costs to charges and micro-costs. Ordinal variables, namely functional
+disability and income, were also removed. Finally, Surrogate activities of
+daily living were removed due to sparsity. There were 6 other model scores
+in the data-set and they were removed; only aps and sps were kept.
+\describe{ \item{Age}{ Stores a double representing age. } \item{death}{
+Death at any time up to NDI date: 31DEC94. } \item{sex}{ 0=female, 1=male.
+} \item{slos}{ Days from study entry to discharge. } \item{d.time}{ days of
+follow-up. } \item{dzgroup}{ Each level of dzgroup: ARF/MOSF w/Sepsis,
+COPD, CHF, Cirrhosis, Coma, Colon Cancer, Lung Cancer, MOSF with
+malignancy. } \item{dzclass}{ ARF/MOSF, COPD/CHF/Cirrhosis, Coma and cancer
+disease classes. } \item{num.co}{ the number of comorbidities. }
+\item{edu}{ years of education of patient. } \item{scoma}{ The SUPPORT coma
+score based on Glasgow D3. } \item{avtisst}{ Average TISS, days 3-25. }
+\item{race}{ Indicates race. White, black, asian, hispanic or other. }
+\item{hday}{Day in Hospital at Study Admit} \item{diabetes}{Diabetes (Com
+27-28, Dx 73)} \item{dementia}{Dementia (Comorbidity 6) } \item{ca}{Cancer
+State} \item{meanbp}{ Mean Arterial Blood Pressure Day 3. } \item{wblc}{
+White blood cell count on day 3. } \item{hrt}{ Heart rate day 3. }
+\item{resp}{ Respiration Rate day 3. } \item{temp}{ Temperature, in
+celcius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{
+Serum albumin day 3. } \item{bili}{ Bilirubin Day 3. } \item{crea}{ Serum
+creatinine day 3. } \item{sod}{ Serum sodium day 3. } \item{ph}{ Serum pH
+(in arteries) day 3. } \item{glucose}{ Serum glucose day 3. } \item{bun}{
+BUN day 3. } \item{urine}{ urine output day 3. } \item{adlp}{ ADL patient
+day 3. }  \item{adlsc}{ Imputed ADL calibrated to surrogate, if a surrogate
+was used for a follow up.} \item{sps}{SUPPORT physiology score}
+\item{aps}{Apache III physiology score} }
 }
 \source{
-Available at the following website: \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}. note: must unzip and process this data before use.
+Available at the following website:
+\url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}.
+note: must unzip and process this data before use.
 }
 \usage{
 support
 }
 \description{
-The support datasets track four response variables: hospital death, severe functional disability, hospital costs and time until death and death itself. where the patients are followed for up to 5.56 years. Data included only tracks follow-up time and death
+The SUPPORT dataset tracks four response variables: hospital
+death, severe functional disability, hospital costs, and time until death
+and death itself. The patients are followed for up to 5.56 years. Data
+included only tracks follow-up time and death.
 }
 \details{
-Data from the first phase of the SUPPORT study. We imputed the data-set using default settings in mice package.
+Some of the original data was missing. Before imputation, there were
+a total of 9105 individuals and 47 variables. Of those variables, a few
+were removed before imputation. We removed three response variables:
+hospital charges, patient ratio of costs to charge,s and patient
+micro-costs. Next, we removed hospital death as it was directly informative
+of our event of interest, namely death. We also removed functional
+disability and income as they are ordinal covariates. Finally, we removed 8
+covariates related to the results of previous findings: we removed SUPPORT
+day 3 physiology score (\code{sps}), APACHE III day 3 physiology score
+(\code{aps}), SUPPORT model 2-month survival estimate, SUPPORT model
+6-month survival estimate, Physician's 2-month survival estimate for pt.,
+Physician's 6-month survival estimate for pt., Patient had Do Not
+Resuscitate (DNR) order, and Day of DNR order (<0 if before study). Of
+these, \code{sps} and \code{aps} were added on after imputation, as they
+were missing only 1 observation. First we imputed manually using the normal
+values for physiological measures recommended by Knaus et al. (1995). Next,
+we imputed a single dataset using \pkg{mice} with default settings. After
+imputation, we noted that the covariate for surrogate activities of daily
+living was not imputed. This is due to collinearity between the other two
+covariates for activities of daily living. Therefore, surrogate activites
+of daily living was removed.
 }
 \examples{
 data("support")
@@ -31,7 +84,10 @@ fit_cb <- casebase::fitSmoothHazard.fit(x, y, time = "d.time", event = "death",
                                         ratio = 1)
 }
 \references{
-Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT prognostic model: Objective estimates of survival for seriously ill hospitalized adults. Annals of Internal Medicine 122:191-203.
+Knaus WA, Harrell FE, Lynn J et al. (1995): The SUPPORT
+prognostic model: Objective estimates of survival for seriously ill
+hospitalized adults. Annals of Internal Medicine 122:191-203.
+\doi{10.7326/0003-4819-122-3-199502010-00007}.
 
 http://biostat.mc.vanderbilt.edu/wiki/Main/SupportDesc
 

@@ -1,8 +1,10 @@
 #' @rdname absoluteRisk
 #' @export
 absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-                                  nsamp = 100, onlyMain = TRUE, ...) {
+                                  nsamp = 100, onlyMain = TRUE, type = c("CI", "survival"),
+                                  addZero = TRUE) {
     method <- match.arg(method)
+    type <- match.arg(type)
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
@@ -26,7 +28,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
 
-    lambda_vec <- function(x, object, newdata) {
+    hazard_vec <- function(x, object, newdata) {
         # Note: the offset should be set to zero when estimating the hazard.
         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                row.names = as.character(1:length(x)))
@@ -39,15 +41,15 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 
     # Compute subdensities
     if (method == "numerical") {
-        overallLambda <- function(x, object, newdata, lambda_vec) {
-            return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
+        overallLambda <- function(x, object, newdata, hazard_vec) {
+            return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
         }
-        overallSurv <- function(x, object, newdata, lambda_vec,
+        overallSurv <- function(x, object, newdata, hazard_vec,
                                 method, nsamp) {
             fn <- function(t) {
                 exp(-integrate(overallLambda, lower = 0, upper = t,
                                object = object, newdata = newdata,
-                               lambda_vec = lambda_vec,
+                               hazard_vec = hazard_vec,
                                subdivisions = nsamp)$value)
             }
             # Vectorize
@@ -60,8 +62,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
                                    row.names = as.character(1:length(x)))
             newdata2[timeVar] <- x
-            lambdas <- lambda_vec(x, object, newdata2)
-            lambdas[,index] * overallSurv(x, object = object, newdata2, lambda_vec, method, nsamp)
+            hazards <- hazard_vec(x, object, newdata2)
+            hazards[,index] * overallSurv(x, object = object, newdata2, hazard_vec, method, nsamp)
         }
         for (j in 1:J) {
             subdensities[[j]] <- partialize(subdensity_template, index = j)
@@ -70,7 +72,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 
     return(estimate_risk_cr(object, time, newdata, method,
                             nsamp, onlyMain, subdensities,
-                            lambda_vec, timeVar, typeEvents))
+                            hazard_vec, timeVar, typeEvents,
+                            type, addZero))
 
 }
 
@@ -78,7 +81,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 # #' @export
 absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                                         nsamp = 100, onlyMain = TRUE, s = c("lambda.1se","lambda.min"),
-                                        ...) {
+                                        type = c("CI", "survival"), addZero = TRUE, ...) {
     # The current implementation doesn't work
     stop(paste("object is of class", class(object),
                "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
@@ -114,7 +117,7 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     # # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     # ###################################################
     # if (is.null(object$matrix.fit)) {
-    #     lambda_vec <- function(x, object, newdata) {
+    #     hazard_vec <- function(x, object, newdata) {
     #         newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
     #                                row.names = as.character(1:length(x)))
     #         newdata2[timeVar] <- x
@@ -125,7 +128,7 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     #         return(pred)
     #     }
     # } else {
-    #     lambda_vec <- function(x, object, newdata) {
+    #     hazard_vec <- function(x, object, newdata) {
     #         newdata_matrix <- newdata[,colnames(newdata) != timeVar, drop = FALSE]
     #         newdata_matrix <- as.matrix(cbind(as.data.frame(newdata_matrix),
     #                                           model.matrix(update(object$formula_time, ~ . -1),
@@ -139,15 +142,15 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     #
     # # Compute subdensities
     # if (method == "numerical") {
-    #     overallLambda <- function(x, object, newdata, lambda_vec) {
-    #         return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
+    #     overallLambda <- function(x, object, newdata, hazard_vec) {
+    #         return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
     #     }
-    #     overallSurv <- function(x, object, newdata, lambda_vec,
+    #     overallSurv <- function(x, object, newdata, hazard_vec,
     #                             method, nsamp) {
     #         fn <- function(t) {
     #             exp(-integrate(overallLambda, lower = 0, upper = t,
     #                            object = object, newdata = newdata,
-    #                            lambda_vec = lambda_vec,
+    #                            hazard_vec = hazard_vec,
     #                            subdivisions = nsamp)$value)
     #         }
     #         # Vectorize
@@ -161,8 +164,8 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     #             newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
     #                                     row.names = as.character(1:length(x)))
     #             newdata2[timeVar] <- x
-    #             lambdas <- lambda_vec(x, object, newdata2)
-    #             lambdas[,index] * overallSurv(x, object = object, newdata2, lambda_vec, method, nsamp)
+    #             hazards <- hazard_vec(x, object, newdata2)
+    #             hazards[,index] * overallSurv(x, object = object, newdata2, hazard_vec, method, nsamp)
     #         }
     #     } else {
     #         subdensity_template <- function(x, object, newdata, index) {
@@ -171,8 +174,8 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     #                                               model.matrix(update(object$formula_time, ~ . -1),
     #                                                            setNames(data.frame(x), timeVar)),
     #                                               row.names = NULL))
-    #             lambdas <- lambda_vec(x, object, newdata_matrix)
-    #             lambdas[,index] * overallSurv(x, object = object, newdata_matrix, lambda_vec, method, nsamp)
+    #             hazards <- hazard_vec(x, object, newdata_matrix)
+    #             hazards[,index] * overallSurv(x, object = object, newdata_matrix, hazard_vec, method, nsamp)
     #         }
     #     }
     #
@@ -183,7 +186,7 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
     #
     # return(estimate_risk_cr(object, time, newdata, method,
     #                         nsamp, onlyMain, subdensities,
-    #                         lambda_vec, timeVar, typeEvents))
+    #                         hazard_vec, timeVar, typeEvents))
 }
 
 # predict.CompRiskGlmnet <- function(object, ...) {
@@ -195,8 +198,9 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
 
 estimate_risk_cr <- function(object, time, newdata, method,
                              nsamp, onlyMain, subdensities,
-                             lambda_vec, timeVar, typeEvents) {
-    # Create output matrix
+                             hazard_vec, timeVar, typeEvents,
+                             type, addZero) {
+    # Create output array
     J <- length(typeEvents) - 1
     time_ordered <- unique(c(0, sort(time)))
     output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
@@ -207,24 +211,24 @@ estimate_risk_cr <- function(object, time, newdata, method,
     output[1,-1,] <- 0
 
     # 1. Compute overall survival
-    overallLambda <- function(x, object, newdata, lambda_vec) {
-        return(as.numeric(rowSums(lambda_vec(x, object, newdata))))
+    overallLambda <- function(x, object, newdata, hazard_vec) {
+        return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
     }
-    overallSurv <- function(x, object, newdata, lambda_vec,
+    overallSurv <- function(x, object, newdata, hazard_vec,
                             method, nsamp) {
         # Need to integrate later, so need to ability to take a vector x
         if (method == "numerical") {
             fn <- function(t) {
                 exp(-integrate(overallLambda, lower = 0, upper = t,
                                object = object, newdata = newdata,
-                               lambda_vec = lambda_vec,
+                               hazard_vec = hazard_vec,
                                subdivisions = nsamp)$value)
             }
         } else if (method == "montecarlo"){
             fn <- function(t) {
                 exp(-integrate_mc(overallLambda, lower = 0, upper = t,
                                   object = object, newdata = newdata,
-                                  lambda_vec = lambda_vec,
+                                  hazard_vec = hazard_vec,
                                   subdivisions = nsamp))
             }
         } else {
@@ -256,9 +260,9 @@ estimate_risk_cr <- function(object, time, newdata, method,
                 for (k in 2:length(time_ordered)) {
                     # Integrate all subdensities at the same time
                     x_vect <- sampledPoints * (time_ordered[k] - time_ordered[k - 1]) + time_ordered[k - 1]
-                    surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE], lambda_vec, method, nsamp)
-                    lambdas <- lambda_vec(x_vect, object, newdata[i,,drop = FALSE])
-                    output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * lambdas)
+                    surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE], hazard_vec, method, nsamp)
+                    hazards <- hazard_vec(x_vect, object, newdata[i,,drop = FALSE])
+                    output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * hazards)
                 }
                 # if k==1, there was only one time point and we don't need to sum the contributions
                 if (k != 1) output[,i + 1,] <- apply(output[,i + 1,], 2, cumsum)
@@ -266,6 +270,11 @@ estimate_risk_cr <- function(object, time, newdata, method,
 
         }
 
+    }
+
+    # Switch to survival scale?
+    if (type == "survival") {
+        output[,-1,] <- 1 - output[,-1,]
     }
 
     # Reformat output when only one time point
@@ -276,7 +285,10 @@ estimate_risk_cr <- function(object, time, newdata, method,
             output <- output[2,-1,,drop = FALSE]
         }
         dimnames(output)[[1]] <- time
+    } else {
+        if (!addZero) output <- output[-1,,,drop = FALSE]
     }
+
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
         warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
