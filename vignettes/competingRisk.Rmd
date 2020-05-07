@@ -10,9 +10,11 @@ output:
     toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{Competing risk analysis}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 bibliography: reference.bib
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Data

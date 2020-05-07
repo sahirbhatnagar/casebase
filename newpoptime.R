@@ -22,7 +22,8 @@ visreg(mod_cb,
        xvar = "d.time",
        by = "sex",
        scale = "response",
-       data = mod_cb$data,
+       overlay = T,
+       # data = mod_cb$data,
        plot = T)
 
 visreg(mod_cb,

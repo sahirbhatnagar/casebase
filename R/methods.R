@@ -362,6 +362,35 @@ plot.popTime <- function(x, ...,
 
 
 
+plot.singleEventCB <- function(x, ...,
+                               type = c("hazard","HR"),
+                               hazard.params = list()) {
+
+    type <- match.arg(type)
+
+
+    if (!requireNamespace("visreg", quietly = TRUE)){
+        stop("visreg package needed for this function. please install it first.")
+    }
+
+    if (type == "hazard") {
+        do.call("visreg", utils::modifyList(
+            list(fit = x,
+                 trans = exp,
+                 plot = T,
+                 rug = FALSE,
+                 alpha = 1,
+                 partial = FALSE,
+                 overlay = TRUE,
+                 print.cond = TRUE),
+            hazard.params))
+    }
+
+}
+
+
+
+
 
 #' @import methods
 #' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms
