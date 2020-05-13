@@ -122,8 +122,13 @@ tcens <- rbinom(n = N,
 y <- cbind(time = ty, status = 1 - tcens) # y=Surv(ty,1-tcens) with library(survival)
 
 test_that("no error in fitting fitSmoothHazard.fit", {
-    fit_gbm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
+    # gbm throws a warning because it check for equality of class
+    # instead of using inherits (version 2.1.5)
+    fit_gbm <- try(withCallingHandlers(fitSmoothHazard.fit(x, y, time = "time", event = "status",
                                        family = "gbm", ratio = 10),
+                                       warning = function(msg) {
+                                           if (any(grepl("condition has length > 1", msg))) invokeRestart("muffleWarning")
+                                       }),
                    silent = TRUE)
 
     expect_false(inherits(fit_gbm, "try-error"))

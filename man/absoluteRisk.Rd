@@ -27,6 +27,7 @@ absoluteRisk(
   onlyMain = TRUE,
   type = c("CI", "survival"),
   addZero = TRUE,
+  ntimes = 100,
   ...
 )
 }
@@ -61,6 +62,8 @@ output? Defaults to \code{TRUE}.}
 required (for class \code{cv.glmnet}).}
 
 \item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
+
+\item{ntimes}{Number of time points (only used if \code{time} is missing).}
 
 \item{...}{Extra parameters. Currently these are simply ignored.}
 }
