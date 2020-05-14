@@ -79,6 +79,36 @@ test_that("no error in absolute risk with data tables - no newdata", {
     expect_false(inherits(foo2, "try-error"))
 })
 
+test_that("no error in absolute risk with data frames--typical profile", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDF, time = 1,
+                                                 newdata = "typical",
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDF, time = 1,
+                             newdata = "typical",
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_false(inherits(foo1, "try-error"))
+    expect_false(inherits(foo2, "try-error"))
+})
+
+test_that("no error in absolute risk with data tables--typical profile", {
+    foo1 <- try(withCallingHandlers(absoluteRisk(fitDT, time = 1,
+                                                 newdata = "typical",
+                                                 method = "montecarlo"),
+                                    warning = handler_validmc),
+                silent = TRUE)
+    foo2 <- try(absoluteRisk(fitDT, time = 1,
+                             newdata = "typical",
+                             method = "numerical"),
+                silent = TRUE)
+
+    expect_false(inherits(foo1, "try-error"))
+    expect_false(inherits(foo2, "try-error"))
+})
+
 # Using new data
 newDT <- data.table("Z" = c(0,1))
 newDF <- data.frame("Z" = c(0,1))

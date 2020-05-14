@@ -10,6 +10,11 @@
 #' \code{newdata}, the mean absolute risk can be computed as the average of the
 #' output vector.
 #'
+#' If \code{newdata = "typical"}, we create a typical covariate profile for the
+#' absolute risk computation. This means that we take the median for numerical
+#' and date variables; we take the first element in alphabetical order for
+#' character variables; and we take the reference level for factor variables.
+#'
 #' In general, if \code{time} is a vector of length greater than one, the output
 #' will include a column corresponding to the provided time points. Some
 #' modifications of the \code{time} vector are done: \code{time=0} is added, the
@@ -35,6 +40,8 @@
 #'   risks.
 #' @param newdata Optionally, a data frame in which to look for variables with
 #'   which to predict. If omitted, the mean absolute risk is returned.
+#'   Alternatively, if \code{newdata = "typical"}, the absolute risk will be
+#'   computed at a "typical" covariate profile (see Details).
 #' @param method Method used for integration. Defaults to \code{"numerical"},
 #'   which uses the trapezoidal rule to integrate over all time points together.
 #'   The only other option is \code{"montecarlo"}, which implements Monte-Carlo
@@ -111,6 +118,11 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     if (inherits(object, "gbm")) {
         if(missing(n.trees)) stop("n.trees is missing")
     } else n.trees <- NULL
+    if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
+        newdata <- if (is.null(object$matrix.fit)) {
+            get_typical(object$originalData)
+        } else apply(object$originalData$x, 2, median, na.rm = TRUE)
+    }
 
     # Call the correct function with correct parameters
     if (missing(newdata)) {
