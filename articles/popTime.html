@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Population Time Plots</h1>
                         <h4 class="author">Sahir R. Bhatnagar</h4>
             
-            <h4 class="date">2020-04-21</h4>
+            <h4 class="date">2020-05-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/popTime.Rmd"><code>vignettes/popTime.Rmd</code></a></small>
       <div class="hidden name"><code>popTime.Rmd</code></div>
@@ -165,7 +165,7 @@
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
 <p>The <code>casebase</code> package has a <code>plot</code> method for objects of class <code>popTime</code>:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># plot method for objects of class 'popTime'</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">pt_object</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">pt_object</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>One benefit from these plots is that it allows you to see the incidence density. This can be seen from the distribution of the red dots in the above plot. We can see that more events are observed later on in time. Therefore a constant hazard model would not be appropriate in this instance as it would overestimate the cumulative incidence earlier on in time, and underestimate it later on.</p>
 <p>The unique ‘step shape’ of the population time plot is due to the randomization of the Finnish cohorts which were carried out on January 1 of each of the 4 years 1996 to 1999. This, coupled with the uniform December 31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8 years of follow-up.</p>
@@ -205,10 +205,10 @@
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">pt_object_strat</span>, <span class="st">"exposure"</span>)</pre></body></html></div>
 <pre><code>## [1] "ScrArm"</code></pre>
 <p>The plot method for objects of class <code>popTime</code> will use this exposure attribute to create exposure stratified population time plots:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>We can also plot them side-by-side using the <code>facet.params</code> argument, which is a list of arguments that are passed to the <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html"><code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code></a> function in the <code>ggplot2</code> package:</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>,
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>,
      <span class="kw">facet.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>))</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
@@ -216,7 +216,7 @@
 <h2 class="hasAnchor">
 <a href="#plotting-the-base-series" class="anchor"></a>Plotting the base series</h2>
 <p>To illustrate the casebase sampling methodology, we can also plot the base series using the <code>add.base.series</code> function:</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>,
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">pt_object_strat</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p>Note that the <code>theme.params</code> argument is a list of arguments passed to the <a href="https://ggplot2.tidyverse.org/reference/theme.html"><code><a href="https://ggplot2.tidyverse.org/reference/theme.html">ggplot2::theme()</a></code></a> function.</p>
@@ -257,11 +257,11 @@
 <h2 class="hasAnchor">
 <a href="#plotting-the-follow-up-times-for-each-observation" class="anchor"></a>Plotting the follow-up times for each observation</h2>
 <p>We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code></a> function. The following figure shows this area for the <code>bmtcrr</code> dataset. Note that we must specify <code>add.case.series = FALSE</code> because the default is to add the case series:</p>
-<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>Note that we can change the aesthetics of the area by using the <code>ribbon.params()</code> argument as follows. These arguments are passed to the <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code></a> function:</p>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
      <span class="kw">ribbon.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">color</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">fill</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="kw">size</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">0.2</span>))</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
@@ -270,7 +270,7 @@
 <h2 class="hasAnchor">
 <a href="#plot-the-case-series" class="anchor"></a>Plot the Case Series</h2>
 <p>Next we add the case series. Note that because the <code>Status</code> column has a competing event (coded as 2), we must specify <code>comprisk = TRUE</code> (even if you don’t want to plot the competing event):</p>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">comprisk</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
@@ -280,7 +280,7 @@
 <h2 class="hasAnchor">
 <a href="#plot-the-base-series" class="anchor"></a>Plot the Base Series</h2>
 <p>We can now add the base series with the <code>add.base.series</code> argument. Internally, the <code>plot</code> method calls the <code><a href="../reference/sampleCaseBase.html">casebase::sampleCaseBase</a></code> function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the <code>ratio</code> argument which we will leave at its default of 1. A legend is also added by default:</p>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">comprisk</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
@@ -290,14 +290,14 @@
 <h2 class="hasAnchor">
 <a href="#plot-the-competing-event" class="anchor"></a>Plot the Competing event</h2>
 <p>We specify the <code>add.competing.event = TRUE</code> in order to also plot the competing event. Note, that like the case series, the competing event is sampled randomly on the vertical axis in order to see the incidence density.</p>
-<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.competing.event</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">comprisk</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <p>We can also only plot the case series and competing event (or any combination):</p>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">FALSE</span>,
      <span class="kw">add.competing.event</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
@@ -313,7 +313,7 @@
 <pre><code>## 'Status' will be used as the event variable</code></pre>
 <div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(<span class="no">popTimeData</span>, <span class="st">"exposure"</span>)</pre></body></html></div>
 <pre><code>## [1] "D"</code></pre>
-<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.competing.event</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
@@ -324,7 +324,7 @@
 <h2 class="hasAnchor">
 <a href="#change-color-points-and-legend-labels" class="anchor"></a>Change color points and legend labels</h2>
 <p>Here is some code to change color points and legend labels. For a more thorough description, please see the <a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html">Customizing Population Time Plots</a> vignette.</p>
-<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.base.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">add.competing.event</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
@@ -364,7 +364,7 @@
 <pre><code>## 'status' will be used as the event variable</code></pre>
 <div class="sourceCode" id="cb50"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
-<div class="sourceCode" id="cb52"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb52"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
 <p>We can see in this example that the dots are fairly evenly spread out. That is, we don’t see any particular clusters of red dots indicating that perhaps a constant hazard assumption would be appropriate.</p>
 <div id="stratified-by-treatment-population-time-plot" class="section level2">
@@ -387,7 +387,7 @@
 <pre><code>## [1] "trt"</code></pre>
 <p>Again, we simply pass this object to the <code>plot</code> function to get an exposure stratified population time plot:</p>
 <div class="sourceCode" id="cb60"><html><body><pre class="r"><span class="co"># plot method for objects of class 'popTime'</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
 </div>
 </div>
@@ -417,7 +417,7 @@
 <span class="no">popTimeData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">heart</span>, <span class="kw">exposure</span> <span class="kw">=</span> <span class="st">"transplant"</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'event' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb66"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb66"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
 <p>In the plot above we see that those who didnt receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.</p>
 </div>
@@ -449,7 +449,7 @@
 <span class="no">popTimeData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">cancer</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb72"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb72"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 <div id="stratified-by-gender" class="section level2">
 <h2 class="hasAnchor">
@@ -458,7 +458,7 @@
 <div class="sourceCode" id="cb73"><html><body><pre class="r"><span class="no">popTimeData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">cancer</span>, <span class="kw">exposure</span> <span class="kw">=</span> <span class="st">"sex"</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb76"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<div class="sourceCode" id="cb76"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">casebase.theme</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
 </div>
@@ -503,7 +503,7 @@
 <a href="#population-time-plot" class="anchor"></a>Population Time Plot</h2>
 <div class="sourceCode" id="cb78"><html><body><pre class="r"><span class="co"># create 'popTime' object</span>
 <span class="no">popTimeData</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">DTsim</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="st">"time"</span>, <span class="kw">event</span> <span class="kw">=</span> <span class="st">"event"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 </div>
 <div id="stratified-by-binary-covariate-z" class="section level2">
@@ -514,7 +514,7 @@
 
 <span class="co"># we can line up the plots side-by-side instead of one on top of the other</span>
 <span class="co"># we can also change the theme by adding </span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>,
      <span class="kw">facet.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">2</span>)) + <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_linedraw</a></span>()</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
 </div>

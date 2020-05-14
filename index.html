@@ -96,6 +96,7 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div id="casebase" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#casebase" class="anchor"></a>casebase</h1></div>
@@ -122,6 +123,20 @@
 <li><a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html">Customizing Population Time Plots</a></li>
 </ol>
 </div>
+</div>
+<div id="class-structure" class="section level1">
+<h1 class="hasAnchor">
+<a href="#class-structure" class="anchor"></a>Class structure</h1>
+<p>The <code>casebase</code> package uses the following hierarchy of classes for the output of <code>fitSmoothHazard</code>:</p>
+<pre><code>casebase:
+  singleEventCB:
+    - glm
+    - gam
+    - gbm
+    - cv.glmnet
+  CompRisk:
+    - vglm</code></pre>
+<p>The class <code>singleEventCB</code> is an <code>S3</code> class, and we also keep track of the classes appearing below. The class <code>CompRisk</code> is an <code>S4</code> class that inherits from <code>vglm</code>.</p>
 <div id="credit" class="section level2">
 <h2 class="hasAnchor">
 <a href="#credit" class="anchor"></a>Credit</h2>
@@ -139,7 +154,7 @@
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
 <p>To cite <code>casebase</code> in publications, please use</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'casebase'</span>)</pre></div>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'casebase'</span>)</pre></div>
 <pre><code>Bhatnagar S, Turgeon M, Saarela O and Hanley J (2017). 
 casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression. 
 R package version 0.1.0, &lt;URL:https://CRAN.R-project.org/package=casebase&gt;.
@@ -156,7 +171,7 @@ If competing risks analyis is used, please also cite:
 Saarela, Olli, and Elja Arjas. Non-parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment. 
 Scandinavian Journal of Statistics 42.2 (2015): 609-626.</code></pre>
 <p>For BibTeX users:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html">toBibtex</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'casebase'</span>))</pre></div>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/toLatex.html">toBibtex</a></span>(<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'casebase'</span>))</pre></div>
 <pre><code>@Manual{casebase-package,
   title = {casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression},
   author = {Sahir Bhatnagar and Maxime Turgeon and Olli Saarela and James Hanley},
@@ -227,7 +242,7 @@ Saarela, Olli. 2015. “A Case-Base Sampling Method for Estimating Recurrent Eve
 </li>
 <li>Pull Requests: <a href="https://github.com/sahirbhatnagar/casebase/" class="uri">https://github.com/sahirbhatnagar/casebase/</a>
 </li>
-<li>e-mail: <a href="mailto:sahir.bhatnagar@gmail.com">sahir.bhatnagar@gmail.com</a>, <a href="mailto:maxime.turgeon@mail.mcgill.ca">maxime.turgeon@mail.mcgill.ca</a>
+<li>e-mail: <a href="mailto:sahir.bhatnagar@gmail.com">sahir.bhatnagar@gmail.com</a>, <a href="mailto:max.turgeon@umanitoba.ca">max.turgeon@umanitoba.ca</a>
 </li>
 </ul>
 </div>
@@ -242,6 +257,7 @@ Saarela, Olli. 2015. “A Case-Base Sampling Method for Estimating Recurrent Eve
 <p>Please note that this project is released with a <a href="CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
