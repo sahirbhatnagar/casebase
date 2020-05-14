@@ -30,6 +30,23 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 3. [Population Time Plots](http://sahirbhatnagar.com/casebase/articles/popTime.html)
 4. [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html)
 
+# Class structure
+
+The `casebase` package uses the following hierarchy of classes for the output of `fitSmoothHazard`:
+
+```
+casebase:
+  singleEventCB:
+    - glm
+    - gam
+    - gbm
+    - cv.glmnet
+  CompRisk:
+    - vglm
+```
+
+The class `singleEventCB` is an `S3` class, and we also keep track of the classes appearing below. The class `CompRisk` is an `S4` class that inherits from `vglm`. 
+
 ## Credit
 
 This package is makes use of several existing packages including:
@@ -37,7 +54,6 @@ This package is makes use of several existing packages including:
 * [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting multinomial logistic regression models
 * [`survival`](https://cran.r-project.org/package=survival) for survival models
 * [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting the population time plots
-
 
 ## Citation
 
@@ -128,12 +144,11 @@ toBibtex(citation('casebase'))
 </li>
 </ol>
 
-
 ## Contact
 
 * Issues: <https://github.com/sahirbhatnagar/casebase/issues>
 * Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
-* e-mail: <sahir.bhatnagar@gmail.com>, <maxime.turgeon@mail.mcgill.ca>
+* e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
 
 
 ## Latest news

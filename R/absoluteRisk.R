@@ -10,6 +10,11 @@
 #' \code{newdata}, the mean absolute risk can be computed as the average of the
 #' output vector.
 #'
+#' If \code{newdata = "typical"}, we create a typical covariate profile for the
+#' absolute risk computation. This means that we take the median for numerical
+#' and date variables; we take the first element in alphabetical order for
+#' character variables; and we take the reference level for factor variables.
+#'
 #' In general, if \code{time} is a vector of length greater than one, the output
 #' will include a column corresponding to the provided time points. Some
 #' modifications of the \code{time} vector are done: \code{time=0} is added, the
@@ -35,6 +40,8 @@
 #'   risks.
 #' @param newdata Optionally, a data frame in which to look for variables with
 #'   which to predict. If omitted, the mean absolute risk is returned.
+#'   Alternatively, if \code{newdata = "typical"}, the absolute risk will be
+#'   computed at a "typical" covariate profile (see Details).
 #' @param method Method used for integration. Defaults to \code{"numerical"},
 #'   which uses the trapezoidal rule to integrate over all time points together.
 #'   The only other option is \code{"montecarlo"}, which implements Monte-Carlo
@@ -51,6 +58,7 @@
 #'   i.e. 1- CI)
 #' @param addZero Logical. Should we add time = 0 at the beginning of the
 #'   output? Defaults to \code{TRUE}.
+#' @param ntimes Number of time points (only used if \code{time} is missing).
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return If \code{time} was provided, returns the estimated absolute risk for
 #'   the user-supplied covariate profiles. This will be stored in a 2- or
@@ -86,7 +94,7 @@
 absoluteRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
                          nsamp = 100, s = c("lambda.1se","lambda.min"),
                          n.trees, onlyMain = TRUE, type = c("CI", "survival"),
-                         addZero = TRUE, ...) {
+                         addZero = TRUE, ntimes = 100, ...) {
     if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
                    "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
@@ -110,6 +118,11 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     if (inherits(object, "gbm")) {
         if(missing(n.trees)) stop("n.trees is missing")
     } else n.trees <- NULL
+    if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
+        newdata <- if (is.null(object$matrix.fit)) {
+            get_typical(object$originalData)
+        } else apply(object$originalData$x, 2, median, na.rm = TRUE)
+    }
 
     # Call the correct function with correct parameters
     if (missing(newdata)) {
@@ -125,6 +138,14 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
                                          addZero = addZero, ...))
         }
     } else {
+        if (missing(time)) {
+            # If only time is missing, compute risk for each row of newdata
+            # at equidistant points
+            max_time <- if (is.null(object$matrix.fit)) {
+                max(object$originalData[object$timeVar][[1]])
+            } else max(object$originalData$y[,object$timeVar])
+            time <- seq(0, max_time, length.out = ntimes)
+        }
         return(estimate_risk_newtime(object, time, newdata,
                                      method, nsamp, s, n.trees, type = type,
                                      addZero = addZero, ...))
@@ -132,6 +153,9 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
 }
 
 # Helper functions----
+# estimate_risk computes one survival probability per covariate profile
+# Currently, this is only called when we want the survival probabilities
+# at failure times for the original data
 estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
@@ -189,6 +213,8 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     return(newdata)
 }
 
+# estimate_risk_newtime computes the whole survival curve for each covariate
+# profile
 estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                   s, n.trees, type, addZero, ...) {
     if (missing(newdata)) {
@@ -289,6 +315,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     } else {
         if (!addZero) output <- output[-1,,drop = FALSE]
     }
-
+    # Add class
+    class(output) <- c("absRiskCB", class(output))
     return(output)
 }
