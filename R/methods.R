@@ -363,7 +363,7 @@ plot.popTime <- function(x, ...,
 
 
 plot.singleEventCB <- function(x, ...,
-                               type = c("hazard","HR"),
+                               type = c("hazard","hr"),
                                hazard.params = list()) {
 
     type <- match.arg(type)
@@ -384,6 +384,33 @@ plot.singleEventCB <- function(x, ...,
                  overlay = TRUE,
                  print.cond = TRUE),
             hazard.params))
+    }
+
+
+    if (type == "hr") {
+
+        # browser()
+        tt <- do.call("visreg", utils::modifyList(
+            list(fit = x,
+                 trans = exp,
+                 plot = F,
+                 rug = FALSE,
+                 alpha = 1,
+                 partial = FALSE,
+                 overlay = TRUE,
+                 print.cond = TRUE),
+            hazard.params))
+
+        hazard.params$by
+
+        t1 <- tt[["fit"]][which(tt$fit[[hazard.params$by]]==1),]
+        t0 <- tt[["fit"]][which(tt$fit[[hazard.params$by]]==0),]
+        t1_visreg <- t1[order(t1$time),]
+        t0_visreg <- t0[order(t1$time),]
+        plot(t0_visreg$time, t1_visreg$visregFit / t0_visreg$visregFit,
+             type = "l", col = 2, lty = 2, lwd = 2, ylim = c(0,1.5))
+        abline(a=1, b=0, col="grey")
+
     }
 
 }
