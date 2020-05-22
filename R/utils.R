@@ -325,3 +325,20 @@ detect_interaction <- function(formula) {
     # Check if terms of order > 1
     any(orders > 1)
 }
+
+# Get typical covariate profile from dataset
+#' @importFrom stats median
+get_typical <- function(data) {
+  data.frame(lapply(data, function(col) {
+    if (is.numeric(col) || inherits(col, "Date")) {
+      # For numeric or dates, take median
+      median(col, na.rm = TRUE)
+    } else if (is.character(col)) {
+      # If character string, take first value in alphabetical order
+      sort(unique(col))[1]
+    } else {
+        # For factors, take reference level
+        factor(levels(col)[1], levels(col))
+        }
+    }))
+}
