@@ -34,8 +34,9 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
                                row.names = as.character(1:length(x)))
         newdata2[timeVar] <- x
         # predictvglm doesn't like offset = 0
-        withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
-                            warning = handler_offset)
+        # withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
+        #                     warning = handler_offset)
+        pred <- predict_CompRisk(object, newdata2)
         return(exp(pred))
     }
 
@@ -295,4 +296,19 @@ estimate_risk_cr <- function(object, time, newdata, method,
     }
     # If there is only one time point, we should drop a dimension and return a matrix
     if (onlyMain) return(output[,,1, drop = TRUE]) else return(output)
+}
+
+#' @importFrom stats coef
+predict_CompRisk <- function (object, newdata = NULL) {
+    ttob <- terms(object)
+    X <- model.matrix(delete.response(ttob), newdata,
+                      contrasts = if (length(object@contrasts)) object@contrasts else NULL,
+                      xlev = object@xlevels)
+    coeffs <- matrix(coef(object), nrow = ncol(X),
+                     byrow = TRUE)
+    preds <- X %*% coeffs
+    colnames(preds) <- paste0("log(mu[,",
+                              seq(2, length(object@typeEvents)),
+                              "]/mu[,1])")
+    return(preds)
 }
