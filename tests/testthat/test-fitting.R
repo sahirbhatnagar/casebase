@@ -50,6 +50,7 @@ form <- formula(event ~ exposure + time)
 form_bs <- formula(event ~ exposure + bs(time))
 form_log <- formula(event ~ exposure + log(time))
 form_int <- formula(event ~ exposure*time)
+form_nested <- formula(cens ~ horTh*nsx(log(time), df = 3) + age*time)
 
 form_bs_extra <- formula(event ~ exposure + bs(time, df = 3))
 form_bs_named <- formula(event ~ exposure + bs(x = time))
@@ -59,6 +60,8 @@ test_that("detecting non-linear functions of time", {
     expect_true(detect_nonlinear_time(form_bs, "time"))
     expect_true(detect_nonlinear_time(form_log, "time"))
     expect_false(detect_nonlinear_time(form_int, "time"))
+    expect_true(detect_nonlinear_time(form_nested, "time"))
+
     expect_true(detect_nonlinear_time(form_bs_extra, "time"))
     expect_true(detect_nonlinear_time(form_bs_named, "time"))
 })
