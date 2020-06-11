@@ -342,3 +342,19 @@ get_typical <- function(data) {
         }
     }))
 }
+
+
+
+
+
+incrVar <- function (var, increment = 1) {
+  n <- length(var)
+  if (n > 1 && length(increment) == 1)
+    increment <- rep(increment, n)
+  function(data) {
+    for (i in 1:n) {
+      data[[var[i]]] <- data[[var[i]]] + increment[i]
+    }
+    data
+  }
+}

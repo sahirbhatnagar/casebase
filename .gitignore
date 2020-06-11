@@ -8,3 +8,4 @@ test.rds
 references
 .DS_Store
 tests/testthat/Rplots.pdf
+HR_ci.R

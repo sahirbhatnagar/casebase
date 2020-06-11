@@ -361,20 +361,62 @@ plot.popTime <- function(x, ...,
 
 
 
-
+#' @title Plot Hazards and Hazard Ratios
+#'
+#' @description Plot method for objects returned by the \code{fitSmoothHazard}
+#'   function. Current plot types are hazard function and hazard ratio. The
+#'   \code{visreg} package must be installed for \code{type="hazard"}. This
+#'   function accounts for the possible time-varying expsoure effects.
+#' @param x PARAM_DESCRIPTION
+#' @param ... PARAM_DESCRIPTION
+#' @param type PARAM_DESCRIPTION, Default: c("hazard", "hr")
+#' @param hazard.params PARAM_DESCRIPTION, Default: list()
+#' @param newdata Required for \code{type="hr"}. The \code{newdata} argument is
+#'   the "unexposed" group, while the exposed group is defined by either: (i) a
+#'   unit change in a variable in newdata as defined by the \code{var} argument
+#'   (e.g. \code{var="x"} for variable \code{x}); or (ii) an exposed function
+#'   that takes a data-frame and returns the "exposed" group (e.g. \code{exposed
+#'   = function(data) transform(data, x=1)}). This is the same behavior as the
+#'   rstpm2 plot function. See references for rstpm2 package.
+#' @param var specify the variable name or names for the exposed/unexposed
+#'   (names are given as characters)
+#' @param exposed function that takes \code{newdata} and returns the exposed
+#'   dataset. By default, this increments \code{var}.
+#' @param xvar PARAM_DESCRIPTION
+#' @param plot.params PARAM_DESCRIPTION, Default: list()
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso \code{\link[utils]{modifyList}}
+#' @rdname plot.singleEventCB
+#' @references Mark Clements and Xing-Rong Liu (2019). rstpm2: Smooth Survival
+#'   Models, Including Generalized Survival Models. R package version 1.5.1.
+#'   https://CRAN.R-project.org/package=rstpm2
+#' @export
+#' @importFrom utils modifyList
 plot.singleEventCB <- function(x, ...,
                                type = c("hazard","hr"),
-                               hazard.params = list()) {
+                               hazard.params = list(),
+                               newdata,
+                               exposed = incrVar(var),
+                               var = NULL,
+                               xvar,
+                               plot.params = list()) {
 
     type <- match.arg(type)
 
-
-    if (!requireNamespace("visreg", quietly = TRUE)){
-        stop("visreg package needed for this function. please install it first.")
-    }
-
     if (type == "hazard") {
-        do.call("visreg", utils::modifyList(
+
+        if (!requireNamespace("visreg", quietly = TRUE)){
+            stop("visreg package needed for this function. please install it first.")
+        }
+
+        tt <- do.call("visreg", utils::modifyList(
             list(fit = x,
                  trans = exp,
                  plot = T,
@@ -384,33 +426,86 @@ plot.singleEventCB <- function(x, ...,
                  overlay = TRUE,
                  print.cond = TRUE),
             hazard.params))
+
+        print(tt)
+
+        invisible(tt)
     }
 
 
     if (type == "hr") {
 
         # browser()
-        tt <- do.call("visreg", utils::modifyList(
-            list(fit = x,
-                 trans = exp,
-                 plot = F,
-                 rug = FALSE,
-                 alpha = 1,
-                 partial = FALSE,
-                 overlay = TRUE,
-                 print.cond = TRUE),
-            hazard.params))
 
-        hazard.params$by
+        if (is.null(hazard.params[["by"]]))
+            stop("'by' argument needs to be specified in hazard.params argument when type='hr'")
 
-        t1 <- tt[["fit"]][which(tt$fit[[hazard.params$by]]==1),]
-        t0 <- tt[["fit"]][which(tt$fit[[hazard.params$by]]==0),]
-        t1_visreg <- t1[order(t1$time),]
-        t0_visreg <- t0[order(t1$time),]
-        plot(t0_visreg$time, t1_visreg$visregFit / t0_visreg$visregFit,
-             type = "l", col = 2, lty = 2, lwd = 2, ylim = c(0,1.5))
-        abline(a=1, b=0, col="grey")
+        # name of by argument
+        by_arg <- hazard.params[["by"]]
 
+        # name of xaxis variable
+        x_arg <- hazard.params[["xvar"]]
+
+        if (length(x_arg) > 1) {
+
+            warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
+            x_arg <- x_arg[1]
+
+        }
+
+        # actual by argument data
+        by_data_vector <- x[["data"]][[by_arg]]
+
+        # need to check what happens if by is character vector
+        by_unique_values <- sort(unique(by_data_vector))
+
+        if (length(by_unique_values) < 2)
+            stop("'by' variable must have at least 2 levels for hazard ratio plot")
+
+        if (length(by_unique_values == 2)) {
+# browser()
+            tt <- do.call("visreg", utils::modifyList(
+                list(fit = x,
+                     trans = exp,
+                     plot = FALSE,
+                     rug = FALSE,
+                     alpha = 1,
+                     partial = FALSE,
+                     overlay = TRUE,
+                     print.cond = TRUE),
+                hazard.params))
+
+            # second level
+            t1 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[2]]),]
+            t1_visreg <- t1[order(t1[[x_arg]]),]
+
+            # reference level
+            t0 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[1]]),]
+            t0_visreg <- t0[order(t1[[x_arg]]),]
+
+
+            hazard_ratio <- cbind(time = t1_visreg[[x_arg]],
+                                  HR = t1_visreg[["visregFit"]] / t0_visreg[["visregFit"]])
+            # browser()
+
+            dimnames(hazard_ratio)[[2]] <- c(x_arg, "HR")
+
+            ylims <- range(hazard_ratio[,2])
+
+            do.call("plot", utils::modifyList(
+                list(x = hazard_ratio,
+                     type = "l",
+                     col = 1,
+                     lty = 1,
+                     lwd = 2,
+                     ylim = ylims * c(0.90, 1.10),
+                     ylab = "Hazard ratio"),
+                plot.params))
+            abline(a=1, b=0, col="grey")
+
+            invisible(hazard_ratio)
+
+        }
     }
 
 }

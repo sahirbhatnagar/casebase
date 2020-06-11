@@ -31,3 +31,4 @@
 ^_pkgdown\.yml$
 ^docs$
 ^R/visreg\.R$
+^HR_ci\.R$
