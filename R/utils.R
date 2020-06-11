@@ -299,6 +299,18 @@ trap_int <- function(x, y) {
 }
 
 # Detect if formula contains a function of time or interaction----
+count_matches <- function(pat, vec) sapply(regmatches(vec, gregexpr(pat, vec)), length)
+
+balance_parentheses <- function(str) {
+  num_left <- count_matches("\\(", str)
+  num_right <- count_matches("\\)", str)
+
+  str[num_left > num_right] <- sub("\\(", "", str[num_left > num_right])
+  str[num_left < num_right] <- sub("\\)", "", str[num_left < num_right])
+
+  return(str)
+}
+
 detect_nonlinear_time <- function(formula, timeVar) {
     # Two regular expressions
     # 1. Find function arguments
@@ -309,6 +321,12 @@ detect_nonlinear_time <- function(formula, timeVar) {
     terms <- attr(terms(formula), "term.labels")
     # Then extract the arguments of any function
     matches <- regmatches(terms, regexpr(pattern_args, terms))
+    # Next, detect time within nested calls
+    matches <- balance_parentheses(matches)
+    while (any(matches != regmatches(matches, regexpr(pattern_args, matches)))) {
+      matches <- regmatches(matches, regexpr(pattern_args, matches))
+      matches <- balance_parentheses(matches)
+    }
     # Check if one of these arguments is timeVar
     contain_time <- lapply(strsplit(matches, ","),
                            function(str) {
