@@ -27,42 +27,30 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
     # f_j = lambda_j * Survival
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
-
-    hazard_vec <- function(x, object, newdata) {
-        # Note: the offset should be set to zero when estimating the hazard.
-        newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                               row.names = as.character(1:length(x)))
-        newdata2[timeVar] <- x
-        # predictvglm doesn't like offset = 0
-        # withCallingHandlers(pred <- VGAM::predictvglm(object, newdata2),
-        #                     warning = handler_offset)
-        pred <- predict_CompRisk(object, newdata2)
-        return(exp(pred))
+    time_ordered <- unique(c(0, sort(time)))
+    # Create array to store output
+    if (onlyMain) {
+        output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
+        output[,1] <- time_ordered
+        colnames(output) <- c("time", rep("", nrow(newdata)))
+        rownames(output) <- rep("", length(time_ordered))
+        output[1,-1] <- 0
+    } else {
+        J <- length(typeEvents) - 1
+        output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
+        output[,1,] <- time_ordered
+        dimnames(output) <- list(rep("", length(time_ordered)),
+                                 c("time", rep("", nrow(newdata))),
+                                 paste("event", typeEvents[-1], sep = "="))
+        output[1,-1,] <- 0
     }
 
     # Compute subdensities
     if (method == "numerical") {
-        time_ordered <- unique(c(0, sort(time)))
         # Compute points at which we evaluate integral
         knots <- seq(0, max(time_ordered),
                      length.out = (length(time_ordered) - 1) * nsamp)
         knots <- unique(sort(c(knots, time_ordered)))
-        # Create array to store output
-        if (onlyMain) {
-            output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
-            output[,1] <- time_ordered
-            colnames(output) <- c("time", rep("", nrow(newdata)))
-            rownames(output) <- rep("", length(time_ordered))
-            output[1,-1] <- 0
-        } else {
-            J <- length(typeEvents) - 1
-            output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
-            output[,1,] <- time_ordered
-            dimnames(output) <- list(rep("", length(time_ordered)),
-                                     c("time", rep("", nrow(newdata))),
-                                     paste("event", typeEvents[-1], sep = "="))
-            output[1,-1,] <- 0
-        }
 
         for (j in seq_len(nrow(newdata))) {
             # Extract current obs
@@ -74,6 +62,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
             newdata2[,"offset" := 0]
             # Compute all values for all hazards
             lambdas <- exp(predict_CompRisk(object, newdata2))
+            lambdas[which(lambdas %in% c(Inf, -Inf))] <- 0
             OverallLambda <- rowSums(lambdas)
             survFunction <- exp(-trap_int(knots, OverallLambda))
             if (onlyMain) {
@@ -87,46 +76,92 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
                 output[,j+1,] <- pred
             }
         }
-
-        if (onlyMain) {
-            # Switch to survival scale?
-            if (type == "survival") {
-                output[,-1,] <- 1 - output[,-1,]
-            }
-
-            # Reformat output when only one time point
-            if (length(time) == 1) {
-                if (time == 0) {
-                    output <- output[1,-1,drop = FALSE]
-                } else {
-                    output <- output[2,-1,drop = FALSE]
-                }
-                dimnames(output)[[1]] <- as.character(time)
+    } else {
+        # Sample points at which we evaluate function
+        knots <- runif(n = (length(time_ordered) - 1)*nsamp^2,
+                       min = 0, max = max(time_ordered))
+        knots2 <- runif(n = (length(time_ordered) - 1)*nsamp,
+                        min = 0, max = max(time_ordered))
+        knots2 <- sort(knots2)
+        for (j in seq_len(nrow(newdata))) {
+            current_obs <- newdata[j,,drop = FALSE]
+            # Create data.table for prediction
+            newdata2 <- data.table(current_obs)
+            newdata2 <- newdata2[rep(1, length(knots))]
+            newdata2[,object@timeVar := knots]
+            newdata2[,"offset" := 0]
+            # Compute all values for all hazards
+            lambdas <- exp(predict_CompRisk(object, newdata2))
+            lambdas[which(lambdas %in% c(Inf, -Inf))] <- 0
+            OverallLambda <- rowSums(lambdas)
+            mean_values <- sapply(split(OverallLambda, cut(knots, breaks = knots2)),
+                                  mean, na.rm = TRUE)
+            mean_values[is.na(mean_values)] <- 0
+            survFunction <- exp(-cumsum(c(0, mean_values * diff(knots2))))
+            # Second integral---Create data.table for prediction
+            newdata2 <- data.table(current_obs)
+            newdata2 <- newdata2[rep(1, length(knots2))]
+            newdata2[,object@timeVar := knots2]
+            newdata2[,"offset" := 0]
+            # Compute all values for all hazards
+            lambdas2 <- exp(predict_CompRisk(object, newdata2))
+            lambdas2[which(lambdas2 %in% c(Inf, -Inf))] <- 0
+            if (onlyMain) {
+                # Only compute first subdensity
+                subdensity <- lambdas2[,1] * survFunction
+                mean_values2 <- sapply(split(subdensity, cut(knots2, breaks = time_ordered)),
+                                       mean, na.rm = TRUE)
+                pred <- cumsum(c(0, mean_values2 * diff(time_ordered)))
+                output[,j+1] <- pred
             } else {
-                if (!addZero) output <- output[-1,,drop = FALSE]
-            }
-        } else {
-            # Switch to survival scale?
-            if (type == "survival") {
-                output[,-1,] <- 1 - output[,-1,]
-            }
-            # Reformat output when only one time point
-            if (length(time) == 1) {
-                if (time == 0) {
-                    output <- output[1,-1,,drop = FALSE]
-                } else {
-                    output <- output[2,-1,,drop = FALSE]
-                }
-                dimnames(output)[[1]] <- as.character(time)
-            } else {
-                if (!addZero) output <- output[-1,,,drop = FALSE]
+                subdensity <- lambdas2 * drop(survFunction)
+                mean_values2 <- sapply(split(seq_len(nrow(subdensity)), cut(knots2, breaks = time_ordered)),
+                                       function(ind) colMeans(subdensity[ind,,drop = FALSE], na.rm = TRUE))
+                pred <- apply(mean_values2, 1, function(row) cumsum(c(0, row * diff(time_ordered))))
+                output[,j+1,] <- pred
             }
         }
-        return(output)
-    } else return(estimate_risk_cr(object, time, newdata, method,
-                                   nsamp, onlyMain, NULL,
-                                   hazard_vec, timeVar, typeEvents,
-                                   type, addZero))
+    }
+
+    if (onlyMain) {
+        # Switch to survival scale?
+        if (type == "survival") {
+            output[,-1,] <- 1 - output[,-1,]
+        }
+
+        # Reformat output when only one time point
+        if (length(time) == 1) {
+            if (time == 0) {
+                output <- output[1,-1,drop = FALSE]
+            } else {
+                output <- output[2,-1,drop = FALSE]
+            }
+            dimnames(output)[[1]] <- as.character(time)
+        } else {
+            if (!addZero) output <- output[-1,,drop = FALSE]
+        }
+    } else {
+        # Switch to survival scale?
+        if (type == "survival") {
+            output[,-1,] <- 1 - output[,-1,]
+        }
+        # Reformat output when only one time point
+        if (length(time) == 1) {
+            if (time == 0) {
+                output <- output[1,-1,,drop = FALSE]
+            } else {
+                output <- output[2,-1,,drop = FALSE]
+            }
+            dimnames(output)[[1]] <- as.character(time)
+        } else {
+            if (!addZero) output <- output[-1,,,drop = FALSE]
+        }
+    }
+    # Sometimes montecarlo integration gives nonsensical probability estimates
+    if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
+        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
+    }
+    return(output)
 
 }
 
@@ -249,106 +284,106 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numer
 #     } else drop(glmnet::predict.cv.glmnet(object, ...))
 # }
 
-estimate_risk_cr <- function(object, time, newdata, method,
-                             nsamp, onlyMain, subdensities,
-                             hazard_vec, timeVar, typeEvents,
-                             type, addZero) {
-    # Create output array
-    J <- length(typeEvents) - 1
-    time_ordered <- unique(c(0, sort(time)))
-    output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
-    output[,1,] <- time_ordered
-    dimnames(output) <- list(rep("", length(time_ordered)),
-                             c("time", rep("", nrow(newdata))),
-                             paste("event", typeEvents[-1], sep = "="))
-    output[1,-1,] <- 0
-
-    # 1. Compute overall survival
-    overallLambda <- function(x, object, newdata, hazard_vec) {
-        return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
-    }
-    overallSurv <- function(x, object, newdata, hazard_vec,
-                            method, nsamp) {
-        # Need to integrate later, so need to ability to take a vector x
-        if (method == "numerical") {
-            fn <- function(t) {
-                exp(-integrate(overallLambda, lower = 0, upper = t,
-                               object = object, newdata = newdata,
-                               hazard_vec = hazard_vec,
-                               subdivisions = nsamp)$value)
-            }
-        } else if (method == "montecarlo"){
-            fn <- function(t) {
-                exp(-integrate_mc(overallLambda, lower = 0, upper = t,
-                                  object = object, newdata = newdata,
-                                  hazard_vec = hazard_vec,
-                                  subdivisions = nsamp))
-            }
-        } else {
-            stop("Unrecognised integration method")
-        }
-        # Vectorize
-        return(sapply(x, fn))
-    }
-
-    if (length(time_ordered) > 1) {
-        if (method == "numerical") {
-            # 3. Compute cumulative incidence functions F_j
-            for (i in 1:nrow(newdata)) {
-                for (j in 1:J) {
-                    for (k in 2:length(time_ordered)) {
-                        output[k,i + 1,j] <- integrate(subdensities[[j]], lower = time_ordered[k - 1],
-                                                       upper = time_ordered[k],
-                                                       object = object, newdata = newdata[i,,drop = FALSE],
-                                                       subdivisions = nsamp)$value
-                    }
-                    output[,i + 1,j] <- cumsum(output[,i + 1,j])
-                }
-            }
-        }
-
-        if (method == "montecarlo") {
-            sampledPoints <- runif(nsamp)
-            for (i in 1:nrow(newdata)) {
-                for (k in 2:length(time_ordered)) {
-                    # Integrate all subdensities at the same time
-                    x_vect <- sampledPoints * (time_ordered[k] - time_ordered[k - 1]) + time_ordered[k - 1]
-                    surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE], hazard_vec, method, nsamp)
-                    hazards <- hazard_vec(x_vect, object, newdata[i,,drop = FALSE])
-                    output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * hazards)
-                }
-                # if k==1, there was only one time point and we don't need to sum the contributions
-                if (k != 1) output[,i + 1,] <- apply(output[,i + 1,], 2, cumsum)
-            }
-
-        }
-
-    }
-
-    # Switch to survival scale?
-    if (type == "survival") {
-        output[,-1,] <- 1 - output[,-1,]
-    }
-
-    # Reformat output when only one time point
-    if (length(time) == 1) {
-        if (time == 0) {
-            output <- output[1,-1,,drop = FALSE]
-        } else {
-            output <- output[2,-1,,drop = FALSE]
-        }
-        dimnames(output)[[1]] <- time
-    } else {
-        if (!addZero) output <- output[-1,,,drop = FALSE]
-    }
-
-    # Sometimes montecarlo integration gives nonsensical probability estimates
-    if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
-        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
-    }
-    # If there is only one time point, we should drop a dimension and return a matrix
-    if (onlyMain) return(output[,,1, drop = TRUE]) else return(output)
-}
+# estimate_risk_cr <- function(object, time, newdata, method,
+#                              nsamp, onlyMain, subdensities,
+#                              hazard_vec, timeVar, typeEvents,
+#                              type, addZero) {
+#     # Create output array
+#     J <- length(typeEvents) - 1
+#     time_ordered <- unique(c(0, sort(time)))
+#     output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
+#     output[,1,] <- time_ordered
+#     dimnames(output) <- list(rep("", length(time_ordered)),
+#                              c("time", rep("", nrow(newdata))),
+#                              paste("event", typeEvents[-1], sep = "="))
+#     output[1,-1,] <- 0
+#
+#     # 1. Compute overall survival
+#     overallLambda <- function(x, object, newdata, hazard_vec) {
+#         return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
+#     }
+#     overallSurv <- function(x, object, newdata, hazard_vec,
+#                             method, nsamp) {
+#         # Need to integrate later, so need to ability to take a vector x
+#         if (method == "numerical") {
+#             fn <- function(t) {
+#                 exp(-integrate(overallLambda, lower = 0, upper = t,
+#                                object = object, newdata = newdata,
+#                                hazard_vec = hazard_vec,
+#                                subdivisions = nsamp)$value)
+#             }
+#         } else if (method == "montecarlo"){
+#             fn <- function(t) {
+#                 exp(-integrate_mc(overallLambda, lower = 0, upper = t,
+#                                   object = object, newdata = newdata,
+#                                   hazard_vec = hazard_vec,
+#                                   subdivisions = nsamp))
+#             }
+#         } else {
+#             stop("Unrecognised integration method")
+#         }
+#         # Vectorize
+#         return(sapply(x, fn))
+#     }
+#
+#     if (length(time_ordered) > 1) {
+#         if (method == "numerical") {
+#             # 3. Compute cumulative incidence functions F_j
+#             for (i in 1:nrow(newdata)) {
+#                 for (j in 1:J) {
+#                     for (k in 2:length(time_ordered)) {
+#                         output[k,i + 1,j] <- integrate(subdensities[[j]], lower = time_ordered[k - 1],
+#                                                        upper = time_ordered[k],
+#                                                        object = object, newdata = newdata[i,,drop = FALSE],
+#                                                        subdivisions = nsamp)$value
+#                     }
+#                     output[,i + 1,j] <- cumsum(output[,i + 1,j])
+#                 }
+#             }
+#         }
+#
+#         if (method == "montecarlo") {
+#             sampledPoints <- runif(nsamp)
+#             for (i in 1:nrow(newdata)) {
+#                 for (k in 2:length(time_ordered)) {
+#                     # Integrate all subdensities at the same time
+#                     x_vect <- sampledPoints * (time_ordered[k] - time_ordered[k - 1]) + time_ordered[k - 1]
+#                     surv <- overallSurv(x_vect, object, newdata[i,,drop = FALSE], hazard_vec, method, nsamp)
+#                     hazards <- hazard_vec(x_vect, object, newdata[i,,drop = FALSE])
+#                     output[k, i + 1, ] <- (time_ordered[k] - time_ordered[k - 1]) * colMeans(surv * hazards)
+#                 }
+#                 # if k==1, there was only one time point and we don't need to sum the contributions
+#                 if (k != 1) output[,i + 1,] <- apply(output[,i + 1,], 2, cumsum)
+#             }
+#
+#         }
+#
+#     }
+#
+#     # Switch to survival scale?
+#     if (type == "survival") {
+#         output[,-1,] <- 1 - output[,-1,]
+#     }
+#
+#     # Reformat output when only one time point
+#     if (length(time) == 1) {
+#         if (time == 0) {
+#             output <- output[1,-1,,drop = FALSE]
+#         } else {
+#             output <- output[2,-1,,drop = FALSE]
+#         }
+#         dimnames(output)[[1]] <- time
+#     } else {
+#         if (!addZero) output <- output[-1,,,drop = FALSE]
+#     }
+#
+#     # Sometimes montecarlo integration gives nonsensical probability estimates
+#     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
+#         warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
+#     }
+#     # If there is only one time point, we should drop a dimension and return a matrix
+#     if (onlyMain) return(output[,,1, drop = TRUE]) else return(output)
+# }
 
 #' @importFrom stats coef
 predict_CompRisk <- function (object, newdata = NULL) {

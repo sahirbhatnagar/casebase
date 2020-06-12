@@ -1,5 +1,5 @@
 ---
-title: "Competing risk analysis using case-base sampling"
+title: "Competing risk analysis"
 author: "Maxime Turgeon"
 date: "`r Sys.Date()`"
 output:

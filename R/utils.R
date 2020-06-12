@@ -202,18 +202,6 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
   ))
 }
 
-
-# Fill in a templated function with default parameter values
-# This is pryr::partial almost verbatim
-partialize <- function(`_f`, ...) {
-  stopifnot(is.function(`_f`))
-  fcall <- as.call(c(substitute(`_f`), list(...)))
-  fcall[[length(fcall) + 1]] <- quote(...)
-  args <- as.pairlist(list(... = quote(expr = )))
-  stopifnot(is.language(fcall))
-  eval(call("function", args, fcall), parent.frame())
-}
-
 # Remove offset from formula
 # https://stackoverflow.com/a/40313732/2836971
 # remove_offset <- function(x) {
