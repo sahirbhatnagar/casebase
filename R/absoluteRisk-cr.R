@@ -47,12 +47,22 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
         knots <- seq(0, max(time_ordered),
                      length.out = (length(time_ordered) - 1) * nsamp)
         knots <- unique(sort(c(knots, time_ordered)))
-        # Create matrix to store output
-        output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
-        output[,1] <- time_ordered
-        colnames(output) <- c("time", rep("", nrow(newdata)))
-        rownames(output) <- rep("", length(time_ordered))
-        output[1,-1] <- 0
+        # Create array to store output
+        if (onlyMain) {
+            output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
+            output[,1] <- time_ordered
+            colnames(output) <- c("time", rep("", nrow(newdata)))
+            rownames(output) <- rep("", length(time_ordered))
+            output[1,-1] <- 0
+        } else {
+            J <- length(typeEvents) - 1
+            output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
+            output[,1,] <- time_ordered
+            dimnames(output) <- list(rep("", length(time_ordered)),
+                                     c("time", rep("", nrow(newdata))),
+                                     paste("event", typeEvents[-1], sep = "="))
+            output[1,-1,] <- 0
+        }
 
         for (j in seq_len(nrow(newdata))) {
             # Extract current obs
@@ -66,30 +76,53 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
             lambdas <- exp(predict_CompRisk(object, newdata2))
             OverallLambda <- rowSums(lambdas)
             survFunction <- exp(-trap_int(knots, OverallLambda))
-            # Only compute first subdensity
-            subdensity <- lambdas[,1] * survFunction
-            pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
-            output[,j+1] <- pred
+            if (onlyMain) {
+                # Only compute first subdensity
+                subdensity <- lambdas[,1] * survFunction
+                pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
+                output[,j+1] <- pred
+            } else {
+                subdensity <- lambdas * drop(survFunction)
+                pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
+                output[,j+1,] <- pred
+            }
         }
-        if (!0 %in% time && length(time) == 1) output <- output[-1,,drop = FALSE]
 
-        if (nrow(output) == 1 && nrow(newdata) == 1) {
-            return(output[,-1])
-        } else return(output)
+        if (onlyMain) {
+            # Switch to survival scale?
+            if (type == "survival") {
+                output[,-1,] <- 1 - output[,-1,]
+            }
 
-        # J <- length(typeEvents) - 1
-        # # 2. Compute individual subdensities f_j
-        # subdensities <- vector("list", length = J)
-        # subdensity_template <- function(x, object, newdata, index) {
-        #     newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-        #                            row.names = as.character(1:length(x)))
-        #     newdata2[timeVar] <- x
-        #     hazards <- hazard_vec(x, object, newdata2)
-        #     hazards[,index] * overallSurv(x, object = object, newdata2, hazard_vec, method, nsamp)
-        # }
-        # for (j in 1:J) {
-        #     subdensities[[j]] <- partialize(subdensity_template, index = j)
-        # }
+            # Reformat output when only one time point
+            if (length(time) == 1) {
+                if (time == 0) {
+                    output <- output[1,-1,drop = FALSE]
+                } else {
+                    output <- output[2,-1,drop = FALSE]
+                }
+                dimnames(output)[[1]] <- as.character(time)
+            } else {
+                if (!addZero) output <- output[-1,,drop = FALSE]
+            }
+        } else {
+            # Switch to survival scale?
+            if (type == "survival") {
+                output[,-1,] <- 1 - output[,-1,]
+            }
+            # Reformat output when only one time point
+            if (length(time) == 1) {
+                if (time == 0) {
+                    output <- output[1,-1,,drop = FALSE]
+                } else {
+                    output <- output[2,-1,,drop = FALSE]
+                }
+                dimnames(output)[[1]] <- as.character(time)
+            } else {
+                if (!addZero) output <- output[-1,,,drop = FALSE]
+            }
+        }
+        return(output)
     } else return(estimate_risk_cr(object, time, newdata, method,
                                    nsamp, onlyMain, NULL,
                                    hazard_vec, timeVar, typeEvents,

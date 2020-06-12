@@ -294,7 +294,9 @@ trap_int <- function(x, y) {
   x <- as.matrix(c(x))
   m <- length(x)
   y <- as.matrix(y)
-  ct <- apply(diff(x) / 2 * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
+  n <- ncol(y)
+  dt <- kronecker(matrix(1, 1, n), diff(x)/2)
+  ct <- apply(dt * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
   return(rbind(0, ct))
 }
 
