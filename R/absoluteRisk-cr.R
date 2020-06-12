@@ -42,39 +42,58 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
 
     # Compute subdensities
     if (method == "numerical") {
-        overallLambda <- function(x, object, newdata, hazard_vec) {
-            return(as.numeric(rowSums(hazard_vec(x, object, newdata))))
-        }
-        overallSurv <- function(x, object, newdata, hazard_vec,
-                                method, nsamp) {
-            fn <- function(t) {
-                exp(-integrate(overallLambda, lower = 0, upper = t,
-                               object = object, newdata = newdata,
-                               hazard_vec = hazard_vec,
-                               subdivisions = nsamp)$value)
-            }
-            # Vectorize
-            return(sapply(x, fn))
-        }
-        J <- length(typeEvents) - 1
-        # 2. Compute individual subdensities f_j
-        subdensities <- vector("list", length = J)
-        subdensity_template <- function(x, object, newdata, index) {
-            newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
-                                   row.names = as.character(1:length(x)))
-            newdata2[timeVar] <- x
-            hazards <- hazard_vec(x, object, newdata2)
-            hazards[,index] * overallSurv(x, object = object, newdata2, hazard_vec, method, nsamp)
-        }
-        for (j in 1:J) {
-            subdensities[[j]] <- partialize(subdensity_template, index = j)
-        }
-    } else subdensities <- NULL
+        time_ordered <- unique(c(0, sort(time)))
+        # Compute points at which we evaluate integral
+        knots <- seq(0, max(time_ordered),
+                     length.out = (length(time_ordered) - 1) * nsamp)
+        knots <- unique(sort(c(knots, time_ordered)))
+        # Create matrix to store output
+        output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
+        output[,1] <- time_ordered
+        colnames(output) <- c("time", rep("", nrow(newdata)))
+        rownames(output) <- rep("", length(time_ordered))
+        output[1,-1] <- 0
 
-    return(estimate_risk_cr(object, time, newdata, method,
-                            nsamp, onlyMain, subdensities,
-                            hazard_vec, timeVar, typeEvents,
-                            type, addZero))
+        for (j in seq_len(nrow(newdata))) {
+            # Extract current obs
+            current_obs <- newdata[j,,drop = FALSE]
+            # Create data.table for prediction
+            newdata2 <- data.table::data.table(current_obs)
+            newdata2 <- newdata2[rep(1, length(knots))]
+            newdata2[,object@timeVar := knots]
+            newdata2[,"offset" := 0]
+            # Compute all values for all hazards
+            lambdas <- exp(predict_CompRisk(object, newdata2))
+            OverallLambda <- rowSums(lambdas)
+            survFunction <- exp(-trap_int(knots, OverallLambda))
+            # Only compute first subdensity
+            subdensity <- lambdas[,1] * survFunction
+            pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
+            output[,j+1] <- pred
+        }
+        if (!0 %in% time && length(time) == 1) output <- output[-1,,drop = FALSE]
+
+        if (nrow(output) == 1 && nrow(newdata) == 1) {
+            return(output[,-1])
+        } else return(output)
+
+        # J <- length(typeEvents) - 1
+        # # 2. Compute individual subdensities f_j
+        # subdensities <- vector("list", length = J)
+        # subdensity_template <- function(x, object, newdata, index) {
+        #     newdata2 <- data.frame(newdata, offset = rep_len(0, length(x)),
+        #                            row.names = as.character(1:length(x)))
+        #     newdata2[timeVar] <- x
+        #     hazards <- hazard_vec(x, object, newdata2)
+        #     hazards[,index] * overallSurv(x, object = object, newdata2, hazard_vec, method, nsamp)
+        # }
+        # for (j in 1:J) {
+        #     subdensities[[j]] <- partialize(subdensity_template, index = j)
+        # }
+    } else return(estimate_risk_cr(object, time, newdata, method,
+                                   nsamp, onlyMain, NULL,
+                                   hazard_vec, timeVar, typeEvents,
+                                   type, addZero))
 
 }
 
