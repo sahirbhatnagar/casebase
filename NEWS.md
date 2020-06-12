@@ -1,10 +1,11 @@
 # casebase 0.2.0
 
 * Major new release
-* Trapezoidal rule to perform numerical integration for absolute risk estimation
+* Some minor bug fixes
+* Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up
+* Major refactoring of absoluteRisk
 * Population time plots now use `geom_ribbon` instead of `geom_segment`
-* Population time functions now allow for more flexible plots with user defined arguments
-
+* Population time functions now allowed for more flexible plots with user defined arguments
 
 # casebase 0.1.0
 
