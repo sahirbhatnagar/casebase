@@ -57,7 +57,7 @@ to the plot. Default: FALSE}
 be added to the plot. Default: FALSE}
 
 \item{casebase.theme}{Logical indication if the casebase theme be used. The
-casebase theme uses \code{\link[=ggtheme]{theme_minimal}}. Default: TRUE.}
+casebase theme uses \code{\link{theme_minimal}}. Default: TRUE.}
 
 \item{ribbon.params}{A list containing arguments that are passed to
 \code{\link{geom_ribbon}} which is used to plot the
@@ -76,13 +76,13 @@ points. Doing so will result in unexpected results for the legend. See the
 the color of the points.}
 
 \item{color.params}{A list containing arguments that are passed to
-\code{\link[=scale_manual]{scale_color_manual}} which is used to plot the legend.
+\code{\link{scale_color_manual}} which is used to plot the legend.
 Only used if \code{legend=TRUE}. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.}
 
 \item{fill.params}{A list containing arguments that are passed to
-\code{\link[=scale_manual]{scale_fill_manual}} which is used to plot the legend.
+\code{\link{scale_fill_manual}} which is used to plot the legend.
 Only used if \code{legend=TRUE}. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.}
@@ -258,7 +258,7 @@ attr(popTimeData, "exposure")
 }
 \seealso{
 \link{geom_point},\link{geom_ribbon},\link{theme},
-\link[=scale_manual]{scale_colour_manual}, \link[=scale_manual]{scale_fill_manual},
+\link{scale_colour_manual}, \link{scale_fill_manual},
 \link{sampleCaseBase}
 
 \code{\link{plot.popTime}}
