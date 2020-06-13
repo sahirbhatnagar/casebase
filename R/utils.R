@@ -364,7 +364,7 @@ get_typical <- function(data) {
 
 
 
-
+#' @rdname plot.singleEventCB
 incrVar <- function (var, increment = 1) {
   n <- length(var)
   if (n > 1 && length(increment) == 1)
@@ -375,4 +375,30 @@ incrVar <- function (var, increment = 1) {
     }
     data
   }
+}
+
+
+#' @rdname plot.singleEventCB
+hrJacobian <- function(object, newdata, newdata2, term){
+
+  # Set offset to zero
+  newdata$offset <- 0
+  newdata2$offset <- 0
+
+
+  m1 <- model.frame(term,
+                    data = newdata2,
+                    na.action = stats::na.pass,
+                    xlev = object$xlevels)
+  m0 <- model.frame(term,
+                    data = newdata,
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+
+  X1 <- model.matrix(term, m1, contrasts.arg = object$contrasts)
+  X0 <- model.matrix(term, m0, contrasts.arg = object$contrasts)
+
+  # this is the jacobian!!
+  X1 - X0
+
 }

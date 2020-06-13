@@ -382,7 +382,9 @@ plot.popTime <- function(x, ...,
 #'   (names are given as characters)
 #' @param exposed function that takes \code{newdata} and returns the exposed
 #'   dataset. By default, this increments \code{var}.
-#' @param xvar PARAM_DESCRIPTION
+#' @param xvar Variable to be used on x-axis for hazard ratio plots. If NULL,
+#'   the function defaults to using the time variable used in the call to
+#'   \code{fitSmoothHazard}
 #' @param plot.params PARAM_DESCRIPTION, Default: list()
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
@@ -405,7 +407,11 @@ plot.singleEventCB <- function(x, ...,
                                newdata,
                                exposed = incrVar(var),
                                var = NULL,
-                               xvar,
+                               xvar = NULL,
+                               ci = FALSE,
+                               ci.lvl = 0.95,
+                               rug = !ci,
+                               ci.col = "grey",
                                plot.params = list()) {
 
     type <- match.arg(type)
@@ -435,77 +441,115 @@ plot.singleEventCB <- function(x, ...,
 
     if (type == "hr") {
 
-        # browser()
+       if (is.null(newdata) && type %in% c("hr"))
+            stop("Prediction using type in 'hr' requires newdata to be specified.")
 
-        if (is.null(hazard.params[["by"]]))
-            stop("'by' argument needs to be specified in hazard.params argument when type='hr'")
+        check_arguments_hazard(object = x, newdata = newdata, plot = FALSE, ci = ci, ci.lvl = ci.lvl)
 
-        # name of by argument
-        by_arg <- hazard.params[["by"]]
+        newdata2 <- exposed(newdata)
 
-        # name of xaxis variable
-        x_arg <- hazard.params[["xvar"]]
+        check_arguments_hazard(object = x, newdata = newdata2, plot = FALSE, ci = ci, ci.lvl = ci.lvl)
 
-        if (length(x_arg) > 1) {
 
-            warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
-            x_arg <- x_arg[1]
+        tt <- terms(x)
+        Terms <- delete.response(tt)
+        v2 <- vcov(x)
+        beta2 <- coef(x)
 
+        gradient <- hrJacobian(object = x, newdata = newdata,
+                               newdata2 = newdata2, term = Terms)
+
+        log_hazard_ratio <- gradient %*% beta2
+
+        SE_log_hazard_ratio <- sqrt(diag(gradient %*% tcrossprod(v2, gradient)))
+
+        hazard_ratio_lower <- exp(qnorm(p = (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
+        hazard_ratio_upper <- exp(qnorm(p = 1 - (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
+
+
+        if (is.null(xvar)){
+            xvar <- x[["timeVar"]]
+        } else {
+            if (length(xvar) > 1) warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
+            xvar <- xvar[1]
+            xvar_values <- newdata[[xvar]]
         }
 
-        # actual by argument data
-        by_data_vector <- x[["data"]][[by_arg]]
-
-        # need to check what happens if by is character vector
-        by_unique_values <- sort(unique(by_data_vector))
-
-        if (length(by_unique_values) < 2)
-            stop("'by' variable must have at least 2 levels for hazard ratio plot")
-
-        if (length(by_unique_values == 2)) {
-# browser()
-            tt <- do.call("visreg", utils::modifyList(
-                list(fit = x,
-                     trans = exp,
-                     plot = FALSE,
-                     rug = FALSE,
-                     alpha = 1,
-                     partial = FALSE,
-                     overlay = TRUE,
-                     print.cond = TRUE),
-                hazard.params))
-
-            # second level
-            t1 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[2]]),]
-            t1_visreg <- t1[order(t1[[x_arg]]),]
-
-            # reference level
-            t0 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[1]]),]
-            t0_visreg <- t0[order(t1[[x_arg]]),]
+        # sorting indices for ploting
+        i.backw <- order(xvar_values, decreasing = TRUE)
+        i.forw <- order(xvar_values)
 
 
-            hazard_ratio <- cbind(time = t1_visreg[[x_arg]],
-                                  HR = t1_visreg[["visregFit"]] / t0_visreg[["visregFit"]])
-            # browser()
 
-            dimnames(hazard_ratio)[[2]] <- c(x_arg, "HR")
 
-            ylims <- range(hazard_ratio[,2])
-
-            do.call("plot", utils::modifyList(
-                list(x = hazard_ratio,
-                     type = "l",
-                     col = 1,
-                     lty = 1,
-                     lwd = 2,
-                     ylim = ylims * c(0.90, 1.10),
-                     ylab = "Hazard ratio"),
-                plot.params))
-            abline(a=1, b=0, col="grey")
-
-            invisible(hazard_ratio)
-
+        # plot CI as polygon shade - if 'se = TRUE' (default)
+        if (ci) {
+            x.poly <- c(xvar_values[i.forw] , xvar_values[i.backw])
+            y.poly <- c(hazard_ratio_lower[i.forw] , hazard_ratio_upper[i.backw])
+            plot(x = range(x.poly), y = range(y.poly), type = "n")
+            polygon(x.poly , y.poly , col = ci.col , border = NA)
+            lines(xvar_values, exp(log_hazard_ratio), lwd = 2, lty = 2)
+        } else {
+            plot(xvar_values, exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l")
         }
+
+
+
+
+
+#         # actual by argument data
+#         by_data_vector <- x[["data"]][[by_arg]]
+#
+#         # need to check what happens if by is character vector
+#         by_unique_values <- sort(unique(by_data_vector))
+#
+#         if (length(by_unique_values) < 2)
+#             stop("'by' variable must have at least 2 levels for hazard ratio plot")
+#
+#         if (length(by_unique_values == 2)) {
+# # browser()
+#             tt <- do.call("visreg", utils::modifyList(
+#                 list(fit = x,
+#                      trans = exp,
+#                      plot = FALSE,
+#                      rug = FALSE,
+#                      alpha = 1,
+#                      partial = FALSE,
+#                      overlay = TRUE,
+#                      print.cond = TRUE),
+#                 hazard.params))
+#
+#             # second level
+#             t1 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[2]]),]
+#             t1_visreg <- t1[order(t1[[x_arg]]),]
+#
+#             # reference level
+#             t0 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[1]]),]
+#             t0_visreg <- t0[order(t1[[x_arg]]),]
+#
+#
+#             hazard_ratio <- cbind(time = t1_visreg[[x_arg]],
+#                                   HR = t1_visreg[["visregFit"]] / t0_visreg[["visregFit"]])
+#             # browser()
+#
+#             dimnames(hazard_ratio)[[2]] <- c(x_arg, "HR")
+#
+#             ylims <- range(hazard_ratio[,2])
+#
+#             do.call("plot", utils::modifyList(
+#                 list(x = hazard_ratio,
+#                      type = "l",
+#                      col = 1,
+#                      lty = 1,
+#                      lwd = 2,
+#                      ylim = ylims * c(0.90, 1.10),
+#                      ylab = "Hazard ratio"),
+#                 plot.params))
+#             abline(a=1, b=0, col="grey")
+#
+#             invisible(hazard_ratio)
+#
+#         }
     }
 
 }

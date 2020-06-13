@@ -294,7 +294,7 @@ fit2 <- fitSmoothHazard(status ~ trt*nsx(eventtime,df=3),
                         data = simdat,
                         time = "eventtime")
 summary(fit2)
-
+head(simdat)
 # generate sequence of times for which to calculate hazard ratio ------------
 newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
 newdata <- data.frame(trt = 1, eventtime = newtime, offset = 0)
@@ -345,6 +345,16 @@ f.automaticFAST <- function(beta, time){
 
 jacobi <- f.automaticFAST(time = newtime)
 all.equal(drop(exp(jacobi %*% beta2)), exp(log_hazard_ratio2))
+
+
+newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+plot(fit2, type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     var = "trt", xvar = "eventtime", ci = TRUE)
+
+plot(fit2, type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     var = "trt", xvar = "eventtime", ci = FALSE)
 
 # MANUAL WAY this is the time dependent hazard ratio function ------------------
 f.manual <- function(beta, time){
