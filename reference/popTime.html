@@ -215,12 +215,12 @@ be added to the plot. Default: FALSE</p></td>
     <tr>
       <th>casebase.theme</th>
       <td><p>Logical indication if the casebase theme be used. The
-casebase theme uses <code><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></code>. Default: TRUE.</p></td>
+casebase theme uses <code>theme_minimal</code>. Default: TRUE.</p></td>
     </tr>
     <tr>
       <th>ribbon.params</th>
       <td><p>A list containing arguments that are passed to
-<code><a href='https://ggplot2.tidyverse.org/reference/geom_ribbon.html'>geom_ribbon</a></code> which is used to plot the
+<code>geom_ribbon</code> which is used to plot the
 population-time area. These arguments will override the function defaults.
 For example, you can set <code>ribbon.params = list(colour = 'green')</code> if
 you want the area to be green.</p></td>
@@ -228,7 +228,7 @@ you want the area to be green.</p></td>
     <tr>
       <th>case.params, base.params, competing.params</th>
       <td><p>A list containing arguments
-that are passed to <code><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></code> which is used to plot
+that are passed to <code>geom_point</code> which is used to plot
 the case series, base series, competing events. These arguments will
 override the function defaults. For example, you can set <code>case.params
   = list(size = 1.5)</code> if you want to increase the point size for the case
@@ -240,7 +240,7 @@ the color of the points.</p></td>
     <tr>
       <th>color.params</th>
       <td><p>A list containing arguments that are passed to
-<code><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_color_manual</a></code> which is used to plot the legend.
+<code>scale_color_manual</code> which is used to plot the legend.
 Only used if <code>legend=TRUE</code>. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.</p></td>
@@ -248,7 +248,7 @@ See examples for more details.</p></td>
     <tr>
       <th>fill.params</th>
       <td><p>A list containing arguments that are passed to
-<code><a href='https://ggplot2.tidyverse.org/reference/scale_manual.html'>scale_fill_manual</a></code> which is used to plot the legend.
+<code>scale_fill_manual</code> which is used to plot the legend.
 Only used if <code>legend=TRUE</code>. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.</p></td>
@@ -256,13 +256,13 @@ See examples for more details.</p></td>
     <tr>
       <th>theme.params</th>
       <td><p>A list containing arguments that are passed to
-<code><a href='https://ggplot2.tidyverse.org/reference/theme.html'>theme</a></code>. For example <code>theme.params =
+<code>theme</code>. For example <code>theme.params =
   list(legend.position = 'none')</code>.</p></td>
     </tr>
     <tr>
       <th>facet.params</th>
       <td><p>A list containing arguments that are passed to
-<code><a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a></code> which is used to create facet plots. Only
+<code>facet_wrap</code> which is used to create facet plots. Only
 used if plotting exposure stratified population time plots. These arguments
 will override the function defaults.</p></td>
     </tr>

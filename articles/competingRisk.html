@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Competing risk analysis using case-base sampling • casebase</title>
+<title>Competing risk analysis • casebase</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Competing risk analysis using case-base sampling">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Competing risk analysis">
 <meta property="og:description" content="casebase">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -91,10 +91,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Competing risk analysis using case-base sampling</h1>
+      <h1 data-toc-skip>Competing risk analysis</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-05-28</h4>
+            <h4 class="date">2020-06-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/competingRisk.Rmd"><code>vignettes/competingRisk.Rmd</code></a></small>
       <div class="hidden name"><code>competingRisk.Rmd</code></div>
@@ -440,11 +440,11 @@
 <p><img src="competingRisk_files/figure-html/absRiskPlot-1.png" width="700"></p>
 <p>We can also estimate the mean absolute risk for the entire dataset:</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">linearRisk</span>)</pre></body></html></div>
-<pre><code>## [1] 0.1926046</code></pre>
+<pre><code>## [1] 0.1926762</code></pre>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">logRisk</span>)</pre></body></html></div>
-<pre><code>## [1] 0.1596619</code></pre>
+<pre><code>## [1] 0.1603205</code></pre>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">splineRisk</span>)</pre></body></html></div>
-<pre><code>## [1] 0.1894514</code></pre>
+<pre><code>## [1] 0.1894943</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -470,10 +470,10 @@
 ##  [9] memoise_1.1.0     lifecycle_0.2.0   tibble_3.0.1      gtable_0.3.0     
 ## [13] mgcv_1.8-31       pkgconfig_2.0.3   rlang_0.4.6       Matrix_1.2-18    
 ## [17] yaml_2.2.1        pkgdown_1.5.1     xfun_0.14         stringr_1.4.0    
-## [21] knitr_1.28        desc_1.2.0        fs_1.4.1          vctrs_0.3.0      
+## [21] knitr_1.28        desc_1.2.0        fs_1.4.1          vctrs_0.3.1      
 ## [25] stats4_4.0.0      rprojroot_1.3-2   grid_4.0.0        glue_1.4.1       
 ## [29] data.table_1.12.8 R6_2.4.1          survival_3.1-12   VGAM_1.1-3       
-## [33] rmarkdown_2.1     ggplot2_3.3.0     magrittr_1.5      backports_1.1.7  
+## [33] rmarkdown_2.2     ggplot2_3.3.1     magrittr_1.5      backports_1.1.7  
 ## [37] scales_1.1.1      htmltools_0.4.0   ellipsis_0.3.1    MASS_7.3-51.5    
 ## [41] splines_4.0.0     assertthat_0.2.1  colorspace_1.4-1  stringi_1.4.6    
 ## [45] munsell_0.5.0     crayon_1.3.4</code></pre>
