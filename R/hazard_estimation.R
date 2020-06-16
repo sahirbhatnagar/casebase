@@ -58,6 +58,8 @@ estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE, ci.lv
 
 check_arguments_hazard <- function(object, newdata, plot, ci, ci.lvl) {
     # For hazardPlot, we only want one row in newdata
+    # for hazard ratio plot, we can have more than one row in newdata so
+    # set plot = FALSE for hazard ratio plots in plot.singleEventCB function
     if (nrow(newdata) > 1 && plot) {
         newdata <- newdata[1, , drop = FALSE]
         warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
@@ -70,8 +72,13 @@ check_arguments_hazard <- function(object, newdata, plot, ci, ci.lvl) {
                             class(object)[1]))
             ci <- FALSE
         }
-        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
-            stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
+        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound","hazard_ratio","log_hazard_ratio")))
+            stop("'standarderror','lowerbound', 'upperbound', 'hazard_ratio' and 'log_hazard_ratio' cannot be used as column names in newdata. rename it.")
+    } else {
+        if (any(names(newdata) %in% c("hazard_ratio","log_hazard_ratio")))
+            stop("'hazard_ratio' and 'log_hazard_ratio' cannot be used as column names in newdata. rename it.")
     }
+
+
     invisible(NULL)
 }

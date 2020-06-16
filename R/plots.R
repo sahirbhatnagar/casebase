@@ -364,3 +364,104 @@ panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE
     theme(panel.border = element_rect(color = color, fill = NA,
                                       linetype = linetype, size = size))
 }
+
+
+
+#' @rdname plot.singleEventCB
+plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
+                            rug, xvar, ...) {
+
+    tt <- terms(x)
+    Terms <- delete.response(tt)
+    beta2 <- coef(x)
+
+    gradient <- hrJacobian(object = x, newdata = newdata,
+                           newdata2 = newdata2, term = Terms)
+
+    log_hazard_ratio <- gradient %*% beta2
+
+    if (is.null(xvar)){
+        xvar <- x[["timeVar"]]
+    } else {
+        if (length(xvar) > 1) warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
+        xvar <- xvar[1]
+    }
+
+    if (xvar %ni% colnames(newdata))
+        stop(sprintf("%s column (which you supplied to 'xvar' argument) not found in newdata",xvar)) else
+            xvar_values <- newdata[[xvar]]
+
+    # browser()
+    # sorting indices for ploting
+    i.backw <- order(xvar_values, decreasing = TRUE)
+    i.forw <- order(xvar_values)
+
+    # plot CI as polygon shade - if 'se = TRUE' (default)
+    if (ci) {
+
+        v2 <- vcov(x)
+        SE_log_hazard_ratio <- sqrt(diag(gradient %*% tcrossprod(v2, gradient)))
+
+        hazard_ratio_lower <- exp(qnorm(p = (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
+        hazard_ratio_upper <- exp(qnorm(p = 1 - (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
+        x.poly <- c(xvar_values[i.forw] , xvar_values[i.backw])
+        y.poly <- c(hazard_ratio_lower[i.forw] , hazard_ratio_upper[i.backw])
+
+        other_plot_args <- list(...)
+
+        line_args <- grep("^lwd$|^lty$|^col$", names(other_plot_args))
+
+        if (length(line_args) == 0)
+            line_args <- list(NULL) else
+                line_args <- other_plot_args[line_args]
+
+        do.call("plot", utils::modifyList(
+            list(x = range(x.poly),
+                 y = range(y.poly),
+                 type = "n",
+                 ylab = "hazard ratio",
+                 xlab = xvar),
+            other_plot_args
+        ))
+
+        polygon(x.poly , y.poly , col = ci.col , border = NA)
+
+        do.call("lines", utils::modifyList(
+            list(x = xvar_values,
+                 y = exp(log_hazard_ratio),
+                 lwd = 2,
+                 lty = 1,
+                 col = "black"),
+            line_args
+        ))
+
+        # browser()
+
+        results <- transform(newdata,
+                             log_hazard_ratio = log_hazard_ratio,
+                             standarderror = SE_log_hazard_ratio,
+                             hazard_ratio = exp(log_hazard_ratio),
+                             lowerbound = hazard_ratio_lower,
+                             upperbound = hazard_ratio_upper)
+
+    } else {
+        do.call("plot", utils::modifyList(
+            list(x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l",
+                 ylab = "hazard ratio", xlab = xvar),
+            list(...)
+        ))
+
+        results <- transform(newdata,
+                             log_hazard_ratio = log_hazard_ratio,
+                             hazard_ratio = exp(log_hazard_ratio))
+    }
+
+    if (rug) {
+        events <- x[["originalData"]][[x[["eventVar"]]]]
+        rug(x[["originalData"]][which(events==1),,drop=F][[ x[["timeVar"]]  ]],
+            quiet = TRUE) # Silence warnings about clipped values
+    }
+
+    invisible(results)
+
+}

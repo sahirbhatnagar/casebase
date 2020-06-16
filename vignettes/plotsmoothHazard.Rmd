@@ -276,6 +276,83 @@ plot(mod_cb_tvc,
 # Hazard Ratio
 
 
+```{r}
+pacman::p_load(rstpm2) # for nsx function
+pacman::p_load(splines)
+devtools::load_all("~/git_repositories/casebase/")
+data("simdat") # from casebase package
+
+head(simdat)
+simdat <- transform(simdat, 
+                    treat = factor(trt, levels = 0:1, labels = c("control","treatment")))
+head(simdat)
+fit_numeric_exposure <- fitSmoothHazard(status ~ trt*nsx(eventtime,df=3),
+                                        data = simdat,
+                                        time = "eventtime")
+
+fit_factor_exposure <- fitSmoothHazard(status ~ treat*nsx(eventtime,df=3),
+                                       data = simdat,
+                                       time = "eventtime")
+
+newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+
+par(mfrow = c(1,2))
+
+plot(fit_numeric_exposure, 
+     type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     exposed = transform(simdat, trt = 1),
+     var = "trt",
+     increment = 1,
+     xvar = "eventtime",
+     ci = T)
+
+#by default this will increment `var` by 1 for exposed category
+devtools::load_all("~/git_repositories/casebase/")
+plot(fit_factor_exposure,
+     type = "hr", 
+     newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+     var = "treat",
+     increment = -1, 
+     xvar = "eventtime",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "heloo",
+     main = "sfsf",
+     ylab = "hellllll",
+     lty = 5,
+     lwd = 7,
+     rug = T)
+
+tt <- data.frame(treat = factor("control", levels = c("control","treatment","other")), eventtime = newtime, trt = 0)
+tt$treat
+fct_shift_ord(tt$treat, increment = 3)
+fct_shift_ord(tt$trt)
+
+
+
+
+# user defined exposed data
+plot(fit2, 
+     type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     exposed = function(data) transform(data, trt = 1),
+     xvar = "eventtime", 
+     ci = TRUE)
+
+
+tt <- data.frame(trt = 0, eventtime = 2)
+
+transform(tt, eventtime = newtime)
+
+test2 <- function(...) if(length(list(...))) FALSE else TRUE
+
+test2()
+MagpieS0X
+
+```
+
+
 
 ```{r}
 # load packages and data --------------------------------------------------

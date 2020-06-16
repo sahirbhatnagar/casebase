@@ -378,15 +378,28 @@ plot.popTime <- function(x, ...,
 #'   that takes a data-frame and returns the "exposed" group (e.g. \code{exposed
 #'   = function(data) transform(data, x=1)}). This is the same behavior as the
 #'   rstpm2 plot function. See references for rstpm2 package.
-#' @param var specify the variable name or names for the exposed/unexposed
+#' @param var specify the variable name for the exposed/unexposed
 #'   (names are given as characters)
 #' @param exposed function that takes \code{newdata} and returns the exposed
 #'   dataset. By default, this increments \code{var}.
 #' @param xvar Variable to be used on x-axis for hazard ratio plots. If NULL,
 #'   the function defaults to using the time variable used in the call to
 #'   \code{fitSmoothHazard}
-#' @param plot.params PARAM_DESCRIPTION, Default: list()
-#' @return OUTPUT_DESCRIPTION
+#' @param ci Logical; if TRUE confidence bands are calculated. Only available
+#'   for `family="glm"` and `family="gam"`, Default: !add
+#' @param ci.lvl Confidence level. Must be in (0,1), Default: 0.95
+#' @param ci.col Confidence band color. Only used if argument `ci=TRUE`,
+#'   Default: 'grey'
+#' @param rug Logical. Adds a rug representation (1-d plot) of the event times
+#'   (only for `status=1`), Default: !ci
+#' @return a plot of the hazard function or hazard ratio and a data.frame of
+#'   original data used in the fitting along with the data used to create the
+#'   plots including `predictedhazard` which is the predicted hazard for a given
+#'   covariate pattern and time `predictedloghazard` is the predicted hazard on
+#'   the log scale. `lowerbound` and `upperbound` are the lower and upper
+#'   confidence interval bounds on the hazard scale (i.e. used to plot the
+#'   confidence bands). `standarderror` is the standard error of the log hazard
+#'   or log hazard ratio (only if `family="glm"` or `family="gam"`)
 #' @details DETAILS
 #' @examples
 #' \dontrun{
@@ -394,7 +407,8 @@ plot.popTime <- function(x, ...,
 #'  #EXAMPLE1
 #'  }
 #' }
-#' @seealso \code{\link[utils]{modifyList}}
+#' @seealso \code{\link[utils]{modifyList}}, [casebase::fitSmoothHazard()],
+#'   [graphics::par()]
 #' @rdname plot.singleEventCB
 #' @references Mark Clements and Xing-Rong Liu (2019). rstpm2: Smooth Survival
 #'   Models, Including Generalized Survival Models. R package version 1.5.1.
@@ -405,8 +419,9 @@ plot.singleEventCB <- function(x, ...,
                                type = c("hazard","hr"),
                                hazard.params = list(),
                                newdata,
-                               exposed = incrVar(var),
-                               var = NULL,
+                               exposed,
+                               increment = 1,
+                               var,
                                xvar = NULL,
                                ci = FALSE,
                                ci.lvl = 0.95,
@@ -442,114 +457,37 @@ plot.singleEventCB <- function(x, ...,
     if (type == "hr") {
 
        if (is.null(newdata) && type %in% c("hr"))
-            stop("Prediction using type in 'hr' requires newdata to be specified.")
+            stop("Prediction using type 'hr' requires newdata to be specified.")
 
-        check_arguments_hazard(object = x, newdata = newdata, plot = FALSE, ci = ci, ci.lvl = ci.lvl)
+        check_arguments_hazard(object = x, newdata = newdata, plot = FALSE,
+                               ci = ci, ci.lvl = ci.lvl)
 
-        newdata2 <- exposed(newdata)
+        # browser()
 
-        check_arguments_hazard(object = x, newdata = newdata2, plot = FALSE, ci = ci, ci.lvl = ci.lvl)
+        if (missing(exposed) & missing(var))
+            stop("'var' argument must be specified if 'exposed' argument is not specified. This is the variable which will be incremented by the 'increment' argument to give the exposed category")
 
+        if (missing(exposed)) {
+            if (var %ni% names(newdata))
+                stop(sprintf("%s not found in 'newdata'.",var))
+            newdata2 <- incrVar(var, increment = increment)(newdata)
+        } else if (is.function(exposed)) {
+            if (!missing(var)) warning("'var' argument is being ignored since 'exposure' argment has been correctly specified.")
+            newdata2 <- exposed(newdata)
+        } else if (!is.function(exposed) & !missing(var)) {
+            if (var %ni% names(newdata))
+                stop(sprintf("%s not found in 'newdata'.",var))
+            warning("'exposure' argument ignored since it is not correctly specified. Using 'var' argument instead.")
+            newdata2 <- incrVar(var, increment = increment)(newdata)
+        } else
+            stop("incorrect specification for 'exposed' argument. see help page for details.")
 
-        tt <- terms(x)
-        Terms <- delete.response(tt)
-        v2 <- vcov(x)
-        beta2 <- coef(x)
+        check_arguments_hazard(object = x, newdata = newdata2, plot = FALSE,
+                               ci = ci, ci.lvl = ci.lvl)
 
-        gradient <- hrJacobian(object = x, newdata = newdata,
-                               newdata2 = newdata2, term = Terms)
+        plotHazardRatio(x = x, newdata = newdata, newdata2 = newdata2, ci = ci,
+                        ci.lvl = ci.lvl, ci.col = ci.col, rug = rug, xvar = xvar, ...)
 
-        log_hazard_ratio <- gradient %*% beta2
-
-        SE_log_hazard_ratio <- sqrt(diag(gradient %*% tcrossprod(v2, gradient)))
-
-        hazard_ratio_lower <- exp(qnorm(p = (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
-        hazard_ratio_upper <- exp(qnorm(p = 1 - (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
-
-
-        if (is.null(xvar)){
-            xvar <- x[["timeVar"]]
-        } else {
-            if (length(xvar) > 1) warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
-            xvar <- xvar[1]
-            xvar_values <- newdata[[xvar]]
-        }
-
-        # sorting indices for ploting
-        i.backw <- order(xvar_values, decreasing = TRUE)
-        i.forw <- order(xvar_values)
-
-
-
-
-        # plot CI as polygon shade - if 'se = TRUE' (default)
-        if (ci) {
-            x.poly <- c(xvar_values[i.forw] , xvar_values[i.backw])
-            y.poly <- c(hazard_ratio_lower[i.forw] , hazard_ratio_upper[i.backw])
-            plot(x = range(x.poly), y = range(y.poly), type = "n")
-            polygon(x.poly , y.poly , col = ci.col , border = NA)
-            lines(xvar_values, exp(log_hazard_ratio), lwd = 2, lty = 2)
-        } else {
-            plot(xvar_values, exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l")
-        }
-
-
-
-
-
-#         # actual by argument data
-#         by_data_vector <- x[["data"]][[by_arg]]
-#
-#         # need to check what happens if by is character vector
-#         by_unique_values <- sort(unique(by_data_vector))
-#
-#         if (length(by_unique_values) < 2)
-#             stop("'by' variable must have at least 2 levels for hazard ratio plot")
-#
-#         if (length(by_unique_values == 2)) {
-# # browser()
-#             tt <- do.call("visreg", utils::modifyList(
-#                 list(fit = x,
-#                      trans = exp,
-#                      plot = FALSE,
-#                      rug = FALSE,
-#                      alpha = 1,
-#                      partial = FALSE,
-#                      overlay = TRUE,
-#                      print.cond = TRUE),
-#                 hazard.params))
-#
-#             # second level
-#             t1 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[2]]),]
-#             t1_visreg <- t1[order(t1[[x_arg]]),]
-#
-#             # reference level
-#             t0 <- tt[["fit"]][which(tt[["fit"]][[by_arg]]==by_unique_values[[1]]),]
-#             t0_visreg <- t0[order(t1[[x_arg]]),]
-#
-#
-#             hazard_ratio <- cbind(time = t1_visreg[[x_arg]],
-#                                   HR = t1_visreg[["visregFit"]] / t0_visreg[["visregFit"]])
-#             # browser()
-#
-#             dimnames(hazard_ratio)[[2]] <- c(x_arg, "HR")
-#
-#             ylims <- range(hazard_ratio[,2])
-#
-#             do.call("plot", utils::modifyList(
-#                 list(x = hazard_ratio,
-#                      type = "l",
-#                      col = 1,
-#                      lty = 1,
-#                      lwd = 2,
-#                      ylim = ylims * c(0.90, 1.10),
-#                      ylab = "Hazard ratio"),
-#                 plot.params))
-#             abline(a=1, b=0, col="grey")
-#
-#             invisible(hazard_ratio)
-#
-#         }
     }
 
 }

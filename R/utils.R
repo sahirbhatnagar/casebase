@@ -371,10 +371,30 @@ incrVar <- function (var, increment = 1) {
     increment <- rep(increment, n)
   function(data) {
     for (i in 1:n) {
-      data[[var[i]]] <- data[[var[i]]] + increment[i]
+      if (is.factor(data[[var[i]]])) {
+        data[[var[i]]] <- fct_shift_ord(data[[var[i]]], increment = increment[i])
+      } else {
+        data[[var[i]]] <- data[[var[i]]] + increment[i]
+      }
     }
     data
   }
+}
+
+#' @rdname plot.singleEventCB
+fct_shift_ord <- function(x, increment = 1, cap = TRUE, .fun = `+`){
+  x_nlevel <- nlevels(x)
+  x_lables <- levels(x)
+
+  # apply function .fun to the numeric of the ordered vector
+  erg <-.fun(as.numeric(x), increment)
+
+  # cap to 1 and x_nlevel if the increment was larger than the original range of the factor levels
+  if (cap) {
+    erg[erg<1] <- 1
+    erg[erg>x_nlevel] <- x_nlevel
+  }
+  ordered(erg, levels = 1:x_nlevel, labels = x_lables)
 }
 
 
