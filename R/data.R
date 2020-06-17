@@ -268,6 +268,16 @@
 #' http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html
 "support"
 
+#' Data extracted from the mason trial
+#'
+#' Compares placebo to hormone treatment. THIS IS NOT EXTENSIVE. Will add
+#' details later.
+#'
+#' @format A dataframe with 16608 observations and 3 variables:
+#' @source taken from the following paper:
+#' @references proper reference for the data.
+"masonTrialExtraction"
+
 
 #' German Breast Cancer Study Group 2
 #'
