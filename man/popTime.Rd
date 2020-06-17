@@ -238,17 +238,21 @@ fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base ser
 color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
 
 plot(popTimeData,
-     add.case.series = TRUE,
-     add.base.series = TRUE,
-     add.competing.event = FALSE,
-     legend = TRUE,
-     comprisk = TRUE,
-     fill.params = list(name = element_blank(),
-                        breaks = c("Case series", "Competing event", "Base series"),
-                        values = fill_cols),
-     color.params = list(name = element_blank(),
-                         breaks = c("Case series", "Competing event", "Base series"),
-                         values = color_cols)
+  add.case.series = TRUE,
+  add.base.series = TRUE,
+  add.competing.event = FALSE,
+  legend = TRUE,
+  comprisk = TRUE,
+  fill.params = list(
+    name = element_blank(),
+    breaks = c("Case series", "Competing event", "Base series"),
+    values = fill_cols
+  ),
+  color.params = list(
+    name = element_blank(),
+    breaks = c("Case series", "Competing event", "Base series"),
+    values = color_cols
+  )
 )
 data("bmtcrr")
 popTimeData <- popTime(data = bmtcrr, time = "ftime")

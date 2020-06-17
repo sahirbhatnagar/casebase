@@ -4,12 +4,16 @@
 \name{bmtcrr}
 \alias{bmtcrr}
 \title{Data on transplant patients}
-\format{A dataframe with 177 observations and 7 variables: \describe{ \item{Sex}{Gender of the
-individual} \item{D}{Disease: lymphoblastic or myeloblastic leukemia, abbreviated as ALL and
-AML, respectively} \item{Phase}{Phase at transplant (Relapse, CR1, CR2, CR3)} \item{Age}{Age at
-the beginning of follow-up} \item{Status}{Status indicator: 0=censored, 1=relapse, 2=competing
-event} \item{Source}{Source of stem cells: bone marrow and peripheral blood, coded as BM+PB, or
-peripheral blood only, coded as PB} \item{ftime}{Failure time in months} }}
+\format{
+A dataframe with 177 observations and 7 variables: \describe{
+\item{Sex}{Gender of the individual} \item{D}{Disease: lymphoblastic or
+myeloblastic leukemia, abbreviated as ALL and AML, respectively}
+\item{Phase}{Phase at transplant (Relapse, CR1, CR2, CR3)} \item{Age}{Age
+at the beginning of follow-up} \item{Status}{Status indicator: 0=censored,
+1=relapse, 2=competing event} \item{Source}{Source of stem cells: bone
+marrow and peripheral blood, coded as BM+PB, or peripheral blood only,
+coded as PB} \item{ftime}{Failure time in months} }
+}
 \source{
 Available at the following website:
 \url{http://www.stat.unipg.it/luca/R/}

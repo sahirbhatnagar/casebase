@@ -1,11 +1,11 @@
 ---
-title: "Plot Hazards, Hazard Ratios"
+title: "Plot Hazards and Hazard Ratios"
 author: "Sahir Rai Bhatnagar"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
-    fig_height: 8
-    fig_width: 11
+    fig_height: 6
+    fig_width: 8
     toc: yes
     toc_depth: 4
 vignette: >
@@ -19,116 +19,115 @@ editor_options:
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
+  collapse = TRUE, 
+  results='hide',
+  fig.show='all',
   comment = "#>"
 )
 ```
 
 
+# Introduction
+
+In this vignette, we describe the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. There are currently two types of plots: hazard functions and hazard ratios. We describe each one in detail below.
+
 # Hazard Function
 
-This data frame contains the observations of 686 women from the `TH.data` package. This dataset is also available from the `rstpm2` package. 
+The hazard function plots require the [`visreg`](https://cran.r-project.org/package=visreg) package. 
+
+To illustrate hazard function plots, we will use the breast cancer dataset which contains the observations of 686 women taken from the [`TH.data`](https://cran.r-project.org/package=TH.data) package. This dataset is also available from the `casebase` package. In the following, we will show different hazard functions for different combinations of continuous, binary variables as well as their interactions.
+
+
+```{r}
+# library(casebase)
+library(visreg)
+library(splines)
+devtools::load_all("~/git_repositories/casebase/")
+data("brcancer")
+str(brcancer)
+```
+
 
 ## One binary predictor, no interactions
 
-```{r}
-pacman::p_load(rstpm2) # for brcancer data
-pacman::p_load(TH.data) # same as brcancer data but with proper names
-pacman::p_load(splines)
-devtools::load_all("~/git_repositories/casebase/")
-pacman::p_load(visreg)
+We first fit a main effects only model with a spline on `log(time)` and hormonal therapy as main effects.
 
-# data("brcancer")
-# factoring hormon, breaks the plot method for rstpm2 with interactions!!!
-# brcancer <- transform(brcancer, hormon=factor(hormon, levels = 0:1, labels = c("no","yes")))
-data("GBSG2")
-
-GBSG2 <- transform(GBSG2, hormon=as.numeric(GBSG2$horTh)-1)
-GBSG2 <- transform(GBSG2, meno=as.numeric(GBSG2$menostat)-1)
-
-
-# str(GBSG2)
-# str(brcancer)
-# head(GBSG2)
-
-
-mod_cb <- fitSmoothHazard(cens ~ nsx(log(time), df = 3) + hormon,
-                          data = GBSG2,
+```{r, results='show'}
+mod_cb <- fitSmoothHazard(cens ~ ns(log(time), df = 3) + hormon,
+                          data = brcancer,
                           time = "time")
-mod_rstpm2 <- rstpm2::stpm2(Surv(time,cens == 1) ~ hormon,
-                            data = GBSG2, df = 3)
 summary(mod_cb)
-summary(mod_rstpm2)
 ```
+
 
 ### Hazard functions on separate plots
 
-```{r}
-par(mfrow = c(2,2))
+All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are \code{list(fit = x,
+trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)}. For example, if you want a 95% confidence band, specify \code{hazard.params = list(alpha = 0.05)}. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
+
+We first plot the hazard as a function of time, for hormon=0 and hormon=1. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
+
+```{r, results='hide',fig.show='all'}
+par(mfrow = c(1,2))
 plot(mod_cb,
-     hazard.params = list(xvar = c("time"),
+     hazard.params = list(xvar = "time",
                           cond = list(hormon = 0),
                           alpha = 0.05,
-                          main = "Casebase: No Hormonal Therapy"))
-
-plot(mod_rstpm2,
-     newdata = data.frame(hormon = 0),
-     type = "hazard", 
-     main = "rstmp2: No Hormonal Therapy")
+                          main = "No Hormonal Therapy Hazard Function"))
 
 plot(mod_cb,
-     hazard.params = list(xvar = c("time"),
+     hazard.params = list(xvar = "time",
                           cond = list(hormon = 1),
                           alpha = 0.05,
-                          main = "Casebase: Hormonal Therapy"))
-
-plot(mod_rstpm2,
-     newdata = data.frame(hormon = 1),
-     type = "hazard", 
-     main = "rstmp2: Hormonal Therapy")
+                          main = "Hormonal Therapy Hazard Function"))
 ```
 
 
 
 ### Hazard functions on same plots
 
-We can already see the advantage and power of using `visreg`. We can easily plot two curves on the same graph, have the confidence bands somewhat transparent, and y-axis limits are adjusted automatically. This is difficult to do otherwise. 
+Alternatively, we can plot the hazard functions on the same plot. This is accomplished with the `by` argument: 
 
 ```{r}
-par(mfrow = c(1,2))
 plot(mod_cb,
-     hazard.params = list(xvar = c("time"),
+     hazard.params = list(xvar = "time",
                           by = "hormon",
                           alpha = 0.05,
                           ylab = "Hazard"))
-
-plot(mod_cb)
-
-
-plot(mod_rstpm2,
-     newdata = data.frame(hormon = 0),
-     type = "hazard", 
-     main = "rstmp2")
-plot(mod_rstpm2,
-     newdata = data.frame(hormon = 1),
-     type = "hazard", 
-     main = "rstmp2",
-     add = TRUE,ci = TRUE)
-
 ```
+
+
+Note that if we want to extract the data used to construct the plot, e.g. to create our own, we simply assign the call to `plot` to an object (we may optionally set `plot=FALSE` in the `hazard.params` argument as to not print any plots):
+
+```{r}
+plot_results <- plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.10,
+                          ylab = "Hazard",
+                          plot = FALSE))
+```
+
+```{r, results='show'}
+head(plot_results$fit)
+```
+
+
 
 ### ggplot2 version 
 
-It's also flexible because we can leverage the `ggplot2` just by specifying `gg=TRUE`, the plot will return a `ggplot` object:
+The function is flexible because you may leverage `ggplot2` just by specifying `gg=TRUE`, the plot will return a `ggplot` object:
 
 ```{r}
 gg_object <- plot(mod_cb,
-                  hazard.params = list(xvar = c("time"),
+                  hazard.params = list(xvar = "time",
                                        by = "hormon",
                                        alpha = 0.20, # 80% CI
                                        ylab = "Hazard",
                                        gg = TRUE)) 
+```
 
+```{r, results='show'}
 attr(gg_object,"class")
 ```
 
@@ -136,71 +135,76 @@ Now we can use it downstream for any plot while leveraging the entire ggplot2 ec
 
 ```{r}
 gg_object + 
-  ggthemes::theme_solarized()+
+  theme_minimal()+
   theme(legend.position = "bottom") + 
-  labs(title = "Casebase") + 
-  scale_y_continuous(labels = scales::label_number()) + 
+  labs(title = "Casebase") +
   scale_x_continuous(n.breaks = 10)
 ```
 
 
 ## One binary predictor with interaction
 
-```{r}
-mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*nsx(log(time), df = 3),
-                              data = GBSG2,
+Next, we fit an interaction model with a time-varying covariate, i.e., to test the hypothesis that the effect of hormonal therapy on the hazard varies with time. 
+
+```{r, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*ns(log(time), df = 3),
+                              data = brcancer,
                               time = "time")
-mod_rstpm2_tvc <- rstpm2::stpm2(Surv(time,cens == 1) ~ hormon,
-                                data = GBSG2, df = 3,
-                                tvc=list(hormon = 3))
-
 summary(mod_cb_tvc)
-summary(mod_rstpm2_tvc)
+```
 
+Now we can easily plot the hazard function over time for each hormon group:
 
-par(mfrow = c(1,2))
+```{r}
 plot(mod_cb_tvc,
-     hazard.params = list(xvar = c("time"),
+     hazard.params = list(xvar = "time",
                           by = "hormon",
                           alpha = 0.05,
                           ylab = "Hazard")) 
-
-plot(mod_rstpm2_tvc,
-     newdata = data.frame(hormon = 0),
-     type = "hazard", var = "hormon")
-plot(mod_rstpm2_tvc,
-     newdata = data.frame(hormon = 1),
-     type = "hazard", var = "hormon", add = TRUE, ci = TRUE)
-
 ```
+
 
 
 ## One continuous predictor with interaction
 
+Now we fit a model with an interaction between a continous variable, estrogen receptor (in fmol), and time. 
 
-```{r}
-mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*nsx(log(time), df = 3),
-                              data = GBSG2,
+```{r, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3),
+                              data = brcancer,
                               time = "time")
 summary(mod_cb_tvc)
+```
 
-par(mfrow = c(1,3))
-# copmuted at the 10th, 50th and 90th quantiles of estrec
+
+There are now many ways to plot the time-varying effect of estrogen receptor on the hazard function. The default is to plot the 10th, 50th and 90th quantiles of the `by` variable:
+
+```{r}
+# computed at the 10th, 50th and 90th quantiles of estrec
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          alpha = 1,
+                          ylab = "Hazard")) 
+```
+
+
+We can also show the quartiles of `estrec` by specifying the `breaks` argument. If `breaks` is a single number, that will be the used as the number of breaks:
+
+```{r}
+# computed at quartiles of estrec
 plot(mod_cb_tvc,
      hazard.params = list(xvar = c("time"),
                           by = "estrec",
                           alpha = 1,
+                          breaks = 4,
                           ylab = "Hazard")) 
+```
 
 
-# copmuted at quartiles of estrec
-plot(mod_cb_tvc,
-     hazard.params = list(xvar = c("time"),
-                          by = "estrec",
-                          alpha = 1,
-                          breaks = 2,
-                          ylab = "Hazard")) 
+Alternatively, if `breaks` is a vector, it will be used as the actual values to be used:
 
+```{r}
 # computed where I want
 plot(mod_cb_tvc,
      hazard.params = list(xvar = c("time"),
@@ -212,7 +216,9 @@ plot(mod_cb_tvc,
 
 ### Image and Perspective Plots
 
-```{r}
+Instead of taking a cross-section of the effect of `estrec` on the hazrd, we can plot a surface using the `visreg2d` function:
+
+```{r perspective-plots}
 visreg2d(mod_cb_tvc, 
          xvar = "time",
          yvar = "estrec",
@@ -229,22 +235,23 @@ visreg2d(mod_cb_tvc,
          zlab = "Hazard",
          plot.type = "persp")
 
-visreg2d(mod_cb_tvc, 
-         xvar = "time",
-         yvar = "estrec",
-         trans = exp,
-         print.cond = TRUE,
-         zlab = "Hazard",
-         plot.type = "rgl")
+# this can also work if 'rgl' is installed
+# visreg2d(mod_cb_tvc, 
+#          xvar = "time",
+#          yvar = "estrec",
+#          trans = exp,
+#          print.cond = TRUE,
+#          zlab = "Hazard",
+#          plot.type = "rgl")
 ```
 
 
 ## One continuous predictor with interaction and several other predictors
 
-We know clearly what the value of the variables are in the Hazard function plot:
+All the examples so far have only included 2 predictors in the regression equation. In this example, we fit a smooth hazard model with several predictors:
 
-```{r}
-mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*nsx(log(time), df = 3) + 
+```{r multiple-predictors, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3) + 
                                 horTh + 
                                 age + 
                                 menostat + 
@@ -252,82 +259,87 @@ mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*nsx(log(time), df = 3) +
                                 tgrade + 
                                 pnodes + 
                                 progrec,
-                              data = GBSG2,
+                              data = brcancer,
                               time = "time")
 summary(mod_cb_tvc)
-
-
-plot(mod_cb_tvc,
-     hazard.params = list(xvar = c("time"),
-                          by = c("estrec"),
-                          alpha = 1,
-                          breaks = 2,
-                          ylab = "Hazard")) 
-
-# plot each variable's effect on Hazard
-par(mfrow = c(2,4))
-plot(mod_cb_tvc,
-     hazard.params = list(alpha = 1,
-                          ylab = "Hazard")) 
 ```
 
+We know clearly what the value of the variables are in the Hazard function plot:
+
+```{r many-predictors-plot, results='show', R.options=list(max.print=1)}
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = 2,
+                          ylab = "Hazard"))
+
+# plot each variable's effect on Hazard
+# par(mfrow = c(2,4))
+# plot(mod_cb_tvc,
+#      hazard.params = list(alpha = 1,
+#                           ylab = "Hazard")) 
+```
+
+```{r}
+knitr::knit_exit()
+```
 
 
 # Hazard Ratio
 
 
 ```{r}
-pacman::p_load(rstpm2) # for nsx function
-pacman::p_load(splines)
-devtools::load_all("~/git_repositories/casebase/")
 data("simdat") # from casebase package
-
-head(simdat)
 simdat <- transform(simdat, 
                     treat = factor(trt, levels = 0:1, labels = c("control","treatment")))
-head(simdat)
-fit_numeric_exposure <- fitSmoothHazard(status ~ trt*nsx(eventtime,df=3),
+
+fit_numeric_exposure <- fitSmoothHazard(status ~ trt*bs(eventtime),
                                         data = simdat,
                                         time = "eventtime")
 
-fit_factor_exposure <- fitSmoothHazard(status ~ treat*nsx(eventtime,df=3),
+fit_factor_exposure <- fitSmoothHazard(status ~ treat*bs(eventtime),
                                        data = simdat,
                                        time = "eventtime")
 
-newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
 
-par(mfrow = c(1,2))
-
+par(mfrow = c(1,3))
 plot(fit_numeric_exposure, 
      type = "hr", 
      newdata = data.frame(trt = 0, eventtime = newtime),
-     exposed = transform(simdat, trt = 1),
-     var = "trt",
-     increment = 1,
+     exposed = function(data) transform(data, trt = 1),
      xvar = "eventtime",
      ci = T)
 
 #by default this will increment `var` by 1 for exposed category
-devtools::load_all("~/git_repositories/casebase/")
 plot(fit_factor_exposure,
      type = "hr", 
-     newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+     newdata = data.frame(treat = factor("control", levels = c("control","treatment")), eventtime = newtime),
      var = "treat",
-     increment = -1, 
+     increment = 1, 
      xvar = "eventtime",
      ci = T,
      ci.col = "lightblue",
-     xlab = "heloo",
-     main = "sfsf",
-     ylab = "hellllll",
+     xlab = "Time",
+     main = "Hazard Ratio for Treatment",
+     ylab = "Hazard Ratio",
      lty = 5,
      lwd = 7,
      rug = T)
 
-tt <- data.frame(treat = factor("control", levels = c("control","treatment","other")), eventtime = newtime, trt = 0)
-tt$treat
-fct_shift_ord(tt$treat, increment = 3)
-fct_shift_ord(tt$trt)
+
+# we can also decrement `var` by 1 to give hazard ratio for control/treatment
+result <- plot(fit_factor_exposure,
+               type = "hr", 
+               newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+               var = "treat",
+               increment = -1, 
+               xvar = "eventtime",
+               ci = T)
+
+# see data used to create plot
+head(result)
 
 
 
@@ -349,6 +361,10 @@ test2 <- function(...) if(length(list(...))) FALSE else TRUE
 
 test2()
 MagpieS0X
+
+
+
+
 
 ```
 
@@ -582,25 +598,72 @@ pacman::p_load(visreg)
 # data("brcancer")
 # factoring hormon, breaks the plot method for rstpm2 with interactions!!!
 # brcancer <- transform(brcancer, hormon=factor(hormon, levels = 0:1, labels = c("no","yes")))
-data("GBSG2")
+data("brcancer")
 
-GBSG2 <- transform(GBSG2, hormon=as.numeric(GBSG2$horTh)-1)
-GBSG2 <- transform(GBSG2, meno=as.numeric(GBSG2$menostat)-1)
+brcancer <- transform(brcancer, hormon=as.numeric(brcancer$horTh)-1)
+brcancer <- transform(brcancer, meno=as.numeric(brcancer$menostat)-1)
 
-str(GBSG2)
+str(brcancer)
 
 # be sure to test that the code works regardless of if its time:horTh or horTh:time
-fit <- fitSmoothHazard(cens ~ nsx(time, df = 3)*horTh, #+ 
-                         # age*time + 
-                         # horTh * progrec +
-                       # menostat * pnodes * progrec,
-                       data = GBSG2,
+fit <- fitSmoothHazard(cens ~ nsx(time, df = 3)*horTh+ 
+                         age*horTh +
+                         horTh * progrec +
+                         menostat * pnodes * progrec,
+                       data = brcancer,
                        time = "time")
+
+summary(fit)
+
+newtime <- quantile(fit[["data"]][[fit[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+
+newdat <- data.frame(brcancer[1,-which(colnames(brcancer)=="time"),drop=F], time = newtime)
+newdat
+
+
+
+plot(fit,
+     type = "hr", 
+     newdata = newdat,
+     var = "horTh",
+     increment = 1, 
+     xvar = "time",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "heloo",
+     main = "sfsf",
+     ylab = "hellllll",
+     lty = 2,
+     lwd = 1,
+     rug = T)
+
+
+newage <- quantile(fit[["data"]]$age, probs = seq(0.05, 0.95, 0.01))
+
+newdat <- data.frame(brcancer[1,-which(colnames(brcancer)=="age"),drop=F], age = newage)
+newdat
+
+
+plot(fit,
+     type = "hr", 
+     newdata = newdat,
+     var = "horTh",
+     increment = 1, 
+     xvar = "age",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "heloo",
+     main = "sfsf",
+     ylab = "hellllll",
+     lty = 2,
+     lwd = 1,
+     rug = T)
+
 
 
 
 fit <- fitSmoothHazard(cens ~ time*horTh, 
-                       data = GBSG2,
+                       data = brcancer,
                        time = "time")
 
 summary(fit)
@@ -622,12 +685,12 @@ newtime <- quantile(fit[["data"]][[fit[["timeVar"]]]], probs = seq(0.05, 0.95, 0
 # need to specify all other variables, even though they get cancelled out when calculating
 # the hazard ratio. This is a potential downside to using estimate_hazard
 newdat1 <- data.frame(horTh = "yes", time = newtime, 
-                      age = median(GBSG2$age), menostat = "Pre", 
-                      pnodes = median(GBSG2$pnodes), progrec = median(GBSG2$progrec),
+                      age = median(brcancer$age), menostat = "Pre", 
+                      pnodes = median(brcancer$pnodes), progrec = median(brcancer$progrec),
                       offset = 0)
 newdat0 <- data.frame(horTh = "no", time = newtime, 
-                      age = median(GBSG2$age), menostat = "Pre", 
-                      pnodes = median(GBSG2$pnodes), progrec = median(GBSG2$progrec),
+                      age = median(brcancer$age), menostat = "Pre", 
+                      pnodes = median(brcancer$pnodes), progrec = median(brcancer$progrec),
                       offset = 0)
 
 
@@ -937,7 +1000,7 @@ vcov(fit)
 ```{r}
 
 mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*nsx(log(censoredTime), df = 3),
-                              data = GBSG2,
+                              data = brcancer,
                               time = "censoredTime")
 
 beta <- coef(mod_cb_tvc)
