@@ -376,7 +376,7 @@ incrVar <- function(var, increment = 1) {
   }
 }
 
-#' @rdname plot.singleEventCB
+
 fct_shift_ord <- function(x, increment = 1, cap = TRUE, .fun = `+`) {
   x_nlevel <- nlevels(x)
   x_lables <- levels(x)
@@ -393,7 +393,6 @@ fct_shift_ord <- function(x, increment = 1, cap = TRUE, .fun = `+`) {
 }
 
 
-#' @rdname plot.singleEventCB
 hrJacobian <- function(object, newdata, newdata2, term) {
 
   # Set offset to zero
@@ -401,19 +400,19 @@ hrJacobian <- function(object, newdata, newdata2, term) {
   newdata2$offset <- 0
 
 
-  m1 <- model.frame(term,
+  m1 <- stats::model.frame(term,
     data = newdata2,
     na.action = stats::na.pass,
     xlev = object$xlevels
   )
-  m0 <- model.frame(term,
+  m0 <- stats::model.frame(term,
     data = newdata,
-    na.action = na.pass,
+    na.action = stats::na.pass,
     xlev = object$xlevels
   )
 
-  X1 <- model.matrix(term, m1, contrasts.arg = object$contrasts)
-  X0 <- model.matrix(term, m0, contrasts.arg = object$contrasts)
+  X1 <- stats::model.matrix(term, m1, contrasts.arg = object$contrasts)
+  X0 <- stats::model.matrix(term, m0, contrasts.arg = object$contrasts)
 
   # this is the jacobian!!
   X1 - X0

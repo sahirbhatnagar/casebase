@@ -448,7 +448,8 @@ plot.popTime <- function(x, ...,
 #'   `type="hr"`.
 #' @param ci Logical; if TRUE confidence bands are calculated. Only available
 #'   for `family="glm"` and `family="gam"`, and only used for `type="hr"`,
-#'   Default: !add
+#'   Default: !add. Confidence intervals for hazard ratios are calculated using
+#'   the Delta Method.
 #' @param ci.lvl Confidence level. Must be in (0,1), Default: 0.95. Only used
 #'   for `type="hr"`.
 #' @param ci.col Confidence band color. Only used if argument `ci=TRUE`,
@@ -473,18 +474,22 @@ plot.popTime <- function(x, ...,
 #' @examples
 #' library(splines)
 #' data("simdat") # from casebase package
-#' simdat <- transform(simdat,
-#'                     treat = factor(trt, levels = 0:1, labels = c("control","treatment")))
+#' simdat <- transform(simdat[sample(1:200),],
+#'                     treat = factor(trt, levels = 0:1,
+#'                     labels = c("control","treatment")))
 #'
 #' fit_numeric_exposure <- fitSmoothHazard(status ~ trt*bs(eventtime),
 #'                                         data = simdat,
+#'                                         ratio = 1,
 #'                                         time = "eventtime")
 #'
 #' fit_factor_exposure <- fitSmoothHazard(status ~ treat*bs(eventtime),
 #'                                        data = simdat,
+#'                                        ratio = 1,
 #'                                        time = "eventtime")
 #'
-#' newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+#' newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]],
+#'                     probs = seq(0.05, 0.95, 0.01))
 #'
 #' par(mfrow = c(1,3))
 #' plot(fit_numeric_exposure,
@@ -492,33 +497,35 @@ plot.popTime <- function(x, ...,
 #'      newdata = data.frame(trt = 0, eventtime = newtime),
 #'      exposed = function(data) transform(data, trt = 1),
 #'      xvar = "eventtime",
-#'      ci = T)
+#'      ci = TRUE)
 #'
 #' #by default this will increment `var` by 1 for exposed category
 #' plot(fit_factor_exposure,
 #'      type = "hr",
-#'      newdata = data.frame(treat = factor("control", levels = c("control","treatment")), eventtime = newtime),
+#'      newdata = data.frame(treat = factor("control",
+#'               levels = c("control","treatment")), eventtime = newtime),
 #'      var = "treat",
 #'      increment = 1,
 #'      xvar = "eventtime",
-#'      ci = T,
+#'      ci = TRUE,
 #'      ci.col = "lightblue",
 #'      xlab = "Time",
 #'      main = "Hazard Ratio for Treatment",
 #'      ylab = "Hazard Ratio",
 #'      lty = 5,
 #'      lwd = 7,
-#'      rug = T)
+#'      rug = TRUE)
 #'
 #'
 #' # we can also decrement `var` by 1 to give hazard ratio for control/treatment
 #' result <- plot(fit_factor_exposure,
 #'                type = "hr",
-#'                newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+#'                newdata = data.frame(treat = factor("treatment",
+#'                          levels = c("control","treatment")), eventtime = newtime),
 #'                var = "treat",
 #'                increment = -1,
 #'                xvar = "eventtime",
-#'                ci = T)
+#'                ci = TRUE)
 #'
 #' # see data used to create plot
 #' head(result)

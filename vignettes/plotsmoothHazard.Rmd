@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-In this vignette, we describe the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. There are currently two types of plots: hazard functions and hazard ratios. We describe each one in detail below.
+In this vignette, we describe the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. There are currently two types of plots: hazard functions and hazard ratios. We describe each one in detail below. Note that the `plot` method has only been properly tested for `family="glm"`. 
 
 # Hazard Function
 
@@ -39,10 +39,10 @@ To illustrate hazard function plots, we will use the breast cancer dataset which
 
 
 ```{r}
-# library(casebase)
+library(casebase)
 library(visreg)
 library(splines)
-devtools::load_all("~/git_repositories/casebase/")
+library(ggplot2)
 data("brcancer")
 str(brcancer)
 ```
@@ -264,7 +264,7 @@ mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3) +
 summary(mod_cb_tvc)
 ```
 
-We know clearly what the value of the variables are in the Hazard function plot:
+In the following plot, we show the time-varying effect of `estrec` while controlling for all other variables. By default, the other terms in the model are set to their median if the term is numeric or the most common category if the term is a factor. The values of the other variables are shown in the output:
 
 ```{r many-predictors-plot, results='show', R.options=list(max.print=1)}
 plot(mod_cb_tvc,
@@ -281,18 +281,128 @@ plot(mod_cb_tvc,
 #                           ylab = "Hazard")) 
 ```
 
-```{r}
-knitr::knit_exit()
-```
 
 
 # Hazard Ratio
 
+In this section we illustrate how to plot hazard ratios using the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. Note, that these function have only been thoroughly tested with `family="glm"`.
+
+In what follows, the hazard ratio for a variable $X$ is defined as 
+
+$$
+\frac{h\left(t | X=x_1, \mathbf{Z}=\mathbf{z_1} ; \hat{\beta}\right)}{h(t | X=x_0, \mathbf{Z}=\mathbf{z_0} ; \hat{\beta})}
+$$
+where $h(t|\cdot;\hat{\beta})$ is the hazard rate as a function of the variable $t$ (which is usually time, but can be any other continous variable), $x_1$ is the value of $X$ for the exposed group, $x_0$ is the value of $X$ for the unexposed group, $\mathbf{Z}$ are other covariates in the model which are equal to $\mathbf{z_1}$ in the exposed and $\mathbf{z_0}$ in the unexposed group, and $\hat{\beta}$ are the estimated regression coefficients. 
+
+As indicated by the formula above, it is most instructive to plot the hazard ratio as a function of a variable $t$ only if there is an interaction between $t$ and $X$. Otherwise, the resulting plot will simply be a horizontal line across time. 
+
+## Mason Trial
+
+We use data from the Manson trial (NEJM 2003) which is included in the `casebase` package. This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD). 
+
+We fit a model with the interaction between time and treatment arm. We are therefore interested in visualizing the hazard ratio of the treatment over time. 
+
+```{r mason-trial, results='show'}
+data("masonTrialExtraction")
+masonTrialExtraction <- transform(masonTrialExtraction, 
+                                  treatment = factor(treatment, levels = c("placebo","estPro")))
+head(masonTrialExtraction)
+
+fit_mason <- fitSmoothHazard(status ~ treatment*time,
+                             data = masonTrialExtraction,
+                             time = "time")
+summary(fit_mason)
+```
+
+
+To plot the hazard ratio, we must specify the `newdata` argument with a covariate pattern for the reference group. In this example, we treat the `placebo` as the reference group. Because we have fit an interaction with time, we also provide a sequence of times at which we would like to calculate the hazard ratio. 
+
+
+```{r plot-mason, results='show'}
+newtime <- quantile(fit_mason[["originalData"]][[fit_mason[["timeVar"]]]], probs = seq(0.01, 0.99, 0.01))
+
+# reference category
+(newdata <- data.frame(treatment = factor("placebo", 
+                                         levels = c("placebo","estPro")), 
+                      time = newtime))
+
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     var = "treatment",
+     increment = 1,
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+In the call to `plot` we specify the `xvar` which is the variable plotted on the x-axis, the `var` argument which specified the variable for which we want the hazard ratio. The `increment=1` indicates that we want to increment `var` by 1 level, which in this case is `estPro`. Alternatively, we can specify the `exposed` argument which should be a function that takes `newdata` and returns the exposed dataset. The following call is equivalent to the one above: 
 
 ```{r}
-data("simdat") # from casebase package
-simdat <- transform(simdat, 
-                    treat = factor(trt, levels = 0:1, labels = c("control","treatment")))
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     exposed = function(data) transform(data, treatment = "estPro"),
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+
+Alternatively, if we want the `placebo` group to be the exposed group, we change the `newdata` argument to:
+
+```{r, results='show'}
+(newdata <- data.frame(treatment = factor("estPro", 
+                                         levels = c("placebo","estPro")), 
+                      time = newtime))
+
+levels(newdata$treatment)
+```
+
+Note that the reference category in `newdata` is still `placebo`. Therefore we must set `increment=-1` in order to get the `exposed` dataset:
+
+```{r}
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     var = "treatment",
+     increment = -1,
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+
+If the $X$ variable has more than two levels, than, `increment` works the same way, e.g., `increment = 2` will provide an `exposed` group two levels above the value in `newdata`. 
+
+## Save results
+
+In order to save the data used to make the plot, you simply have to assign the call to `plot` to a variable. This is particularly useful if you want to really customize the plot aesthetics:
+
+```{r, fig.show='none', results='show'}
+result <- plot(fit_mason, 
+               type = "hr", 
+               newdata = newdata,
+               var = "treatment",
+               increment = -1,
+               xvar = "time",
+               ci = T,
+               rug = T)
+head(result)
+```
+
+
+
+
+```{r, echo=FALSE}
+knitr::knit_exit()
+```
+
+
+
+
+```{r}
+data(simdat)
 
 fit_numeric_exposure <- fitSmoothHazard(status ~ trt*bs(eventtime),
                                         data = simdat,

@@ -4,8 +4,6 @@
 \alias{plot.singleEventCB}
 \alias{plotHazardRatio}
 \alias{incrVar}
-\alias{fct_shift_ord}
-\alias{hrJacobian}
 \title{Plot Hazards and Hazard Ratios}
 \usage{
 \method{plot}{singleEventCB}(
@@ -27,10 +25,6 @@
 plotHazardRatio(x, newdata, newdata2, ci, ci.lvl, ci.col, rug, xvar, ...)
 
 incrVar(var, increment = 1)
-
-fct_shift_ord(x, increment = 1, cap = TRUE, .fun = `+`)
-
-hrJacobian(object, newdata, newdata2, term)
 }
 \arguments{
 \item{x}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This is
@@ -97,7 +91,8 @@ which has an interaction term with another variable. Only used for
 
 \item{ci}{Logical; if TRUE confidence bands are calculated. Only available
 for \code{family="glm"} and \code{family="gam"}, and only used for \code{type="hr"},
-Default: !add}
+Default: !add. Confidence intervals for hazard ratios are calculated using
+the Delta Method.}
 
 \item{ci.lvl}{Confidence level. Must be in (0,1), Default: 0.95. Only used
 for \code{type="hr"}.}
@@ -107,6 +102,9 @@ for \code{type="hr"}.}
 
 \item{ci.col}{Confidence band color. Only used if argument \code{ci=TRUE},
 Default: 'grey'. Only used for \code{type="hr"}.}
+
+\item{newdata2}{\code{data.frame} for exposed group. calculated and passed
+internally to \code{plotHazardRatio} function}
 }
 \value{
 a plot of the hazard function or hazard ratio. For \code{type="hazard"}, a
@@ -136,18 +134,22 @@ results to a \code{data.frame} and using  the graphical package of their choice.
 \examples{
 library(splines)
 data("simdat") # from casebase package
-simdat <- transform(simdat,
-                    treat = factor(trt, levels = 0:1, labels = c("control","treatment")))
+simdat <- transform(simdat[sample(1:200),],
+                    treat = factor(trt, levels = 0:1,
+                    labels = c("control","treatment")))
 
 fit_numeric_exposure <- fitSmoothHazard(status ~ trt*bs(eventtime),
                                         data = simdat,
+                                        ratio = 1,
                                         time = "eventtime")
 
 fit_factor_exposure <- fitSmoothHazard(status ~ treat*bs(eventtime),
                                        data = simdat,
+                                       ratio = 1,
                                        time = "eventtime")
 
-newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]],
+                    probs = seq(0.05, 0.95, 0.01))
 
 par(mfrow = c(1,3))
 plot(fit_numeric_exposure,
@@ -155,33 +157,35 @@ plot(fit_numeric_exposure,
      newdata = data.frame(trt = 0, eventtime = newtime),
      exposed = function(data) transform(data, trt = 1),
      xvar = "eventtime",
-     ci = T)
+     ci = TRUE)
 
 #by default this will increment `var` by 1 for exposed category
 plot(fit_factor_exposure,
      type = "hr",
-     newdata = data.frame(treat = factor("control", levels = c("control","treatment")), eventtime = newtime),
+     newdata = data.frame(treat = factor("control",
+              levels = c("control","treatment")), eventtime = newtime),
      var = "treat",
      increment = 1,
      xvar = "eventtime",
-     ci = T,
+     ci = TRUE,
      ci.col = "lightblue",
      xlab = "Time",
      main = "Hazard Ratio for Treatment",
      ylab = "Hazard Ratio",
      lty = 5,
      lwd = 7,
-     rug = T)
+     rug = TRUE)
 
 
 # we can also decrement `var` by 1 to give hazard ratio for control/treatment
 result <- plot(fit_factor_exposure,
                type = "hr",
-               newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+               newdata = data.frame(treat = factor("treatment",
+                         levels = c("control","treatment")), eventtime = newtime),
                var = "treat",
                increment = -1,
                xvar = "eventtime",
-               ci = T)
+               ci = TRUE)
 
 # see data used to create plot
 head(result)
