@@ -395,7 +395,7 @@ plot.popTime <- function(x, ...,
 #'   function accounts for the possible time-varying exposure effects.
 #' @param x Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This is
 #'   the result from the [casebase::fitSmoothHazard()] function.
-#' @param ... further arguments passed to [graphics::plot()]. Only used if
+#' @param ... further arguments passed to `plot`. Only used if
 #'   \code{type="hr"}. See [graphics::par()] for details.
 #' @param type plot type. Choose one of either \code{"hazard"} for hazard
 #'   function or \code{"hr"} for hazard ratio.  Default: \code{type = "hazard"}.
