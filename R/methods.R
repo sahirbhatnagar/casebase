@@ -474,7 +474,7 @@ plot.popTime <- function(x, ...,
 #' @examples
 #' library(splines)
 #' data("simdat") # from casebase package
-#' simdat <- transform(simdat[sample(1:200),],
+#' simdat <- transform(simdat[sample(1:nrow(simdat), size = 200),],
 #'                     treat = factor(trt, levels = 0:1,
 #'                     labels = c("control","treatment")))
 #'

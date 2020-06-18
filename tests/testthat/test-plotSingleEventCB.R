@@ -13,8 +13,8 @@ data("simdat")
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
                                          trt:ns(log(eventtime),df=1),
                                      time = "eventtime",
-                                     data = simdat,
-                                     ratio = 10,
+                                     data = simdat[sample(1:nrow(simdat), size = 200),],
+                                     ratio = 1,
                                      family = "glm")
 
 test_that("no error in plot method for singleEventCB objects - hazard function", {
