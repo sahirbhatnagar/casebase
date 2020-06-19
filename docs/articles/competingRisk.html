@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Competing risk analysis using case-base sampling • casebase</title>
+<title>Competing risk analysis • casebase</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Competing risk analysis using case-base sampling">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Competing risk analysis">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -57,6 +57,9 @@
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -84,10 +87,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Competing risk analysis using case-base sampling</h1>
+      <h1>Competing risk analysis</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-03-03</h4>
+            <h4 class="date">2020-06-19</h4>
       
       
       <div class="hidden name"><code>competingRisk.Rmd</code></div>
@@ -100,11 +103,11 @@
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
 <p>We will use the same data that was used in Scrucca <em>et al</em> <span class="citation">(2010)</span>. The data is available on the main author’s <a href="http://www.stat.unipg.it/luca/R/">website</a>; it is also available as part of this package.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">12345</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(casebase)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">12345</span>)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(casebase)</span></code></pre></div>
 <pre><code>## See example usage at http://sahirbhatnagar.com/casebase/</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(bmtcrr)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(bmtcrr)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(bmtcrr)</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(bmtcrr)</span></code></pre></div>
 <pre><code>##   Sex   D   Phase Age Status Source  ftime
 ## 1   M ALL Relapse  48      2  BM+PB   0.67
 ## 2   F AML     CR2  23      1  BM+PB   9.50
@@ -173,77 +176,77 @@
 <h2 class="hasAnchor">
 <a href="#population-time-plots" class="anchor"></a>Population-time plots</h2>
 <p>In order to try and visualize the incidence density of relapse, we can look at a population-time plot: on the X-axis we have time, and on the Y-axis we have the size of the risk set at a particular time point. Failure times associated to the event of interest can then be highlighted on the plot using red dots.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">nobs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(bmtcrr)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">ftime &lt;-<span class="st"> </span>bmtcrr<span class="op">$</span>ftime</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">ord &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(ftime, <span class="dt">decreasing =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co"># We split the person-moments in four categories:</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co"># 1) at-risk</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co"># 2) main event</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co"># 3) competing event</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># 4) censored</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">yCoords &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>), </a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">                 <span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">                 <span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">yCoords &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(yCoords, nobs <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(yCoords))</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co"># Plot only at-risk</span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
-<a class="sourceLine" id="cb5-17" data-line-number="17">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
-<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb5-19" data-line-number="19">        <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs, yCoords[,<span class="dv">4</span>], <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">col =</span> <span class="st">"grey90"</span>)</a>
-<a class="sourceLine" id="cb5-20" data-line-number="20">cases &lt;-<span class="st"> </span>bmtcrr[, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co"># randomly move the cases vertically</span></a>
-<a class="sourceLine" id="cb5-23" data-line-number="23">moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</a>
-<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>, </a>
-<a class="sourceLine" id="cb5-25" data-line-number="25">       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>nobs &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(bmtcrr)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>ftime &lt;-<span class="st"> </span>bmtcrr<span class="op">$</span>ftime</span>
+<span id="cb5-3"><a href="#cb5-3"></a>ord &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/order.html">order</a></span>(ftime, <span class="dt">decreasing =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># We split the person-moments in four categories:</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co"># 1) at-risk</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co"># 2) main event</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co"># 3) competing event</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># 4) censored</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>yCoords &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">2</span>), </span>
+<span id="cb5-11"><a href="#cb5-11"></a>                 <span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>),</span>
+<span id="cb5-12"><a href="#cb5-12"></a>                 <span class="kw"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span>(bmtcrr[ord, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>))</span>
+<span id="cb5-13"><a href="#cb5-13"></a>yCoords &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(yCoords, nobs <span class="op">-</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(yCoords))</span>
+<span id="cb5-14"><a href="#cb5-14"></a></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="co"># Plot only at-risk</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </span>
+<span id="cb5-17"><a href="#cb5-17"></a>     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</span>
+<span id="cb5-19"><a href="#cb5-19"></a>        <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs, yCoords[,<span class="dv">4</span>], <span class="dv">0</span>, <span class="dv">0</span>), <span class="dt">col =</span> <span class="st">"grey90"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20"></a>cases &lt;-<span class="st"> </span>bmtcrr[, <span class="st">"Status"</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co"># randomly move the cases vertically</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a>moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>, </span>
+<span id="cb5-25"><a href="#cb5-25"></a>       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p><img src="competingRisk_files/figure-html/poptime1-1.png" width="700"></p>
 <p>We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.</p>
 <p>To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Plot at-risk and events</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">        <span class="dt">col =</span> <span class="st">"firebrick3"</span>)</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], ftime[<span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(ord)], <span class="dv">0</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(yCoords[,<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[,<span class="dv">4</span>]), nobs, <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">        <span class="dt">col =</span> <span class="st">"grey90"</span>)</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co"># randomly move the cases vertically</span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>,</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"At-risk"</span>), </a>
-<a class="sourceLine" id="cb6-16" data-line-number="16">       <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"firebrick3"</span>, <span class="st">"grey90"</span>),</a>
-<a class="sourceLine" id="cb6-17" data-line-number="17">       <span class="dt">pch =</span> <span class="dv">15</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Plot at-risk and events</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </span>
+<span id="cb6-3"><a href="#cb6-3"></a>     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </span>
+<span id="cb6-5"><a href="#cb6-5"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb6-6"><a href="#cb6-6"></a>        <span class="dt">col =</span> <span class="st">"firebrick3"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], ftime[<span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(ord)], <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb6-8"><a href="#cb6-8"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(yCoords[,<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[,<span class="dv">4</span>]), nobs, <span class="dv">0</span>), </span>
+<span id="cb6-9"><a href="#cb6-9"></a>        <span class="dt">col =</span> <span class="st">"grey90"</span>)</span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co"># randomly move the cases vertically</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb6-14"><a href="#cb6-14"></a>       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"At-risk"</span>), </span>
+<span id="cb6-16"><a href="#cb6-16"></a>       <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"firebrick3"</span>, <span class="st">"grey90"</span>),</span>
+<span id="cb6-17"><a href="#cb6-17"></a>       <span class="dt">pch =</span> <span class="dv">15</span>)</span></code></pre></div>
 <p><img src="competingRisk_files/figure-html/poptime2-1.png" width="700"></p>
 <p>Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can’t differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, nobs, nobs), <span class="dt">col =</span> <span class="st">"white"</span>)</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co"># Event of interest</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">        <span class="dt">col =</span> <span class="st">"firebrick3"</span>)</a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co"># Risk set</span></a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], ftime[<span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(ord)], <span class="dv">0</span>, <span class="dv">0</span>),</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(yCoords[,<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[,<span class="dv">4</span>]), nobs, <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">        <span class="dt">col =</span> <span class="st">"grey90"</span>)</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co"># Competing event</span></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(nobs, nobs <span class="op">-</span><span class="st"> </span>yCoords[,<span class="dv">1</span>], nobs, nobs), </a>
-<a class="sourceLine" id="cb7-16" data-line-number="16">        <span class="dt">col =</span> <span class="st">"dodgerblue2"</span>)</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co"># randomly move the cases vertically</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19">moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>,</a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Competing event"</span>, <span class="st">"At-risk"</span>), </a>
-<a class="sourceLine" id="cb7-23" data-line-number="23">       <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"firebrick3"</span>, <span class="st">"dodgerblue2"</span>, <span class="st">"grey90"</span>),</a>
-<a class="sourceLine" id="cb7-24" data-line-number="24">       <span class="dt">pch =</span> <span class="dv">15</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="dv">0</span>, <span class="dt">type =</span> <span class="st">'n'</span>, <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime)), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, nobs), </span>
+<span id="cb7-2"><a href="#cb7-2"></a>     <span class="dt">xlab =</span> <span class="st">'Follow-up time'</span>, <span class="dt">ylab =</span> <span class="st">'Population'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>),</span>
+<span id="cb7-4"><a href="#cb7-4"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, <span class="dv">0</span>, nobs, nobs), <span class="dt">col =</span> <span class="st">"white"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># Event of interest</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </span>
+<span id="cb7-7"><a href="#cb7-7"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="dv">0</span>, <span class="dv">0</span>), </span>
+<span id="cb7-8"><a href="#cb7-8"></a>        <span class="dt">col =</span> <span class="st">"firebrick3"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co"># Risk set</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], ftime[<span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(ord)], <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb7-11"><a href="#cb7-11"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, yCoords[,<span class="dv">2</span>], <span class="kw"><a href="https://rdrr.io/r/base/rev.html">rev</a></span>(yCoords[,<span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[,<span class="dv">4</span>]), nobs, <span class="dv">0</span>), </span>
+<span id="cb7-12"><a href="#cb7-12"></a>        <span class="dt">col =</span> <span class="st">"grey90"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="co"># Competing event</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="kw"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>, ftime[ord], <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(ftime), <span class="dv">0</span>), </span>
+<span id="cb7-15"><a href="#cb7-15"></a>        <span class="dt">y =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(nobs, nobs <span class="op">-</span><span class="st"> </span>yCoords[,<span class="dv">1</span>], nobs, nobs), </span>
+<span id="cb7-16"><a href="#cb7-16"></a>        <span class="dt">col =</span> <span class="st">"dodgerblue2"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17"></a></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co"># randomly move the cases vertically</span></span>
+<span id="cb7-19"><a href="#cb7-19"></a>moved_cases &lt;-<span class="st"> </span>yCoords[cases[ord], <span class="dv">2</span>] <span class="op">+</span><span class="st"> </span>yCoords[cases[ord], <span class="dv">4</span>] <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/sum.html">sum</a></span>(cases))</span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((ftime[ord])[cases[ord]], moved_cases, <span class="dt">pch =</span> <span class="dv">20</span>,</span>
+<span id="cb7-21"><a href="#cb7-21"></a>       <span class="dt">col =</span> <span class="st">"red"</span>, <span class="dt">cex =</span> <span class="dv">1</span>)</span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Competing event"</span>, <span class="st">"At-risk"</span>), </span>
+<span id="cb7-23"><a href="#cb7-23"></a>       <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"firebrick3"</span>, <span class="st">"dodgerblue2"</span>, <span class="st">"grey90"</span>),</span>
+<span id="cb7-24"><a href="#cb7-24"></a>       <span class="dt">pch =</span> <span class="dv">15</span>)</span></code></pre></div>
 <p><img src="competingRisk_files/figure-html/poptime3-1.png" width="700"></p>
 <p>From this last plot, we can see that there is no censoring during the first 10 months. Moreover, we see that the last competing event occurs around 20 months. Putting all this information together, we have evidence of two types of patients: very sick patients who either relapse or have a competing event early on, and healthier patients who are eventually lost to follow-up.</p>
 </div>
@@ -251,11 +254,11 @@
 <h2 class="hasAnchor">
 <a href="#analysis" class="anchor"></a>Analysis</h2>
 <p>We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">model1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(Status <span class="op">~</span><span class="st"> </span>ftime <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">                          <span class="dt">data =</span> bmtcrr, </a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">                          <span class="dt">ratio =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">                          <span class="dt">time =</span> <span class="st">"ftime"</span>)</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model1)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>model1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(Status <span class="op">~</span><span class="st"> </span>ftime <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </span>
+<span id="cb8-2"><a href="#cb8-2"></a>                          <span class="dt">data =</span> bmtcrr, </span>
+<span id="cb8-3"><a href="#cb8-3"></a>                          <span class="dt">ratio =</span> <span class="dv">100</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>                          <span class="dt">time =</span> <span class="st">"ftime"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## VGAM::vglm(formula = formula, family = multinomial(refLevel = 1), 
@@ -305,11 +308,11 @@
 <p>Because of the results in Turgeon <em>et al</em> <span class="citation">(n.d.)</span>, the standard errors we obtain from the multinomial logit fit are asymptotically correct, and therefore can be used to construct asymptotic confidence intervals.</p>
 <p>From this summary, we see that time is indeed significant, as is Phase (only relapse vs. CR1). Interestingly, we see that the type of disease is only significant for the event of interest, whereas the type of transplant and the age of the patient are only significant for the competing event.</p>
 <p>Next, we include the logarithm of time in the model (which leads to a Weibull hazard):</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">model2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(Status <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(ftime) <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </a>
-<a class="sourceLine" id="cb10-2" data-line-number="2">                          <span class="dt">data =</span> bmtcrr, </a>
-<a class="sourceLine" id="cb10-3" data-line-number="3">                          <span class="dt">ratio =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb10-4" data-line-number="4">                          <span class="dt">time =</span> <span class="st">"ftime"</span>)</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model2)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>model2 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(Status <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(ftime) <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </span>
+<span id="cb10-2"><a href="#cb10-2"></a>                          <span class="dt">data =</span> bmtcrr, </span>
+<span id="cb10-3"><a href="#cb10-3"></a>                          <span class="dt">ratio =</span> <span class="dv">100</span>, </span>
+<span id="cb10-4"><a href="#cb10-4"></a>                          <span class="dt">time =</span> <span class="st">"ftime"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## VGAM::vglm(formula = formula, family = multinomial(refLevel = 1), 
@@ -358,12 +361,12 @@
 ## Reference group is level  1  of the response</code></pre>
 <p>As we can see, the results are similar to the ones with a Gompertz hazard, although Sex is now significant for the competing event.</p>
 <p>Finally, using splines, we can be quite flexible about the way the hazard depends on time:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">model3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(</a>
-<a class="sourceLine" id="cb12-2" data-line-number="2">    Status <span class="op">~</span><span class="st"> </span>splines<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span>(ftime) <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </a>
-<a class="sourceLine" id="cb12-3" data-line-number="3">    <span class="dt">data =</span> bmtcrr, </a>
-<a class="sourceLine" id="cb12-4" data-line-number="4">    <span class="dt">ratio =</span> <span class="dv">100</span>, </a>
-<a class="sourceLine" id="cb12-5" data-line-number="5">    <span class="dt">time =</span> <span class="st">"ftime"</span>)</a>
-<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model3)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>model3 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    Status <span class="op">~</span><span class="st"> </span>splines<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span>(ftime) <span class="op">+</span><span class="st"> </span>Sex <span class="op">+</span><span class="st"> </span>D <span class="op">+</span><span class="st"> </span>Phase <span class="op">+</span><span class="st"> </span>Source <span class="op">+</span><span class="st"> </span>Age, </span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="dt">data =</span> bmtcrr, </span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="dt">ratio =</span> <span class="dv">100</span>, </span>
+<span id="cb12-5"><a href="#cb12-5"></a>    <span class="dt">time =</span> <span class="st">"ftime"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="kw"><a href="../reference/CompRisk-class.html">summary</a></span>(model3)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## VGAM::vglm(formula = formula, family = multinomial(refLevel = 1), 
@@ -419,25 +422,25 @@
 <h3 class="hasAnchor">
 <a href="#absolute-risk" class="anchor"></a>Absolute risk</h3>
 <p>We now look at the 2-year risk of relapse:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">linearRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model1, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a>
-<a class="sourceLine" id="cb14-2" data-line-number="2">logRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model2, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a>
-<a class="sourceLine" id="cb14-3" data-line-number="3">splineRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model3, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</a></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(linearRisk, logRisk,</a>
-<a class="sourceLine" id="cb15-2" data-line-number="2">     <span class="dt">xlab =</span> <span class="st">"Linear"</span>, <span class="dt">ylab =</span> <span class="st">"Log/Spline"</span>, <span class="dt">pch =</span> <span class="dv">19</span>,</a>
-<a class="sourceLine" id="cb15-3" data-line-number="3">     <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">col =</span> <span class="st">'red'</span>)</a>
-<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>(linearRisk, splineRisk,</a>
-<a class="sourceLine" id="cb15-5" data-line-number="5">       <span class="dt">col =</span> <span class="st">'blue'</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</a>
-<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="dt">a =</span> <span class="dv">0</span>, <span class="dt">b =</span> <span class="dv">1</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topleft"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Log"</span>, <span class="st">"Spline"</span>),</a>
-<a class="sourceLine" id="cb15-8" data-line-number="8">       <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>linearRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model1, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</span>
+<span id="cb14-2"><a href="#cb14-2"></a>logRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model2, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</span>
+<span id="cb14-3"><a href="#cb14-3"></a>splineRisk &lt;-<span class="st"> </span><span class="kw"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="dt">object =</span> model3, <span class="dt">time =</span> <span class="dv">24</span>, <span class="dt">newdata =</span> bmtcrr[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,])</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(linearRisk, logRisk,</span>
+<span id="cb15-2"><a href="#cb15-2"></a>     <span class="dt">xlab =</span> <span class="st">"Linear"</span>, <span class="dt">ylab =</span> <span class="st">"Log/Spline"</span>, <span class="dt">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb15-3"><a href="#cb15-3"></a>     <span class="dt">xlim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">ylim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="dt">col =</span> <span class="st">'red'</span>)</span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="kw"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>(linearRisk, splineRisk,</span>
+<span id="cb15-5"><a href="#cb15-5"></a>       <span class="dt">col =</span> <span class="st">'blue'</span>, <span class="dt">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="kw"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="dt">a =</span> <span class="dv">0</span>, <span class="dt">b =</span> <span class="dv">1</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="kw"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topleft"</span>, <span class="dt">legend =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Log"</span>, <span class="st">"Spline"</span>),</span>
+<span id="cb15-8"><a href="#cb15-8"></a>       <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">col =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>, <span class="st">"blue"</span>))</span></code></pre></div>
 <p><img src="competingRisk_files/figure-html/absRiskPlot-1.png" width="700"></p>
 <p>We can also estimate the mean absolute risk for the entire dataset:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(linearRisk)</a></code></pre></div>
-<pre><code>## [1] 0.1926046</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(logRisk)</a></code></pre></div>
-<pre><code>## [1] 0.1596619</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(splineRisk)</a></code></pre></div>
-<pre><code>## [1] 0.1894514</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(linearRisk)</span></code></pre></div>
+<pre><code>## [1] 0.1926762</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(logRisk)</span></code></pre></div>
+<pre><code>## [1] 0.1603205</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(splineRisk)</span></code></pre></div>
+<pre><code>## [1] 0.1894943</code></pre>
 </div>
 </div>
 <div id="session-information" class="section level2">
@@ -448,8 +451,8 @@
 ## Running under: Pop!_OS 19.10
 ## 
 ## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.8.0
-## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.8.0
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas/libblas.so.3
+## LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.3.7.so
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -458,19 +461,19 @@
 ## [1] casebase_0.2.1.9001
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.3         compiler_3.6.2     pillar_1.4.3       tools_3.6.2       
+##  [1] Rcpp_1.0.4.6       compiler_3.6.2     pillar_1.4.3       tools_3.6.2       
 ##  [5] digest_0.6.25      lattice_0.20-38    nlme_3.1-143       evaluate_0.14     
-##  [9] memoise_1.1.0      lifecycle_0.1.0    tibble_2.1.3       gtable_0.3.0      
-## [13] mgcv_1.8-31        pkgconfig_2.0.3    rlang_0.4.4        Matrix_1.2-18     
-## [17] rstudioapi_0.11    yaml_2.2.1         pkgdown_1.4.1.9000 xfun_0.12         
-## [21] stringr_1.4.0      dplyr_0.8.3        knitr_1.28         desc_1.2.0        
-## [25] fs_1.3.1           stats4_3.6.2       rprojroot_1.3-2    grid_3.6.2        
-## [29] tidyselect_0.2.5   glue_1.3.1         data.table_1.12.8  R6_2.4.1          
-## [33] survival_3.1-8     VGAM_1.1-2         rmarkdown_2.1      purrr_0.3.3       
-## [37] ggplot2_3.2.1      magrittr_1.5       splines_3.6.2      backports_1.1.5   
-## [41] scales_1.1.0       htmltools_0.4.0    MASS_7.3-51.5      assertthat_0.2.1  
-## [45] colorspace_1.4-1   stringi_1.4.6      lazyeval_0.2.2     munsell_0.5.0     
-## [49] crayon_1.3.4</code></pre>
+##  [9] memoise_1.1.0      lifecycle_0.2.0    tibble_3.0.0       gtable_0.3.0      
+## [13] mgcv_1.8-31        pkgconfig_2.0.3    rlang_0.4.5        Matrix_1.2-18     
+## [17] cli_2.0.2          rstudioapi_0.11    yaml_2.2.1         pkgdown_1.4.1.9000
+## [21] xfun_0.13          dplyr_0.8.5        stringr_1.4.0      knitr_1.28        
+## [25] vctrs_0.2.4        desc_1.2.0         fs_1.3.2           stats4_3.6.2      
+## [29] tidyselect_1.0.0   rprojroot_1.3-2    grid_3.6.2         glue_1.4.0        
+## [33] data.table_1.12.8  R6_2.4.1           fansi_0.4.1        survival_3.1-8    
+## [37] VGAM_1.1-2         rmarkdown_2.1      purrr_0.3.3        ggplot2_3.3.0.9000
+## [41] magrittr_1.5       splines_3.6.2      backports_1.1.5    scales_1.1.0      
+## [45] htmltools_0.4.0    ellipsis_0.3.0     MASS_7.3-51.5      assertthat_0.2.1  
+## [49] colorspace_1.4-1   stringi_1.4.6      munsell_0.5.0      crayon_1.3.4</code></pre>
 </div>
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
@@ -519,7 +522,7 @@ Cox, D. R. “Regression models and life tables.” <em>Journal of the Royal Sta
 </ol>
 <div id="refs" class="references">
 <div id="ref-scrucca2010regression">
-<p>Scrucca, L., A. Santucci, and F. Aversa. 2010. “Regression Modeling of Competing Risk Using R: An in Depth Guide for Clinicians.” <em>Bone Marrow Transplantation</em> 45 (9). Nature Publishing Group: 1388–95.</p>
+<p>Scrucca, L., A. Santucci, and F. Aversa. 2010. “Regression Modeling of Competing Risk Using R: An in Depth Guide for Clinicians.” <em>Bone Marrow Transplantation</em> 45 (9): 1388–95.</p>
 </div>
 <div id="ref-turgeonCompRisk">
 <p>Turgeon, M., S. Bhatnagar, and O. Saarela. n.d. “A Novel Approach to Competing Risk Analysis Using Case-Base Sampling.”</p>

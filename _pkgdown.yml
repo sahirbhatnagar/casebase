@@ -26,22 +26,24 @@ reference:
   contents:
     - '`popTime`'
     - '`plot.popTime`'
-    - '`plot.popTimeExposure`'
 - title: Model Fitting
   desc: >
-    Main functions for fitting smooth hazard functions
+    Main functions for fitting smooth hazard functions and plotting them
   contents:
     - '`fitSmoothHazard`'
     - '`absoluteRisk`'
+    - '`plot.singleEventCB`'
     - '`hazardPlot`'
 - title: Datasets
   desc: >
-    Four datasets that ship with the package to illustrate usage
+    Datasets that ship with the package to illustrate usage
   contents:
     - '`ERSPC`'
     - '`bmtcrr`'
     - '`support`'
     - '`simdat`'
+    - '`brcancer`'
+    - '`masonTrialExtraction`'
 - title: Internal Utility Functions
   desc: >
     Functions not really meant for the user
@@ -71,6 +73,8 @@ navbar:
         href: articles/popTime.html
       - text: Fitting smooth-in-time parametric hazard functions
         href: articles/smoothHazard.html
+      - text: Plotting Hazards and Hazard Ratios
+        href: articles/plotsmoothHazard.html
       - text: Competing risk analysis using case-base sampling
         href: articles/competingRisk.html
       - text: Customizing Population Time Plots

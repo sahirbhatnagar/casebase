@@ -36,9 +36,10 @@
 
 
 <meta property="og:title" content="Fit smooth-in-time parametric hazard functions. — fitSmoothHazard" />
-<meta property="og:description" content="Miettinen and Hanley (2009) explained how case-base sampling can be used to estimate
-smooth-in-time parametric hazard functions. The idea is to sample person-moments, which may or
-may not correspond to an event, and then fit the hazard using logistic regression." />
+<meta property="og:description" content="Miettinen and Hanley (2009) explained how case-base sampling can be used to
+estimate smooth-in-time parametric hazard functions. The idea is to sample
+person-moments, which may or may not correspond to an event, and then fit the
+hazard using logistic regression." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -97,6 +98,9 @@ may not correspond to an event, and then fit the hazard using logistic regressio
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -132,9 +136,10 @@ may not correspond to an event, and then fit the hazard using logistic regressio
     </div>
 
     <div class="ref-description">
-    <p>Miettinen and Hanley (2009) explained how case-base sampling can be used to estimate
-smooth-in-time parametric hazard functions. The idea is to sample person-moments, which may or
-may not correspond to an event, and then fit the hazard using logistic regression.</p>
+    <p>Miettinen and Hanley (2009) explained how case-base sampling can be used to
+estimate smooth-in-time parametric hazard functions. The idea is to sample
+person-moments, which may or may not correspond to an event, and then fit the
+hazard using logistic regression.</p>
     </div>
 
     <pre class="usage"><span class='fu'>fitSmoothHazard</span>(
@@ -164,41 +169,44 @@ may not correspond to an event, and then fit the hazard using logistic regressio
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>an object of class "formula" (or one that can be coerced to that class): a
-symbolic description of the model to be fitted. The details of model specification are given
-under Details.</p></td>
+      <td><p>an object of class "formula" (or one that can be coerced to
+that class): a symbolic description of the model to be fitted. The details
+of model specification are given under Details.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>a data frame, list or environment containing the variables in the model. If not found
-in data, the variables are taken from <code><a href='https://rdrr.io/r/base/environment.html'>environment(formula)</a></code>, typically the environment
-from which <code>fitSmoothHazard</code> is called.</p></td>
+      <td><p>a data frame, list or environment containing the variables in the
+model. If not found in data, the variables are taken from
+<code><a href='https://rdrr.io/r/base/environment.html'>environment(formula)</a></code>, typically the environment from which
+<code>fitSmoothHazard</code> is called.</p></td>
     </tr>
     <tr>
       <th>time</th>
-      <td><p>a character string giving the name of the time variable. See Details.</p></td>
+      <td><p>a character string giving the name of the time variable. See
+Details.</p></td>
     </tr>
     <tr>
       <th>family</th>
-      <td><p>a character string specifying the family of regression models used to fit the
-hazard.</p></td>
+      <td><p>a character string specifying the family of regression models
+used to fit the hazard.</p></td>
     </tr>
     <tr>
       <th>censored.indicator</th>
-      <td><p>a character string of length 1 indicating which value in <code>event</code>
-is the censored. This function will use <code><a href='https://rdrr.io/r/stats/relevel.html'>relevel</a></code> to set
-<code>censored.indicator</code> as the reference level. This argument is ignored if the <code>event</code>
-variable is a numeric.</p></td>
+      <td><p>a character string of length 1 indicating which
+value in <code>event</code> is the censored. This function will use
+<code><a href='https://rdrr.io/r/stats/relevel.html'>relevel</a></code> to set <code>censored.indicator</code> as the
+reference level. This argument is ignored if the <code>event</code> variable is a
+numeric.</p></td>
     </tr>
     <tr>
       <th>ratio</th>
-      <td><p>nteger, giving the ratio of the size of the base series to that of the case series.
-Defaults to 100.</p></td>
+      <td><p>integer, giving the ratio of the size of the base series to that
+of the case series. Defaults to 100.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed to fitting functions (e.g. <code>glm</code>, <code>glmnet</code>,
-<code>gam</code>).</p></td>
+      <td><p>Additional parameters passed to fitting functions (e.g.
+<code>glm</code>, <code>glmnet</code>, <code>gam</code>).</p></td>
     </tr>
     <tr>
       <th>x</th>
@@ -220,36 +228,41 @@ Defaults to 100.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of <code>glm</code> and <code>lm</code> when there is only one event of interest, or of
-class <code><a href='CompRisk-class.html'>CompRisk</a></code>, which inherits from <code>vglm</code>, for a competing risk analysis.
-As such, functions like <code>summary</code>, <code>deviance</code> and <code>coefficients</code> give familiar
+    <p>An object of <code>glm</code> and <code>lm</code> when there is only one event of
+interest, or of class <code><a href='CompRisk-class.html'>CompRisk</a></code>, which inherits from
+<code>vglm</code>, for a competing risk analysis. As such, functions like
+<code>summary</code>, <code>deviance</code> and <code>coefficients</code> give familiar
 results.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The object <code>data</code> should either be the output of the function <code><a href='sampleCaseBase.html'>sampleCaseBase</a></code>
-or the source dataset on which case-base sampling will be performed. In the latter case, it is
-assumed that <code>data</code> contains the two columns corresponding to the supplied time and event
-variables. If <code>time</code> is missing, the function looks for a column named <code>"time"</code> in the
-data. Note that the event variable is inferred from <code>formula</code>, since it is the left hand
-side.</p>
-<p>For single-event survival analysis, it is possible to fit the hazard function using
-<code>glmnet</code>, <code>gam</code>, or <code>gbm</code>. The choice of fitting family is controled by the
-parameter <code>family</code>. The default value is <code>glm</code>, which corresponds to logistic
-regression. For competing risk analysis, only <code>glm</code> and <code>glmnet</code> are allowed.</p>
-<p>We also provide a matrix interface through <code>fitSmoothHazard.fit</code>, which mimics
-<code>glm.fit</code> and <code>gbm.fit</code>. This is mostly convenient for <code>family = "glmnet"</code>, since
-a formula interface becomes quickly cumbersome as the number of variables increases. In this
-setting, the matrix <code>y</code> should have two columns and contain the time and event variables
-(e.g. like the output of <code><a href='https://rdrr.io/pkg/survival/man/Surv.html'>survival::Surv</a></code>). We need this linear function of time in order to
-perform case-base sampling. Therefore, nonlinear functions of time should be specified as a
-one-sided formula through the argument <code>formula_time</code> (the left-hand side is always
-ignored).</p>
+    <p>The object <code>data</code> should either be the output of the function
+<code><a href='sampleCaseBase.html'>sampleCaseBase</a></code> or the source dataset on which case-base
+sampling will be performed. In the latter case, it is assumed that
+<code>data</code> contains the two columns corresponding to the supplied time and
+event variables. The variable <code>time</code> is used for the sampling the base
+series, and therefore it should represent the time variable on its original
+(i.e. non transformed) scale. If <code>time</code> is missing, the function looks
+for a column named <code>"time"</code> in the data. Note that the event variable is
+inferred from <code>formula</code>, since it is the left hand side.</p>
+<p>For single-event survival analysis, it is possible to fit the hazard function
+using <code>glmnet</code>, <code>gam</code>, or <code>gbm</code>. The choice of fitting family
+is controled by the parameter <code>family</code>. The default value is <code>glm</code>,
+which corresponds to logistic regression. For competing risk analysis, only
+<code>glm</code> and <code>glmnet</code> are allowed.</p>
+<p>We also provide a matrix interface through <code>fitSmoothHazard.fit</code>, which
+mimics <code>glm.fit</code> and <code>gbm.fit</code>. This is mostly convenient for
+<code>family = "glmnet"</code>, since a formula interface becomes quickly
+cumbersome as the number of variables increases. In this setting, the matrix
+<code>y</code> should have two columns and contain the time and event variables
+(e.g. like the output of <code><a href='https://rdrr.io/pkg/survival/man/Surv.html'>survival::Surv</a></code>). We need this linear function
+of time in order to perform case-base sampling. Therefore, nonlinear
+functions of time should be specified as a one-sided formula through the
+argument <code>formula_time</code> (the left-hand side is always ignored).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simulate censored survival data for two outcome types from exponential distributions</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>data.table</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
-<span class='no'>nobs</span> <span class='kw'>&lt;-</span> <span class='fl'>5000</span>
+<span class='no'>nobs</span> <span class='kw'>&lt;-</span> <span class='fl'>500</span>
 <span class='no'>tlim</span> <span class='kw'>&lt;-</span> <span class='fl'>20</span>
 
 <span class='co'># simulation parameters</span>
@@ -259,44 +272,62 @@ ignored).</p>
 <span class='co'># event type 0-censored, 1-event of interest, 2-competing event</span>
 <span class='co'># t observed time/endpoint</span>
 <span class='co'># z is a binary covariate</span>
-<span class='no'>DT</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>z</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>))
-<span class='no'>DT</span>[,<span class='fu'>`:=`</span> (<span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
-          <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>))]</div><div class='output co'>#&gt;       z   t_event     t_comp
-#&gt;    1: 1 341.97029 70.4637398
-#&gt;    2: 1 333.42420 18.5965942
-#&gt;    3: 1  63.76479  6.9837416
-#&gt;    4: 1 697.18591  0.9472352
-#&gt;    5: 0 107.34263 28.1693592
-#&gt;   ---                       
-#&gt; 4996: 1  97.02565 95.7599864
-#&gt; 4997: 0 128.50435  8.7967661
-#&gt; 4998: 1 758.52039  1.6249641
-#&gt; 4999: 1 199.31868 60.4051872
-#&gt; 5000: 0 275.89061 49.0953403</div><div class='input'><span class='no'>DT</span>[,<span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
-         <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>))]</div><div class='output co'>#&gt;       z   t_event     t_comp event       time
-#&gt;    1: 1 341.97029 70.4637398     2 70.4637398
-#&gt;    2: 1 333.42420 18.5965942     2 18.5965942
-#&gt;    3: 1  63.76479  6.9837416     2  6.9837416
-#&gt;    4: 1 697.18591  0.9472352     2  0.9472352
-#&gt;    5: 0 107.34263 28.1693592     2 28.1693592
-#&gt;   ---                                        
-#&gt; 4996: 1  97.02565 95.7599864     2 95.7599864
-#&gt; 4997: 0 128.50435  8.7967661     2  8.7967661
-#&gt; 4998: 1 758.52039  1.6249641     2  1.6249641
-#&gt; 4999: 1 199.31868 60.4051872     2 60.4051872
-#&gt; 5000: 0 275.89061 49.0953403     2 49.0953403</div><div class='input'><span class='no'>DT</span>[<span class='no'>time</span> <span class='kw'>&gt;=</span> <span class='no'>tlim</span>, <span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='kw'>=</span> <span class='no'>tlim</span>)]</div><div class='output co'>#&gt;       z   t_event     t_comp event       time
-#&gt;    1: 1 341.97029 70.4637398     0 20.0000000
-#&gt;    2: 1 333.42420 18.5965942     2 18.5965942
-#&gt;    3: 1  63.76479  6.9837416     2  6.9837416
-#&gt;    4: 1 697.18591  0.9472352     2  0.9472352
-#&gt;    5: 0 107.34263 28.1693592     0 20.0000000
-#&gt;   ---                                        
-#&gt; 4996: 1  97.02565 95.7599864     0 20.0000000
-#&gt; 4997: 0 128.50435  8.7967661     2  8.7967661
-#&gt; 4998: 1 758.52039  1.6249641     2  1.6249641
-#&gt; 4999: 1 199.31868 60.4051872     0 20.0000000
-#&gt; 5000: 0 275.89061 49.0953403     0 20.0000000</div><div class='input'>
-<span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'><span class='no'>out_log</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div></pre>
+<span class='no'>DT</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>))
+<span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
+  <span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
+  <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>)
+)]</div><div class='output co'>#&gt;      z   t_event    t_comp
+#&gt;   1: 1 217.96303 26.933538
+#&gt;   2: 1  59.76338 17.216329
+#&gt;   3: 0 204.77071  2.056982
+#&gt;   4: 0 100.47209 16.732382
+#&gt;   5: 0 378.31412 30.889048
+#&gt;  ---                      
+#&gt; 496: 1 187.57458 59.305107
+#&gt; 497: 0 116.17601  5.115265
+#&gt; 498: 1 229.51968 15.852303
+#&gt; 499: 0  13.11169  5.597849
+#&gt; 500: 1 682.02976 12.787557</div><div class='input'><span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
+  <span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
+  <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>)
+)]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 1 217.96303 26.933538     2 26.933538
+#&gt;   2: 1  59.76338 17.216329     2 17.216329
+#&gt;   3: 0 204.77071  2.056982     2  2.056982
+#&gt;   4: 0 100.47209 16.732382     2 16.732382
+#&gt;   5: 0 378.31412 30.889048     2 30.889048
+#&gt;  ---                                      
+#&gt; 496: 1 187.57458 59.305107     2 59.305107
+#&gt; 497: 0 116.17601  5.115265     2  5.115265
+#&gt; 498: 1 229.51968 15.852303     2 15.852303
+#&gt; 499: 0  13.11169  5.597849     2  5.597849
+#&gt; 500: 1 682.02976 12.787557     2 12.787557</div><div class='input'><span class='no'>DT</span>[<span class='no'>time</span> <span class='kw'>&gt;=</span> <span class='no'>tlim</span>, <span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='kw'>=</span> <span class='no'>tlim</span>)]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 1 217.96303 26.933538     0 20.000000
+#&gt;   2: 1  59.76338 17.216329     2 17.216329
+#&gt;   3: 0 204.77071  2.056982     2  2.056982
+#&gt;   4: 0 100.47209 16.732382     2 16.732382
+#&gt;   5: 0 378.31412 30.889048     0 20.000000
+#&gt;  ---                                      
+#&gt; 496: 1 187.57458 59.305107     0 20.000000
+#&gt; 497: 0 116.17601  5.115265     2  5.115265
+#&gt; 498: 1 229.51968 15.852303     2 15.852303
+#&gt; 499: 0  13.11169  5.597849     2  5.597849
+#&gt; 500: 1 682.02976 12.787557     2 12.787557</div><div class='input'>
+<span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'><span class='no'>out_log</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
+<span class='co'># Use GAMs</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mgcv</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: nlme</span></div><div class='output co'>#&gt; <span class='message'>This is mgcv 1.8-31. For overview type 'help("mgcv-package")'.</span></div><div class='input'><span class='no'>DT</span>[<span class='no'>event</span> <span class='kw'>==</span> <span class='fl'>2</span>, <span class='no'>event</span> <span class='kw'>:=</span> <span class='fl'>1</span>]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 1 217.96303 26.933538     0 20.000000
+#&gt;   2: 1  59.76338 17.216329     1 17.216329
+#&gt;   3: 0 204.77071  2.056982     1  2.056982
+#&gt;   4: 0 100.47209 16.732382     1 16.732382
+#&gt;   5: 0 378.31412 30.889048     0 20.000000
+#&gt;  ---                                      
+#&gt; 496: 1 187.57458 59.305107     0 20.000000
+#&gt; 497: 0 116.17601  5.115265     1  5.115265
+#&gt; 498: 1 229.51968 15.852303     1 15.852303
+#&gt; 499: 0  13.11169  5.597849     1  5.597849
+#&gt; 500: 1 682.02976 12.787557     1 12.787557</div><div class='input'><span class='no'>out_gam</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/s.html'>s</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>,
+                           <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gam"</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
