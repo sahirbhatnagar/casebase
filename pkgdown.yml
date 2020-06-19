@@ -4,9 +4,10 @@ pkgdown_sha: ~
 articles:
   competingRisk: competingRisk.html
   customizingpopTime: customizingpopTime.html
+  plotsmoothHazard: plotsmoothHazard.html
   popTime: popTime.html
   smoothHazard: smoothHazard.html
-last_built: 2020-06-17T18:17Z
+last_built: 2020-06-19T11:12Z
 urls:
   reference: http://sahirbhatnagar.com/casebase/reference
   article: http://sahirbhatnagar.com/casebase/articles

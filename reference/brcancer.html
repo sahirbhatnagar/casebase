@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • casebase</title>
+<title>German Breast Cancer Study Group 2 — brcancer • casebase</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="German Breast Cancer Study Group 2 — brcancer" />
+<meta property="og:description" content="A data frame containing the observations from the  GBSG2 study.
+This is taken almost verbatim from the TH.data package." />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -131,26 +133,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>German Breast Cancer Study Group 2</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/data.R'><code>R/data.R</code></a></small>
+    <div class="hidden name"><code>brcancer.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="competingRisk.html">Competing risk analysis</a></dt>
-        <dd></dt>
-        <dt><a href="customizingpopTime.html">Customizing Population Time Plots</a></dt>
-        <dd></dt>
-        <dt><a href="plotsmoothHazard.html">Plot Hazards and Hazard Ratios</a></dt>
-        <dd></dt>
-        <dt><a href="popTime.html">Population Time Plots</a></dt>
-        <dd></dt>
-        <dt><a href="smoothHazard.html">Introduction to casebase sampling</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>A data frame containing the observations from the  GBSG2 study.
+This is taken almost verbatim from the <code>TH.data</code> package.</p>
     </div>
+
+    <pre class="usage"><span class='no'>brcancer</span></pre>
+
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>This data frame contains the observations of 686 women:</p><dl'>
+<dt>horTh</dt><dd><p>hormonal therapy, a factor at two levels <code>no</code> and
+<code>yes</code>.</p></dd> <dt>hormon</dt><dd><p>numeric version of <code>horTh</code></p></dd> <dt>age</dt><dd><p>of the
+patients in years.</p></dd> <dt>menostat</dt><dd><p>menopausal status, a factor at two
+levels <code>pre</code> (premenopausal) and <code>post</code> (postmenopausal).</p></dd>
+<dt>meno</dt><dd><p>Numeric version of <code>menostat</code></p></dd> <dt>tsize</dt><dd><p>tumor size (in
+mm).</p></dd> <dt>tgrade</dt><dd><p>tumor grade, a ordered factor at levels <code>I &lt; II &lt;
+  III</code>.</p></dd> <dt>pnodes</dt><dd><p>number of positive nodes.</p></dd> <dt>progrec</dt><dd><p>progesterone
+receptor (in fmol).</p></dd> <dt>estrec</dt><dd><p>estrogen receptor (in fmol).</p></dd>
+<dt>time</dt><dd><p>recurrence free survival time (in days).</p></dd> <dt>cens</dt><dd><p>censoring
+indicator (0- censored, 1- event).</p></dd> 
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>Torsten Hothorn (2019). TH.data: TH's Data Archive. R package version
+1.0-10. https://CRAN.R-project.org/package=TH.data</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>M. Schumacher, G. Basert, H. Bojar,  K. Huebner, M. Olschewski,
+W. Sauerbrei, C. Schmoor, C. Beyerle, R.L.A. Neumann and H.F. Rauschecker
+for the German Breast Cancer Study Group (1994), Randomized \(2\times2\)
+trial evaluating hormonal treatment and the duration of chemotherapy in
+node-positive breast cancer patients. <em>Journal of Clinical Oncology</em>,
+<b>12</b>, 2086--2093.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

@@ -16,6 +16,9 @@
     <loc>http://sahirbhatnagar.com/casebase/reference/bmtcrr.html</loc>
   </url>
   <url>
+    <loc>http://sahirbhatnagar.com/casebase/reference/brcancer.html</loc>
+  </url>
+  <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/checkArgsEventIndicator.html</loc>
   </url>
   <url>
@@ -26,6 +29,9 @@
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/masonTrialExtraction.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/reference/plot.singleEventCB.html</loc>
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/popTime.html</loc>
@@ -44,6 +50,9 @@
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html</loc>
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/articles/popTime.html</loc>

@@ -94,7 +94,7 @@
       <h1 data-toc-skip>Customizing Population Time Plots</h1>
                         <h4 class="author">Sahir R. Bhatnagar</h4>
             
-            <h4 class="date">2020-06-17</h4>
+            <h4 class="date">2020-06-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/customizingpopTime.Rmd"><code>vignettes/customizingpopTime.Rmd</code></a></small>
       <div class="hidden name"><code>customizingpopTime.Rmd</code></div>
@@ -111,6 +111,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">data.table</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">colorspace</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"ERSPC"</span>)
 
 <span class="co"># create poptime object for ERSPC data with exposure attribute</span>
 <span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="no">ERSPC</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="st">"Follow.Up.Time"</span>, <span class="kw">event</span> <span class="kw">=</span> <span class="st">"DeadOfPrCa"</span>, <span class="kw">exposure</span> <span class="kw">=</span> <span class="st">"ScrArm"</span>)
@@ -426,7 +428,7 @@
 ## [17] pkgdown_1.5.1    xfun_0.14        withr_2.2.0      stringr_1.4.0   
 ## [21] knitr_1.28       desc_1.2.0       fs_1.4.1         vctrs_0.3.1     
 ## [25] stats4_4.0.0     rprojroot_1.3-2  grid_4.0.0       glue_1.4.1      
-## [29] R6_2.4.1         VGAM_1.1-3       rmarkdown_2.2    farver_2.0.3    
+## [29] R6_2.4.1         VGAM_1.1-3       rmarkdown_2.3    farver_2.0.3    
 ## [33] magrittr_1.5     backports_1.1.8  scales_1.1.1     htmltools_0.5.0 
 ## [37] ellipsis_0.3.1   MASS_7.3-51.5    splines_4.0.0    assertthat_0.2.1
 ## [41] labeling_0.3     stringi_1.4.6    munsell_0.5.0    crayon_1.3.4</code></pre>
