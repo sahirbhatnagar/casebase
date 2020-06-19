@@ -30,7 +30,7 @@ incrVar(var, increment = 1)
 \item{x}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This is
 the result from the \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function.}
 
-\item{...}{further arguments passed to \code{\link[graphics:plot]{graphics::plot()}}. Only used if
+\item{...}{further arguments passed to \code{plot}. Only used if
 \code{type="hr"}. See \code{\link[graphics:par]{graphics::par()}} for details.}
 
 \item{type}{plot type. Choose one of either \code{"hazard"} for hazard
@@ -134,7 +134,7 @@ results to a \code{data.frame} and using  the graphical package of their choice.
 \examples{
 library(splines)
 data("simdat") # from casebase package
-simdat <- transform(simdat[sample(1:200),],
+simdat <- transform(simdat[sample(1:nrow(simdat), size = 200),],
                     treat = factor(trt, levels = 0:1,
                     labels = c("control","treatment")))
 
