@@ -57,6 +57,9 @@
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -87,7 +90,7 @@
       <h1>Population Time Plots</h1>
                         <h4 class="author">Sahir R. Bhatnagar</h4>
             
-            <h4 class="date">2020-03-03</h4>
+            <h4 class="date">2020-06-19</h4>
       
       
       <div class="hidden name"><code>popTime.Rmd</code></div>
@@ -108,26 +111,26 @@
 <li>the event status</li>
 <li>exposure (optional)</li>
 </ul>
-<p>This will create an object of class <code>popTime</code> (or <code>popTimeExposure</code> if you specify a value for the <code>exposure</code> argument)</p>
+<p>This will create an object of class <code>popTime</code> with an exposure attribute if you specify a value for the <code>exposure</code> argument.</p>
 <ol start="2" style="list-style-type: decimal">
-<li>Pass the object of class <code>popTime</code> (or <code>popTimeExposure</code>) to the <code>plot</code> function</li>
+<li>Pass the object of class <code>popTime</code> to the <code>plot</code> function</li>
 </ol>
-<p>In this vignette we show how to create population-time plots for the two datasets that ship with the <code>casebase</code> package, as well as several well known survival datasets from the <code>survival</code> package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the <em>Customizing Population Time Plots</em> vignette.</p>
+<p>In this vignette we show how to create population-time plots for the two datasets that ship with the <code>casebase</code> package, as well as several well known survival datasets from the <code>survival</code> package. For a more detailed description of how to modify the aesthetics of a population time plot, please refer to the <a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html">Customizing Population Time Plots</a> vignette.</p>
 </div>
 <div id="load-required-packages" class="section level1">
 <h1 class="hasAnchor">
 <a href="#load-required-packages" class="anchor"></a>Load Required Packages</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survival)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(casebase)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(data.table)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(survival)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(casebase)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(data.table)</span></code></pre></div>
 </div>
 <div id="european-randomized-study-of-prostate-cancer-screening-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#european-randomized-study-of-prostate-cancer-screening-data" class="anchor"></a>European Randomized Study of Prostate Cancer Screening Data</h1>
 <p>For our first example, we make use of the European Randomized Study of Prostate Cancer Screening (ERSPC) data which ships with the <code>casebase</code> package (see <code><a href="https://rdrr.io/r/utils/help.html">help("ERSPC", package = "casebase")</a></code> for details about this data).</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"ERSPC"</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(ERSPC)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"ERSPC"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(ERSPC)</span></code></pre></div>
 <pre><code>##   ScrArm Follow.Up.Time DeadOfPrCa
 ## 1      1         0.0027          0
 ## 2      1         0.0027          0
@@ -136,10 +139,10 @@
 ## 5      0         0.0027          0
 ## 6      0         0.0027          0</code></pre>
 <p>We first pass this dataset to the <code>popTime</code> function. If you do not specify the <code>time</code> and <code>event</code> arguments, this function will try to guess them using regular expressions. See the <strong>Details</strong> section of <code><a href="https://rdrr.io/r/utils/help.html">help("popTime", package = "casebase")</a></code> for how we try to guess these inputs.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pt_object &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/casebase/man/popTime.html">popTime</a></span>(ERSPC, <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pt_object &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="http://sahirbhatnagar.com/casebase/reference/popTime.html">popTime</a></span>(ERSPC, <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>)</span></code></pre></div>
 <pre><code>## 'Follow.Up.Time' will be used as the time variable</code></pre>
 <p>We can see its contents and its class:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(pt_object)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(pt_object)</span></code></pre></div>
 <pre><code>##    ScrArm   time event original.time original.event event status ycoord yc
 ## 1:      1 0.0027     0        0.0027              0     censored 159893  0
 ## 2:      1 0.0027     0        0.0027              0     censored 159892  0
@@ -154,11 +157,11 @@
 ## 4:           0
 ## 5:           0
 ## 6:           0</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(pt_object)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(pt_object)</span></code></pre></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
 <p>The <code>casebase</code> package has a <code>plot</code> method for objects of class <code>popTime</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="co"># plot method for objects of class 'popTime'</span></a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># plot method for objects of class 'popTime'</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>One benefit from these plots is that it allows you to see the incidence density. This can be seen from the distribution of the red dots in the above plot. We can see that more events are observed later on in time. Therefore a constant hazard model would not be appropriate in this instance as it would overestimate the cumulative incidence earlier on in time, and underestimate it later on.</p>
 <p>The unique ‘step shape’ of the population time plot is due to the randomization of the Finnish cohorts which were carried out on January 1 of each of the 4 years 1996 to 1999. This, coupled with the uniform December 31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8 years of follow-up.</p>
@@ -167,17 +170,17 @@
 <h2 class="hasAnchor">
 <a href="#exposure-stratified-population-time-plot" class="anchor"></a>Exposure Stratified Population Time Plot</h2>
 <p>Often the observations in a study are in specific groups such as treatment arms. It may be of interest to compare the population time plots between these two groups. Here we compare the control group and the screening group. We create exposure stratified plots by specifying the <code>exposure</code> argument in the <code>popTime</code> function:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Appropriately label the factor variable so that these labels appear in the </span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co"># stratified population time plot</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">ERSPC<span class="op">$</span>ScrArm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(ERSPC<span class="op">$</span>ScrArm, </a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), </a>
-<a class="sourceLine" id="cb11-5" data-line-number="5">                       <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Control group"</span>, <span class="st">"Screening group"</span>))</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">pt_object_strat &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/casebase/man/popTime.html">popTime</a></span>(ERSPC, </a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">                                     <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>, </a>
-<a class="sourceLine" id="cb11-8" data-line-number="8">                                     <span class="dt">exposure =</span> <span class="st">"ScrArm"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># Appropriately label the factor variable so that these labels appear in the </span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co"># stratified population time plot</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>ERSPC<span class="op">$</span>ScrArm &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(ERSPC<span class="op">$</span>ScrArm, </span>
+<span id="cb11-4"><a href="#cb11-4"></a>                       <span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">0</span>,<span class="dv">1</span>), </span>
+<span id="cb11-5"><a href="#cb11-5"></a>                       <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Control group"</span>, <span class="st">"Screening group"</span>))</span>
+<span id="cb11-6"><a href="#cb11-6"></a>pt_object_strat &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="http://sahirbhatnagar.com/casebase/reference/popTime.html">popTime</a></span>(ERSPC, </span>
+<span id="cb11-7"><a href="#cb11-7"></a>                                     <span class="dt">event =</span> <span class="st">"DeadOfPrCa"</span>, </span>
+<span id="cb11-8"><a href="#cb11-8"></a>                                     <span class="dt">exposure =</span> <span class="st">"ScrArm"</span>)</span></code></pre></div>
 <pre><code>## 'Follow.Up.Time' will be used as the time variable</code></pre>
-<p>We can see its contents and its class:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(pt_object_strat)</a></code></pre></div>
+<p>We can see its contents, class and that it has an exposure attribute:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(pt_object_strat)</span></code></pre></div>
 <pre><code>##           ScrArm   time event original.time original.event event status ycoord
 ## 1: Control group 0.0027     0        0.0027              0     censored  88232
 ## 2: Control group 0.0027     0        0.0027              0     censored  88231
@@ -192,28 +195,25 @@
 ## 4:  0           0
 ## 5:  0           0
 ## 6:  0           0</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(pt_object_strat)</a></code></pre></div>
-<pre><code>## [1] "popTimeExposure" "data.table"      "data.frame"</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(pt_object_strat)</span></code></pre></div>
+<pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
 <p>We can also see that the <code>pt_object_strat</code> has an exposure attribute which contains the name of the exposure variable in the dataset:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(pt_object_strat, <span class="st">"exposure"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(pt_object_strat, <span class="st">"exposure"</span>)</span></code></pre></div>
 <pre><code>## [1] "ScrArm"</code></pre>
-<p>The <code>casebase</code> package also has a <code>plot</code> method for objects of class <code>popTimeExposure</code>:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat)</a></code></pre></div>
+<p>The plot method for objects of class <code>popTime</code> will use this exposure attribute to create exposure stratified population time plots:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>We can also plot them side-by-side using the <code>facet.params</code> argument, which is a list of arguments that are passed to the <a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html"><code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap()</a></code></a> function in the <code>ggplot2</code> package:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat,</a>
-<a class="sourceLine" id="cb20-2" data-line-number="2">     <span class="dt">facet.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">ncol =</span> <span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat,</span>
+<span id="cb20-2"><a href="#cb20-2"></a>     <span class="dt">facet.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">ncol =</span> <span class="dv">2</span>))</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 <div id="plotting-the-base-series" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-the-base-series" class="anchor"></a>Plotting the base series</h2>
 <p>To illustrate the casebase sampling methodology, we can also plot the base series using the <code>add.base.series</code> function:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat,</a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb21-4" data-line-number="4">     <span class="dt">legend =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb21-5" data-line-number="5">     <span class="dt">theme.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">legend.position =</span> <span class="st">"bottom"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(pt_object_strat,</span>
+<span id="cb21-2"><a href="#cb21-2"></a>     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p>Note that the <code>theme.params</code> argument is a list of arguments passed to the <a href="https://ggplot2.tidyverse.org/reference/theme.html"><code><a href="https://ggplot2.tidyverse.org/reference/theme.html">ggplot2::theme()</a></code></a> function.</p>
 </div>
@@ -221,11 +221,11 @@
 <div id="stem-cell-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#stem-cell-data" class="anchor"></a>Stem Cell Data</h1>
-<p>Next we show population time plots when there is a competing event. The <code>bmtcrr</code> dataset contains information on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the <code>casebase</code> package. See <code><a href="https://rdrr.io/r/utils/help.html">help("bmtcrr", package = "casebase")</a></code> for more details. We will use this dataset to further illustrate the fundamental components of a population time plot, and how the <code>plot</code> method for objects of class <code>popTime</code> and <code>popTimeExposure</code> is highly customizeable.</p>
+<p>Next we show population time plots when there is a competing event. The <code>bmtcrr</code> dataset contains information on patients who underwent haematopoietic stem cell transplantation for acute leukaemia. This data is included in the <code>casebase</code> package. See <code><a href="https://rdrr.io/r/utils/help.html">help("bmtcrr", package = "casebase")</a></code> for more details. We will use this dataset to further illustrate the fundamental components of a population time plot.</p>
 <p>Note that for this dataset, the <code>popTime</code> fails to identify a <code>time</code> variable if you didn’t specify one:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="co"># load data</span></a>
-<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(bmtcrr)</a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(bmtcrr)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># load data</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(bmtcrr)</span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(bmtcrr)</span></code></pre></div>
 <pre><code>## 'data.frame':    177 obs. of  7 variables:
 ##  $ Sex   : Factor w/ 2 levels "F","M": 2 1 2 1 1 2 2 1 2 1 ...
 ##  $ D     : Factor w/ 2 levels "ALL","AML": 1 2 1 1 1 1 1 1 1 1 ...
@@ -234,114 +234,108 @@
 ##  $ Status: int  2 1 0 2 2 2 0 2 0 1 ...
 ##  $ Source: Factor w/ 2 levels "BM+PB","PB": 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ ftime : num  0.67 9.5 131.77 24.03 1.47 ...</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># table of event status by exposure</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(bmtcrr<span class="op">$</span>Status, bmtcrr<span class="op">$</span>D)</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># table of event status by exposure</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(bmtcrr<span class="op">$</span>Status, bmtcrr<span class="op">$</span>D)</span></code></pre></div>
 <pre><code>##    
 ##     ALL AML
 ##   0  17  29
 ##   1  28  28
 ##   2  28  47</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="co"># error because it can't determine a time variable</span></a>
-<a class="sourceLine" id="cb26-2" data-line-number="2">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr)</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a><span class="co"># error because it can't determine a time variable</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr)</span></code></pre></div>
 <pre><code>## Error in checkArgsTimeEvent(data = data, time = time, event = event): data does not contain time variable</code></pre>
 <p>In this case, you must be explicit about what the time variable is:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>)</span></code></pre></div>
 <pre><code>## 'Status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</span></code></pre></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
 <div id="plotting-the-follow-up-times-for-each-observation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-the-follow-up-times-for-each-observation" class="anchor"></a>Plotting the follow-up times for each observation</h2>
-<p>We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code></a> function. The following figure shows this area for the <code>bmtcrr</code> dataset:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<p>We first plot that area on the graph representing the observed follow-up time. Fundamentally, this area is constructed by plotting a line for each individual, where the length of each line represents their follow-up time in the cohort. The follow-up times are plotted from top (shortest follow-up time) to bottom (longest follow-up time). In practice, we instead plot a polygon using the <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code></a> function. The following figure shows this area for the <code>bmtcrr</code> dataset. Note that we must specify <code>add.case.series = FALSE</code> because the default is to add the case series:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb32-2"><a href="#cb32-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>Note that we can change the aesthetics of the area by using the <code>ribbon.params()</code> argument as follows. These arguments are passed to the <a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html"><code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code></a> function:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">     <span class="dt">ribbon.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">size =</span> <span class="dv">2</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb33-2"><a href="#cb33-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb33-3"><a href="#cb33-3"></a>     <span class="dt">ribbon.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">color =</span> <span class="st">"red"</span>, <span class="dt">fill =</span> <span class="st">"blue"</span>, <span class="dt">size =</span> <span class="dv">2</span>, <span class="dt">alpha =</span> <span class="fl">0.2</span>))</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 </div>
 <div id="plot-the-case-series" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-the-case-series" class="anchor"></a>Plot the Case Series</h2>
 <p>Next we add the case series. Note that because the <code>Status</code> column has a competing event (coded as 2), we must specify <code>comprisk = TRUE</code> (even if you don’t want to plot the competing event):</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb34-3" data-line-number="3">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb34-2"><a href="#cb34-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb34-3"><a href="#cb34-3"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 <p>In the above plot we can clearly see many of the deaths occur at the beginning, so in this case, a constant hazard assumption isnt valid. This information is useful when deciding on the type of model to use.</p>
 </div>
 <div id="plot-the-base-series" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-the-base-series" class="anchor"></a>Plot the Base Series</h2>
-<p>We can now add the base series with the <code>add.base.series</code> argument. Internally, the <code>plot</code> method calls the <code><a href="../reference/sampleCaseBase.html">casebase::sampleCaseBase</a></code> function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the <code>ratio</code> argument. We also specify that we want a legend:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb35-5" data-line-number="5">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb35-6" data-line-number="6">     <span class="dt">legend =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<p>We can now add the base series with the <code>add.base.series</code> argument. Internally, the <code>plot</code> method calls the <code><a href="../reference/sampleCaseBase.html">casebase::sampleCaseBase</a></code> function to sample the base series from the total person moments. This requires us to specify the ratio of base series to case series in the <code>ratio</code> argument which we will leave at its default of 1. A legend is also added by default:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb35-2"><a href="#cb35-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb35-3"><a href="#cb35-3"></a>     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb35-4"><a href="#cb35-4"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
 <div id="plot-the-competing-event" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plot-the-competing-event" class="anchor"></a>Plot the Competing event</h2>
 <p>We specify the <code>add.competing.event = TRUE</code> in order to also plot the competing event. Note, that like the case series, the competing event is sampled randomly on the vertical axis in order to see the incidence density.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb36-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb36-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb36-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb36-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb36-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb36-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb36-2"><a href="#cb36-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb36-3"><a href="#cb36-3"></a>     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb36-4"><a href="#cb36-4"></a>     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb36-5"><a href="#cb36-5"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-17-1.png" width="700"></p>
 <p>We can also only plot the case series and competing event (or any combination):</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb37-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb37-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb37-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb37-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb37-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb37-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb37-2"><a href="#cb37-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb37-3"><a href="#cb37-3"></a>     <span class="dt">add.base.series =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb37-4"><a href="#cb37-4"></a>     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb37-5"><a href="#cb37-5"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 </div>
 <div id="stratified-by-disease" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stratified-by-disease" class="anchor"></a>Stratified by Disease</h2>
 <p>Next we stratify by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the <code>exposure</code> variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># create 'popTimeExposure' object</span></a>
-<a class="sourceLine" id="cb38-2" data-line-number="2">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a><span class="co"># create 'popTime' object</span></span>
+<span id="cb38-2"><a href="#cb38-2"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> bmtcrr, <span class="dt">time =</span> <span class="st">"ftime"</span>, <span class="dt">exposure =</span> <span class="st">"D"</span>)</span></code></pre></div>
 <pre><code>## 'Status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(popTimeData, <span class="st">"exposure"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(popTimeData, <span class="st">"exposure"</span>)</span></code></pre></div>
 <pre><code>## [1] "D"</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb42-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb42-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb42-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb42-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb42-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb42-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb42-2"><a href="#cb42-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb42-3"><a href="#cb42-3"></a>     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb42-4"><a href="#cb42-4"></a>     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb42-5"><a href="#cb42-5"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 </div>
 <div id="change-color-points-and-legend-labels" class="section level2">
 <h2 class="hasAnchor">
 <a href="#change-color-points-and-legend-labels" class="anchor"></a>Change color points and legend labels</h2>
-<p>Here is some code to change color points and legend labels. For a more thorough description, please see the <em>Customizing Population Time Plots</em> vignette.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2">     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb43-3" data-line-number="3">     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb43-4" data-line-number="4">     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">     <span class="dt">ratio =</span> <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb43-6" data-line-number="6">     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb43-7" data-line-number="7">     <span class="dt">legend =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb43-8" data-line-number="8">     <span class="dt">case.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>)),</a>
-<a class="sourceLine" id="cb43-9" data-line-number="9">     <span class="dt">base.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> ycoord, <span class="dt">colour =</span> <span class="st">"Base series"</span>)),</a>
-<a class="sourceLine" id="cb43-10" data-line-number="10">     <span class="dt">competing.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Competing event"</span>)),</a>
-<a class="sourceLine" id="cb43-11" data-line-number="11">     <span class="dt">legend.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="st">"Legend Name"</span>,</a>
-<a class="sourceLine" id="cb43-12" data-line-number="12">                          <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Base series"</span>, <span class="st">"Competing event"</span>),</a>
-<a class="sourceLine" id="cb43-13" data-line-number="13">                          <span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span> =<span class="st"> "blue"</span>, <span class="st">"Competing event"</span> =<span class="st"> "yellow"</span>, <span class="st">"Base series"</span> =<span class="st"> "orange"</span>)),</a>
-<a class="sourceLine" id="cb43-14" data-line-number="14">     <span class="dt">theme.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">legend.position =</span> <span class="st">"bottom"</span>))</a></code></pre></div>
+<p>Here is some code to change color points and legend labels. For a more thorough description, please see the <a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html">Customizing Population Time Plots</a> vignette.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb43-2"><a href="#cb43-2"></a>     <span class="dt">add.case.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb43-3"><a href="#cb43-3"></a>     <span class="dt">add.base.series =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb43-4"><a href="#cb43-4"></a>     <span class="dt">add.competing.event =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb43-5"><a href="#cb43-5"></a>     <span class="dt">comprisk =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb43-6"><a href="#cb43-6"></a>     <span class="dt">case.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Relapse"</span>, <span class="dt">fill =</span> <span class="st">"Relapse"</span>)),</span>
+<span id="cb43-7"><a href="#cb43-7"></a>     <span class="dt">base.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> ycoord, <span class="dt">colour =</span> <span class="st">"Base series"</span>, <span class="dt">fill =</span> <span class="st">"Base series"</span>)),</span>
+<span id="cb43-8"><a href="#cb43-8"></a>     <span class="dt">competing.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">mapping =</span> <span class="kw"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span>(<span class="dt">x =</span> time, <span class="dt">y =</span> yc, <span class="dt">colour =</span> <span class="st">"Competing event"</span>, <span class="dt">fill =</span> <span class="st">"Competing event"</span>)),</span>
+<span id="cb43-9"><a href="#cb43-9"></a>     <span class="dt">fill.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">name =</span> <span class="st">"Legend Name"</span>,</span>
+<span id="cb43-10"><a href="#cb43-10"></a>                        <span class="dt">breaks =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Base series"</span>, <span class="st">"Competing event"</span>),</span>
+<span id="cb43-11"><a href="#cb43-11"></a>                        <span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span> =<span class="st"> "blue"</span>, </span>
+<span id="cb43-12"><a href="#cb43-12"></a>                                   <span class="st">"Competing event"</span> =<span class="st"> "red"</span>, </span>
+<span id="cb43-13"><a href="#cb43-13"></a>                                   <span class="st">"Base series"</span> =<span class="st"> "orange"</span>))</span>
+<span id="cb43-14"><a href="#cb43-14"></a>     )</span></code></pre></div>
+<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series = TRUE, : fill.params has been specified by the user but color.params has not.
+##                 Setting color.params to be equal to fill.params.</code></pre>
 <p><img src="popTime_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 </div>
 </div>
@@ -349,9 +343,9 @@
 <h1 class="hasAnchor">
 <a href="#veteran-data" class="anchor"></a>Veteran Data</h1>
 <p>Below are the steps to create a population time plot for the Veterans’ Administration Lung Cancer study (see <code><a href="https://rdrr.io/r/utils/help.html">help("veteran", package = "survival")</a></code> for more details on this dataset).</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="co"># veteran data in library(survival)</span></a>
-<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"veteran"</span>)</a>
-<a class="sourceLine" id="cb44-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(veteran)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a><span class="co"># veteran data in library(survival)</span></span>
+<span id="cb45-2"><a href="#cb45-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"veteran"</span>)</span>
+<span id="cb45-3"><a href="#cb45-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(veteran)</span></code></pre></div>
 <pre><code>## 'data.frame':    137 obs. of  8 variables:
 ##  $ trt     : num  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ celltype: Factor w/ 4 levels "squamous","smallcell",..: 1 1 1 1 1 1 1 1 1 1 ...
@@ -361,35 +355,35 @@
 ##  $ diagtime: num  7 5 3 9 11 5 10 29 18 6 ...
 ##  $ age     : num  69 64 38 63 65 49 69 68 43 70 ...
 ##  $ prior   : num  0 10 0 10 10 0 10 0 0 0 ...</code></pre>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">popTimeData &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/casebase/man/popTime.html">popTime</a></span>(<span class="dt">data =</span> veteran)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>popTimeData &lt;-<span class="st"> </span>casebase<span class="op">::</span><span class="kw"><a href="http://sahirbhatnagar.com/casebase/reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> veteran)</span></code></pre></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</span></code></pre></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
 <p>We can see in this example that the dots are fairly evenly spread out. That is, we don’t see any particular clusters of red dots indicating that perhaps a constant hazard assumption would be appropriate.</p>
 <div id="stratified-by-treatment-population-time-plot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stratified-by-treatment-population-time-plot" class="anchor"></a>Stratified by treatment population time plot</h2>
 <p>In this example we compare the standard and test treatment groups. A reminder that this is done by simply specifying the <code>exposure</code> argument in the <code><a href="../reference/popTime.html">casebase::popTime</a></code> function:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># Label the factor so that it appears in the plot</span></a>
-<a class="sourceLine" id="cb52-2" data-line-number="2">veteran &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(veteran, <span class="dt">trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(trt, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb52-3" data-line-number="3">                                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"standard"</span>, <span class="st">"test"</span>)))</a>
-<a class="sourceLine" id="cb52-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb52-5" data-line-number="5"><span class="co"># create 'popTimeExposure' object</span></a>
-<a class="sourceLine" id="cb52-6" data-line-number="6">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> veteran, <span class="dt">exposure =</span> <span class="st">"trt"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a><span class="co"># Label the factor so that it appears in the plot</span></span>
+<span id="cb53-2"><a href="#cb53-2"></a>veteran &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(veteran, <span class="dt">trt =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(trt, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</span>
+<span id="cb53-3"><a href="#cb53-3"></a>                                           <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"standard"</span>, <span class="st">"test"</span>)))</span>
+<span id="cb53-4"><a href="#cb53-4"></a></span>
+<span id="cb53-5"><a href="#cb53-5"></a><span class="co"># create 'popTime' object</span></span>
+<span id="cb53-6"><a href="#cb53-6"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> veteran, <span class="dt">exposure =</span> <span class="st">"trt"</span>)</span></code></pre></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co"># object of class 'popTimeExposure'</span></a>
-<a class="sourceLine" id="cb55-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</a></code></pre></div>
-<pre><code>## [1] "popTimeExposure" "data.table"      "data.frame"</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1"><span class="co"># has name of exposure variable as an attribute</span></a>
-<a class="sourceLine" id="cb57-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(popTimeData, <span class="st">"exposure"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a><span class="co"># object of class 'popTime'</span></span>
+<span id="cb56-2"><a href="#cb56-2"></a><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(popTimeData)</span></code></pre></div>
+<pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1"></a><span class="co"># has name of exposure variable as an attribute</span></span>
+<span id="cb58-2"><a href="#cb58-2"></a><span class="kw"><a href="https://rdrr.io/r/base/attr.html">attr</a></span>(popTimeData, <span class="st">"exposure"</span>)</span></code></pre></div>
 <pre><code>## [1] "trt"</code></pre>
 <p>Again, we simply pass this object to the <code>plot</code> function to get an exposure stratified population time plot:</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1"><span class="co"># plot method for objects of class 'popTimeExposure'</span></a>
-<a class="sourceLine" id="cb59-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1"></a><span class="co"># plot method for objects of class 'popTime'</span></span>
+<span id="cb60-2"><a href="#cb60-2"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
 </div>
 </div>
@@ -397,9 +391,9 @@
 <h1 class="hasAnchor">
 <a href="#stanford-heart-transplant-data" class="anchor"></a>Stanford Heart Transplant Data</h1>
 <p>Population time plots also allow you to explain patterns in the data. We use the Stanford Heart Transplant Data to demonstrate this. See <code><a href="https://rdrr.io/r/utils/help.html">help("heart", package = "survival")</a></code> for details about this dataset. For this example, we must create a time variable, because we only have the start and stop times. This is a good example to show that population time plots are also valid for this type of data (i.e. subjects who have different entry times) because we are only plotting the time spent in the study on the x-axis.</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1"><span class="co"># data from library(survival)</span></a>
-<a class="sourceLine" id="cb60-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"heart"</span>)</a>
-<a class="sourceLine" id="cb60-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(heart)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1"></a><span class="co"># data from library(survival)</span></span>
+<span id="cb61-2"><a href="#cb61-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"heart"</span>)</span>
+<span id="cb61-3"><a href="#cb61-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(heart)</span></code></pre></div>
 <pre><code>## 'data.frame':    172 obs. of  8 variables:
 ##  $ start     : num  0 0 0 1 0 36 0 0 0 51 ...
 ##  $ stop      : num  50 6 1 16 36 39 18 3 51 675 ...
@@ -409,17 +403,17 @@
 ##  $ surgery   : num  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ transplant: Factor w/ 2 levels "0","1": 1 1 1 2 1 2 1 1 1 2 ...
 ##  $ id        : num  1 2 3 3 4 4 5 6 7 7 ...</code></pre>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="co"># create time variable for time in study</span></a>
-<a class="sourceLine" id="cb62-2" data-line-number="2">heart &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(heart,</a>
-<a class="sourceLine" id="cb62-3" data-line-number="3">                   <span class="dt">time =</span> stop <span class="op">-</span><span class="st"> </span>start,</a>
-<a class="sourceLine" id="cb62-4" data-line-number="4">                   <span class="dt">transplant =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(transplant,</a>
-<a class="sourceLine" id="cb62-5" data-line-number="5">                                       <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"no transplant"</span>, <span class="st">"transplant"</span>)))</a>
-<a class="sourceLine" id="cb62-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb62-7" data-line-number="7"><span class="co"># stratify by transplant indicator</span></a>
-<a class="sourceLine" id="cb62-8" data-line-number="8">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> heart, <span class="dt">exposure =</span> <span class="st">"transplant"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1"></a><span class="co"># create time variable for time in study</span></span>
+<span id="cb63-2"><a href="#cb63-2"></a>heart &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(heart,</span>
+<span id="cb63-3"><a href="#cb63-3"></a>                   <span class="dt">time =</span> stop <span class="op">-</span><span class="st"> </span>start,</span>
+<span id="cb63-4"><a href="#cb63-4"></a>                   <span class="dt">transplant =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(transplant,</span>
+<span id="cb63-5"><a href="#cb63-5"></a>                                       <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"no transplant"</span>, <span class="st">"transplant"</span>)))</span>
+<span id="cb63-6"><a href="#cb63-6"></a></span>
+<span id="cb63-7"><a href="#cb63-7"></a><span class="co"># stratify by transplant indicator</span></span>
+<span id="cb63-8"><a href="#cb63-8"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> heart, <span class="dt">exposure =</span> <span class="st">"transplant"</span>)</span></code></pre></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'event' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
 <p>In the plot above we see that those who didnt receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.</p>
 </div>
@@ -427,9 +421,9 @@
 <h1 class="hasAnchor">
 <a href="#ncctg-lung-cancer-data" class="anchor"></a>NCCTG Lung Cancer Data</h1>
 <p>The following example is from survival in patients with advanced lung cancer from the North Central Cancer Treatment Group. See <code><a href="https://rdrr.io/r/utils/help.html">help("cancer", package = "survival")</a></code> for details about this data.</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1"><span class="co"># data from library(survival)</span></a>
-<a class="sourceLine" id="cb66-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"cancer"</span>)</a>
-<a class="sourceLine" id="cb66-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(cancer)</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a><span class="co"># data from library(survival)</span></span>
+<span id="cb67-2"><a href="#cb67-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"cancer"</span>)</span>
+<span id="cb67-3"><a href="#cb67-3"></a><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(cancer)</span></code></pre></div>
 <pre><code>## 'data.frame':    228 obs. of  10 variables:
 ##  $ inst     : num  3 3 3 5 1 12 7 11 1 7 ...
 ##  $ time     : num  306 455 1010 210 883 ...
@@ -441,27 +435,27 @@
 ##  $ pat.karno: num  100 90 90 60 90 80 60 80 80 70 ...
 ##  $ meal.cal : num  1175 1225 NA 1150 NA ...
 ##  $ wt.loss  : num  NA 15 15 11 0 0 10 1 16 34 ...</code></pre>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1"><span class="co"># since the event indicator 'status' is numeric, it must have</span></a>
-<a class="sourceLine" id="cb68-2" data-line-number="2"><span class="co"># 0 for censored and 1 for event</span></a>
-<a class="sourceLine" id="cb68-3" data-line-number="3">cancer &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(cancer,</a>
-<a class="sourceLine" id="cb68-4" data-line-number="4">                    <span class="dt">status =</span> status <span class="op">-</span><span class="st"> </span><span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb68-5" data-line-number="5">                    <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(sex, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb68-6" data-line-number="6">                                 <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)))</a>
-<a class="sourceLine" id="cb68-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb68-8" data-line-number="8">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> cancer)</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1"></a><span class="co"># since the event indicator 'status' is numeric, it must have</span></span>
+<span id="cb69-2"><a href="#cb69-2"></a><span class="co"># 0 for censored and 1 for event</span></span>
+<span id="cb69-3"><a href="#cb69-3"></a>cancer &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html">transform</a></span>(cancer,</span>
+<span id="cb69-4"><a href="#cb69-4"></a>                    <span class="dt">status =</span> status <span class="op">-</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb69-5"><a href="#cb69-5"></a>                    <span class="dt">sex =</span> <span class="kw"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(sex, <span class="dt">levels =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">2</span>,</span>
+<span id="cb69-6"><a href="#cb69-6"></a>                                 <span class="dt">labels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)))</span>
+<span id="cb69-7"><a href="#cb69-7"></a></span>
+<span id="cb69-8"><a href="#cb69-8"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> cancer)</span></code></pre></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 <div id="stratified-by-gender" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stratified-by-gender" class="anchor"></a>Stratified by gender</h2>
 <p>We can also switch back to the default <code>ggplot2</code> theme by specifying <code>casebase.theme = FALSE</code>:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> cancer, <span class="dt">exposure =</span> <span class="st">"sex"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> cancer, <span class="dt">exposure =</span> <span class="st">"sex"</span>)</span></code></pre></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb75-2" data-line-number="2">     <span class="dt">casebase.theme =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb76-2"><a href="#cb76-2"></a>     <span class="dt">casebase.theme =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
 </div>
 </div>
@@ -472,52 +466,52 @@
 <div id="simulate-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulate-the-data" class="anchor"></a>Simulate the data</h2>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb76-2" data-line-number="2">nobs &lt;-<span class="st"> </span><span class="dv">500</span></a>
-<a class="sourceLine" id="cb76-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb76-4" data-line-number="4"><span class="co"># simulation parameters</span></a>
-<a class="sourceLine" id="cb76-5" data-line-number="5">a1 &lt;-<span class="st"> </span><span class="fl">1.0</span></a>
-<a class="sourceLine" id="cb76-6" data-line-number="6">b1 &lt;-<span class="st"> </span><span class="dv">200</span></a>
-<a class="sourceLine" id="cb76-7" data-line-number="7">a2 &lt;-<span class="st"> </span><span class="fl">1.0</span></a>
-<a class="sourceLine" id="cb76-8" data-line-number="8">b2 &lt;-<span class="st"> </span><span class="dv">50</span></a>
-<a class="sourceLine" id="cb76-9" data-line-number="9">c1 &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb76-10" data-line-number="10">c2 &lt;-<span class="st"> </span><span class="fl">0.0</span></a>
-<a class="sourceLine" id="cb76-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb76-12" data-line-number="12"><span class="co"># end of study time</span></a>
-<a class="sourceLine" id="cb76-13" data-line-number="13">eost &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb76-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb76-15" data-line-number="15"><span class="co"># e event type 0-censored, 1-event of interest, 2-competing event</span></a>
-<a class="sourceLine" id="cb76-16" data-line-number="16"><span class="co"># t observed time/endpoint</span></a>
-<a class="sourceLine" id="cb76-17" data-line-number="17"><span class="co"># z is a binary covariate</span></a>
-<a class="sourceLine" id="cb76-18" data-line-number="18">DTsim &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span>(<span class="dt">ID =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(nobs), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(nobs, <span class="dv">1</span>, <span class="fl">0.5</span>))</a>
-<a class="sourceLine" id="cb76-19" data-line-number="19"><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/setkey.html">setkey</a></span>(DTsim, ID)</a>
-<a class="sourceLine" id="cb76-20" data-line-number="20">DTsim[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span> (<span class="dt">event_time =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Weibull.html">rweibull</a></span>(nobs, a1, b1 <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(z <span class="op">*</span><span class="st"> </span>c1)<span class="op">^</span>(<span class="op">-</span><span class="dv">1</span><span class="op">/</span>a1)),</a>
-<a class="sourceLine" id="cb76-21" data-line-number="21">             <span class="dt">competing_time =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Weibull.html">rweibull</a></span>(nobs, a2, b2 <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(z <span class="op">*</span><span class="st"> </span>c2)<span class="op">^</span>(<span class="op">-</span><span class="dv">1</span><span class="op">/</span>a2)),</a>
-<a class="sourceLine" id="cb76-22" data-line-number="22">             <span class="dt">end_of_study_time =</span> eost)]</a>
-<a class="sourceLine" id="cb76-23" data-line-number="23">DTsim[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">event =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(event_time <span class="op">&lt;</span><span class="st"> </span>competing_time) <span class="op">+</span></a>
-<a class="sourceLine" id="cb76-24" data-line-number="24"><span class="st">                </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(event_time <span class="op">&gt;=</span><span class="st"> </span>competing_time),</a>
-<a class="sourceLine" id="cb76-25" data-line-number="25">            <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span>(event_time, competing_time))]</a>
-<a class="sourceLine" id="cb76-26" data-line-number="26">DTsim[time <span class="op">&gt;=</span><span class="st"> </span>end_of_study_time, event <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">0</span>]</a>
-<a class="sourceLine" id="cb76-27" data-line-number="27">DTsim[time <span class="op">&gt;=</span><span class="st"> </span>end_of_study_time, time<span class="op">:</span><span class="er">=</span>end_of_study_time]</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1</span>)</span>
+<span id="cb77-2"><a href="#cb77-2"></a>nobs &lt;-<span class="st"> </span><span class="dv">500</span></span>
+<span id="cb77-3"><a href="#cb77-3"></a></span>
+<span id="cb77-4"><a href="#cb77-4"></a><span class="co"># simulation parameters</span></span>
+<span id="cb77-5"><a href="#cb77-5"></a>a1 &lt;-<span class="st"> </span><span class="fl">1.0</span></span>
+<span id="cb77-6"><a href="#cb77-6"></a>b1 &lt;-<span class="st"> </span><span class="dv">200</span></span>
+<span id="cb77-7"><a href="#cb77-7"></a>a2 &lt;-<span class="st"> </span><span class="fl">1.0</span></span>
+<span id="cb77-8"><a href="#cb77-8"></a>b2 &lt;-<span class="st"> </span><span class="dv">50</span></span>
+<span id="cb77-9"><a href="#cb77-9"></a>c1 &lt;-<span class="st"> </span><span class="fl">0.0</span></span>
+<span id="cb77-10"><a href="#cb77-10"></a>c2 &lt;-<span class="st"> </span><span class="fl">0.0</span></span>
+<span id="cb77-11"><a href="#cb77-11"></a></span>
+<span id="cb77-12"><a href="#cb77-12"></a><span class="co"># end of study time</span></span>
+<span id="cb77-13"><a href="#cb77-13"></a>eost &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb77-14"><a href="#cb77-14"></a></span>
+<span id="cb77-15"><a href="#cb77-15"></a><span class="co"># e event type 0-censored, 1-event of interest, 2-competing event</span></span>
+<span id="cb77-16"><a href="#cb77-16"></a><span class="co"># t observed time/endpoint</span></span>
+<span id="cb77-17"><a href="#cb77-17"></a><span class="co"># z is a binary covariate</span></span>
+<span id="cb77-18"><a href="#cb77-18"></a>DTsim &lt;-<span class="st"> </span><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span>(<span class="dt">ID =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span>(nobs), <span class="dt">z=</span><span class="kw"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span>(nobs, <span class="dv">1</span>, <span class="fl">0.5</span>))</span>
+<span id="cb77-19"><a href="#cb77-19"></a><span class="kw"><a href="https://Rdatatable.gitlab.io/data.table/reference/setkey.html">setkey</a></span>(DTsim, ID)</span>
+<span id="cb77-20"><a href="#cb77-20"></a>DTsim[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span> (<span class="dt">event_time =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Weibull.html">rweibull</a></span>(nobs, a1, b1 <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(z <span class="op">*</span><span class="st"> </span>c1)<span class="op">^</span>(<span class="op">-</span><span class="dv">1</span><span class="op">/</span>a1)),</span>
+<span id="cb77-21"><a href="#cb77-21"></a>             <span class="dt">competing_time =</span> <span class="kw"><a href="https://rdrr.io/r/stats/Weibull.html">rweibull</a></span>(nobs, a2, b2 <span class="op">*</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/Log.html">exp</a></span>(z <span class="op">*</span><span class="st"> </span>c2)<span class="op">^</span>(<span class="op">-</span><span class="dv">1</span><span class="op">/</span>a2)),</span>
+<span id="cb77-22"><a href="#cb77-22"></a>             <span class="dt">end_of_study_time =</span> eost)]</span>
+<span id="cb77-23"><a href="#cb77-23"></a>DTsim[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">event =</span> <span class="dv">1</span> <span class="op">*</span><span class="st"> </span>(event_time <span class="op">&lt;</span><span class="st"> </span>competing_time) <span class="op">+</span></span>
+<span id="cb77-24"><a href="#cb77-24"></a><span class="st">                </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>(event_time <span class="op">&gt;=</span><span class="st"> </span>competing_time),</span>
+<span id="cb77-25"><a href="#cb77-25"></a>            <span class="dt">time =</span> <span class="kw"><a href="https://rdrr.io/r/base/Extremes.html">pmin</a></span>(event_time, competing_time))]</span>
+<span id="cb77-26"><a href="#cb77-26"></a>DTsim[time <span class="op">&gt;=</span><span class="st"> </span>end_of_study_time, event <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">0</span>]</span>
+<span id="cb77-27"><a href="#cb77-27"></a>DTsim[time <span class="op">&gt;=</span><span class="st"> </span>end_of_study_time, time<span class="op">:</span><span class="er">=</span>end_of_study_time]</span></code></pre></div>
 </div>
 <div id="population-time-plot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#population-time-plot" class="anchor"></a>Population Time Plot</h2>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="co"># create 'popTime' object</span></a>
-<a class="sourceLine" id="cb77-2" data-line-number="2">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> DTsim, <span class="dt">time =</span> <span class="st">"time"</span>, <span class="dt">event =</span> <span class="st">"event"</span>)</a>
-<a class="sourceLine" id="cb77-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1"></a><span class="co"># create 'popTime' object</span></span>
+<span id="cb78-2"><a href="#cb78-2"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> DTsim, <span class="dt">time =</span> <span class="st">"time"</span>, <span class="dt">event =</span> <span class="st">"event"</span>)</span>
+<span id="cb78-3"><a href="#cb78-3"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData)</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-28-1.png" width="700"></p>
 </div>
 <div id="stratified-by-binary-covariate-z" class="section level2">
 <h2 class="hasAnchor">
 <a href="#stratified-by-binary-covariate-z" class="anchor"></a>Stratified by Binary Covariate z</h2>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" data-line-number="1"><span class="co"># stratified by binary covariate z</span></a>
-<a class="sourceLine" id="cb78-2" data-line-number="2">popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> DTsim, <span class="dt">time =</span> <span class="st">"time"</span>, <span class="dt">event =</span> <span class="st">"event"</span>, <span class="dt">exposure =</span> <span class="st">"z"</span>)</a>
-<a class="sourceLine" id="cb78-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb78-4" data-line-number="4"><span class="co"># we can line up the plots side-by-side instead of one on top of the other</span></a>
-<a class="sourceLine" id="cb78-5" data-line-number="5"><span class="co"># we can also change the theme by adding </span></a>
-<a class="sourceLine" id="cb78-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</a>
-<a class="sourceLine" id="cb78-7" data-line-number="7">     <span class="dt">facet.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">ncol =</span> <span class="dv">2</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_linedraw</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1"></a><span class="co"># stratified by binary covariate z</span></span>
+<span id="cb79-2"><a href="#cb79-2"></a>popTimeData &lt;-<span class="st"> </span><span class="kw"><a href="../reference/popTime.html">popTime</a></span>(<span class="dt">data =</span> DTsim, <span class="dt">time =</span> <span class="st">"time"</span>, <span class="dt">event =</span> <span class="st">"event"</span>, <span class="dt">exposure =</span> <span class="st">"z"</span>)</span>
+<span id="cb79-3"><a href="#cb79-3"></a></span>
+<span id="cb79-4"><a href="#cb79-4"></a><span class="co"># we can line up the plots side-by-side instead of one on top of the other</span></span>
+<span id="cb79-5"><a href="#cb79-5"></a><span class="co"># we can also change the theme by adding </span></span>
+<span id="cb79-6"><a href="#cb79-6"></a><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(popTimeData,</span>
+<span id="cb79-7"><a href="#cb79-7"></a>     <span class="dt">facet.params =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">ncol =</span> <span class="dv">2</span>)) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_linedraw</a></span>()</span></code></pre></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
 </div>
 </div>

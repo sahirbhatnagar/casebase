@@ -62,8 +62,7 @@ summary(mod_cb)
 
 ### Hazard functions on separate plots
 
-All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are \code{list(fit = x,
-trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)}. For example, if you want a 95% confidence band, specify \code{hazard.params = list(alpha = 0.05)}. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
+All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are `list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)`. For example, if you want a 95% confidence band, specify `hazard.params = list(alpha = 0.05)`. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
 
 We first plot the hazard as a function of time, for hormon=0 and hormon=1. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
 
@@ -273,13 +272,21 @@ plot(mod_cb_tvc,
                           alpha = 1,
                           breaks = 2,
                           ylab = "Hazard"))
-
-# plot each variable's effect on Hazard
-# par(mfrow = c(2,4))
-# plot(mod_cb_tvc,
-#      hazard.params = list(alpha = 1,
-#                           ylab = "Hazard")) 
 ```
+
+You can of course set the values of the other covariates as before, i.e., by specifying the `cond` argument as a named list to the `hazard.params` argument:
+
+
+```{r many-predictors-plot-2, results='show', R.options=list(max.print=1)}
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          cond = list(tgrade = "III", age = 49),
+                          alpha = 1,
+                          breaks = 2,
+                          ylab = "Hazard"))
+```
+
 
 
 
@@ -296,7 +303,7 @@ where $h(t|\cdot;\hat{\beta})$ is the hazard rate as a function of the variable 
 
 As indicated by the formula above, it is most instructive to plot the hazard ratio as a function of a variable $t$ only if there is an interaction between $t$ and $X$. Otherwise, the resulting plot will simply be a horizontal line across time. 
 
-## Mason Trial
+## Manson Trial
 
 We use data from the Manson trial (NEJM 2003) which is included in the `casebase` package. This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD). 
 
@@ -306,7 +313,7 @@ We fit a model with the interaction between time and treatment arm. We are there
 data("masonTrialExtraction")
 masonTrialExtraction <- transform(masonTrialExtraction, 
                                   treatment = factor(treatment, levels = c("placebo","estPro")))
-head(masonTrialExtraction)
+str(masonTrialExtraction)
 
 fit_mason <- fitSmoothHazard(status ~ treatment*time,
                              data = masonTrialExtraction,
@@ -322,9 +329,10 @@ To plot the hazard ratio, we must specify the `newdata` argument with a covariat
 newtime <- quantile(fit_mason[["originalData"]][[fit_mason[["timeVar"]]]], probs = seq(0.01, 0.99, 0.01))
 
 # reference category
-(newdata <- data.frame(treatment = factor("placebo", 
+newdata <- data.frame(treatment = factor("placebo", 
                                          levels = c("placebo","estPro")), 
-                      time = newtime))
+                      time = newtime)
+str(newdata)
 
 plot(fit_mason, 
      type = "hr", 
@@ -352,9 +360,10 @@ plot(fit_mason,
 Alternatively, if we want the `placebo` group to be the exposed group, we change the `newdata` argument to:
 
 ```{r, results='show'}
-(newdata <- data.frame(treatment = factor("estPro", 
+newdata <- data.frame(treatment = factor("estPro", 
                                          levels = c("placebo","estPro")), 
-                      time = newtime))
+                      time = newtime)
+str(newdata)
 
 levels(newdata$treatment)
 ```

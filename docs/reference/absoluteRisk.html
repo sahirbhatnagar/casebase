@@ -97,6 +97,9 @@ and then converting this to an estimated survival for each individual." />
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -137,63 +140,29 @@ absolute risks by integrating the fitted hazard function over a time period
 and then converting this to an estimated survival for each individual.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for CompRisk</span>
-<span class='fu'>absoluteRisk</span>(
+    <pre class="usage"><span class='fu'>absoluteRisk.CompRisk</span>(
   <span class='no'>object</span>,
   <span class='no'>time</span>,
   <span class='no'>newdata</span>,
   <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
   <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
+  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )
 
-<span class='co'># S3 method for CompRiskGlmnet</span>
 <span class='fu'>absoluteRisk</span>(
   <span class='no'>object</span>,
   <span class='no'>time</span>,
   <span class='no'>newdata</span>,
   <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
   <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>s</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span>),
-  <span class='no'>...</span>
-)
-
-<span class='fu'>absoluteRisk</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>absoluteRisk</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for glm</span>
-<span class='fu'>absoluteRisk</span>(
-  <span class='no'>object</span>,
-  <span class='no'>time</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
-  <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='no'>...</span>
-)
-
-<span class='co'># S3 method for gbm</span>
-<span class='fu'>absoluteRisk</span>(
-  <span class='no'>object</span>,
-  <span class='no'>time</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
-  <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='no'>n.trees</span>,
-  <span class='no'>...</span>
-)
-
-<span class='co'># S3 method for cv.glmnet</span>
-<span class='fu'>absoluteRisk</span>(
-  <span class='no'>object</span>,
-  <span class='no'>time</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
-  <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>s</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span>),
+  <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
+  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>ntimes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -212,7 +181,9 @@ risks.</p></td>
     <tr>
       <th>newdata</th>
       <td><p>Optionally, a data frame in which to look for variables with
-which to predict. If omitted, the mean absolute risk is returned.</p></td>
+which to predict. If omitted, the mean absolute risk is returned.
+Alternatively, if <code>newdata = "typical"</code>, the absolute risk will be
+computed at a "typical" covariate profile (see Details).</p></td>
     </tr>
     <tr>
       <th>method</th>
@@ -232,8 +203,15 @@ or number of sampled points (if <code>method = "montecarlo"</code>).</p></td>
 only for the main event of interest? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Extra parameters. Currently these are simply ignored.</p></td>
+      <th>type</th>
+      <td><p>Type of output. Can be <code>"CI"</code> (output is on the cumulative
+incidence scale) or <code>"survival"</code> (output is on the survival scale,
+i.e. 1- CI)</p></td>
+    </tr>
+    <tr>
+      <th>addZero</th>
+      <td><p>Logical. Should we add time = 0 at the beginning of the
+output? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>s</th>
@@ -243,6 +221,14 @@ required (for class <code>cv.glmnet</code>).</p></td>
     <tr>
       <th>n.trees</th>
       <td><p>Number of trees used in the prediction (for class <code>gbm</code>).</p></td>
+    </tr>
+    <tr>
+      <th>ntimes</th>
+      <td><p>Number of time points (only used if <code>time</code> is missing).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Extra parameters. Currently these are simply ignored.</p></td>
     </tr>
     </table>
 
@@ -258,6 +244,10 @@ with a new column containing the risk estimate at failure time.</p>
     <p>If the user supplies the original dataset through the parameter
 <code>newdata</code>, the mean absolute risk can be computed as the average of the
 output vector.</p>
+<p>If <code>newdata = "typical"</code>, we create a typical covariate profile for the
+absolute risk computation. This means that we take the median for numerical
+and date variables; we take the first element in alphabetical order for
+character variables; and we take the reference level for factor variables.</p>
 <p>In general, if <code>time</code> is a vector of length greater than one, the output
 will include a column corresponding to the provided time points. Some
 modifications of the <code>time</code> vector are done: <code>time=0</code> is added, the
@@ -273,11 +263,7 @@ to a time point. If there are competing risks, the output will be a
 events.</p>
 <p>The numerical method should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
-is not smooth (e.g. when modeling with time-varying covariates). However, if
-there are competing risks, we strongly encourage the user to select
-Monte-Carlo integration, which is much faster than the numerical method.
-(This is due to the current implementation of the numerical method, and it
-may be improved in future versions.)</p>
+is not smooth (e.g. when modeling with time-varying covariates).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simulate censored survival data for two outcome types from exponential distributions</span>
