@@ -42,6 +42,7 @@ Suggests:
     rmarkdown,
     splines,
     colorspace,
+    visreg,
     testthat
 VignetteBuilder: knitr
 URL: http://sahirbhatnagar.com/casebase/

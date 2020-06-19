@@ -1,11 +1,276 @@
 devtools::load_all()
+library(splines)
+library(visreg)
+
+# support data ------------------------------------------------------------
+data("support")
+
+mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time)*sex,
+                                    time = "d.time",
+                                    event = "death",
+                                    data = support,
+                                    ratio = 10)
+summary(mod_cb)
+
+
+hazardPlot(mod_cb, newdata = data.frame(sex = "male"), ci = F)
+hazardPlot(mod_cb, newdata = data.frame(sex = "female"), add = T)
+
+absoluteRisk()
+
+visreg(mod_cb,
+       xvar = "d.time",
+       by = "sex",
+       scale = "response",
+       overlay = T,
+       # data = mod_cb$data,
+       plot = T)
+
+visreg(mod_cb,
+       xvar = "sex",
+       by = "d.time",
+       type = "contrast",
+       scale = "response",
+       data = mod_cb$data,
+       plot = T)
+
+mod_cb$data$offset <- 0
+visreg(mod_cb,
+       xvar = "d.time",
+       by = "sex",
+       # scale = "linear",
+       scale = "response",
+       data = mod_cb$data,
+       plot = T)
+
+tt$fit
+tt$res
+# xtrans = exp)
+
+
+
+
+
+
+# simdat ------------------------------------------------------------------
+
+devtools::load_all()
+
+library(casebase)
+library(splines)
+library(visreg)
+data("simdat")
+mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(I(log(eventtime)), df = 3) +
+                                        trt:ns(I(log(eventtime)),df=1),
+                                    time = "eventtime",
+                                    data = simdat,
+                                    ratio = 10,
+                                    family = "glm")
+
+results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
+                       ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+head(results0)
+hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+           ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
+legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
+
+mod_cb$data$offset <- 0
+visreg(mod_cb,
+       xvar = "eventtime",
+       by = "trt",
+       scale = "response",
+       data = mod_cb$data,
+       plot = T)
+
+
 data("bmtcrr")
 head(bmtcrr)
 str(bmtcrr)
 
+data("support")
+?support
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status", exposure = "D")
 # popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
+data("ERSPC")
+head(ERSPC)
 
+library(splines)
+devtools::load_all()
+data("support")
+mod_cb <- casebase::fitSmoothHazard(death ~ bs(d.time)+sex,
+                                    time = "d.time",
+                                    event = "death",
+                                    data = support,
+                                    ratio = 10)
+summary(mod_cb)
+support$sex
+hazardPlot(mod_cb, newdata = data.frame(sex = "male"), ci = F)
+hazardPlot(mod_cb, newdata = data.frame(sex = "female"), add = T)
+
+
+pacman::p_load(effects)
+ggeffects::ggpredict(mod_cb)
+str(mod_cb)
+head(mod_cb$data)
+head(mod_cb$originalData)
+
+
+
+
+# load packages and data ---------------------------------------------------
+
+devtools::load_all("~/git_repositories/casebase/")
+pacman::p_load(splines)
+pacman::p_load(ggeffects)
+pacman::p_load(visreg)
+data("simdat")
+head(simdat)
+
+# Fit the model on simdat from casebase -----------------------------------
+
+mod_cb <- casebase::fitSmoothHazard(status ~ bs(eventtime,degree = 8) * trt,
+                                    time = "eventtime",
+                                    event = "status",
+                                    data = simdat,
+                                    ratio = 10)
+summary(mod_cb)
+plot(mod_cb)
+str(mod_cb)
+
+mod_cb
+
+# using casebase hazardPlot ------------------------------------------------
+
+t1_hazardplot <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 1),
+                       ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+
+t0_hazardplot <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0), ci = TRUE,
+           ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
+legend("topleft", c("trt=1","trt=0"),lty=1:2,col=1:2,bty="y", lwd = 2)
+
+
+# using visreg ------------------------------------------------------------
+
+mod_cb$data$offset <- 0
+tt <- visreg(mod_cb,
+       xvar = "eventtime",
+       by = "trt",
+       scale = "linear",
+       trans = exp,
+       data = mod_cb$data,
+       plot = T,
+       overlay = TRUE)
+
+# get the predicted hazards by trt status and order the
+# times so you can plot them
+t1 <- tt$fit[which(tt$fit$trt==1),]
+t0 <- tt$fit[which(tt$fit$trt==0),]
+t1_visreg <- t1[order(t1$eventtime),]
+t0_visreg <- t0[order(t1$eventtime),]
+
+
+
+# ggpredict ---------------------------------------------
+
+# this stops predictions at eventtimes <0.5
+dat1 <- ggpredict(mod_cb, terms = c("eventtime [all]","trt","offset [0]"))
+dat1$x %>% range
+
+# this works, but produces slightly different results than visreg or hazardPlot
+dat <- ggpredict(mod_cb, terms = c("eventtime [0:5 by=.1]","trt","offset [0]"))
+plot(dat)
+
+# get the predicted hazards by trt status. they are already in order
+# wih ggpredict
+t1_ggpredict <- dat$predicted[which(dat$group==1)]
+t0_ggpredict <- dat$predicted[which(dat$group==0)]
+
+
+
+# compare hazard ratios for treatment -----------------------------------------
+
+plot(t0_hazardplot$eventtime, t1_hazardplot$predictedhazard / t0_hazardplot$predictedhazard,
+     type = "l", col = 1, lty = 1, ylab = "hazard ratio for trt=1 vs. trt=0", lwd = 2, ylim = c(0,1.1))
+abline(a=1, b=0, col = "grey80")
+lines(t0_visreg$eventtime, t1_visreg$visregFit / t0_visreg$visregFit,
+      type = "l", col = 2, lty = 2, lwd = 2)
+lines(unique(dat$x), t1_ggpredict / t0_ggpredict,
+      type = "l", col = 3, lty = 3, lwd = 2)
+
+legend("bottomright", c("hazardPlot","visreg","ggpredict"),
+       lty=1:3,col=1:3,bty="y", lwd = 2)
+
+
+
+
+
+
+
+summary(mod_cb)
+
+t1$eventtime == t0$eventtime
+
+plot()
+
+mod_cb$data <- mod_cb$originalData
+
+plot(dat)
+
+mod_cb$data %>% colnames()
+mod_cb$originalData %>% colnames()
+mod_cb$data <- mod_cb$originalData
+
+
+
+pacman::p_load(visreg)
+
+mod_cb$originalData$offset = mod_cb$offset[1]
+visreg(mod_cb,
+       xvar = "d.time",
+       by = "sex",
+       scale = "linear",
+       data = mod_cb$originalData)#,
+       # xtrans = exp)
+
+
+dev.off()
+modcb$originalData %>% str
+modcb$data <- modcb$originalData
+modcb$data %>% str
+modcb$originalData %>% str
+plot(dat, facet = TRUE)
+
+head(modcb$data)
+head(modcb$originalData)
+library(survival)
+data(veteran)
+head(veteran)
+veteran$status %>% table
+
+modcb <- fitSmoothHazard(status ~ ., data = veteran)
+summary(modcb)
+
+data("simdat")
+library(splines)
+mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+                                        trt:ns(log(eventtime),df=1),
+                                    time = "eventtime",
+                                    data = simdat,
+                                    ratio = 100,
+                                    family = "glm")
+
+results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
+                       ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+head(results0)
+hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+           ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
+legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
+
+
+summary(modcb)
+hazardPlot(modcb, newdata = ERSPC)
+?fitSmoothHazard
+?hazardPlot
 attr(popTimeData, "exposure")
 attr(popTimeData, "call")
 

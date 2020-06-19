@@ -28,6 +28,8 @@ library(ggplot2)
 library(data.table)
 library(colorspace)
 
+data("ERSPC")
+
 # create poptime object for ERSPC data with exposure attribute
 x <- popTime(ERSPC, time = "Follow.Up.Time", event = "DeadOfPrCa", exposure = "ScrArm")
 head(x)

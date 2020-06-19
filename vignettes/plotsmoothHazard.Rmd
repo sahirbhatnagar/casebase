@@ -1,0 +1,1235 @@
+---
+title: "Plot Hazards and Hazard Ratios"
+author: "Sahir Rai Bhatnagar"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_height: 6
+    fig_width: 8
+    toc: yes
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{Plot Hazards and Hazard Ratios}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+bibliography: reference.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, 
+  results='hide',
+  fig.show='all',
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+In this vignette, we describe the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. There are currently two types of plots: hazard functions and hazard ratios. We describe each one in detail below. Note that the `plot` method has only been properly tested for `family="glm"`. 
+
+# Hazard Function
+
+The hazard function plots require the [`visreg`](https://cran.r-project.org/package=visreg) package. 
+
+To illustrate hazard function plots, we will use the breast cancer dataset which contains the observations of 686 women taken from the [`TH.data`](https://cran.r-project.org/package=TH.data) package. This dataset is also available from the `casebase` package. In the following, we will show different hazard functions for different combinations of continuous, binary variables as well as their interactions.
+
+
+```{r}
+library(casebase)
+library(visreg)
+library(splines)
+library(ggplot2)
+data("brcancer")
+str(brcancer)
+```
+
+
+## One binary predictor, no interactions
+
+We first fit a main effects only model with a spline on `log(time)` and hormonal therapy as main effects.
+
+```{r, results='show'}
+mod_cb <- fitSmoothHazard(cens ~ ns(log(time), df = 3) + hormon,
+                          data = brcancer,
+                          time = "time")
+summary(mod_cb)
+```
+
+
+### Hazard functions on separate plots
+
+All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are \code{list(fit = x,
+trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)}. For example, if you want a 95% confidence band, specify \code{hazard.params = list(alpha = 0.05)}. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
+
+We first plot the hazard as a function of time, for hormon=0 and hormon=1. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
+
+```{r, results='hide',fig.show='all'}
+par(mfrow = c(1,2))
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          cond = list(hormon = 0),
+                          alpha = 0.05,
+                          main = "No Hormonal Therapy Hazard Function"))
+
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          cond = list(hormon = 1),
+                          alpha = 0.05,
+                          main = "Hormonal Therapy Hazard Function"))
+```
+
+
+
+### Hazard functions on same plots
+
+Alternatively, we can plot the hazard functions on the same plot. This is accomplished with the `by` argument: 
+
+```{r}
+plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard"))
+```
+
+
+Note that if we want to extract the data used to construct the plot, e.g. to create our own, we simply assign the call to `plot` to an object (we may optionally set `plot=FALSE` in the `hazard.params` argument as to not print any plots):
+
+```{r}
+plot_results <- plot(mod_cb,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.10,
+                          ylab = "Hazard",
+                          plot = FALSE))
+```
+
+```{r, results='show'}
+head(plot_results$fit)
+```
+
+
+
+### ggplot2 version 
+
+The function is flexible because you may leverage `ggplot2` just by specifying `gg=TRUE`, the plot will return a `ggplot` object:
+
+```{r}
+gg_object <- plot(mod_cb,
+                  hazard.params = list(xvar = "time",
+                                       by = "hormon",
+                                       alpha = 0.20, # 80% CI
+                                       ylab = "Hazard",
+                                       gg = TRUE)) 
+```
+
+```{r, results='show'}
+attr(gg_object,"class")
+```
+
+Now we can use it downstream for any plot while leveraging the entire ggplot2 ecosystem of packages and functions:
+
+```{r}
+gg_object + 
+  theme_minimal()+
+  theme(legend.position = "bottom") + 
+  labs(title = "Casebase") +
+  scale_x_continuous(n.breaks = 10)
+```
+
+
+## One binary predictor with interaction
+
+Next, we fit an interaction model with a time-varying covariate, i.e., to test the hypothesis that the effect of hormonal therapy on the hazard varies with time. 
+
+```{r, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*ns(log(time), df = 3),
+                              data = brcancer,
+                              time = "time")
+summary(mod_cb_tvc)
+```
+
+Now we can easily plot the hazard function over time for each hormon group:
+
+```{r}
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard")) 
+```
+
+
+
+## One continuous predictor with interaction
+
+Now we fit a model with an interaction between a continous variable, estrogen receptor (in fmol), and time. 
+
+```{r, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3),
+                              data = brcancer,
+                              time = "time")
+summary(mod_cb_tvc)
+```
+
+
+There are now many ways to plot the time-varying effect of estrogen receptor on the hazard function. The default is to plot the 10th, 50th and 90th quantiles of the `by` variable:
+
+```{r}
+# computed at the 10th, 50th and 90th quantiles of estrec
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          alpha = 1,
+                          ylab = "Hazard")) 
+```
+
+
+We can also show the quartiles of `estrec` by specifying the `breaks` argument. If `breaks` is a single number, that will be the used as the number of breaks:
+
+```{r}
+# computed at quartiles of estrec
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = c("time"),
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = 4,
+                          ylab = "Hazard")) 
+```
+
+
+Alternatively, if `breaks` is a vector, it will be used as the actual values to be used:
+
+```{r}
+# computed where I want
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = c("time"),
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = c(3,2200),
+                          ylab = "Hazard")) 
+```
+
+### Image and Perspective Plots
+
+Instead of taking a cross-section of the effect of `estrec` on the hazrd, we can plot a surface using the `visreg2d` function:
+
+```{r perspective-plots}
+visreg2d(mod_cb_tvc, 
+         xvar = "time",
+         yvar = "estrec",
+         trans = exp,
+         print.cond = TRUE,
+         zlab = "Hazard",
+         plot.type = "image")
+
+visreg2d(mod_cb_tvc, 
+         xvar = "time",
+         yvar = "estrec",
+         trans = exp,
+         print.cond = TRUE,
+         zlab = "Hazard",
+         plot.type = "persp")
+
+# this can also work if 'rgl' is installed
+# visreg2d(mod_cb_tvc, 
+#          xvar = "time",
+#          yvar = "estrec",
+#          trans = exp,
+#          print.cond = TRUE,
+#          zlab = "Hazard",
+#          plot.type = "rgl")
+```
+
+
+## One continuous predictor with interaction and several other predictors
+
+All the examples so far have only included 2 predictors in the regression equation. In this example, we fit a smooth hazard model with several predictors:
+
+```{r multiple-predictors, results='show'}
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3) + 
+                                horTh + 
+                                age + 
+                                menostat + 
+                                tsize + 
+                                tgrade + 
+                                pnodes + 
+                                progrec,
+                              data = brcancer,
+                              time = "time")
+summary(mod_cb_tvc)
+```
+
+In the following plot, we show the time-varying effect of `estrec` while controlling for all other variables. By default, the other terms in the model are set to their median if the term is numeric or the most common category if the term is a factor. The values of the other variables are shown in the output:
+
+```{r many-predictors-plot, results='show', R.options=list(max.print=1)}
+plot(mod_cb_tvc,
+     hazard.params = list(xvar = "time",
+                          by = "estrec",
+                          alpha = 1,
+                          breaks = 2,
+                          ylab = "Hazard"))
+
+# plot each variable's effect on Hazard
+# par(mfrow = c(2,4))
+# plot(mod_cb_tvc,
+#      hazard.params = list(alpha = 1,
+#                           ylab = "Hazard")) 
+```
+
+
+
+# Hazard Ratio
+
+In this section we illustrate how to plot hazard ratios using the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. Note, that these function have only been thoroughly tested with `family="glm"`.
+
+In what follows, the hazard ratio for a variable $X$ is defined as 
+
+$$
+\frac{h\left(t | X=x_1, \mathbf{Z}=\mathbf{z_1} ; \hat{\beta}\right)}{h(t | X=x_0, \mathbf{Z}=\mathbf{z_0} ; \hat{\beta})}
+$$
+where $h(t|\cdot;\hat{\beta})$ is the hazard rate as a function of the variable $t$ (which is usually time, but can be any other continous variable), $x_1$ is the value of $X$ for the exposed group, $x_0$ is the value of $X$ for the unexposed group, $\mathbf{Z}$ are other covariates in the model which are equal to $\mathbf{z_1}$ in the exposed and $\mathbf{z_0}$ in the unexposed group, and $\hat{\beta}$ are the estimated regression coefficients. 
+
+As indicated by the formula above, it is most instructive to plot the hazard ratio as a function of a variable $t$ only if there is an interaction between $t$ and $X$. Otherwise, the resulting plot will simply be a horizontal line across time. 
+
+## Mason Trial
+
+We use data from the Manson trial (NEJM 2003) which is included in the `casebase` package. This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD). 
+
+We fit a model with the interaction between time and treatment arm. We are therefore interested in visualizing the hazard ratio of the treatment over time. 
+
+```{r mason-trial, results='show'}
+data("masonTrialExtraction")
+masonTrialExtraction <- transform(masonTrialExtraction, 
+                                  treatment = factor(treatment, levels = c("placebo","estPro")))
+head(masonTrialExtraction)
+
+fit_mason <- fitSmoothHazard(status ~ treatment*time,
+                             data = masonTrialExtraction,
+                             time = "time")
+summary(fit_mason)
+```
+
+
+To plot the hazard ratio, we must specify the `newdata` argument with a covariate pattern for the reference group. In this example, we treat the `placebo` as the reference group. Because we have fit an interaction with time, we also provide a sequence of times at which we would like to calculate the hazard ratio. 
+
+
+```{r plot-mason, results='show'}
+newtime <- quantile(fit_mason[["originalData"]][[fit_mason[["timeVar"]]]], probs = seq(0.01, 0.99, 0.01))
+
+# reference category
+(newdata <- data.frame(treatment = factor("placebo", 
+                                         levels = c("placebo","estPro")), 
+                      time = newtime))
+
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     var = "treatment",
+     increment = 1,
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+In the call to `plot` we specify the `xvar` which is the variable plotted on the x-axis, the `var` argument which specified the variable for which we want the hazard ratio. The `increment=1` indicates that we want to increment `var` by 1 level, which in this case is `estPro`. Alternatively, we can specify the `exposed` argument which should be a function that takes `newdata` and returns the exposed dataset. The following call is equivalent to the one above: 
+
+```{r}
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     exposed = function(data) transform(data, treatment = "estPro"),
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+
+Alternatively, if we want the `placebo` group to be the exposed group, we change the `newdata` argument to:
+
+```{r, results='show'}
+(newdata <- data.frame(treatment = factor("estPro", 
+                                         levels = c("placebo","estPro")), 
+                      time = newtime))
+
+levels(newdata$treatment)
+```
+
+Note that the reference category in `newdata` is still `placebo`. Therefore we must set `increment=-1` in order to get the `exposed` dataset:
+
+```{r}
+plot(fit_mason, 
+     type = "hr", 
+     newdata = newdata,
+     var = "treatment",
+     increment = -1,
+     xvar = "time",
+     ci = T,
+     rug = T)
+```
+
+
+If the $X$ variable has more than two levels, than, `increment` works the same way, e.g., `increment = 2` will provide an `exposed` group two levels above the value in `newdata`. 
+
+## Save results
+
+In order to save the data used to make the plot, you simply have to assign the call to `plot` to a variable. This is particularly useful if you want to really customize the plot aesthetics:
+
+```{r, fig.show='none', results='show'}
+result <- plot(fit_mason, 
+               type = "hr", 
+               newdata = newdata,
+               var = "treatment",
+               increment = -1,
+               xvar = "time",
+               ci = T,
+               rug = T)
+head(result)
+```
+
+
+
+
+```{r, echo=FALSE}
+knitr::knit_exit()
+```
+
+
+
+
+```{r}
+data(simdat)
+
+fit_numeric_exposure <- fitSmoothHazard(status ~ trt*bs(eventtime),
+                                        data = simdat,
+                                        time = "eventtime")
+
+fit_factor_exposure <- fitSmoothHazard(status ~ treat*bs(eventtime),
+                                       data = simdat,
+                                       time = "eventtime")
+
+newtime <- quantile(fit_factor_exposure[["data"]][[fit_factor_exposure[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+
+par(mfrow = c(1,3))
+plot(fit_numeric_exposure, 
+     type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     exposed = function(data) transform(data, trt = 1),
+     xvar = "eventtime",
+     ci = T)
+
+#by default this will increment `var` by 1 for exposed category
+plot(fit_factor_exposure,
+     type = "hr", 
+     newdata = data.frame(treat = factor("control", levels = c("control","treatment")), eventtime = newtime),
+     var = "treat",
+     increment = 1, 
+     xvar = "eventtime",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "Time",
+     main = "Hazard Ratio for Treatment",
+     ylab = "Hazard Ratio",
+     lty = 5,
+     lwd = 7,
+     rug = T)
+
+
+# we can also decrement `var` by 1 to give hazard ratio for control/treatment
+result <- plot(fit_factor_exposure,
+               type = "hr", 
+               newdata = data.frame(treat = factor("treatment", levels = c("control","treatment")), eventtime = newtime),
+               var = "treat",
+               increment = -1, 
+               xvar = "eventtime",
+               ci = T)
+
+# see data used to create plot
+head(result)
+
+
+
+
+# user defined exposed data
+plot(fit2, 
+     type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     exposed = function(data) transform(data, trt = 1),
+     xvar = "eventtime", 
+     ci = TRUE)
+
+
+tt <- data.frame(trt = 0, eventtime = 2)
+
+transform(tt, eventtime = newtime)
+
+test2 <- function(...) if(length(list(...))) FALSE else TRUE
+
+test2()
+MagpieS0X
+
+
+
+
+
+```
+
+
+
+```{r}
+# load packages and data --------------------------------------------------
+
+pacman::p_load(rstpm2) # for nsx function
+pacman::p_load(splines)
+pacman::p_load(numDeriv) # Load numerical derivative package
+pacman::p_load(bench)
+devtools::load_all("~/git_repositories/casebase/")
+data("simdat") # from casebase package
+str(simdat)
+
+# Fit casebase models -----------------------------------------------------
+# with splines ------------------------------------------------------------
+fit2 <- fitSmoothHazard(status ~ trt*nsx(eventtime,df=3),
+                        data = simdat,
+                        time = "eventtime")
+summary(fit2)
+head(simdat)
+# generate sequence of times for which to calculate hazard ratio ------------
+newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+newdata <- data.frame(trt = 1, eventtime = newtime, offset = 0)
+newdata.ref <- data.frame(trt = 0, eventtime = newtime, offset = 0)
+
+
+bX2 <- predict(fit2, type = "terms",
+               newdata = newdata,
+               terms = c("trt","trt:nsx(eventtime, df = 3)"))
+
+beta2 <- coef(fit2)
+mm2 <- model.matrix(fit2)
+avx2 <- colMeans(mm2)
+int_names <- c("trt",paste0("trt:",paste0("nsx(eventtime, df = 3)",1:3))) # variables needed for HR
+add_back2 <- sum(avx2[which(names(avx2) %in% int_names)] * beta2[which(names(avx2) %in% int_names)])
+
+# this is the hazard ratio as a function of time
+log_hazard_ratio2 <- rowSums(bX2) + add_back2
+
+# sanity check that we're getting same hazard ratio as estimate_hazard
+all.equal(exp(log_hazard_ratio2),
+          exp(estimate_hazard(fit2, newdata = newdata)) /
+              exp(estimate_hazard(fit2, newdata = newdata.ref)))
+
+object <- fit2
+tt <- terms(object)
+Terms <- delete.response(tt)
+v2 <- vcov(fit2)
+
+
+f.automaticFAST <- function(beta, time){
+  m1 <- model.frame(Terms,
+                    data = data.frame(trt = 1, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  m0 <- model.frame(Terms,
+                    data = data.frame(trt = 0, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  
+  X1 <- model.matrix(Terms, m1, contrasts.arg = object$contrasts)
+  X0 <- model.matrix(Terms, m0, contrasts.arg = object$contrasts)
+  
+  # this is the jacobian!!
+  (X1 - X0)
+  
+}
+
+jacobi <- f.automaticFAST(time = newtime)
+all.equal(drop(exp(jacobi %*% beta2)), exp(log_hazard_ratio2))
+
+
+newtime <- quantile(fit2[["data"]][[fit2[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+plot(fit2, type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     var = "trt", xvar = "eventtime", ci = TRUE)
+
+plot(fit2, type = "hr", 
+     newdata = data.frame(trt = 0, eventtime = newtime),
+     var = "trt", xvar = "eventtime", ci = FALSE)
+
+# MANUAL WAY this is the time dependent hazard ratio function ------------------
+f.manual <- function(beta, time){
+    beta[-c(2,6:8)] <- 0
+    m <- model.frame(Terms,
+                     data = data.frame(trt = 1, eventtime = time, offset = 0),
+                     na.action = na.pass,
+                     xlev = object$xlevels)
+    
+    X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
+    sum(X * beta)
+}
+
+# Standard errors for each time
+SE_manual <- sapply(newtime, function(i) {
+  grad_g <- numDeriv::jacobian(f.manual, beta2, time = i)
+  sqrt(grad_g %*% v2 %*% t(grad_g))
+})
+
+
+# AUTOMATIC WAY to calculate time depedent hazard ratio function ------------------
+
+f.automatic <- function(beta, time){
+  m1 <- model.frame(Terms,
+                    data = data.frame(trt = 1, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  m0 <- model.frame(Terms,
+                    data = data.frame(trt = 0, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  
+  X1 <- model.matrix(Terms, m1, contrasts.arg = object$contrasts)
+  X0 <- model.matrix(Terms, m0, contrasts.arg = object$contrasts)
+  
+  sum((X1 - X0) * beta)
+  
+}
+
+# Standard errors for each time
+SE_automatic <- sapply(newtime, function(i) {
+  grad_g <- numDeriv::jacobian(f.automatic, beta2, time = i)
+  sqrt(grad_g %*% v2 %*% t(grad_g))
+})
+
+
+
+# AUTOMATIC FAST WAY to calculate time depedent hazard ratio function ------------------
+
+f.automaticFAST <- function(beta, time){
+  m1 <- model.frame(Terms,
+                    data = data.frame(trt = 1, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  m0 <- model.frame(Terms,
+                    data = data.frame(trt = 0, eventtime = time, offset = 0),
+                    na.action = na.pass,
+                    xlev = object$xlevels)
+  
+  X1 <- model.matrix(Terms, m1, contrasts.arg = object$contrasts)
+  X0 <- model.matrix(Terms, m0, contrasts.arg = object$contrasts)
+  
+  # this is the jacobian!!
+  (X1 - X0)
+  
+}
+
+jacobi <- f.automaticFAST(beta2, time = newtime)
+SE_automatic_FAST <- sqrt(diag(jacobi %*% tcrossprod(v2, jacobi)))
+
+
+
+# Compare Timings -----------------------------------------------------------------------
+
+res <- bench::mark(
+  manual = sapply(newtime, function(i) {
+    grad_g <- numDeriv::jacobian(f.manual, beta2, time = i)
+    sqrt(grad_g %*% v2 %*% t(grad_g))}),
+  
+  automatic = sapply(newtime, function(i) {
+    grad_g <- numDeriv::jacobian(f.automatic, beta2, time = i)
+    sqrt(grad_g %*% v2 %*% t(grad_g))}),
+  
+  autoFAST = {
+    jacobi <- f.automaticFAST(beta2, time = newtime)
+    SE_automatic_FAST <- sqrt(diag(jacobi %*% tcrossprod(v2, jacobi)))
+  },
+  
+  check = TRUE, # checks that all results are equal
+  iterations = 10
+)
+
+
+res
+ggplot2::autoplot(res)
+
+
+ci.lower.2 <- exp(log_hazard_ratio2 - 1.96 * SE_time2)
+ci.upper.2 <- exp(log_hazard_ratio2 + 1.96 * SE_time2)
+
+
+
+
+jacobi <- f.HR2.2(beta2, time = newtime)
+all.equal(sqrt(diag(jacobi %*% tcrossprod(v2, jacobi))),
+          SE_time2.2)
+
+
+
+newdata <- model.matrix( ~ trt*eventtime, 
+                         data = data.frame(eventtime = newtime, 
+                                           trt = 1))
+newdata[,c("(Intercept)", "eventtime")] <- 0
+sqrt(diag(newdata %*% tcrossprod(v1, newdata)))
+
+
+# Plot Hazard Ratio and Confidence Interval -------------------------------
+
+plot(newtime,
+     exp(log_hazard_ratio2),
+     type = "l", lty = 1, lwd = 2,
+     ylim = range(ci.lower.2,ci.upper.2),
+     ylab = "Hazard Ratio for trt",
+     main = "NonLinear interaction: status ~ trt*nsx(eventtime,df=3)")
+lines(newtime, ci.lower.2, lty = 2, lwd = 2, col = "grey")
+lines(newtime, ci.upper.2, lty = 2, lwd = 2, col = "grey")
+
+
+
+
+
+ci.lower.2.2 <- exp(log_hazard_ratio2 - 1.96 * SE_time2.2)
+ci.upper.2.2 <- exp(log_hazard_ratio2 + 1.96 * SE_time2.2)
+lines(newtime, ci.lower.2.2, lty = 3, lwd = 2, col = "red")
+lines(newtime, ci.upper.2.2, lty = 3, lwd = 2, col = "red")
+
+```
+
+
+
+```{r}
+pacman::p_load(rstpm2) # for brcancer data
+pacman::p_load(TH.data) # same as brcancer data but with proper names
+pacman::p_load(splines)
+devtools::load_all("~/git_repositories/casebase/")
+pacman::p_load(visreg)
+
+# data("brcancer")
+# factoring hormon, breaks the plot method for rstpm2 with interactions!!!
+# brcancer <- transform(brcancer, hormon=factor(hormon, levels = 0:1, labels = c("no","yes")))
+data("brcancer")
+
+brcancer <- transform(brcancer, hormon=as.numeric(brcancer$horTh)-1)
+brcancer <- transform(brcancer, meno=as.numeric(brcancer$menostat)-1)
+
+str(brcancer)
+
+# be sure to test that the code works regardless of if its time:horTh or horTh:time
+fit <- fitSmoothHazard(cens ~ nsx(time, df = 3)*horTh+ 
+                         age*horTh +
+                         horTh * progrec +
+                         menostat * pnodes * progrec,
+                       data = brcancer,
+                       time = "time")
+
+summary(fit)
+
+newtime <- quantile(fit[["data"]][[fit[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+
+newdat <- data.frame(brcancer[1,-which(colnames(brcancer)=="time"),drop=F], time = newtime)
+newdat
+
+
+
+plot(fit,
+     type = "hr", 
+     newdata = newdat,
+     var = "horTh",
+     increment = 1, 
+     xvar = "time",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "heloo",
+     main = "sfsf",
+     ylab = "hellllll",
+     lty = 2,
+     lwd = 1,
+     rug = T)
+
+
+newage <- quantile(fit[["data"]]$age, probs = seq(0.05, 0.95, 0.01))
+
+newdat <- data.frame(brcancer[1,-which(colnames(brcancer)=="age"),drop=F], age = newage)
+newdat
+
+
+plot(fit,
+     type = "hr", 
+     newdata = newdat,
+     var = "horTh",
+     increment = 1, 
+     xvar = "age",
+     ci = T,
+     ci.col = "lightblue",
+     xlab = "heloo",
+     main = "sfsf",
+     ylab = "hellllll",
+     lty = 2,
+     lwd = 1,
+     rug = T)
+
+
+
+
+fit <- fitSmoothHazard(cens ~ time*horTh, 
+                       data = brcancer,
+                       time = "time")
+
+summary(fit)
+class(fit)
+
+plot(fit, 
+     type = "hazard",
+     hazard.params = list(xvar = c("time"),
+                          by = "horTh",
+                          alpha = 1,
+                          ylab = "Hazard")) 
+
+# this shows how to calculate hazard ratio manually using estimate hazard
+# generate sequence of times
+newtime <- quantile(fit[["data"]][[fit[["timeVar"]]]], probs = seq(0.05, 0.95, 0.01))
+
+# define the contrast of interest
+# note that even though for the HR, you just need horTh and time, we still
+# need to specify all other variables, even though they get cancelled out when calculating
+# the hazard ratio. This is a potential downside to using estimate_hazard
+newdat1 <- data.frame(horTh = "yes", time = newtime, 
+                      age = median(brcancer$age), menostat = "Pre", 
+                      pnodes = median(brcancer$pnodes), progrec = median(brcancer$progrec),
+                      offset = 0)
+newdat0 <- data.frame(horTh = "no", time = newtime, 
+                      age = median(brcancer$age), menostat = "Pre", 
+                      pnodes = median(brcancer$pnodes), progrec = median(brcancer$progrec),
+                      offset = 0)
+
+
+# ---------------------- Method 1 to calculate HR ----------------------------------
+# estimate hazard internally sets offset to 0
+# estimate_hazard(fit, newdata = newdat1, ci = TRUE)
+#   exp(estimate_hazard(fit, newdata = newdat0))
+
+HR <- exp(estimate_hazard(fit, newdata = newdat1)) / 
+  exp(estimate_hazard(fit, newdata = newdat0))
+
+plot(fit, 
+     type = "hr",
+     hazard.params = list(xvar = "time",
+                          by = "horTh",
+                          alpha = 0.05,
+                          ylab = "Hazard Ratio")) 
+
+lines(newtime, HR, type = "l", col = "red",lty = 2, lwd = 2)
+
+# ---------------------- Method 2 to calculate HR ----------------------------------
+
+# estimate using the predict function with type = "terms"
+# see https://stackoverflow.com/questions/37963904/what-does-predict-glm-type-terms-actually-do
+# about the note on centering. we need to add back the column means
+
+require(numDeriv) # Load numerical derivative package
+v <- vcov(fit)
+beta <- coef(fit)
+
+g <- function(b, time){
+    return(b[3] + (b[4])*time )
+}
+
+SE_time <- sapply(newtime, function(i) {
+  grad_g <- numDeriv::jacobian(g, beta, time = i) # Jacobian gives dimensions, otherwise same as gradient 
+  sqrt(grad_g %*% v %*% t(grad_g))
+})
+
+
+
+
+tt <- predict(fit, type = "terms", 
+        newdata = newdat1,
+        terms = c("horTh","time:horTh"),
+        se.fit = TRUE)
+
+
+beta <- coef(fit)
+mm <- model.matrix(fit)
+avx <- colMeans(mm)
+
+add_back <- sum(avx[c(3:4)] * beta[c(3:4)])
+
+plot(fit, 
+     type = "hr",
+     hazard.params = list(xvar = "time",
+                          by = "horTh",
+                          alpha = 0.05,
+                          ylab = "Hazard Ratio")) 
+plot(newtime, HR, 
+     type = "l", lwd = 2, lty = 2, col = "red",
+     ylim = c(0.5, 1.2))
+lines(newtime, exp(rowSums(tt$fit) + add_back), type = "l", lty = 2, lwd = 2, col = "green")
+
+
+lines(newtime, exp(rowSums(tt$fit) + add_back + 1.96*SE_time), type = "l", lty = 2, lwd = 2, col = "grey")
+lines(newtime, exp(rowSums(tt$fit) + add_back - 1.96*SE_time), type = "l", lty = 2, lwd = 2, col = "grey")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# this is the variable for which we want the hazard ratio
+# needs to be user defined
+# cannot have a nonlinear function on it
+by <- "horTh"
+
+# this is the x-axis variable (usually time, but can be anything i guess)
+xvar <- "time"
+
+# need to find interaction times if they exist
+all.labels <- attr(terms(fit), "term.labels")
+xvar_labels <- grep(xvar, all.labels, value = T)
+by_labels <- grep(by, all.labels, value = T)
+
+orderTerms <- attr(terms(fit), "order")
+form <- formula(fit)
+hasInteraction <- detect_interaction(form)
+hasNonlinearXvar <- any(grepl(sprintf("(?<=\\()(%s)(?=\\))",xvar), xvar_labels, perl = TRUE))
+hasNonlinearBy <- any(grepl(sprintf("(?<=\\()(%s)(?=\\))",by), by_labels, perl = TRUE))
+InteractionTerms <- all.labels[which(orderTerms >= 2)]
+
+# pacman::p_load(RVerbalExpressions)
+# rx() %>% 
+#   rx_seek_prefix('(') %>% 
+#   rx_something() %>% 
+#   rx_seek_suffix(')') %>%
+#   print %>% 
+#   grepl(all.labels, perl = TRUE)
+
+detect_nonlinear_time(form, timeVar = xvar)
+
+by_xvar_regex <- sprintf("(?<=%s)(.+)(?=%s)|(?<=%s)(.+)(?=%s)", by, xvar, xvar, by)
+
+# check if the by and xvar variables are interacting
+plot_interaction <- any(grepl(by_xvar_regex, InteractionTerms, perl = TRUE))
+
+# get the interaction variable if there is one
+if (plot_interaction) {
+  interaction_var <- grep(by_xvar_regex, InteractionTerms, perl = TRUE, value = TRUE)
+} else {
+  interaction_var <- NULL
+}
+
+if (hasInteraction & plot_interaction) {
+  if (orderTerms[which(all.labels==interaction_var)] > 2) {
+    stop("hazard ratio plot can currently only handle second order interactions")
+  }
+}
+
+if (hasNonlinearBy)
+  stop("by term cannot have a nonlinear function applied to it.")
+
+
+if (hasNonlinearXvar) {
+  
+}
+
+beta %>% as.matrix
+
+beta[c(5:8)]
+
+
+
+
+
+
+
+
+SE_time
+
+warnings()
+
+dim(SE)
+SE
+sqrt(SE)
+
+set.seed(1)
+x1 <- rnorm(100)
+x2 <- rbinom(100,1,.5)
+y <- x1 + x2 + x1*x2 + rnorm(100)
+m <- lm(y ~ x1*x2)
+cf <- summary(m)$coef
+me_x1 <- cf['x1',1] + cf['x1:x2',1]*x2 # MEs of x1 given x2
+me_x2 <- cf['x2',1] + cf['x1:x2',1]*x1 # MEs of x2 given x1
+mean(me_x1) # AME of x1
+mean(me_x2) # AME of x2
+v <- vcov(m)
+sqrt(v['x1','x1'] + (mean(x2)^2)*v['x1:x2','x1:x2'] + 2*mean(x2)*v['x1','x1:x2'])
+
+
+
+library(car)
+pacman::p_load(RcmdrMisc)
+DeltaMethod(m, "exp(b1/b2)")
+
+
+DeltaMethod(fit, "b1 + (b5 + b6 + b7)*log(1000)")
+offset(fit)
+terms(fit)
+summary(lm(prestige ~ income*education, data=Duncan))
+vcov(fit)
+
+
+add_back <- sum(avx[c(2,6:8)] * beta[c(2,6:8)])
+
+interaction_var
+# this gives beta * X (row wise multiplication) resulting in a matrix with dimension= dim(X)
+tt <- predict(fit, type = "terms", 
+              newdata = newdat1,
+              terms = all.labels[which(all.labels %in% c(by, xvar))],
+              se.fit = TRUE)
+
+vcov(fit)
+
+
+
+# av <- get_all_vars(form, fit[["data"]])
+# f <- as.data.frame(av)
+# attr(f, "xvar") <- xvar
+# # Data <- visreg:::setupF(fit, xvar, call.env = parent.frame(), data = fit$data)
+# Data <- f
+# str(Data)
+# cond <- setupCond(cond, Data, by, breaks)
+
+
+gsub('offset\\((.*)\\)', '\\1', names(simdat))
+
+attr(terms(fit),"term.labels")
+get_all_vars(form, fit$data)
+
+
+traceback()
+all.vars(formula(fit))
+head(simdat)
+# check if user specified by term exists
+# Allow the term searched for be a string
+if (is.character(hr_term)){
+  terms <- grep(by, all.labels)
+  if(length(terms) == 0){
+    stop(paste("Could not find term:", terms))
+  }
+}
+
+
+
+
+
+Data <- visreg:::setupF(fit, xvar = xvar, call.env = parent.frame(), data = simdat)
+  xvar <- attr(Data, "xvar")
+  if (attr(Data, "needsUpdate")) {
+    if (inherits(fit, 'coxph')) {
+      fit <- update(fit, formula=formula(fit), data=Data, model=TRUE)
+    } else {
+      fit <- update(fit, formula=formula(fit), data=Data)
+    }
+  }
+  cond <- setupCond(cond, Data, by, breaks)
+
+
+
+
+
+
+
+vcov(fit)[c(2,6:8),c(2,6:8)]
+
+# check that it matches the plot method
+plot(fit, 
+     type = "hr",
+     hazard.params = list(xvar = "censoredTime",
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard Ratio")) 
+lines(newtime, HR, 
+     type = "l", lwd = 2, lty = 2, col = "red")
+lines(newtime, exp(rowSums(tt$fit) + add_back), type = "l", lty = 2, lwd = 2, col = "green")
+
+
+
+
+
+```
+
+
+```{r}
+set.seed(1)
+x1 <- rnorm(100)
+x2 <- rbinom(100,1,.5)
+y <- x1 + x2 + x1*x2 + rnorm(100)
+m <- lm(y ~ x1*x2)
+v <- vcov(m)
+
+beta
+# Define function of coefficients. Note all coefficients are included so it 
+# will match dimensions of regression coefficients, this could be done more 
+# elegantly in principle
+g <- function(b, time){
+    return(b[2] + (b[6] + b[7] + b[8]) * log(time))
+}
+
+require(numDeriv) # Load numerical derivative package
+
+v <- vcov(fit)
+grad_g <-  jacobian(g, beta, time = newtime) # Jacobian gives dimensions, otherwise same as
+                               # gradient 
+
+SE <- sqrt(exp(grad_g%*% v %*% t(grad_g))) # Should be exactly the same 
+dim(SE)
+sqrt(SE)
+
+library(car)
+pacman::p_load(RcmdrMisc)
+DeltaMethod(m, "exp(b1/b2)")
+
+
+DeltaMethod(fit, "b1 + (b5 + b6 + b7)*log(1000)")
+offset(fit)
+terms(fit)
+summary(lm(prestige ~ income*education, data=Duncan))
+vcov(fit)
+```
+
+
+
+```{r}
+
+mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*nsx(log(censoredTime), df = 3),
+                              data = brcancer,
+                              time = "censoredTime")
+
+beta <- coef(mod_cb_tvc)
+mm <- model.matrix(mod_cb_tvc)
+avx <- colMeans(mm)
+X1 <- sweep(mm, 2, avx, FUN = "-")
+
+
+sum(avx[c(2,6:8)] * beta[c(2,6:8)])
+
+as.numeric(crossprod(avx[c(1,2,6:8)], beta[c(1,2,6:8)]))
+as.numeric(crossprod(avx[], beta[]))
+
+t(coef(mod_cb_tvc)*t(X1)) %>% head
+predict(mod_cb_tvc, type = "terms") %>% head
+
+(termL <- attr(terms(mod_cb_tvc), "term.labels"))
+tt <- predict(mod_cb_tvc, type = "terms", 
+        newdata = data.frame(hormon = 1, censoredTime = newtime, offset = 0),
+        terms = termL[c(1,3)])
+
+
+dev.off()
+
+
+
+plot(newtime, HR, 
+     type = "l", lwd = 2, ylim = c(0,1.1))
+lines(newtime, exp(rowSums(tt)), type = "l", lty = 2, lwd = 2, col = "red")
+lines(newtime, exp(rowSums(tt) + sum(avx[c(2,6:8)] * beta[c(2,6:8)])), type = "l", lty = 2, lwd = 2, col = "green")
+lines(newtime, exp(avx["(Intercept)"] + tt[,1] + avx["hormon"] + tt[,3] + sum(avx[which(grepl(":",names(avx)))])), type = "l")
+
+
+coef(mod_cb_tvc)
+
+
+all.equal(rowSums(predict(mod_cb_tvc, newdata = data.frame(hormon = 1, censoredTime = newtime, offset = 0), type = 'terms')) + attributes(predict(mod_cb_tvc, newdata = data.frame(hormon = 1, censoredTime = newtime, offset = 0), type = 'terms'))$constant, predict(mod_cb_tvc, newdata = data.frame(hormon = 1, censoredTime = newtime, offset = 0)))
+
+
+
+
+
+View(predict.lm)
+
+# modify plot aesthetics
+plot(mod_cb_tvc, type = "hr",
+     hazard.params = list(xvar = c("time"),
+                          by = "hormon",
+                          alpha = 0.05,
+                          ylab = "Hazard Ratio"),
+     plot.params = list(main = "Hazard Ratio Plot", 
+                        lty = 2,
+                        col = "red",
+                        lwd = 5)) 
+
+# get the data
+get_HR_data <- plot(mod_cb_tvc, type = "hr",
+                    hazard.params = list(xvar = c("time"),
+                                         by = "hormon",
+                                         alpha = 0.05,
+                                         ylab = "Hazard Ratio")) 
+get_HR_data
+
+# get the predicted hazards by trt status and order the
+# times so you can plot them
+# t1 <- tt$fit[which(tt$fit$hormon==1),]
+# t0 <- tt$fit[which(tt$fit$hormon==0),]
+# t1_visreg <- t1[order(t1$time),]
+# t0_visreg <- t0[order(t1$time),]
+# plot(t0_visreg$time, t1_visreg$visregFit / t0_visreg$visregFit,
+#       type = "l", col = 2, lty = 2, lwd = 2, ylim = c(0,1.5))
+# abline(a=1, b=0, col="grey")
+
+library(car)
+pacman::p_load(RcmdrMisc)
+DeltaMethod(lm(prestige ~ income*education, data=Duncan), "exp(b1/b2)")
+
+DeltaMethod(mod_cb_tvc, "b1 + b5 + b6 + b7")
+
+summary(lm(prestige ~ income*education, data=Duncan))
+vcov(mod_cb_tvc)
+```
+
+
+
+```{r}
+pacman::p_load(bcaboot)
+load(system.file("extdata", "neonates.rda", package = "bcaboot"))
+str(neonates)
+weights <- with(neonates, ifelse(y == 0, 1, 4))
+glm_model <- glm(formula = y ~ ., family = "binomial", weights = weights, data = neonates)
+summary(glm_model)
+
+glm_boot <- function(B, glm_model, weights, var = "resp") {
+    pi_hat <- glm_model$fitted.values
+    n <- length(pi_hat)
+    y_star <- sapply(seq_len(B), function(i) ifelse(runif(n) <= pi_hat, 1, 0))
+    beta_star <- apply(y_star, 2, function(y) {
+        boot_data <- glm_model$data
+        boot_data$y <- y
+        coef(glm(formula = y ~ ., data = boot_data, weights = weights, family = "binomial"))
+    })
+    list(theta = coef(glm_model)[var],
+         theta_star = beta_star[var, ],
+         suff_stat = t(y_star) %*% model.matrix(glm_model))
+}
+
+set.seed(3891)
+glm_boot_out <- glm_boot(B = 2000, glm_model = glm_model, weights = weights)
+glm_bca <- bcapar(t0 = glm_boot_out$theta,
+                  tt = glm_boot_out$theta_star,
+                  bb = glm_boot_out$suff_stat)
+
+plot(glm_bca)
+knitr::kable(glm_bca$lims, digits = 3)
+confint(glm_model)
+```
+
+
+```{r}
+knitr::knit_exit()
+```

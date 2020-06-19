@@ -302,36 +302,40 @@ balance_parentheses <- function(str) {
 }
 
 detect_nonlinear_time <- function(formula, timeVar) {
-    # Two regular expressions
-    # 1. Find function arguments
-    pattern_args <- "\\(\\s*([^)]+?)\\s*\\)"
-    # 2. Find exactly time as the clean string
-    time_regex <- paste0("^", timeVar, "$")
-    # Extract variables in RHS of formula
-    terms <- attr(terms(formula), "term.labels")
-    # Then extract the arguments of any function
-    matches <- regmatches(terms, regexpr(pattern_args, terms))
-    # Next, detect time within nested calls
+  # Two regular expressions
+  # 1. Find function arguments
+  pattern_args <- "\\(\\s*([^)]+?)\\s*\\)"
+  # 2. Find exactly time as the clean string
+  time_regex <- paste0("^", timeVar, "$")
+  # Extract variables in RHS of formula
+  terms <- attr(terms(formula), "term.labels")
+  # Then extract the arguments of any function
+  matches <- regmatches(terms, regexpr(pattern_args, terms))
+  # Next, detect time within nested calls
+  matches <- balance_parentheses(matches)
+  while (any(matches != regmatches(matches, regexpr(pattern_args, matches)))) {
+    matches <- regmatches(matches, regexpr(pattern_args, matches))
     matches <- balance_parentheses(matches)
-    while (any(matches != regmatches(matches, regexpr(pattern_args, matches)))) {
-      matches <- regmatches(matches, regexpr(pattern_args, matches))
-      matches <- balance_parentheses(matches)
+  }
+  # Check if one of these arguments is timeVar
+  contain_time <- lapply(
+    strsplit(matches, ","),
+    function(str) {
+      clean_str <- gsub(
+        ".*=", "", # Remove equal signs if they exist
+        gsub("(\\(\\s*|\\s*\\))", "", str)
+      ) # Remove parentheses
+      any(grepl(time_regex, trimws(clean_str)))
     }
-    # Check if one of these arguments is timeVar
-    contain_time <- lapply(strsplit(matches, ","),
-                           function(str) {
-                               clean_str <- gsub(".*=", "", # Remove equal signs if they exist
-                                                 gsub("(\\(\\s*|\\s*\\))", "", str)) # Remove parentheses
-                               any(grepl(time_regex, trimws(clean_str)))
-                           })
-    any(unlist(contain_time))
+  )
+  any(unlist(contain_time))
 }
 
 detect_interaction <- function(formula) {
-    # Extract the order of the terms
-    orders <- attr(terms(formula), "order")
-    # Check if terms of order > 1
-    any(orders > 1)
+  # Extract the order of the terms
+  orders <- attr(terms(formula), "order")
+  # Check if terms of order > 1
+  any(orders > 1)
 }
 
 # Get typical covariate profile from dataset
@@ -345,8 +349,71 @@ get_typical <- function(data) {
       # If character string, take first value in alphabetical order
       sort(unique(col))[1]
     } else {
-        # For factors, take reference level
-        factor(levels(col)[1], levels(col))
-        }
-    }))
+      # For factors, take reference level
+      factor(levels(col)[1], levels(col))
+    }
+  }))
+}
+
+
+
+
+#' @rdname plot.singleEventCB
+incrVar <- function(var, increment = 1) {
+  n <- length(var)
+  if (n > 1 && length(increment) == 1) {
+    increment <- rep(increment, n)
+  }
+  function(data) {
+    for (i in 1:n) {
+      if (is.factor(data[[var[i]]])) {
+        data[[var[i]]] <- fct_shift_ord(data[[var[i]]], increment = increment[i])
+      } else {
+        data[[var[i]]] <- data[[var[i]]] + increment[i]
+      }
+    }
+    data
+  }
+}
+
+
+fct_shift_ord <- function(x, increment = 1, cap = TRUE, .fun = `+`) {
+  x_nlevel <- nlevels(x)
+  x_lables <- levels(x)
+
+  # apply function .fun to the numeric of the ordered vector
+  erg <- .fun(as.numeric(x), increment)
+
+  # cap to 1 and x_nlevel if the increment was larger than the original range of the factor levels
+  if (cap) {
+    erg[erg < 1] <- 1
+    erg[erg > x_nlevel] <- x_nlevel
+  }
+  ordered(erg, levels = 1:x_nlevel, labels = x_lables)
+}
+
+
+hrJacobian <- function(object, newdata, newdata2, term) {
+
+  # Set offset to zero
+  newdata$offset <- 0
+  newdata2$offset <- 0
+
+
+  m1 <- stats::model.frame(term,
+    data = newdata2,
+    na.action = stats::na.pass,
+    xlev = object$xlevels
+  )
+  m0 <- stats::model.frame(term,
+    data = newdata,
+    na.action = stats::na.pass,
+    xlev = object$xlevels
+  )
+
+  X1 <- stats::model.matrix(term, m1, contrasts.arg = object$contrasts)
+  X0 <- stats::model.matrix(term, m0, contrasts.arg = object$contrasts)
+
+  # this is the jacobian!!
+  X1 - X0
 }

@@ -30,3 +30,7 @@
 ^R/new_poptime\.R$
 ^_pkgdown\.yml$
 ^docs$
+^R/visreg\.R$
+^HR_ci\.R$
+^doc$
+^Meta$
