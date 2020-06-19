@@ -57,6 +57,9 @@
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -110,9 +113,9 @@
 <p>This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time <em>logarithmically</em> recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.</p>
 <p>The theoretical properties of this approach have been studied in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela_et_al-2015-Scandinavian_Journal_of_Statistics.pdf">Saarela and Arjas, 2015</a> and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf">Saarela, 2015</a>.</p>
 </div>
-<div id="first-example" class="section level2">
+<div id="analysis-of-the-veteran-dataset" class="section level2">
 <h2 class="hasAnchor">
-<a href="#first-example" class="anchor"></a>First example</h2>
+<a href="#analysis-of-the-veteran-dataset" class="anchor"></a>Analysis of the <code>veteran</code> dataset</h2>
 <p>The first example we discuss uses the well-known <code>veteran</code> dataset, which is part of the <code>survival</code> package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">12345</span>)
 
@@ -291,19 +294,111 @@
 ## AIC: 1385.7
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
-<p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>.</p>
+<p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>. We can quickly visualize the conditional association between each predictor and the hazard function using the <code>plot</code> method for objects that are fit with <code>fitSmoothHazard</code>. Specifically, if <span class="math inline">\(x\)</span> is the predictor of interest, <span class="math inline">\(h\)</span> is the hazard function, and <span class="math inline">\(\mathbf{x_{-j}}\)</span> the other predictors in the model, the conditional association plot represents the relationship <span class="math inline">\(f(x) = \mathbb{E}(h|x, \mathbf{x_{-j}})\)</span>. By default, the other terms in the model (<span class="math inline">\(\mathbf{x_{-j}}\)</span>) are set to their median if the term is numeric or the most common category if the term is a factor. Further details of customizing these plots are given in the <code>Plot Hazards and Hazard Ratios</code> vignette.</p>
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">visreg</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">model4</span>,
+     <span class="kw">hazard.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">0.05</span>))</pre></body></html></div>
+<pre><code>## Conditions used in construction of plot
+## karno: 70
+## diagtime: 5
+## age: 60
+## prior: no
+## celltype: squamous
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## diagtime: 5
+## age: 60
+## prior: no
+## celltype: squamous
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-2.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## karno: 70
+## age: 60
+## prior: no
+## celltype: squamous
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-3.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## karno: 70
+## diagtime: 5
+## prior: no
+## celltype: squamous
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-4.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## karno: 70
+## diagtime: 5
+## age: 60
+## celltype: squamous
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-5.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## karno: 70
+## diagtime: 5
+## age: 60
+## prior: no
+## trt: test
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-6.png" width="700"></p>
+<pre><code>## Conditions used in construction of plot
+## time: 93.41294
+## karno: 70
+## diagtime: 5
+## age: 60
+## prior: no
+## celltype: squamous
+## offset: 0</code></pre>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-8-7.png" width="700"></p>
+<pre><code>## [[1]]
+## $fit
+##      time karno diagtime age prior celltype trt offset status visregFit
+##      visregLwr visregUpr
+##  [ reached 'max' / getOption("max.print") -- omitted 101 rows ]
+## 
+##  [ reached getOption("max.print") -- omitted 2 entries ]
+## attr(,"class")
+## [1] "visreg"
+## 
+##  [ reached getOption("max.print") -- omitted 6 entries ]
+## attr(,"class")
+## [1] "visregList"</code></pre>
+<pre><code>## [[1]]
+## $fit
+##      time karno diagtime age prior celltype trt offset status visregFit
+##      visregLwr visregUpr
+##  [ reached 'max' / getOption("max.print") -- omitted 101 rows ]
+## 
+##  [ reached getOption("max.print") -- omitted 2 entries ]
+## attr(,"class")
+## [1] "visreg"
+## 
+##  [ reached getOption("max.print") -- omitted 6 entries ]
+## attr(,"class")
+## [1] "visregList"</code></pre>
 <p>The main purpose of fitting smooth hazard functions is that it is then relatively easy to compute absolute risks. For example, we can use the function <code>absoluteRisk</code> to compute the mean absolute risk at 90 days, which can then be compared to the empirical measure.</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">absRisk4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>)
+<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="no">absRisk4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">absRisk4</span>)</pre></body></html></div>
 <pre><code>## [1] 0.5769904</code></pre>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">ftime</span> <span class="kw">&lt;-</span> <span class="no">veteran</span>$<span class="no">time</span>
+<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="no">ftime</span> <span class="kw">&lt;-</span> <span class="no">veteran</span>$<span class="no">time</span>
 <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">ftime</span> <span class="kw">&lt;=</span> <span class="fl">90</span>)</pre></body></html></div>
 <pre><code>## [1] 0.5547445</code></pre>
 <p>We can also fit a Weibull hazard by using a logarithmic term for time:</p>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">model5</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">time</span>) + <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> +
+<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">model5</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">time</span>) + <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> +
              <span class="no">celltype</span> + <span class="no">trt</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>, <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">100</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model5</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb39"><html><body><pre class="r"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model5</span>)</pre></body></html></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = formula, family = binomial, data = sampleData)
@@ -335,12 +430,12 @@
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
 <p>With case-base sampling, it is straightforward to fit a semi-parametric hazard function using splines, which can then be used to estimate the mean absolute risk.</p>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="co"># Fit a spline for time</span>
+<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="co"># Fit a spline for time</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">splines</span>)
 <span class="no">model6</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span>(<span class="no">time</span>) + <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> +
              <span class="no">celltype</span> + <span class="no">trt</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>, <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">100</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model6</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model6</span>)</pre></body></html></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = formula, family = binomial, data = sampleData)
@@ -373,7 +468,7 @@
 ## AIC: 1387
 ## 
 ## Number of Fisher Scoring iterations: 8</code></pre>
-<div class="sourceCode" id="cb35"><html><body><pre class="r"><span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model6</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model6</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>)</pre></body></html></div>
 <pre><code>##                                                                         
 ## 90 0.2941067 0.2325679 0.3467945 0.3081879 0.2317149 0.7633742 0.4911467
 ##                                                                         
@@ -417,13 +512,13 @@
 ## attr(,"class")
 ## [1] "absRiskCB" "matrix"    "array"</code></pre>
 <p>As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:</p>
-<div class="sourceCode" id="cb37"><html><body><pre class="r"><span class="no">linearRisk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">veteran</span>)
+<div class="sourceCode" id="cb47"><html><body><pre class="r"><span class="no">linearRisk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">veteran</span>)
 <span class="no">splineRisk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model6</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">veteran</span>)
 
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">linearRisk</span>, <span class="no">splineRisk</span>,
      <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Linear"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Splines"</span>, <span class="kw">pch</span> <span class="kw">=</span> <span class="fl">19</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="kw">a</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">b</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">'red'</span>)</pre></body></html></div>
-<p><img src="smoothHazard_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>These last three models give similar information as the first three, i.e. the main predictors for the hazard are <code>karno</code> and <code>celltype</code>, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.</p>
 <p>Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for “case-base”):</p>
 <table class="table">
@@ -589,7 +684,7 @@ trttest
 <p>Here we show how to calculate the cumulative incidence curves for a specific risk profile using the following equation:</p>
 <p><span class="math display">\[ CI(x, t) = 1 - exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] \]</span> where \( h(x, t) \) is the hazard function, \( t \) denotes the numerical value (number of units) of a point in prognostic/prospective time and \( x \) is the realization of the vector \( X \) of variates based on the patient’s profile and intervention (if any).</p>
 <p>We compare the cumulative incidence functions from the fully-parametric fit using case base sampling, with those from the Cox model:</p>
-<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="co"># define a specific covariate profile</span>
+<div class="sourceCode" id="cb48"><html><body><pre class="r"><span class="co"># define a specific covariate profile</span>
 <span class="no">new_data</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">trt</span> <span class="kw">=</span> <span class="st">"test"</span>,
                        <span class="kw">celltype</span> <span class="kw">=</span> <span class="st">"adeno"</span>,
                        <span class="kw">karno</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">karno</span>),
@@ -615,7 +710,7 @@ trttest
        <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>,<span class="st">"blue"</span>),
        <span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>),
        <span class="kw">bg</span> <span class="kw">=</span> <span class="st">"gray90"</span>)</pre></body></html></div>
-<p><img src="smoothHazard_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 </div>
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
@@ -633,7 +728,8 @@ trttest
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] casebase_0.2.1.9001 eha_2.8.1           survival_3.1-12    
+## [1] visreg_2.7.0        casebase_0.2.1.9001 eha_2.8.1          
+## [4] survival_3.1-12    
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] highr_0.8         compiler_4.0.0    pillar_1.4.4      tools_4.0.0      
@@ -644,7 +740,7 @@ trttest
 ## [21] knitr_1.28        desc_1.2.0        fs_1.4.1          vctrs_0.3.1      
 ## [25] stats4_4.0.0      rprojroot_1.3-2   grid_4.0.0        glue_1.4.1       
 ## [29] data.table_1.12.8 R6_2.4.1          VGAM_1.1-3        rmarkdown_2.3    
-## [33] farver_2.0.3      ggplot2_3.3.1     magrittr_1.5      backports_1.1.8  
+## [33] farver_2.0.3      ggplot2_3.3.2     magrittr_1.5      backports_1.1.8  
 ## [37] scales_1.1.1      htmltools_0.5.0   ellipsis_0.3.1    MASS_7.3-51.5    
 ## [41] assertthat_0.2.1  colorspace_1.4-1  labeling_0.3      stringi_1.4.6    
 ## [45] munsell_0.5.0     crayon_1.3.4</code></pre>

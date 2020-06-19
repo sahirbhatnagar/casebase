@@ -57,6 +57,9 @@
       <a href="../articles/smoothHazard.html">Fitting smooth-in-time parametric hazard functions</a>
     </li>
     <li>
+      <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -135,29 +138,29 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1802  -0.1600  -0.1487  -0.1249   3.8516  </span>
+<span class="co">#&gt; -0.1819  -0.1596  -0.1465  -0.1240   3.8635  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                        Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)            -64.6683    13.8932  -4.655 3.24e-06 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)1  38.0305     9.0842   4.186 2.83e-05 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2 109.9449    27.0969   4.057 4.96e-05 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3  22.7652     5.5463   4.105 4.05e-05 ***</span>
-<span class="co">#&gt; hormon                  -0.3698     0.1256  -2.945  0.00323 ** </span>
+<span class="co">#&gt; (Intercept)            -72.3743    15.3287  -4.721 2.34e-06 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)1  43.4429    10.1095   4.297 1.73e-05 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2 124.7182    29.8524   4.178 2.94e-05 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3  25.5677     6.0657   4.215 2.50e-05 ***</span>
+<span class="co">#&gt; hormon                  -0.3475     0.1255  -2.768  0.00564 ** </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3276.0  on 30194  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3286</span>
+<span class="co">#&gt; Residual deviance: 3273.6  on 30194  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3283.6</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 10</span></pre></body></html></div>
 <div id="hazard-functions-on-separate-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#hazard-functions-on-separate-plots" class="anchor"></a>Hazard functions on separate plots</h3>
-<p>All arguments needed for the hazard function plots are supplied through the <code>hazard.params</code> argument. This is a named list of arguments which will override the defaults passed to <code><a href="https://rdrr.io/pkg/visreg/man/visreg.html">visreg::visreg()</a></code>. The default arguments are . For example, if you want a 95% confidence band, specify . For a complete list of options, please see the <a href="http://pbreheny.github.io/visreg/basic.html"><code>visreg</code> vignettes</a>.</p>
+<p>All arguments needed for the hazard function plots are supplied through the <code>hazard.params</code> argument. This is a named list of arguments which will override the defaults passed to <code><a href="https://rdrr.io/pkg/visreg/man/visreg.html">visreg::visreg()</a></code>. The default arguments are <code><a href="https://rdrr.io/r/base/list.html">list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)</a></code>. For example, if you want a 95% confidence band, specify <code>hazard.params = list(alpha = 0.05)</code>. For a complete list of options, please see the <a href="http://pbreheny.github.io/visreg/basic.html"><code>visreg</code> vignettes</a>.</p>
 <p>We first plot the hazard as a function of time, for hormon=0 and hormon=1. This is achieved by specifying the <code>xvar</code> argument, as well as the <code>cond</code> argument. The <code>cond</code> argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the <code><a href="https://rdrr.io/r/base/Log.html">log(time)</a></code>, we must specify <code>time</code> in the <code>xvar</code> argument.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>))
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">mod_cb</span>,
@@ -191,13 +194,13 @@
                           <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Hazard"</span>,
                           <span class="kw">plot</span> <span class="kw">=</span> <span class="fl">FALSE</span>))</pre></body></html></div>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">plot_results</span>$<span class="no">fit</span>)
-<span class="co">#&gt;          time hormon offset cens    visregFit    visregLwr    visregUpr</span>
-<span class="co">#&gt; 1   0.0618909      0      0    0 8.220786e-29 9.779077e-39 6.910808e-19</span>
-<span class="co">#&gt; 2  26.6384660      0      0    0 3.026632e-07 1.913524e-08 4.787240e-06</span>
-<span class="co">#&gt; 3  53.2150411      0      0    0 7.382531e-06 1.597151e-06 3.412438e-05</span>
-<span class="co">#&gt; 4  79.7916162      0      0    0 3.320947e-05 1.256258e-05 8.778998e-05</span>
-<span class="co">#&gt; 5 106.3681913      0      0    0 8.101453e-05 4.204000e-05 1.561217e-04</span>
-<span class="co">#&gt; 6 132.9447664      0      0    0 1.457444e-04 9.181776e-05 2.313432e-04</span></pre></body></html></div>
+<span class="co">#&gt;           time hormon offset cens    visregFit    visregLwr    visregUpr</span>
+<span class="co">#&gt; 1   0.03813111      0      0    0 3.700342e-32 4.150989e-43 3.298619e-21</span>
+<span class="co">#&gt; 2  26.21720102      0      0    0 2.358481e-07 1.457088e-08 3.817501e-06</span>
+<span class="co">#&gt; 3  52.39627092      0      0    0 6.417643e-06 1.364466e-06 3.018481e-05</span>
+<span class="co">#&gt; 4  78.57534083      0      0    0 3.033757e-05 1.130953e-05 8.137986e-05</span>
+<span class="co">#&gt; 5 104.75441074      0      0    0 7.620718e-05 3.905660e-05 1.486953e-04</span>
+<span class="co">#&gt; 6 130.93348064      0      0    0 1.397938e-04 8.716326e-05 2.242033e-04</span></pre></body></html></div>
 </div>
 <div id="ggplot2-version" class="section level3">
 <h3 class="hasAnchor">
@@ -236,26 +239,26 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1806  -0.1599  -0.1458  -0.1265   3.7541  </span>
+<span class="co">#&gt; -0.1807  -0.1603  -0.1458  -0.1257   3.7706  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                               Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                    -56.593     14.308  -3.955 7.64e-05 ***</span>
-<span class="co">#&gt; hormon                         -25.024     32.571  -0.768 0.442312    </span>
-<span class="co">#&gt; ns(log(time), df = 3)1          32.617      9.329   3.496 0.000472 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2          94.498     27.993   3.376 0.000736 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3          19.211      5.675   3.385 0.000712 ***</span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)1   16.472     21.413   0.769 0.441742    </span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)2   47.592     63.375   0.751 0.452681    </span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)3   10.210     12.979   0.787 0.431464    </span>
+<span class="co">#&gt; (Intercept)                    -85.850     23.338  -3.678 0.000235 ***</span>
+<span class="co">#&gt; hormon                         -43.260     52.957  -0.817 0.413984    </span>
+<span class="co">#&gt; ns(log(time), df = 3)1          52.468     15.398   3.408 0.000656 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2         150.365     45.363   3.315 0.000917 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3          31.281      9.331   3.352 0.000801 ***</span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)1   28.574     35.153   0.813 0.416295    </span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)2   82.852    102.489   0.808 0.418863    </span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)3   17.584     21.284   0.826 0.408705    </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3274.5  on 30191  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3290.5</span>
+<span class="co">#&gt; Residual deviance: 3273.9  on 30191  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3289.9</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 11</span></pre></body></html></div>
 <p>Now we can easily plot the hazard function over time for each hormon group:</p>
@@ -281,28 +284,28 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1873  -0.1612  -0.1415  -0.1374   4.0219  </span>
+<span class="co">#&gt; -0.1879  -0.1609  -0.1422  -0.1370   4.0226  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                               Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                   -62.8166    16.7037  -3.761 0.000169 ***</span>
-<span class="co">#&gt; estrec                         -0.5904     0.3059  -1.930 0.053575 .  </span>
-<span class="co">#&gt; ns(log(time), df = 3)1         35.9870    10.9083   3.299 0.000970 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2        107.5146    32.5856   3.299 0.000969 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3         21.2315     6.6786   3.179 0.001478 ** </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)1   0.4022     0.2046   1.966 0.049292 *  </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)2   1.1182     0.5873   1.904 0.056923 .  </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)3   0.2505     0.1260   1.988 0.046815 *  </span>
+<span class="co">#&gt; (Intercept)                   -73.4084    19.6679  -3.732 0.000190 ***</span>
+<span class="co">#&gt; estrec                         -0.6503     0.3598  -1.807 0.070710 .  </span>
+<span class="co">#&gt; ns(log(time), df = 3)1         43.2532    12.9388   3.343 0.000829 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2        127.8647    38.2762   3.341 0.000836 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3         25.4571     7.8441   3.245 0.001173 ** </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)1   0.4450     0.2418   1.840 0.065719 .  </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)2   1.2296     0.6900   1.782 0.074728 .  </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)3   0.2753     0.1478   1.863 0.062469 .  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3264.3  on 30191  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3280.3</span>
+<span class="co">#&gt; Residual deviance: 3263.1  on 30191  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3279.1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Number of Fisher Scoring iterations: 13</span></pre></body></html></div>
+<span class="co">#&gt; Number of Fisher Scoring iterations: 12</span></pre></body></html></div>
 <p>There are now many ways to plot the time-varying effect of estrogen receptor on the hazard function. The default is to plot the 10th, 50th and 90th quantiles of the <code>by</code> variable:</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="co"># computed at the 10th, 50th and 90th quantiles of estrec</span>
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">mod_cb_tvc</span>,
@@ -383,34 +386,34 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.7246  -0.1610  -0.1342  -0.0973   4.0587  </span>
+<span class="co">#&gt; -0.7302  -0.1616  -0.1331  -0.0964   4.0390  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                                 Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                   -7.076e+01  1.973e+01  -3.586 0.000336 ***</span>
-<span class="co">#&gt; estrec                        -4.952e-01  3.378e-01  -1.466 0.142709    </span>
-<span class="co">#&gt; ns(log(time), df = 3)1         4.185e+01  1.300e+01   3.220 0.001280 ** </span>
-<span class="co">#&gt; ns(log(time), df = 3)2         1.219e+02  3.839e+01   3.175 0.001499 ** </span>
-<span class="co">#&gt; ns(log(time), df = 3)3         2.507e+01  7.879e+00   3.182 0.001464 ** </span>
-<span class="co">#&gt; horThyes                      -3.283e-01  1.301e-01  -2.523 0.011638 *  </span>
-<span class="co">#&gt; age                           -9.043e-03  9.269e-03  -0.976 0.329220    </span>
-<span class="co">#&gt; menostatPost                   2.614e-01  1.842e-01   1.419 0.155996    </span>
-<span class="co">#&gt; tsize                          7.560e-03  3.913e-03   1.932 0.053334 .  </span>
-<span class="co">#&gt; tgrade.L                       4.877e-01  1.911e-01   2.552 0.010721 *  </span>
-<span class="co">#&gt; tgrade.Q                      -1.955e-01  1.225e-01  -1.596 0.110484    </span>
-<span class="co">#&gt; pnodes                         5.637e-02  8.164e-03   6.904 5.05e-12 ***</span>
-<span class="co">#&gt; progrec                       -2.254e-03  5.772e-04  -3.906 9.40e-05 ***</span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)1  3.411e-01  2.272e-01   1.501 0.133236    </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)2  9.356e-01  6.478e-01   1.444 0.148638    </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)3  2.111e-01  1.388e-01   1.522 0.128113    </span>
+<span class="co">#&gt; (Intercept)                   -8.566e+01  2.294e+01  -3.735 0.000188 ***</span>
+<span class="co">#&gt; estrec                        -5.377e-01  3.797e-01  -1.416 0.156802    </span>
+<span class="co">#&gt; ns(log(time), df = 3)1         5.155e+01  1.510e+01   3.415 0.000639 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2         1.510e+02  4.456e+01   3.389 0.000700 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3         3.113e+01  9.200e+00   3.383 0.000716 ***</span>
+<span class="co">#&gt; horThyes                      -3.472e-01  1.303e-01  -2.664 0.007731 ** </span>
+<span class="co">#&gt; age                           -9.550e-03  9.366e-03  -1.020 0.307896    </span>
+<span class="co">#&gt; menostatPost                   2.642e-01  1.843e-01   1.434 0.151617    </span>
+<span class="co">#&gt; tsize                          6.583e-03  4.024e-03   1.636 0.101852    </span>
+<span class="co">#&gt; tgrade.L                       5.253e-01  1.907e-01   2.754 0.005886 ** </span>
+<span class="co">#&gt; tgrade.Q                      -2.126e-01  1.227e-01  -1.733 0.083044 .  </span>
+<span class="co">#&gt; pnodes                         5.648e-02  8.052e-03   7.015  2.3e-12 ***</span>
+<span class="co">#&gt; progrec                       -2.229e-03  5.772e-04  -3.862 0.000112 ***</span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)1  3.697e-01  2.549e-01   1.451 0.146902    </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)2  1.015e+00  7.279e-01   1.395 0.163131    </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)3  2.307e-01  1.566e-01   1.473 0.140772    </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3165.8  on 30183  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3197.8</span>
+<span class="co">#&gt; Residual deviance: 3161.4  on 30183  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3193.4</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 13</span></pre></body></html></div>
 <p>In the following plot, we show the time-varying effect of <code>estrec</code> while controlling for all other variables. By default, the other terms in the model are set to their median if the term is numeric or the most common category if the term is a factor. The values of the other variables are shown in the output:</p>
@@ -428,7 +431,7 @@
 <span class="co">#&gt; tsize: 25</span>
 <span class="co">#&gt; tgrade: II</span>
 <span class="co">#&gt; pnodes: 3</span>
-<span class="co">#&gt; progrec: 48</span>
+<span class="co">#&gt; progrec: 49</span>
 <span class="co">#&gt; offset: 0</span></pre></body></html></div>
 <p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-1.png" width="700"></p>
 <pre><code>#&gt; $fit
@@ -446,13 +449,42 @@
 #&gt; 
 #&gt;  [ reached getOption("max.print") -- omitted 2 entries ]
 #&gt; attr(,"class")
+#&gt; [1] "visreg"</code></pre>
+<p>You can of course set the values of the other covariates as before, i.e., by specifying the <code>cond</code> argument as a named list to the <code>hazard.params</code> argument:</p>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">mod_cb_tvc</span>,
+     <span class="kw">hazard.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xvar</span> <span class="kw">=</span> <span class="st">"time"</span>,
+                          <span class="kw">by</span> <span class="kw">=</span> <span class="st">"estrec"</span>,
+                          <span class="kw">cond</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">tgrade</span> <span class="kw">=</span> <span class="st">"III"</span>, <span class="kw">age</span> <span class="kw">=</span> <span class="fl">49</span>),
+                          <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">1</span>,
+                          <span class="kw">breaks</span> <span class="kw">=</span> <span class="fl">2</span>,
+                          <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Hazard"</span>))
+<span class="co">#&gt; Conditions used in construction of plot</span>
+<span class="co">#&gt; estrec: 8 / 174</span>
+<span class="co">#&gt; horTh: no</span>
+<span class="co">#&gt; age: 49</span>
+<span class="co">#&gt; menostat: Post</span>
+<span class="co">#&gt; tsize: 25</span>
+<span class="co">#&gt; tgrade: III</span>
+<span class="co">#&gt; pnodes: 3</span>
+<span class="co">#&gt; progrec: 49</span>
+<span class="co">#&gt; offset: 0</span></pre></body></html></div>
+<p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-2-1.png" width="700"></p>
+<pre><code>#&gt; $fit
+#&gt;      estrec time horTh age menostat tsize tgrade pnodes progrec offset cens
+#&gt;      visregFit visregLwr visregUpr
+#&gt;  [ reached 'max' / getOption("max.print") -- omitted 202 rows ]
+#&gt; 
+#&gt;  [ reached getOption("max.print") -- omitted 2 entries ]
+#&gt; attr(,"class")
 #&gt; [1] "visreg"
-
-# plot each variable's effect on Hazard
-# par(mfrow = c(2,4))
-# plot(mod_cb_tvc,
-#      hazard.params = list(alpha = 1,
-#                           ylab = "Hazard")) </code></pre>
+#&gt; $fit
+#&gt;      estrec time horTh age menostat tsize tgrade pnodes progrec offset cens
+#&gt;      visregFit visregLwr visregUpr
+#&gt;  [ reached 'max' / getOption("max.print") -- omitted 202 rows ]
+#&gt; 
+#&gt;  [ reached getOption("max.print") -- omitted 2 entries ]
+#&gt; attr(,"class")
+#&gt; [1] "visreg"</code></pre>
 </div>
 </div>
 <div id="hazard-ratio" class="section level1">
@@ -464,22 +496,19 @@
 \frac{h\left(t | X=x_1, \mathbf{Z}=\mathbf{z_1} ; \hat{\beta}\right)}{h(t | X=x_0, \mathbf{Z}=\mathbf{z_0} ; \hat{\beta})}
 \]</span> where <span class="math inline">\(h(t|\cdot;\hat{\beta})\)</span> is the hazard rate as a function of the variable <span class="math inline">\(t\)</span> (which is usually time, but can be any other continous variable), <span class="math inline">\(x_1\)</span> is the value of <span class="math inline">\(X\)</span> for the exposed group, <span class="math inline">\(x_0\)</span> is the value of <span class="math inline">\(X\)</span> for the unexposed group, <span class="math inline">\(\mathbf{Z}\)</span> are other covariates in the model which are equal to <span class="math inline">\(\mathbf{z_1}\)</span> in the exposed and <span class="math inline">\(\mathbf{z_0}\)</span> in the unexposed group, and <span class="math inline">\(\hat{\beta}\)</span> are the estimated regression coefficients.</p>
 <p>As indicated by the formula above, it is most instructive to plot the hazard ratio as a function of a variable <span class="math inline">\(t\)</span> only if there is an interaction between <span class="math inline">\(t\)</span> and <span class="math inline">\(X\)</span>. Otherwise, the resulting plot will simply be a horizontal line across time.</p>
-<div id="mason-trial" class="section level2">
+<div id="manson-trial" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mason-trial" class="anchor"></a>Mason Trial</h2>
+<a href="#manson-trial" class="anchor"></a>Manson Trial</h2>
 <p>We use data from the Manson trial (NEJM 2003) which is included in the <code>casebase</code> package. This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
 <p>We fit a model with the interaction between time and treatment arm. We are therefore interested in visualizing the hazard ratio of the treatment over time.</p>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"masonTrialExtraction"</span>)
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"masonTrialExtraction"</span>)
 <span class="no">masonTrialExtraction</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span>(<span class="no">masonTrialExtraction</span>,
                                   <span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">treatment</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>,<span class="st">"estPro"</span>)))
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">masonTrialExtraction</span>)
-<span class="co">#&gt;         time status treatment</span>
-<span class="co">#&gt; 1 0.08333333      0   placebo</span>
-<span class="co">#&gt; 2 0.08333333      0   placebo</span>
-<span class="co">#&gt; 3 0.08333333      0   placebo</span>
-<span class="co">#&gt; 4 0.08333333      0   placebo</span>
-<span class="co">#&gt; 5 0.08333333      0   placebo</span>
-<span class="co">#&gt; 6 0.08333333      0   placebo</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">masonTrialExtraction</span>)
+<span class="co">#&gt; 'data.frame':    16608 obs. of  3 variables:</span>
+<span class="co">#&gt;  $ time     : num  0.0833 0.0833 0.0833 0.0833 0.0833 ...</span>
+<span class="co">#&gt;  $ status   : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="co">#&gt;  $ treatment: Factor w/ 2 levels "placebo","estPro": 1 1 1 1 1 1 1 1 1 1 ...</span>
 
 <span class="no">fit_mason</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="no">treatment</span>*<span class="no">time</span>,
                              <span class="kw">data</span> <span class="kw">=</span> <span class="no">masonTrialExtraction</span>,
@@ -491,131 +520,35 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1675  -0.1491  -0.1473  -0.1305   3.1864  </span>
+<span class="co">#&gt; -0.1662  -0.1489  -0.1454  -0.1318   3.1774  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                      Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)          -6.10669    0.17382 -35.131  &lt; 2e-16 ***</span>
-<span class="co">#&gt; treatmentestPro       0.60347    0.22350   2.700  0.00693 ** </span>
-<span class="co">#&gt; time                  0.11729    0.04715   2.488  0.01285 *  </span>
-<span class="co">#&gt; treatmentestPro:time -0.12604    0.06319  -1.995  0.04608 *  </span>
+<span class="co">#&gt; (Intercept)          -6.07748    0.17540 -34.649  &lt; 2e-16 ***</span>
+<span class="co">#&gt; treatmentestPro       0.59218    0.22436   2.639  0.00831 ** </span>
+<span class="co">#&gt; time                  0.11081    0.04770   2.323  0.02018 *  </span>
+<span class="co">#&gt; treatmentestPro:time -0.12953    0.06344  -2.042  0.04116 *  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3635.4  on 32723  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3625.3  on 32720  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3633.3</span>
+<span class="co">#&gt; Residual deviance: 3626.6  on 32720  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3634.6</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></pre></body></html></div>
 <p>To plot the hazard ratio, we must specify the <code>newdata</code> argument with a covariate pattern for the reference group. In this example, we treat the <code>placebo</code> as the reference group. Because we have fit an interaction with time, we also provide a sequence of times at which we would like to calculate the hazard ratio.</p>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">newtime</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">fit_mason</span><span class="kw">[[</span><span class="st">"originalData"</span>]]<span class="kw">[[</span><span class="no">fit_mason</span><span class="kw">[[</span><span class="st">"timeVar"</span>]]]], <span class="kw">probs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>))
+<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">newtime</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">fit_mason</span><span class="kw">[[</span><span class="st">"originalData"</span>]]<span class="kw">[[</span><span class="no">fit_mason</span><span class="kw">[[</span><span class="st">"timeVar"</span>]]]], <span class="kw">probs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>))
 
 <span class="co"># reference category</span>
-(<span class="no">newdata</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="st">"placebo"</span>,
+<span class="no">newdata</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="st">"placebo"</span>,
                                          <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>,<span class="st">"estPro"</span>)),
-                      <span class="kw">time</span> <span class="kw">=</span> <span class="no">newtime</span>))
-<span class="co">#&gt;     treatment      time</span>
-<span class="co">#&gt; 1%    placebo 0.9166667</span>
-<span class="co">#&gt; 2%    placebo 1.7500000</span>
-<span class="co">#&gt; 3%    placebo 2.5000000</span>
-<span class="co">#&gt; 4%    placebo 3.1666667</span>
-<span class="co">#&gt; 5%    placebo 3.4166667</span>
-<span class="co">#&gt; 6%    placebo 3.9166667</span>
-<span class="co">#&gt; 7%    placebo 3.9166667</span>
-<span class="co">#&gt; 8%    placebo 3.9166667</span>
-<span class="co">#&gt; 9%    placebo 3.9166667</span>
-<span class="co">#&gt; 10%   placebo 3.9166667</span>
-<span class="co">#&gt; 11%   placebo 3.9166667</span>
-<span class="co">#&gt; 12%   placebo 3.9166667</span>
-<span class="co">#&gt; 13%   placebo 3.9166667</span>
-<span class="co">#&gt; 14%   placebo 3.9166667</span>
-<span class="co">#&gt; 15%   placebo 3.9166667</span>
-<span class="co">#&gt; 16%   placebo 4.2500000</span>
-<span class="co">#&gt; 17%   placebo 4.4166667</span>
-<span class="co">#&gt; 18%   placebo 4.6050000</span>
-<span class="co">#&gt; 19%   placebo 4.6666667</span>
-<span class="co">#&gt; 20%   placebo 4.6666667</span>
-<span class="co">#&gt; 21%   placebo 4.6666667</span>
-<span class="co">#&gt; 22%   placebo 4.9166667</span>
-<span class="co">#&gt; 23%   placebo 4.9166667</span>
-<span class="co">#&gt; 24%   placebo 4.9166667</span>
-<span class="co">#&gt; 25%   placebo 4.9166667</span>
-<span class="co">#&gt; 26%   placebo 4.9166667</span>
-<span class="co">#&gt; 27%   placebo 4.9166667</span>
-<span class="co">#&gt; 28%   placebo 4.9166667</span>
-<span class="co">#&gt; 29%   placebo 4.9166667</span>
-<span class="co">#&gt; 30%   placebo 4.9166667</span>
-<span class="co">#&gt; 31%   placebo 4.9166667</span>
-<span class="co">#&gt; 32%   placebo 4.9166667</span>
-<span class="co">#&gt; 33%   placebo 5.0000000</span>
-<span class="co">#&gt; 34%   placebo 5.0833333</span>
-<span class="co">#&gt; 35%   placebo 5.0833333</span>
-<span class="co">#&gt; 36%   placebo 5.0833333</span>
-<span class="co">#&gt; 37%   placebo 5.0833333</span>
-<span class="co">#&gt; 38%   placebo 5.0833333</span>
-<span class="co">#&gt; 39%   placebo 5.0833333</span>
-<span class="co">#&gt; 40%   placebo 5.0833333</span>
-<span class="co">#&gt; 41%   placebo 5.2500000</span>
-<span class="co">#&gt; 42%   placebo 5.4166667</span>
-<span class="co">#&gt; 43%   placebo 5.4166667</span>
-<span class="co">#&gt; 44%   placebo 5.4166667</span>
-<span class="co">#&gt; 45%   placebo 5.4166667</span>
-<span class="co">#&gt; 46%   placebo 5.4166667</span>
-<span class="co">#&gt; 47%   placebo 5.4166667</span>
-<span class="co">#&gt; 48%   placebo 5.4166667</span>
-<span class="co">#&gt; 49%   placebo 5.4166667</span>
-<span class="co">#&gt; 50%   placebo 5.4166667</span>
-<span class="co">#&gt; 51%   placebo 5.4166667</span>
-<span class="co">#&gt; 52%   placebo 5.5833333</span>
-<span class="co">#&gt; 53%   placebo 5.5833333</span>
-<span class="co">#&gt; 54%   placebo 5.5833333</span>
-<span class="co">#&gt; 55%   placebo 5.5833333</span>
-<span class="co">#&gt; 56%   placebo 5.7500000</span>
-<span class="co">#&gt; 57%   placebo 5.7500000</span>
-<span class="co">#&gt; 58%   placebo 5.7500000</span>
-<span class="co">#&gt; 59%   placebo 5.7500000</span>
-<span class="co">#&gt; 60%   placebo 5.9166667</span>
-<span class="co">#&gt; 61%   placebo 5.9166667</span>
-<span class="co">#&gt; 62%   placebo 5.9166667</span>
-<span class="co">#&gt; 63%   placebo 5.9166667</span>
-<span class="co">#&gt; 64%   placebo 5.9166667</span>
-<span class="co">#&gt; 65%   placebo 5.9166667</span>
-<span class="co">#&gt; 66%   placebo 5.9166667</span>
-<span class="co">#&gt; 67%   placebo 5.9166667</span>
-<span class="co">#&gt; 68%   placebo 6.0000000</span>
-<span class="co">#&gt; 69%   placebo 6.0000000</span>
-<span class="co">#&gt; 70%   placebo 6.0000000</span>
-<span class="co">#&gt; 71%   placebo 6.2500000</span>
-<span class="co">#&gt; 72%   placebo 6.3333333</span>
-<span class="co">#&gt; 73%   placebo 6.4166667</span>
-<span class="co">#&gt; 74%   placebo 6.4166667</span>
-<span class="co">#&gt; 75%   placebo 6.5833333</span>
-<span class="co">#&gt; 76%   placebo 6.7500000</span>
-<span class="co">#&gt; 77%   placebo 6.7500000</span>
-<span class="co">#&gt; 78%   placebo 6.7500000</span>
-<span class="co">#&gt; 79%   placebo 6.7500000</span>
-<span class="co">#&gt; 80%   placebo 6.7500000</span>
-<span class="co">#&gt; 81%   placebo 6.8333333</span>
-<span class="co">#&gt; 82%   placebo 6.8333333</span>
-<span class="co">#&gt; 83%   placebo 6.8333333</span>
-<span class="co">#&gt; 84%   placebo 6.8333333</span>
-<span class="co">#&gt; 85%   placebo 6.8333333</span>
-<span class="co">#&gt; 86%   placebo 7.0000000</span>
-<span class="co">#&gt; 87%   placebo 7.0000000</span>
-<span class="co">#&gt; 88%   placebo 7.0000000</span>
-<span class="co">#&gt; 89%   placebo 7.0000000</span>
-<span class="co">#&gt; 90%   placebo 7.0000000</span>
-<span class="co">#&gt; 91%   placebo 7.0000000</span>
-<span class="co">#&gt; 92%   placebo 7.0833333</span>
-<span class="co">#&gt; 93%   placebo 7.0833333</span>
-<span class="co">#&gt; 94%   placebo 7.0833333</span>
-<span class="co">#&gt; 95%   placebo 7.0833333</span>
-<span class="co">#&gt; 96%   placebo 7.0833333</span>
-<span class="co">#&gt; 97%   placebo 7.0833333</span>
-<span class="co">#&gt; 98%   placebo 7.0833333</span>
-<span class="co">#&gt; 99%   placebo 7.0833333</span>
+                      <span class="kw">time</span> <span class="kw">=</span> <span class="no">newtime</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">newdata</span>)
+<span class="co">#&gt; 'data.frame':    99 obs. of  2 variables:</span>
+<span class="co">#&gt;  $ treatment: Factor w/ 2 levels "placebo","estPro": 1 1 1 1 1 1 1 1 1 1 ...</span>
+<span class="co">#&gt;  $ time     : num  0.917 1.75 2.5 3.167 3.417 ...</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
      <span class="kw">type</span> <span class="kw">=</span> <span class="st">"hr"</span>,
@@ -627,7 +560,7 @@
      <span class="kw">rug</span> <span class="kw">=</span> <span class="no">T</span>)</pre></body></html></div>
 <p><img src="plotsmoothHazard_files/figure-html/plot-mason-1.png" width="700"></p>
 <p>In the call to <code>plot</code> we specify the <code>xvar</code> which is the variable plotted on the x-axis, the <code>var</code> argument which specified the variable for which we want the hazard ratio. The <code>increment=1</code> indicates that we want to increment <code>var</code> by 1 level, which in this case is <code>estPro</code>. Alternatively, we can specify the <code>exposed</code> argument which should be a function that takes <code>newdata</code> and returns the exposed dataset. The following call is equivalent to the one above:</p>
-<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
+<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
      <span class="kw">type</span> <span class="kw">=</span> <span class="st">"hr"</span>,
      <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">newdata</span>,
      <span class="kw">exposed</span> <span class="kw">=</span> <span class="kw">function</span>(<span class="no">data</span>) <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span>(<span class="no">data</span>, <span class="kw">treatment</span> <span class="kw">=</span> <span class="st">"estPro"</span>),
@@ -636,114 +569,18 @@
      <span class="kw">rug</span> <span class="kw">=</span> <span class="no">T</span>)</pre></body></html></div>
 <p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 <p>Alternatively, if we want the <code>placebo</code> group to be the exposed group, we change the <code>newdata</code> argument to:</p>
-<div class="sourceCode" id="cb25"><html><body><pre class="r">(<span class="no">newdata</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="st">"estPro"</span>,
+<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">newdata</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="st">"estPro"</span>,
                                          <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>,<span class="st">"estPro"</span>)),
-                      <span class="kw">time</span> <span class="kw">=</span> <span class="no">newtime</span>))
-<span class="co">#&gt;     treatment      time</span>
-<span class="co">#&gt; 1%     estPro 0.9166667</span>
-<span class="co">#&gt; 2%     estPro 1.7500000</span>
-<span class="co">#&gt; 3%     estPro 2.5000000</span>
-<span class="co">#&gt; 4%     estPro 3.1666667</span>
-<span class="co">#&gt; 5%     estPro 3.4166667</span>
-<span class="co">#&gt; 6%     estPro 3.9166667</span>
-<span class="co">#&gt; 7%     estPro 3.9166667</span>
-<span class="co">#&gt; 8%     estPro 3.9166667</span>
-<span class="co">#&gt; 9%     estPro 3.9166667</span>
-<span class="co">#&gt; 10%    estPro 3.9166667</span>
-<span class="co">#&gt; 11%    estPro 3.9166667</span>
-<span class="co">#&gt; 12%    estPro 3.9166667</span>
-<span class="co">#&gt; 13%    estPro 3.9166667</span>
-<span class="co">#&gt; 14%    estPro 3.9166667</span>
-<span class="co">#&gt; 15%    estPro 3.9166667</span>
-<span class="co">#&gt; 16%    estPro 4.2500000</span>
-<span class="co">#&gt; 17%    estPro 4.4166667</span>
-<span class="co">#&gt; 18%    estPro 4.6050000</span>
-<span class="co">#&gt; 19%    estPro 4.6666667</span>
-<span class="co">#&gt; 20%    estPro 4.6666667</span>
-<span class="co">#&gt; 21%    estPro 4.6666667</span>
-<span class="co">#&gt; 22%    estPro 4.9166667</span>
-<span class="co">#&gt; 23%    estPro 4.9166667</span>
-<span class="co">#&gt; 24%    estPro 4.9166667</span>
-<span class="co">#&gt; 25%    estPro 4.9166667</span>
-<span class="co">#&gt; 26%    estPro 4.9166667</span>
-<span class="co">#&gt; 27%    estPro 4.9166667</span>
-<span class="co">#&gt; 28%    estPro 4.9166667</span>
-<span class="co">#&gt; 29%    estPro 4.9166667</span>
-<span class="co">#&gt; 30%    estPro 4.9166667</span>
-<span class="co">#&gt; 31%    estPro 4.9166667</span>
-<span class="co">#&gt; 32%    estPro 4.9166667</span>
-<span class="co">#&gt; 33%    estPro 5.0000000</span>
-<span class="co">#&gt; 34%    estPro 5.0833333</span>
-<span class="co">#&gt; 35%    estPro 5.0833333</span>
-<span class="co">#&gt; 36%    estPro 5.0833333</span>
-<span class="co">#&gt; 37%    estPro 5.0833333</span>
-<span class="co">#&gt; 38%    estPro 5.0833333</span>
-<span class="co">#&gt; 39%    estPro 5.0833333</span>
-<span class="co">#&gt; 40%    estPro 5.0833333</span>
-<span class="co">#&gt; 41%    estPro 5.2500000</span>
-<span class="co">#&gt; 42%    estPro 5.4166667</span>
-<span class="co">#&gt; 43%    estPro 5.4166667</span>
-<span class="co">#&gt; 44%    estPro 5.4166667</span>
-<span class="co">#&gt; 45%    estPro 5.4166667</span>
-<span class="co">#&gt; 46%    estPro 5.4166667</span>
-<span class="co">#&gt; 47%    estPro 5.4166667</span>
-<span class="co">#&gt; 48%    estPro 5.4166667</span>
-<span class="co">#&gt; 49%    estPro 5.4166667</span>
-<span class="co">#&gt; 50%    estPro 5.4166667</span>
-<span class="co">#&gt; 51%    estPro 5.4166667</span>
-<span class="co">#&gt; 52%    estPro 5.5833333</span>
-<span class="co">#&gt; 53%    estPro 5.5833333</span>
-<span class="co">#&gt; 54%    estPro 5.5833333</span>
-<span class="co">#&gt; 55%    estPro 5.5833333</span>
-<span class="co">#&gt; 56%    estPro 5.7500000</span>
-<span class="co">#&gt; 57%    estPro 5.7500000</span>
-<span class="co">#&gt; 58%    estPro 5.7500000</span>
-<span class="co">#&gt; 59%    estPro 5.7500000</span>
-<span class="co">#&gt; 60%    estPro 5.9166667</span>
-<span class="co">#&gt; 61%    estPro 5.9166667</span>
-<span class="co">#&gt; 62%    estPro 5.9166667</span>
-<span class="co">#&gt; 63%    estPro 5.9166667</span>
-<span class="co">#&gt; 64%    estPro 5.9166667</span>
-<span class="co">#&gt; 65%    estPro 5.9166667</span>
-<span class="co">#&gt; 66%    estPro 5.9166667</span>
-<span class="co">#&gt; 67%    estPro 5.9166667</span>
-<span class="co">#&gt; 68%    estPro 6.0000000</span>
-<span class="co">#&gt; 69%    estPro 6.0000000</span>
-<span class="co">#&gt; 70%    estPro 6.0000000</span>
-<span class="co">#&gt; 71%    estPro 6.2500000</span>
-<span class="co">#&gt; 72%    estPro 6.3333333</span>
-<span class="co">#&gt; 73%    estPro 6.4166667</span>
-<span class="co">#&gt; 74%    estPro 6.4166667</span>
-<span class="co">#&gt; 75%    estPro 6.5833333</span>
-<span class="co">#&gt; 76%    estPro 6.7500000</span>
-<span class="co">#&gt; 77%    estPro 6.7500000</span>
-<span class="co">#&gt; 78%    estPro 6.7500000</span>
-<span class="co">#&gt; 79%    estPro 6.7500000</span>
-<span class="co">#&gt; 80%    estPro 6.7500000</span>
-<span class="co">#&gt; 81%    estPro 6.8333333</span>
-<span class="co">#&gt; 82%    estPro 6.8333333</span>
-<span class="co">#&gt; 83%    estPro 6.8333333</span>
-<span class="co">#&gt; 84%    estPro 6.8333333</span>
-<span class="co">#&gt; 85%    estPro 6.8333333</span>
-<span class="co">#&gt; 86%    estPro 7.0000000</span>
-<span class="co">#&gt; 87%    estPro 7.0000000</span>
-<span class="co">#&gt; 88%    estPro 7.0000000</span>
-<span class="co">#&gt; 89%    estPro 7.0000000</span>
-<span class="co">#&gt; 90%    estPro 7.0000000</span>
-<span class="co">#&gt; 91%    estPro 7.0000000</span>
-<span class="co">#&gt; 92%    estPro 7.0833333</span>
-<span class="co">#&gt; 93%    estPro 7.0833333</span>
-<span class="co">#&gt; 94%    estPro 7.0833333</span>
-<span class="co">#&gt; 95%    estPro 7.0833333</span>
-<span class="co">#&gt; 96%    estPro 7.0833333</span>
-<span class="co">#&gt; 97%    estPro 7.0833333</span>
-<span class="co">#&gt; 98%    estPro 7.0833333</span>
-<span class="co">#&gt; 99%    estPro 7.0833333</span>
+                      <span class="kw">time</span> <span class="kw">=</span> <span class="no">newtime</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="no">newdata</span>)
+<span class="co">#&gt; 'data.frame':    99 obs. of  2 variables:</span>
+<span class="co">#&gt;  $ treatment: Factor w/ 2 levels "placebo","estPro": 2 2 2 2 2 2 2 2 2 2 ...</span>
+<span class="co">#&gt;  $ time     : num  0.917 1.75 2.5 3.167 3.417 ...</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/levels.html">levels</a></span>(<span class="no">newdata</span>$<span class="no">treatment</span>)
 <span class="co">#&gt; [1] "placebo" "estPro"</span></pre></body></html></div>
 <p>Note that the reference category in <code>newdata</code> is still <code>placebo</code>. Therefore we must set <code>increment=-1</code> in order to get the <code>exposed</code> dataset:</p>
-<div class="sourceCode" id="cb26"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
+<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
      <span class="kw">type</span> <span class="kw">=</span> <span class="st">"hr"</span>,
      <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">newdata</span>,
      <span class="kw">var</span> <span class="kw">=</span> <span class="st">"treatment"</span>,
@@ -758,7 +595,7 @@
 <h2 class="hasAnchor">
 <a href="#save-results" class="anchor"></a>Save results</h2>
 <p>In order to save the data used to make the plot, you simply have to assign the call to <code>plot</code> to a variable. This is particularly useful if you want to really customize the plot aesthetics:</p>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
+<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">result</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit_mason</span>,
                <span class="kw">type</span> <span class="kw">=</span> <span class="st">"hr"</span>,
                <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">newdata</span>,
                <span class="kw">var</span> <span class="kw">=</span> <span class="st">"treatment"</span>,
@@ -767,21 +604,21 @@
                <span class="kw">ci</span> <span class="kw">=</span> <span class="no">T</span>,
                <span class="kw">rug</span> <span class="kw">=</span> <span class="no">T</span>)</pre></body></html></div>
 <p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
-<div class="sourceCode" id="cb28"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">result</span>)
+<div class="sourceCode" id="cb30"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">result</span>)
 <span class="co">#&gt;    treatment      time log_hazard_ratio standarderror hazard_ratio lowerbound</span>
-<span class="co">#&gt; 1%    estPro 0.9166667       -0.4879256     0.1760032    0.6138986  0.4347929</span>
-<span class="co">#&gt; 2%    estPro 1.7500000       -0.3828889     0.1398271    0.6818887  0.5184327</span>
-<span class="co">#&gt; 3%    estPro 2.5000000       -0.2883559     0.1183650    0.7494948  0.5943143</span>
-<span class="co">#&gt; 4%    estPro 3.1666667       -0.2043266     0.1133831    0.8151961  0.6527550</span>
-<span class="co">#&gt; 5%    estPro 3.4166667       -0.1728156     0.1154895    0.8412928  0.6708761</span>
-<span class="co">#&gt; 6%    estPro 3.9166667       -0.1097936     0.1256955    0.8960191  0.7003660</span>
+<span class="co">#&gt; 1%    estPro 0.9166667       -0.4734366     0.1765957    0.6228581  0.4406265</span>
+<span class="co">#&gt; 2%    estPro 1.7500000       -0.3654913     0.1401601    0.6938556  0.5271869</span>
+<span class="co">#&gt; 3%    estPro 2.5000000       -0.2683407     0.1184775    0.7646473  0.6061958</span>
+<span class="co">#&gt; 4%    estPro 3.1666667       -0.1819845     0.1133712    0.8336143  0.6675187</span>
+<span class="co">#&gt; 5%    estPro 3.4166667       -0.1496009     0.1154615    0.8610515  0.6866701</span>
+<span class="co">#&gt; 6%    estPro 3.9166667       -0.0848338     0.1256870    0.9186650  0.7180790</span>
 <span class="co">#&gt;    upperbound</span>
-<span class="co">#&gt; 1%  0.8667838</span>
-<span class="co">#&gt; 2%  0.8968804</span>
-<span class="co">#&gt; 3%  0.9451943</span>
-<span class="co">#&gt; 4%  1.0180615</span>
-<span class="co">#&gt; 5%  1.0549989</span>
-<span class="co">#&gt; 6%  1.1463296</span></pre></body></html></div>
+<span class="co">#&gt; 1%  0.8804560</span>
+<span class="co">#&gt; 2%  0.9132162</span>
+<span class="co">#&gt; 3%  0.9645158</span>
+<span class="co">#&gt; 4%  1.0410387</span>
+<span class="co">#&gt; 5%  1.0797175</span>
+<span class="co">#&gt; 6%  1.1752820</span></pre></body></html></div>
 </div>
 </div>
   </div>
