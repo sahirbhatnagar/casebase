@@ -635,28 +635,44 @@ plot.absRiskCB <- function(x, ...,
                            xlab = "time",
                            ylab = "cumulative incidence",
                            type = "l",
-                           gg = FALSE) {
+                           gg = TRUE,
+                           id.names,
+                           legend.title) {
   # output of absoluteRisk will always have a column named time
   # x = linearRisk
   # ======================
 
   if (!gg) {
-    matplot(x = x[,"time"],
-            y = x[,-which(colnames(x) == c("time"))],
-            type = type,
-            xlab = xlab,
-            ylab = ylab,
-            ...
+    graphics::matplot(x = x[,"time"],
+                      y = x[,-which(colnames(x) == c("time"))],
+                      type = type,
+                      xlab = xlab,
+                      ylab = ylab,
+                      ...
     )
 
   } else {
 
-    DT <- as.data.table(x)
+    if (!requireNamespace("ggplot2"))
+      stop("ggplot2 package required to use this function. please install it.")
+# browser()
+    DT <- data.table::as.data.table(x)
 
-    DT.m <- melt(DT, id.vars = "time", variable.name = "ID")
+    if (!missing(id.names)) {
+      names_to_change <- grep("V", colnames(DT), value = TRUE)
+      if (length(names_to_change) != length(id.names)) {
+        warning("length of 'id.names' not equal to number of covariate profiles. ignoring 'id.names' argument")
+      } else {
+        data.table::setnames(DT, old = names_to_change, new = id.names)
+      }
+    }
+
+    DT.m <- data.table::melt(DT, id.vars = "time", variable.name = "ID")
 
     ggplot(DT.m, aes(x = time, y = value, color = ID)) +
-      geom_line()
+      geom_line() + theme_cb() +
+      labs(color = ifelse(missing(legend.title), "ID", legend.title), x = xlab, y = ylab) +
+      theme(legend.position = "bottom")
   }
 
 }

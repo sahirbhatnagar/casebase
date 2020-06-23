@@ -1,5 +1,5 @@
 ---
-title: "Plot Cumulative Incidence Curves"
+title: "Plot Cumulative Incidence and Survival Curves"
 author: "Sahir Rai Bhatnagar"
 date: "`r Sys.Date()`"
 output:
@@ -9,7 +9,7 @@ output:
     toc: yes
     toc_depth: 4
 vignette: >
-  %\VignetteIndexEntry{Plot Cumulative Incidence Curves}
+  %\VignetteIndexEntry{Plot Cumulative Incidence and Survival Curves}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 bibliography: reference.bib
@@ -27,71 +27,108 @@ knitr::opts_chunk$set(
 ```
 
 
-# Introduction
+## Introduction
+
+In this short vignette, we will introduce the `plot` method for `absoluteRisk` objects. This method allows you to plot cumulative incidence (CI) or survival curves as a function of time and a given covariate profile. More specifically, the cumulative incidence is given by:
+
+$$ CI(x, t) = 1 - exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] $$ 
+where \\( h(x, t) \\) is the hazard function, \\( t \\) denotes the numerical value (number of units) of a point in prognostic/prospective time and \\( x \\) is the realization of the vector \\( X \\) of variates based on the patient's profile and intervention (if any). And the survival function is given by 
+$$ S(x, t) = 1 - CI(x,t) = exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] $$ 
+
+
+## Analysis of the `brcancer` dataset
+
+To illustrate hazard function plots, we will use the breast cancer dataset which contains the observations of 686 women taken from the [`TH.data`](https://cran.r-project.org/package=TH.data) package. This dataset is also available from the `casebase` package. In the following, we will show the CI curve for several covariate profiles.
+
+
+```{r eval=TRUE}
+library(casebase)
+library(splines)
+library(survival)
+library(ggplot2)
+
+
+data("brcancer")
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) + 
+                                  horTh + 
+                                  age + 
+                                  menostat + 
+                                  tsize + 
+                                  tgrade + 
+                                  pnodes + 
+                                  progrec,
+                              data = brcancer,
+                              time = "time", ratio = 10)
+
+summary(mod_cb_tvc)
+```
+
+
+
+### Plotting Cumulative Incidence Curves
+
+We can use the `plot` method for objects of class `absRiskCB`, which is returned by the `absoluteRisk` function, to plot cumulative incidence curves. For example, suppose we want to compare the cumulative incidence curves of the 1st and 50th individuals in the `brcancer` dataset:
 
 ```{r}
-set.seed(12345)
-devtools::load_all("~/git_repositories/casebase/")
-library(survival)
-library(splines)
-data(veteran)
+smooth_risk_brcancer <- absoluteRisk(object = mod_cb_tvc, 
+                                     newdata = brcancer[c(1,50),])
 
-veteran$prior <- factor(veteran$prior, levels = c(0, 10), labels = c("no","yes"))
-veteran$celltype <- factor(veteran$celltype, 
-                           levels = c('large', 'squamous', 'smallcell', 'adeno'))
-veteran$trt <- factor(veteran$trt, levels = c(1, 2), labels = c("standard", "test"))
-
-model4 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
-                              celltype + trt, data = veteran, ratio = 10)
-
-# data("simdat")
-# head(simdat)
-# model4 <- fitSmoothHazard(status ~ bs(eventtime)*trt, 
-#                           data = simdat, ratio = 1,
-#                           time = "eventtime")
-# 
-# linearRisk <- absoluteRisk(object = model4, newdata = simdat[1:5,])
-
-# this wont work for now untill we get consistent output
-# linearRisk <- absoluteRisk(object = model4, time = 90)
-# plot(linearRisk)
-
-linearRisk <- absoluteRisk(object = model4, time = 90:95)
-plot(x = linearRisk, gg=TRUE) + theme(legend.position = "none")
-
-linearRisk <- absoluteRisk(object = model4, newdata = "typical", time = 90:95)
-plot(x = linearRisk, gg=TRUE)
-
-linearRisk <- absoluteRisk(object = model4, newdata = veteran[1:8,], time = 90:95)
-plot(x = linearRisk, gg=TRUE)
-
-
-
-str(linearRisk)
-dev.off()
-
-matplot(x = linearRisk[,"time"], 
-        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
-linearRisk <- absoluteRisk(object = model4, newdata = veteran[1,])
-matplot(x = linearRisk[,"time"], 
-        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
-linearRisk <- absoluteRisk(object = model4, newdata = veteran)
-matplot(x = linearRisk[,"time"], 
-        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
-
-# this fails
-linearRisk <- absoluteRisk(object = model4, newdata = "typical", time = 90) 
-matplot(x = linearRisk[,"time"], 
-        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
-
-dim(linearRisk)
-class(linearRisk)
-matplot(x = linearRisk[,"time"], 
-        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
-
-
-class(linearRisk)
-plot(linearRisk)
-
+class(smooth_risk_brcancer)
+plot(smooth_risk_brcancer)
 ```
+
+These curves can be further customized. For example, suppose we want to change the legend title and legend keys:
+
+```{r}
+plot(smooth_risk_brcancer, 
+     id.names = c("Covariate Profile 1","Covariate Profile 50"), 
+     legend.title = "Type", 
+     xlab = "time (days)", 
+     ylab = "Cumulative Incidence (%)") 
+```
+
+The call to `plot` on a `absRiskCB` object returns a `ggplot2` object, and therefore can be used downstream with other `ggplot2` functions. For example, suppose we want to change the theme:
+
+```{r}
+plot(smooth_risk_brcancer, 
+     id.names = c("Covariate Profile 1","Covariate Profile 50"), 
+     legend.title = "Type", 
+     xlab = "time (days)", 
+     ylab = "Cumulative Incidence (%)") + theme_linedraw() 
+```
+
+
+### Using `graphics::matplot`
+
+By default, the `plot` method uses `ggplot2` to produce the curves. Alternatively, you can use `graphics::matplot` by specifying `gg = FALSE`. This option is particularly useful if you want to add the cumulative incidence curve to an existing plot, e.g., adding the adjusted smooth curve to a Kaplan-Meier curve. In this example, we calculate the cumulative incidence for a typical individual in the dataset:
+
+```{r}
+cols <- c("#8E063B","#023FA5")
+
+smooth_risk_typical <- absoluteRisk(object = mod_cb_tvc, newdata = "typical")
+y <- with(brcancer, Surv(time, cens))
+plot(y, fun = "event", conf.int = F, col = cols[1])
+plot(smooth_risk_typical, add = TRUE, col = cols[2], gg = FALSE)
+legend("bottomright", 
+       legend = c("Kaplan-Meier", "casebase"), 
+       col = cols,
+       lty = c(1, 1), 
+       bg = "gray90")
+```
+
+
+
+## Survival Curves
+
+We can also easily calculate and plot survival curves by specifying `type = 'survival'` in the call to `absoluteRisk`. The corresponding call to `plot` is the same as with cumulative incidence curves:
+
+```{r}
+smooth_surv_brcancer <- absoluteRisk(object = mod_cb_tvc, 
+                                     newdata = brcancer[c(1,50),],
+                                     type = "survival")
+
+plot(smooth_surv_brcancer, 
+     ylab = "survival probability")
+```
+
 
