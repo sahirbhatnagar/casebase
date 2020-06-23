@@ -1,7 +1,7 @@
 context("Fitting-Comp risk")
 
-n = 100; alpha = 0.05
-
+n <- 100
+alpha <- 0.05
 lambda10 <- 1
 lambda20 <- 2
 lambda11 <- 4
@@ -14,18 +14,20 @@ times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
 event <- c(rbinom(n, 1, prob = lambda10/lambda_t0),
            rbinom(n, 1, prob = lambda11/lambda_t1)) + 1
-censor <- rexp(n = 2*n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alpha))
 
 times_c <- pmin(times, censor)
 event_c <- event * (times < censor)
 
 DT <- data.table("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 
 DF <- data.frame("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 
 test_that("no error in fitting with data.frame and data.table", {
     fitDF <- try(fitSmoothHazard(event ~ Z, data = DF, time = "ftime"),

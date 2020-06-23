@@ -573,7 +573,7 @@ plot.singleEventCB <- function(x, ...,
       hazard.params
     ))
 
-    print(tt)
+    # print(tt)
 
     invisible(tt)
 

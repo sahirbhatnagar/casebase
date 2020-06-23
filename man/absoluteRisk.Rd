@@ -112,7 +112,7 @@ integration can give more accurate results when the estimated hazard function
 is not smooth (e.g. when modeling with time-varying covariates).
 }
 \examples{
-# Simulate censored survival data for two outcome types from exponential distributions
+# Simulate censored survival data for two outcome types
 library(data.table)
 set.seed(12345)
 nobs <- 1000
@@ -125,7 +125,7 @@ b2 <- 50
 # event type 0-censored, 1-event of interest, 2-competing event
 # t observed time/endpoint
 # z is a binary covariate
-DT <- data.table(z=rbinom(nobs, 1, 0.5))
+DT <- data.table(z = rbinom(nobs, 1, 0.5))
 DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
           "t_comp" = rweibull(nobs, 1, b2))]
 DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
@@ -134,5 +134,6 @@ DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 
 out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 
-linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
+linear_risk <- absoluteRisk(out_linear, time = 10,
+                            newdata = data.table("z" = c(0,1)))
 }

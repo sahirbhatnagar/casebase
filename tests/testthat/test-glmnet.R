@@ -4,24 +4,26 @@ context("glmnet")
 testthat::skip_if_not_installed("glmnet")
 
 # Create data----
-n = 100; alpha = 0.05
-
+n <- 100
+alpha <- 0.05
 lambda_t0 <- 1
 lambda_t1 <- 3
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-censor <- rexp(n = 2*n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alpha))
 
 times_c <- pmin(times, censor)
 event_c <- 1 * (times < censor)
 
 DF <- data.frame("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 DT <- data.table("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 
 extra_vars <- matrix(rnorm(10 * n), ncol = 10)
 DF_ext <- cbind(DF, as.data.frame(extra_vars))
@@ -33,9 +35,11 @@ formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
 
 # Fitting----
 test_that("no error in fitting glmnet", {
-    fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet"),
+    fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
+                                 family = "glmnet"),
                  silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet"),
+    fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
+                                 family = "glmnet"),
                  silent = TRUE)
 
     expect_false(inherits(fitDF, "try-error"))
@@ -43,8 +47,10 @@ test_that("no error in fitting glmnet", {
 })
 
 # Absolute risk----
-fitDF_glmnet <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime", family = "glmnet", ratio = 10)
-fitDT_glmnet <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime", family = "glmnet", ratio = 10)
+fitDF_glmnet <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
+                                family = "glmnet", ratio = 10)
+fitDT_glmnet <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
+                                family = "glmnet", ratio = 10)
 
 newDT <- data.table("Z" = c(0,1))
 newDF <- data.frame("Z" = c(0,1))
@@ -76,9 +82,11 @@ test_that("no error in fitting glmnet", {
 })
 
 test_that("no error in using custom lambda in glmnet", {
-    riskDF <- try(absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext, s = 0.1),
+    riskDF <- try(absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext,
+                               s = 0.1),
                   silent = TRUE)
-    riskDT <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext, s = 0.1),
+    riskDT <- try(absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext,
+                               s = 0.1),
                   silent = TRUE)
 
     expect_false(inherits(riskDF, "try-error"))
@@ -86,8 +94,10 @@ test_that("no error in using custom lambda in glmnet", {
 })
 
 test_that("output probabilities", {
-    riskDF_glmnet <- absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext, family = "glmnet")
-    riskDT_glmnet <- absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext, family = "glmnet")
+    riskDF_glmnet <- absoluteRisk(fitDF_glmnet, time = 0.5, newdata = newDF_ext,
+                                  family = "glmnet")
+    riskDT_glmnet <- absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext,
+                                  family = "glmnet")
 
     expect_true(all(riskDF_glmnet >= 0))
     expect_true(all(riskDT_glmnet >= 0))
@@ -107,7 +117,7 @@ ty <- rexp(N,hx)
 tcens <- rbinom(n = N,
                 prob = 0.3,
                 size = 1) # censoring indicator
-y <- cbind(time = ty, status = 1 - tcens) # y=Surv(ty,1-tcens) with library(survival)
+y <- cbind(time = ty, status = 1 - tcens) # y=Surv(ty,1-tcens) with survival
 
 test_that("no error in fitting fitSmoothHazard.fit", {
     fit_glmnet <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
@@ -127,14 +137,14 @@ test_that("no error in using nonlinear functions of time", {
                                           lambda = c(0, 0.5)),
                       silent = TRUE)
 
-    fit_glmnet_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
-                                                  time = "time", event = "status",
-                                                  family = "glmnet", ratio = 10,
-                                                  lambda = c(0, 0.5)),
+    fit_glmnet_sp <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
+                                             time = "time", event = "status",
+                                             family = "glmnet", ratio = 10,
+                                             lambda = c(0, 0.5)),
                               silent = TRUE)
 
     expect_false(inherits(fit_glmnet, "try-error"))
-    expect_false(inherits(fit_glmnet_splines, "try-error"))
+    expect_false(inherits(fit_glmnet_sp, "try-error"))
 })
 
 # Absolute risk with matrix interface----
@@ -169,12 +179,14 @@ test_that("we get probabilities", {
 
 test_that("should compute risk when time and newdata aren't provided", {
     fit_glmnet_red <- fit_glmnet
-    fit_glmnet_red$originalData$x <- fit_glmnet_red$originalData$x[c(1:2, 101:102),]
+    fit_glmnet_red$originalData$x <- fit_glmnet_red$originalData$x[c(1:2,
+                                                                     101:102), ]
     risk <- try(absoluteRisk(fit_glmnet_red, nsamp = 10),
                 silent = TRUE)
-    fit_glmnet_log_red <- fit_glmnet_log
-    fit_glmnet_log_red$originalData$x <- fit_glmnet_log_red$originalData$x[c(1:2, 101:102),]
-    risk_log <- try(absoluteRisk(fit_glmnet_log_red, nsamp = 100),
+    fit_glmnetred2 <- fit_glmnet_log
+    fit_glmnetred2$originalData$x <- fit_glmnetred2$originalData$x[c(1:2,
+                                                                     101:102), ]
+    risk_log <- try(absoluteRisk(fit_glmnetred2, nsamp = 100),
                     silent = TRUE)
 
     expect_false(inherits(risk, "try-error"))
@@ -182,10 +194,10 @@ test_that("should compute risk when time and newdata aren't provided", {
 })
 
 # Test absoluteRisk--two time points
-risk <- try(absoluteRisk(fit_glmnet, time = c(1,2),
+risk <- try(absoluteRisk(fit_glmnet, time = c(1, 2),
                          newdata = new_x, nsamp = 100),
             silent = TRUE)
-risk_log <- try(absoluteRisk(fit_glmnet_log, time = c(1,2),
+risk_log <- try(absoluteRisk(fit_glmnet_log, time = c(1, 2),
                              newdata = new_x, nsamp = 100),
                 silent = TRUE)
 
@@ -196,8 +208,8 @@ test_that("no error in absoluteRisk with glmnet", {
 })
 
 test_that("we get probabilities", {
-    expect_true(all(risk[,-1] >= 0))
-    expect_true(all(risk[,-1] <= 1))
-    expect_true(all(risk_log[,-1] >= 0))
-    expect_true(all(risk_log[,-1] <= 1))
+    expect_true(all(risk[, -1] >= 0))
+    expect_true(all(risk[, -1] <= 1))
+    expect_true(all(risk_log[, -1] >= 0))
+    expect_true(all(risk_log[, -1] <= 1))
 })
