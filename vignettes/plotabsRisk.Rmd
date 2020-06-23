@@ -1,0 +1,97 @@
+---
+title: "Plot Cumulative Incidence Curves"
+author: "Sahir Rai Bhatnagar"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_height: 6
+    fig_width: 8
+    toc: yes
+    toc_depth: 4
+vignette: >
+  %\VignetteIndexEntry{Plot Cumulative Incidence Curves}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+bibliography: reference.bib
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, 
+  results='hide',
+  fig.show='all',
+  comment = "#>"
+)
+```
+
+
+# Introduction
+
+```{r}
+set.seed(12345)
+devtools::load_all("~/git_repositories/casebase/")
+library(survival)
+library(splines)
+data(veteran)
+
+veteran$prior <- factor(veteran$prior, levels = c(0, 10), labels = c("no","yes"))
+veteran$celltype <- factor(veteran$celltype, 
+                           levels = c('large', 'squamous', 'smallcell', 'adeno'))
+veteran$trt <- factor(veteran$trt, levels = c(1, 2), labels = c("standard", "test"))
+
+model4 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
+                              celltype + trt, data = veteran, ratio = 10)
+
+# data("simdat")
+# head(simdat)
+# model4 <- fitSmoothHazard(status ~ bs(eventtime)*trt, 
+#                           data = simdat, ratio = 1,
+#                           time = "eventtime")
+# 
+# linearRisk <- absoluteRisk(object = model4, newdata = simdat[1:5,])
+
+# this wont work for now untill we get consistent output
+# linearRisk <- absoluteRisk(object = model4, time = 90)
+# plot(linearRisk)
+
+linearRisk <- absoluteRisk(object = model4, time = 90:95)
+plot(x = linearRisk, gg=TRUE) + theme(legend.position = "none")
+
+linearRisk <- absoluteRisk(object = model4, newdata = "typical", time = 90:95)
+plot(x = linearRisk, gg=TRUE)
+
+linearRisk <- absoluteRisk(object = model4, newdata = veteran[1:8,], time = 90:95)
+plot(x = linearRisk, gg=TRUE)
+
+
+
+str(linearRisk)
+dev.off()
+
+matplot(x = linearRisk[,"time"], 
+        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
+linearRisk <- absoluteRisk(object = model4, newdata = veteran[1,])
+matplot(x = linearRisk[,"time"], 
+        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
+linearRisk <- absoluteRisk(object = model4, newdata = veteran)
+matplot(x = linearRisk[,"time"], 
+        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
+
+# this fails
+linearRisk <- absoluteRisk(object = model4, newdata = "typical", time = 90) 
+matplot(x = linearRisk[,"time"], 
+        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
+
+dim(linearRisk)
+class(linearRisk)
+matplot(x = linearRisk[,"time"], 
+        y = linearRisk[,-which(colnames(linearRisk) == c("time"))])
+
+
+class(linearRisk)
+plot(linearRisk)
+
+```
+

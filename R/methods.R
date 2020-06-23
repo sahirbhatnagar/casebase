@@ -631,6 +631,37 @@ plot.singleEventCB <- function(x, ...,
 
 
 
+plot.absRiskCB <- function(x, ...,
+                           xlab = "time",
+                           ylab = "cumulative incidence",
+                           type = "l",
+                           gg = FALSE) {
+  # output of absoluteRisk will always have a column named time
+  # x = linearRisk
+  # ======================
+
+  if (!gg) {
+    matplot(x = x[,"time"],
+            y = x[,-which(colnames(x) == c("time"))],
+            type = type,
+            xlab = xlab,
+            ylab = ylab,
+            ...
+    )
+
+  } else {
+
+    DT <- as.data.table(x)
+
+    DT.m <- melt(DT, id.vars = "time", variable.name = "ID")
+
+    ggplot(DT.m, aes(x = time, y = value, color = ID)) +
+      geom_line()
+  }
+
+}
+
+
 #' @import methods
 #' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms
 NULL
