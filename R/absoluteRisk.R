@@ -220,6 +220,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
         } else cbind(exp(-risk_res), newdata)
         colnames(newdata)[1] <- riskVar
     }
+    attr(newdata, "type") <- type
     return(newdata)
 }
 
@@ -331,5 +332,6 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     }
     # Add class
     class(output) <- c("absRiskCB", class(output))
+    attr(output, "type") <- type
     return(output)
 }
