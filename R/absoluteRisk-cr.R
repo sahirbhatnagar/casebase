@@ -1,7 +1,9 @@
 #' @rdname absoluteRisk
 #' @export
-absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-                                  nsamp = 100, onlyMain = TRUE, type = c("CI", "survival"),
+absoluteRisk.CompRisk <- function(object, time, newdata,
+                                  method = c("numerical", "montecarlo"),
+                                  nsamp = 100, onlyMain = TRUE,
+                                  type = c("CI", "survival"),
                                   addZero = TRUE) {
     method <- match.arg(method)
     type <- match.arg(type)
@@ -9,7 +11,8 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object@originalData)) {
-            stop("Cannot estimate the mean absolute risk without the original data. See documentation.",
+            stop(paste("Cannot estimate the mean absolute risk without",
+                       "the original data. See documentation."),
                  call. = FALSE)
         }
         newdata <- object@originalData
@@ -126,53 +129,42 @@ absoluteRisk.CompRisk <- function(object, time, newdata, method = c("numerical",
     if (onlyMain) {
         # Switch to survival scale?
         if (type == "survival") {
-            output[,-1,] <- 1 - output[,-1,]
+            output[, -1] <- 1 - output[, -1, drop = FALSE]
         }
-
-        # Reformat output when only one time point
-        if (length(time) == 1) {
-            if (time == 0) {
-                output <- output[1,-1,drop = FALSE]
-            } else {
-                output <- output[2,-1,drop = FALSE]
-            }
-            dimnames(output)[[1]] <- as.character(time)
-        } else {
-            if (!addZero) output <- output[-1,,drop = FALSE]
-        }
+        # Add time = 0?
+        if (!addZero) output <- output[-1, , drop = FALSE]
     } else {
         # Switch to survival scale?
         if (type == "survival") {
-            output[,-1,] <- 1 - output[,-1,]
+            output[,-1,] <- 1 - output[, -1, ]
         }
-        # Reformat output when only one time point
-        if (length(time) == 1) {
-            if (time == 0) {
-                output <- output[1,-1,,drop = FALSE]
-            } else {
-                output <- output[2,-1,,drop = FALSE]
-            }
-            dimnames(output)[[1]] <- as.character(time)
-        } else {
-            if (!addZero) output <- output[-1,,,drop = FALSE]
-        }
+        # Add time = 0?
+        if (!addZero) output <- output[-1, , , drop = FALSE]
+
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {
-        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration", call. = FALSE)
+        warning(paste("Some probabilities are out of range. Consider",
+                      "increasing nsamp or using numerical integration"),
+                call. = FALSE)
     }
+    attr(output, "type") <- type
     return(output)
 
 }
 
 # #' @rdname absoluteRisk
 # #' @export
-absoluteRisk.CompRiskGlmnet <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-                                        nsamp = 100, onlyMain = TRUE, s = c("lambda.1se","lambda.min"),
-                                        type = c("CI", "survival"), addZero = TRUE, ...) {
+absoluteRisk.CompRiskGlmnet <- function(object, time, newdata,
+                                        method = c("numerical", "montecarlo"),
+                                        nsamp = 100, onlyMain = TRUE,
+                                        s = c("lambda.1se","lambda.min"),
+                                        type = c("CI", "survival"),
+                                        addZero = TRUE, ...) {
     # The current implementation doesn't work
     stop(paste("object is of class", class(object),
-               "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
+               "\nabsoluteRisk should be used with an object of class glm,",
+               "cv.glmnet, gbm, or CompRisk"),
          call. = TRUE)
     # We're keeping the code and hope to get back to it soon----
     ############################

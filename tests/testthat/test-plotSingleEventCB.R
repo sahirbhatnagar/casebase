@@ -22,7 +22,8 @@ test_that("no error in plot method for singleEventCB objects - hazard function",
                        hazard.params = list(xvar = "eventtime",
                                             by = "trt",
                                             alpha = 0.05,
-                                            ylab = "Hazard")))
+                                            ylab = "Hazard")),
+                  silent = TRUE)
 
     expect_false(inherits(outglm, "try-error"))
 })
@@ -39,7 +40,8 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio", {
                        hazard.params = list(xvar = "eventtime",
                                             by = "trt",
                                             alpha = 0.05,
-                                            ylab = "Hazard")))
+                                            ylab = "Hazard")),
+                  silent = TRUE)
 
     outglm_hr <- try(plot(mod_glm,
                           type = "hr",
@@ -47,8 +49,9 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio", {
                           var = "trt",
                           increment = 1,
                           xvar = "eventtime",
-                          ci = T,
-                          rug = T))
+                          ci = TRUE,
+                          rug = TRUE),
+                     silent = TRUE)
 
     #using the exposed argument instead
     outglm_hr_exposed <- try(plot(mod_glm,
@@ -56,8 +59,9 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio", {
                                   newdata = newdata,
                                   exposed = function(data) transform(data, trt = 1),
                                   xvar = "eventtime",
-                                  ci = T,
-                                  rug = T))
+                                  ci = TRUE,
+                                  rug = TRUE),
+                             silent = TRUE)
 
     expect_false(inherits(outglm, "try-error"))
     expect_false(inherits(outglm_hr, "try-error"))
