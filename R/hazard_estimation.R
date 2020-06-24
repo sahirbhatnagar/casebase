@@ -31,9 +31,10 @@ estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE,
     if (!inherits(newdata, "matrix")) {
         # Remove response variable because it won't be in newdata
         formula_pred <- formula(delete.response(terms(object$formula)))
-        newdata_matrix <- model.matrix(formula_pred, newdata)
-        # Remove the intercept to get the right design matrix
-        newdata_matrix <- newdata_matrix[,which(colnames(newdata_matrix) != "(Intercept)")]
+        # newdata_matrix <- model.matrix(formula_pred, newdata)
+        # # Remove the intercept to get the right design matrix
+        # newdata_matrix <- newdata_matrix[,which(colnames(newdata_matrix) != "(Intercept)")]
+        newdata_matrix <- prepareX(formula_pred, newdata)
     } else {
         newdata_matrix <- newdata
     }

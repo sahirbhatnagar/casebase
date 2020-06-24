@@ -6,13 +6,13 @@ handler_validmc <- function(msg) {
 }
 
 n <- 100
-alpha <- 0.05
+alp <- 0.05
 lambda_t0 <- 1
 lambda_t1 <- 3
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-censor <- rexp(n = 2 * n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alp))
 
 times_c <- pmin(times, censor)
 event_c <- 1 * (times < censor)

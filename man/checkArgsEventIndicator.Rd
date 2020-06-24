@@ -34,10 +34,13 @@ level is assumed to be the reference level.
 }
 \examples{
 library(survival) # for veteran data
-checkArgsEventIndicator(data = veteran, event = "celltype", censored.indicator = "smallcell")
+checkArgsEventIndicator(data = veteran, event = "celltype",
+                        censored.indicator = "smallcell")
 checkArgsEventIndicator(data = veteran, event = "status")
 data("bmtcrr") # from casebase
-checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
-checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
+checkArgsEventIndicator(data = bmtcrr, event = "Sex",
+                        censored.indicator = "M")
+checkArgsEventIndicator(data = bmtcrr, event = "D",
+                        censored.indicator = "AML")
 checkArgsEventIndicator(data = bmtcrr, event = "Status")
 }
