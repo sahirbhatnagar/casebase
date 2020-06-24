@@ -13,7 +13,8 @@ data("simdat")
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
                                          trt:ns(log(eventtime),df=1),
                                      time = "eventtime",
-                                     data = simdat[sample(1:nrow(simdat), size = 200),],
+                                     data = simdat[sample(nrow(simdat),
+                                                          size = 200),],
                                      ratio = 1,
                                      family = "glm")
 
@@ -31,7 +32,8 @@ test_that("no error in plot method for singleEventCB objects - hazard function",
 
 test_that("no error in plot method for singleEventCB objects - hazard ratio", {
 
-    newtime <- quantile(mod_glm[["originalData"]][[mod_glm[["timeVar"]]]], probs = seq(0.01, 0.99, 0.01))
+    newtime <- quantile(mod_glm[["originalData"]][[mod_glm[["timeVar"]]]],
+                        probs = seq(0.01, 0.99, 0.01))
 
     # reference category
     newdata <- data.frame(trt = 0, eventtime = newtime)
@@ -53,11 +55,12 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio", {
                           rug = TRUE),
                      silent = TRUE)
 
-    #using the exposed argument instead
+    # using the exposed argument instead
     outglm_hr_exposed <- try(plot(mod_glm,
                                   type = "hr",
                                   newdata = newdata,
-                                  exposed = function(data) transform(data, trt = 1),
+                                  exposed = function(data) transform(data,
+                                                                     trt = 1),
                                   xvar = "eventtime",
                                   ci = TRUE,
                                   rug = TRUE),

@@ -1,7 +1,7 @@
 context("Fitting-Comp risk")
 
 n <- 100
-alpha <- 0.05
+alp <- 0.05
 lambda10 <- 1
 lambda20 <- 2
 lambda11 <- 4
@@ -14,7 +14,7 @@ times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
 event <- c(rbinom(n, 1, prob = lambda10/lambda_t0),
            rbinom(n, 1, prob = lambda11/lambda_t1)) + 1
-censor <- rexp(n = 2 * n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alp))
 
 times_c <- pmin(times, censor)
 event_c <- event * (times < censor)
