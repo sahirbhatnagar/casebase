@@ -1,8 +1,8 @@
 Package: casebase
 Type: Package
 Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
-Version: 0.2.1.9001
-Date: 2019-8-1
+Version: 1.0.0.9000
+Date: 2020-06-23
 Authors@R: c(
   person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
   role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
@@ -23,7 +23,7 @@ Description: Implements the case-base sampling approach of Hanley and Miettinen 
     and covariates, and readily allows for non-proportionality. We also provide a plot method for visualizing 
     incidence density via population time plots.
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.5.0)
 Imports:
     data.table,
     ggplot2,

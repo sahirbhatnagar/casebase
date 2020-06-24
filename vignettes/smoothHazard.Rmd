@@ -144,7 +144,7 @@ model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio = 100)
 summary(model6)
 
-absoluteRisk(object = model6, time = 90)
+str(absoluteRisk(object = model6, time = 90))
 ```
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:

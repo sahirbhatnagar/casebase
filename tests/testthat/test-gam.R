@@ -4,24 +4,26 @@ context("GAMs")
 testthat::skip_if_not_installed("mgcv")
 
 # Create data----
-n = 100; alpha = 0.05
-
+n <- 100
+alpha <- 0.05
 lambda_t0 <- 1
 lambda_t1 <- 3
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-censor <- rexp(n = 2*n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alpha))
 
 times_c <- pmin(times, censor)
 event_c <- 1 * (times < censor)
 
 DF <- data.frame("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 DT <- data.table("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 
 extra_vars <- matrix(rnorm(10 * n), ncol = 10)
 DF_ext <- cbind(DF, as.data.frame(extra_vars))
@@ -33,9 +35,11 @@ formula_gam <- formula(paste(c("event ~ s(ftime)", "Z",
 
 # Fitting----
 test_that("no error in fitting gam", {
-    fitDF <- try(fitSmoothHazard(formula_gam, data = DF_ext, time = "ftime", family = "gam"),
+    fitDF <- try(fitSmoothHazard(formula_gam, data = DF_ext, time = "ftime",
+                                 family = "gam"),
                  silent = TRUE)
-    fitDT <- try(fitSmoothHazard(formula_gam, data = DT_ext, time = "ftime", family = "gam"),
+    fitDT <- try(fitSmoothHazard(formula_gam, data = DT_ext, time = "ftime",
+                                 family = "gam"),
                  silent = TRUE)
 
     expect_false(inherits(fitDF, "try-error"))
@@ -48,8 +52,8 @@ fitDF_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DF,
 fitDT_gam <- fitSmoothHazard(event ~ s(ftime) + Z, data = DT,
                              time = "ftime", family = "gam", ratio = 10)
 
-newDT <- data.table("Z" = c(0,1))
-newDF <- data.frame("Z" = c(0,1))
+newDT <- data.table("Z" = c(0, 1))
+newDF <- data.frame("Z" = c(0, 1))
 
 test_that("no error in abs risk for gam", {
     riskDF <- try(absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF),
@@ -78,8 +82,10 @@ test_that("should compute risk when time and newdata aren't provided", {
 })
 
 test_that("output probabilities", {
-    riskDF_gam <- absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF, family = "gam")
-    riskDT_gam <- absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT, family = "gam")
+    riskDF_gam <- absoluteRisk(fitDF_gam, time = 0.5, newdata = newDF,
+                               family = "gam")
+    riskDT_gam <- absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT,
+                               family = "gam")
 
     expect_true(all(riskDF_gam >= 0))
     expect_true(all(riskDT_gam >= 0))

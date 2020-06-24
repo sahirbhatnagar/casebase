@@ -1,7 +1,7 @@
 context("Fitting")
 
-n = 100; alpha = 0.05
-
+n <- 100
+alpha <- 0.05
 lambda_t0 <- 1
 lambda_t1 <- 3
 
@@ -14,10 +14,12 @@ event_c <- 1 * (times < censor)
 
 DF <- data.frame("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 DT <- data.table("ftime" = times_c,
                  "event" = event_c,
-                 "Z" = c(rep(0,n), rep(1,n)))
+                 "Z" = c(rep(0, n),
+                         rep(1, n)))
 
 test_that("no error in fitting with data.frame and data.table", {
     fitDF <- try(fitSmoothHazard(event ~ Z, data = DF, time = "ftime"),
@@ -30,14 +32,16 @@ test_that("no error in fitting with data.frame and data.table", {
 })
 
 test_that("allow dot notation in formula", {
-    try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = ERSPC, time='Follow.Up.Time', ratio = 100),
+    try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = ERSPC,
+                                 time = "Follow.Up.Time", ratio = 100),
         silent = TRUE)
 
     expect_false(inherits(model, "try-error"))
 })
 
 test_that("sampling first and then fitting", {
-    data_cb <- sampleCaseBase(ERSPC, time='Follow.Up.Time', ratio = 10, event = "DeadOfPrCa")
+    data_cb <- sampleCaseBase(ERSPC, time = "Follow.Up.Time",
+                              ratio = 10, event = "DeadOfPrCa")
     try(model <- fitSmoothHazard(DeadOfPrCa ~ ., data = data_cb),
         silent = TRUE)
 
@@ -50,7 +54,7 @@ form <- formula(event ~ exposure + time)
 form_bs <- formula(event ~ exposure + bs(time))
 form_log <- formula(event ~ exposure + log(time))
 form_int <- formula(event ~ exposure*time)
-form_nested <- formula(cens ~ horTh*nsx(log(time), df = 3) + age*time)
+form_nested <- formula(cens ~ horTh * nsx(log(time), df = 3) + age * time)
 
 form_bs_extra <- formula(event ~ exposure + bs(time, df = 3))
 form_bs_named <- formula(event ~ exposure + bs(x = time))
@@ -74,7 +78,7 @@ wrong_int <- formula(event ~ exposure*wrongtime + time)
 wrong2 <- formula(event ~ exposure + time + timewrong)
 wrong2_bs <- formula(event ~ exposure + time + bs(timewrong))
 wrong2_log <- formula(event ~ exposure + time + log(timewrong))
-wrong2_int <- formula(event ~ exposure*timewrong + time)
+wrong2_int <- formula(event ~ exposure * timewrong + time)
 
 test_that("Making sure we don't pick up anything that looks like time", {
     expect_false(detect_nonlinear_time(wrong, "time"))

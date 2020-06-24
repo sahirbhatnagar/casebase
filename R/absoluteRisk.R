@@ -6,24 +6,16 @@
 #' absolute risks by integrating the fitted hazard function over a time period
 #' and then converting this to an estimated survival for each individual.
 #'
-#' If the user supplies the original dataset through the parameter
-#' \code{newdata}, the mean absolute risk can be computed as the average of the
-#' output vector.
-#'
 #' If \code{newdata = "typical"}, we create a typical covariate profile for the
 #' absolute risk computation. This means that we take the median for numerical
 #' and date variables; we take the first element in alphabetical order for
 #' character variables; and we take the reference level for factor variables.
 #'
-#' In general, if \code{time} is a vector of length greater than one, the output
-#' will include a column corresponding to the provided time points. Some
-#' modifications of the \code{time} vector are done: \code{time=0} is added, the
-#' time points are ordered, and duplicates are removed. All these modifications
-#' simplify the computations and give an output that can easily be used to plot
-#' risk curves.
-#'
-#' On the other hand, if \code{time} corresponds to a single time point, the
-#' output does not include a column corresponding to time.
+#' In general, the output will include a column corresponding to the provided
+#' time points. Some modifications of the \code{time} vector are done:
+#' \code{time=0} is added, the time points are ordered, and duplicates are
+#' removed. All these modifications simplify the computations and give an output
+#' that can easily be used to plot risk curves.
 #'
 #' If there is no competing risk, the output is a matrix where each column
 #' corresponds to the several covariate profiles, and where each row corresponds
@@ -61,14 +53,14 @@
 #' @param ntimes Number of time points (only used if \code{time} is missing).
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return If \code{time} was provided, returns the estimated absolute risk for
-#'   the user-supplied covariate profiles. This will be stored in a 2- or
-#'   3-dimensional array, depending on the input (see details). If both
-#'   \code{time} and \code{newdata} were provided, returns the original data
-#'   with a new column containing the risk estimate at failure time.
+#'   the user-supplied covariate profiles. This will be stored in a matrix or a
+#'   higher dimensional array, depending on the input (see details). If both
+#'   \code{time} and \code{newdata} are missing, returns the original data
+#'   with a new column containing the risk estimate at failure times.
 #' @export
 #' @importFrom stats formula delete.response setNames
 #' @examples
-#' # Simulate censored survival data for two outcome types from exponential distributions
+#' # Simulate censored survival data for two outcome types
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 1000
@@ -81,7 +73,7 @@
 #' # event type 0-censored, 1-event of interest, 2-competing event
 #' # t observed time/endpoint
 #' # z is a binary covariate
-#' DT <- data.table(z=rbinom(nobs, 1, 0.5))
+#' DT <- data.table(z = rbinom(nobs, 1, 0.5))
 #' DT[,`:=` ("t_event" = rweibull(nobs, 1, b1),
 #'           "t_comp" = rweibull(nobs, 1, b2))]
 #' DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
@@ -90,14 +82,18 @@
 #'
 #' out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 #'
-#' linear_risk <- absoluteRisk(out_linear, time = 10, newdata = data.table("z"=c(0,1)))
-absoluteRisk <- function(object, time, newdata, method = c("numerical", "montecarlo"),
-                         nsamp = 100, s = c("lambda.1se","lambda.min"),
-                         n.trees, onlyMain = TRUE, type = c("CI", "survival"),
+#' linear_risk <- absoluteRisk(out_linear, time = 10,
+#'                             newdata = data.table("z" = c(0,1)))
+absoluteRisk <- function(object, time, newdata,
+                         method = c("numerical", "montecarlo"),
+                         nsamp = 100, s = c("lambda.1se", "lambda.min"),
+                         n.trees, onlyMain = TRUE,
+                         type = c("CI", "survival"),
                          addZero = TRUE, ntimes = 100, ...) {
     if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
-                   "\nabsoluteRisk should be used with an object of class glm, cv.glmnet, gbm, or CompRisk"),
+                   "\nabsoluteRisk should be used with an object of class glm,",
+                   "cv.glmnet, gbm, or CompRisk"),
              call. = TRUE)
     }
     if (inherits(object, "CompRisk")) {
@@ -111,12 +107,15 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
     type <- match.arg(type)
     if (is.numeric(s)) {
         s <- s[1]
-        if (length(s) > 1) warning("More than one value for s has been supplied. Only first entry will be used")
+        if (length(s) > 1) {
+            warning(paste("More than one value for s has been",
+                          "supplied. Only first entry will be used"))
+            }
     } else if (is.character(s)) {
         s <- match.arg(s)
     }
     if (inherits(object, "gbm")) {
-        if(missing(n.trees)) stop("n.trees is missing")
+        if (missing(n.trees)) stop("n.trees is missing")
     } else n.trees <- NULL
     if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
         newdata <- if (is.null(object$matrix.fit)) {
@@ -143,7 +142,7 @@ absoluteRisk <- function(object, time, newdata, method = c("numerical", "monteca
             # at equidistant points
             max_time <- if (is.null(object$matrix.fit)) {
                 max(object$originalData[object$timeVar][[1]])
-            } else max(object$originalData$y[,object$timeVar])
+            } else max(object$originalData$y[, object$timeVar])
             time <- seq(0, max_time, length.out = ntimes)
         }
         return(estimate_risk_newtime(object, time, newdata,
@@ -166,27 +165,28 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     # compute risk at failure times
     time_vector <- if (is.null(object$matrix.fit)) {
         newdata[object$timeVar][[1]]
-        } else object$originalData$y[,object$timeVar]
+        } else object$originalData$y[, object$timeVar]
     # Create a vectorised hazard function
     if (inherits(object, "cv.glmnet") && !is.null(object$matrix.fit)) {
         hazard <- function(x, fit, newdata, s, n.trees, ...) {
             # Note: the offset should be set to zero when estimating the hazard.
-            # newdata_matrix <- cbind(x, newdata)
-            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar, drop = FALSE]
-            # newdata_matrix is organized to match the output from fitSmoothHazard.fit
-            newdata_matrix <- as.matrix(cbind(model.matrix(update(fit$formula_time, ~ . -1),
-                                                           setNames(data.frame(x), fit$timeVar)),
+            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar,
+                                      drop = FALSE]
+            # newdata_matrix matches output from fitSmoothHazard.fit
+            temp_matrix <- model.matrix(update(fit$formula_time, ~ . -1),
+                                        setNames(data.frame(x), fit$timeVar))
+            newdata_matrix <- as.matrix(cbind(temp_matrix,
                                               as.data.frame(newdata_matrix)))
 
-            pred <- estimate_hazard(fit, newdata_matrix, plot = FALSE, ci = FALSE,
-                                    s = s, n.trees = n.trees, ...)
+            pred <- estimate_hazard(fit, newdata_matrix, plot = FALSE,
+                                    ci = FALSE, s = s, n.trees = n.trees, ...)
             return(as.numeric(exp(pred)))
         }
     } else {
         hazard <- function(x, fit, newdata, s, n.trees, ...) {
             # Note: the offset should be set to zero when estimating the hazard.
             newdata2 <- data.frame(newdata)
-            newdata2 <- newdata2[rep(1, length(x)),]
+            newdata2 <- newdata2[rep(1, length(x)), ]
             newdata2[fit$timeVar] <- x
             pred <- estimate_hazard(fit, newdata2, plot = FALSE, ci = FALSE,
                                     s = s, n.trees = n.trees, ...)
@@ -203,13 +203,16 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
 
     # Format the output depending on type
     if (is.data.frame(newdata)) {
-        newdata[,riskVar] <- if(type == "CI") 1 - exp(-risk_res) else exp(-risk_res)
+        newdata[, riskVar] <- ifelse(type == "CI",
+                                    1 - exp(-risk_res),
+                                    exp(-risk_res))
     } else {
-        newdata <- if(type == "CI") {
+        newdata <- if (type == "CI") {
             cbind(1 - exp(-risk_res), newdata)
         } else cbind(exp(-risk_res), newdata)
         colnames(newdata)[1] <- riskVar
     }
+    attr(newdata, "type") <- type
     return(newdata)
 }
 
@@ -220,46 +223,47 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
         if (is.null(object$originalData)) {
-            stop("Cannot estimate the mean absolute risk without the original data. See documentation.",
+            stop(paste("Cannot estimate the mean absolute risk without",
+                       "the original data. See documentation."),
                  call. = FALSE)
         }
         newdata <- object$originalData
-        # colnames(data)[colnames(data) == "event"] <- "status"
-        # Next commented line will break on data.table
-        # newdata <- newdata[, colnames(newdata) != "time"]
         unselectTime <- (names(newdata) != object$timeVar)
         newdata <- subset(newdata, select = unselectTime)
     }
     time_ordered <- unique(c(0, sort(time)))
     output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
-    output[,1] <- time_ordered
+    output[, 1] <- time_ordered
     colnames(output) <- c("time", rep("", nrow(newdata)))
     rownames(output) <- rep("", length(time_ordered))
-    output[1,-1] <- 0
+    output[1, -1] <- 0
 
     if (length(time_ordered) > 1) {
-        # output[1,-1] <- 0
         if (method == "numerical") {
             # Compute points at which we evaluate integral
-            # Note: there's probably a more efficient way of choosing the knots...
+            # Note: there's probably a more efficient way of choosing the knots
             knots <- seq(0, max(time_ordered),
                          length.out = (length(time_ordered) - 1) * nsamp)
             knots <- unique(sort(c(knots, time_ordered)))
-            for (j in 1:nrow(newdata)) {
+            for (j in seq_len(nrow(newdata))) {
                 # Extract current obs
                 current_obs <- newdata[j,,drop = FALSE]
                 # Use trapezoidal rule for integration----
                 if (inherits(newdata, "matrix")) {
-                    newdata2 <- current_obs[,colnames(newdata) != object$timeVar, drop = FALSE]
-                    # newdata2 is organized to match the output from fitSmoothHazard.fit
-                    newdata2 <- as.matrix(cbind(model.matrix(update(object$formula_time, ~ . -1),
-                                                                   setNames(data.frame(knots), object$timeVar)),
+                    newdata2 <- current_obs[,colnames(newdata) != object$timeVar,
+                                            drop = FALSE]
+                    # newdata2 matches the output from fitSmoothHazard.fit
+                    temp_matrix <- model.matrix(update(object$formula_time,
+                                                       ~ . -1),
+                                                setNames(data.frame(knots),
+                                                         object$timeVar))
+                    newdata2 <- as.matrix(cbind(temp_matrix,
                                                 as.data.frame(newdata2)))
                 } else {
                     # Create data.table for prediction
                     newdata2 <- data.table(current_obs)
                     newdata2 <- newdata2[rep(1, length(knots))]
-                    newdata2[,object$timeVar := knots]
+                    newdata2[, object$timeVar := knots]
                 }
                 pred <- estimate_hazard(object = object, newdata = newdata2,
                                         plot = FALSE, ci = FALSE,
@@ -268,7 +272,8 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                 # First remove infinite values (e.g. with log(t))
                 pred_exp <- exp(pred)
                 pred_exp[which(pred_exp %in% c(Inf, -Inf))] <- 0
-                output[,j + 1] <- trap_int(knots, pred_exp)[knots %in% c(0, time_ordered)]
+                which_knots <- knots %in% c(0, time_ordered)
+                output[, j + 1] <- trap_int(knots, pred_exp)[which_knots]
             }
 
         }
@@ -276,7 +281,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
             # Sample points at which we evaluate function
             knots <- runif(n = length(time_ordered)* nsamp,
                            min = 0, max = max(time_ordered))
-            for (j in 1:nrow(newdata)) {
+            for (j in seq_len(nrow(newdata))) {
                 # Extract current obs
                 current_obs <- newdata[j,,drop = FALSE]
                 # Create data.table for prediction
@@ -289,7 +294,8 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                 # Compute integral using MC integration
                 pred_exp <- exp(pred)
                 pred_exp[which(pred_exp %in% c(Inf, -Inf))] <- NA
-                mean_values <- sapply(split(pred_exp, cut(knots, breaks = time_ordered)),
+                mean_values <- sapply(split(pred_exp,
+                                            cut(knots, breaks = time_ordered)),
                                       mean, na.rm = TRUE)
                 integral_estimates <- mean_values * diff(time_ordered)
                 output[,j + 1] <- cumsum(c(0, integral_estimates))
@@ -300,22 +306,14 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output[,-1] < 0) | any(output[,-1] > 1))) {
-        warning("Some probabilities are out of range. Consider increasing nsamp or using numerical integration",
+        warning(paste("Some probabilities are out of range. Consider",
+                      "increasing nsamp or using numerical integration"),
                 call. = FALSE)
     }
-
-    # Reformat output when only one time point
-    if (length(time) == 1) {
-        if (time == 0) {
-            output <- output[1,-1,drop = FALSE]
-        } else {
-            output <- output[2,-1,drop = FALSE]
-        }
-        rownames(output) <- time
-    } else {
-        if (!addZero) output <- output[-1,,drop = FALSE]
-    }
+    # Add time = 0?
+    if (!addZero) output <- output[-1, , drop = FALSE]
     # Add class
     class(output) <- c("absRiskCB", class(output))
+    attr(output, "type") <- type
     return(output)
 }
