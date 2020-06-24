@@ -129,36 +129,18 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
     if (onlyMain) {
         # Switch to survival scale?
         if (type == "survival") {
-            output[,-1,] <- 1 - output[,-1,]
+            output[, -1] <- 1 - output[, -1, drop = FALSE]
         }
-
-        # Reformat output when only one time point
-        if (length(time) == 1) {
-            if (time == 0) {
-                output <- output[1,-1,drop = FALSE]
-            } else {
-                output <- output[2,-1,drop = FALSE]
-            }
-            dimnames(output)[[1]] <- as.character(time)
-        } else {
-            if (!addZero) output <- output[-1,,drop = FALSE]
-        }
+        # Add time = 0?
+        if (!addZero) output <- output[-1, , drop = FALSE]
     } else {
         # Switch to survival scale?
         if (type == "survival") {
-            output[,-1,] <- 1 - output[,-1,]
+            output[,-1,] <- 1 - output[, -1, ]
         }
-        # Reformat output when only one time point
-        if (length(time) == 1) {
-            if (time == 0) {
-                output <- output[1,-1,,drop = FALSE]
-            } else {
-                output <- output[2,-1,,drop = FALSE]
-            }
-            dimnames(output)[[1]] <- as.character(time)
-        } else {
-            if (!addZero) output <- output[-1,,,drop = FALSE]
-        }
+        # Add time = 0?
+        if (!addZero) output <- output[-1, , , drop = FALSE]
+
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
     if (method == "montecarlo" && (any(output < 0) | any(output > 1))) {

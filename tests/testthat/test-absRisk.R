@@ -178,10 +178,10 @@ test_that("should output probabilities with data frames", {
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0))
+    expect_true(all(absRiskNI[, -1] >= 0))
+    expect_true(all(absRiskMC[, -1] <= 1))
+    expect_true(all(absRiskNI[, -1] <= 1))
 })
 
 test_that("should output probabilities with data tables", {
@@ -190,10 +190,10 @@ test_that("should output probabilities with data tables", {
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0))
+    expect_true(all(absRiskNI[, -1] >= 0))
+    expect_true(all(absRiskMC[, -1] <= 1))
+    expect_true(all(absRiskNI[, -1] <= 1))
 })
 
 test_that("should output probabilities with data frames - two time points", {
@@ -227,10 +227,10 @@ test_that(paste("should output probabilities with data frames",
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1), ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0))
+    expect_true(all(absRiskNI[, -1] >= 0))
+    expect_true(all(absRiskMC[, -1] <= 1))
+    expect_true(all(absRiskNI[, -1] <= 1))
 })
 
 test_that(paste("should output probabilities with data tables",
@@ -240,15 +240,15 @@ test_that(paste("should output probabilities with data tables",
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1), ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0))
+    expect_true(all(absRiskNI[, -1] >= 0))
+    expect_true(all(absRiskMC[, -1] <= 1))
+    expect_true(all(absRiskNI[, -1] <= 1))
 })
 
 # Absolute risk at time = 0
 target <- matrix(0, ncol = 2, nrow = 1)
-class(target) <- c("absRiskCB", class(target))
+# class(target) <- c("absRiskCB", class(target))
 
 test_that("should give probability 0 at time 0 with data frames", {
     absRiskMC <- absoluteRisk(fitDF, time = 0, newdata = newDF,
@@ -256,9 +256,9 @@ test_that("should give probability 0 at time 0 with data frames", {
     absRiskNI <- absoluteRisk(fitDF, time = 0, newdata = newDF,
                               method = "numerical")
 
-    expect_true(all.equal(absRiskMC, target,
+    expect_true(all.equal(absRiskMC[, -1, drop = FALSE], target,
                           check.attributes = FALSE))
-    expect_true(all.equal(absRiskNI, target,
+    expect_true(all.equal(absRiskNI[, -1, drop = FALSE], target,
                           check.attributes = FALSE))
 })
 
@@ -268,9 +268,9 @@ test_that("should give probability 0 at time 0 with data tables", {
     absRiskNI <- absoluteRisk(fitDT, time = 0, newdata = newDT,
                               method = "numerical")
 
-    expect_true(all.equal(absRiskMC, target,
+    expect_true(all.equal(absRiskMC[, -1, drop = FALSE], target,
                           check.attributes = FALSE))
-    expect_true(all.equal(absRiskNI, target,
+    expect_true(all.equal(absRiskNI[, -1, drop = FALSE], target,
                           check.attributes = FALSE))
 })
 

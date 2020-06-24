@@ -198,13 +198,6 @@ legend("topleft", legend = c("Log", "Spline"),
        pch = 19, col = c("red", "blue"))
 ```
 
-We can also estimate the mean absolute risk for the entire dataset:
-```{r eval=TRUE}
-mean(linearRisk)
-mean(logRisk)
-mean(splineRisk)
-```
-
 ## Session information
 
 ```{r echo=FALSE, eval=TRUE}

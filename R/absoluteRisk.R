@@ -6,24 +6,16 @@
 #' absolute risks by integrating the fitted hazard function over a time period
 #' and then converting this to an estimated survival for each individual.
 #'
-#' If the user supplies the original dataset through the parameter
-#' \code{newdata}, the mean absolute risk can be computed as the average of the
-#' output vector.
-#'
 #' If \code{newdata = "typical"}, we create a typical covariate profile for the
 #' absolute risk computation. This means that we take the median for numerical
 #' and date variables; we take the first element in alphabetical order for
 #' character variables; and we take the reference level for factor variables.
 #'
-#' In general, if \code{time} is a vector of length greater than one, the output
-#' will include a column corresponding to the provided time points. Some
-#' modifications of the \code{time} vector are done: \code{time=0} is added, the
-#' time points are ordered, and duplicates are removed. All these modifications
-#' simplify the computations and give an output that can easily be used to plot
-#' risk curves.
-#'
-#' On the other hand, if \code{time} corresponds to a single time point, the
-#' output does not include a column corresponding to time.
+#' In general, the output will include a column corresponding to the provided
+#' time points. Some modifications of the \code{time} vector are done:
+#' \code{time=0} is added, the time points are ordered, and duplicates are
+#' removed. All these modifications simplify the computations and give an output
+#' that can easily be used to plot risk curves.
 #'
 #' If there is no competing risk, the output is a matrix where each column
 #' corresponds to the several covariate profiles, and where each row corresponds
@@ -61,10 +53,10 @@
 #' @param ntimes Number of time points (only used if \code{time} is missing).
 #' @param ... Extra parameters. Currently these are simply ignored.
 #' @return If \code{time} was provided, returns the estimated absolute risk for
-#'   the user-supplied covariate profiles. This will be stored in a 2- or
-#'   3-dimensional array, depending on the input (see details). If both
-#'   \code{time} and \code{newdata} were provided, returns the original data
-#'   with a new column containing the risk estimate at failure time.
+#'   the user-supplied covariate profiles. This will be stored in a matrix or a
+#'   higher dimensional array, depending on the input (see details). If both
+#'   \code{time} and \code{newdata} are missing, returns the original data
+#'   with a new column containing the risk estimate at failure times.
 #' @export
 #' @importFrom stats formula delete.response setNames
 #' @examples
@@ -318,18 +310,8 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                       "increasing nsamp or using numerical integration"),
                 call. = FALSE)
     }
-
-    # Reformat output when only one time point
-    if (length(time) == 1) {
-        if (time == 0) {
-            output <- output[1,-1,drop = FALSE]
-        } else {
-            output <- output[2,-1,drop = FALSE]
-        }
-        rownames(output) <- time
-    } else {
-        if (!addZero) output <- output[-1,,drop = FALSE]
-    }
+    # Add time = 0?
+    if (!addZero) output <- output[-1, , drop = FALSE]
     # Add class
     class(output) <- c("absRiskCB", class(output))
     attr(output, "type") <- type
