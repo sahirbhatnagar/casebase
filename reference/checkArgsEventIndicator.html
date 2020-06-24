@@ -183,7 +183,8 @@ the second element is the numeric representation of the event</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>) <span class='co'># for veteran data</span>
-<span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>veteran</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"celltype"</span>, <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"smallcell"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming smallcell represents a censored observation and squamous is the event of interest</span></div><div class='output co'>#&gt; $event.factored
+<span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>veteran</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"celltype"</span>,
+                        <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"smallcell"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming smallcell represents a censored observation and squamous is the event of interest</span></div><div class='output co'>#&gt; $event.factored
 #&gt;   [1] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
 #&gt;   [8] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
 #&gt;  [15] squamous  smallcell smallcell smallcell smallcell smallcell smallcell
@@ -244,7 +245,8 @@ the second element is the numeric representation of the event</p>
 #&gt; $nLevels
 #&gt; [1] 2
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"bmtcrr"</span>) <span class='co'># from casebase</span>
-<span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"Sex"</span>, <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"M"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming M represents a censored observation and F is the event of interest</span></div><div class='output co'>#&gt; $event.factored
+<span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"Sex"</span>,
+                        <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"M"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming M represents a censored observation and F is the event of interest</span></div><div class='output co'>#&gt; $event.factored
 #&gt;   [1] M F M F F M M F M F M M F M M F M M M M F F M M M M F M M F M M F M F M M
 #&gt;  [38] M F F M M F M M M M M M M F F F F M F F M F M F M M F M F F M F M M M F F
 #&gt;  [75] M M F M M F M F M F F M F M M M F F M M F F M M F F F F F M M F F M F M M
@@ -261,7 +263,8 @@ the second element is the numeric representation of the event</p>
 #&gt; 
 #&gt; $nLevels
 #&gt; [1] 2
-#&gt; </div><div class='input'><span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"D"</span>, <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"AML"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming AML represents a censored observation and ALL is the event of interest</span></div><div class='output co'>#&gt; $event.factored
+#&gt; </div><div class='input'><span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"D"</span>,
+                        <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"AML"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming AML represents a censored observation and ALL is the event of interest</span></div><div class='output co'>#&gt; $event.factored
 #&gt;   [1] ALL AML ALL ALL ALL ALL ALL ALL ALL ALL ALL AML AML ALL ALL ALL ALL AML
 #&gt;  [19] ALL AML ALL ALL ALL ALL AML ALL ALL AML ALL AML AML AML ALL ALL ALL AML
 #&gt;  [37] ALL AML AML ALL AML AML AML AML AML AML ALL AML AML AML AML AML AML ALL
