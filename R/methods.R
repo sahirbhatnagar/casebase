@@ -627,10 +627,52 @@ plot.singleEventCB <- function(x, ...,
   }
 }
 
-
-
-
-
+#' @title Plot Cumulative Incidence and Survival Curves
+#' @description Plot method for objects returned by the \code{absoluteRisk}
+#'   function. Current plot types are cumulative incidence and survival
+#'   functions.
+#' @param x Fitted object of class `absRiskCB`. This is the result from the
+#'   [casebase::absoulteRisk()] function.
+#' @param ... further arguments passed to `matplot`. Only used if
+#'   \code{gg=FALSE}. See [graphics::par()] for details.
+#' @param xlab xaxis label, Default: 'time'
+#' @param ylab yaxis label, Default: 'cumulative incidence'
+#' @param type Line type. Only used if `gg = FALSE`. This argument gets passed
+#'   to [graphics::matplot()]. Default: 'l'
+#' @param gg Should the `ggplot2` package be used for plotting. Default: TRUE
+#' @param id.names Optional character vector used as legend key when `gg=TRUE`.
+#'   If missing, defaults to V1, V2, ...
+#' @param legend.title Optional character vector of the legend title. Only used
+#'   if `gg = FALSE`. Default is `'ID'`
+#' @return A plot of the cumulative incidence or survival curve
+#' @details
+#' @seealso \code{\link[graphics]{matplot}},
+#'   \code{\link[casebase]{absoluteRisk}},
+#'   \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{setattr}},
+#'   \code{\link[data.table]{melt.data.table}}
+#' @rdname absoluteRisk
+#' @export
+#' @importFrom graphics matplot
+#' @importFrom data.table as.data.table setnames melt
+#' @examples
+#' library(survival)
+#' library(ggplot2)
+#' data("brcancer")
+#' mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) +
+#'                                 horTh +
+#'                                 age +
+#'                                 menostat +
+#'                                 tsize +
+#'                                 tgrade +
+#'                                 pnodes +
+#'                                 progrec,
+#'                               data = brcancer,
+#'                               time = "time", ratio = 1)
+#' smooth_risk_brcancer <- absoluteRisk(object = mod_cb_tvc,
+#'                                      newdata = brcancer[c(1,50),])
+#'
+#' class(smooth_risk_brcancer)
+#' plot(smooth_risk_brcancer)
 plot.absRiskCB <- function(x, ...,
                            xlab = "time",
                            ylab = "cumulative incidence",
