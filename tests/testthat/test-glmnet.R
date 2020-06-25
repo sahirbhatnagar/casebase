@@ -5,13 +5,13 @@ testthat::skip_if_not_installed("glmnet")
 
 # Create data----
 n <- 100
-alpha <- 0.05
+alp <- 0.05
 lambda_t0 <- 1
 lambda_t1 <- 3
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-censor <- rexp(n = 2 * n, rate = -log(alpha))
+censor <- rexp(n = 2 * n, rate = -log(alp))
 
 times_c <- pmin(times, censor)
 event_c <- 1 * (times < censor)
@@ -36,14 +36,34 @@ formula_glmnet <- formula(paste(c("event ~ ftime", "Z",
 # Fitting----
 test_that("no error in fitting glmnet", {
     fitDF <- try(fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
-                                 family = "glmnet"),
+                                 family = "glmnet", ratio = 10),
                  silent = TRUE)
     fitDT <- try(fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
-                                 family = "glmnet"),
+                                 family = "glmnet", ratio = 10),
                  silent = TRUE)
 
     expect_false(inherits(fitDF, "try-error"))
     expect_false(inherits(fitDT, "try-error"))
+})
+
+#include categorical predictor
+cat_predictor <- factor(sample(c("no", "yes"), n, replace = TRUE))
+extra_vars <- matrix(rnorm(9 * n), ncol = 9)
+DT_cat <- cbind(DT, data.table(extra_vars,
+                               V10 = cat_predictor))
+
+formula_cat <- formula(paste(c("event ~ ftime", "Z",
+                               paste0("V", 1:10)),
+                             collapse = " + "))
+
+test_that("no error in glmnet with categorical vars", {
+    fitDT <- try(fitSmoothHazard(formula_cat, data = DT_cat, time = "ftime",
+                                 family = "glmnet", ratio = 10),
+                 silent = TRUE)
+    riskDT <- try(absoluteRisk(fitDT, time = 0.5), silent = TRUE)
+
+    expect_false(inherits(fitDT, "try-error"))
+    expect_false(inherits(riskDT, "try-error"))
 })
 
 # Absolute risk----

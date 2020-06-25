@@ -31,8 +31,8 @@ checkArgsTimeEvent <- function(data, time, event) {
       )
       if (length(time) > 1) {
         warning(paste0(
-          "The following variables for time were found in
-                              the data: ", paste0(time, collapse = ", "), ". '", time[1],
+          "The following variables for time were found in the data: ",
+          paste0(time, collapse = ", "), ". '", time[1],
           "' will be used as the time variable"
         ))
       } else {
@@ -57,8 +57,8 @@ checkArgsTimeEvent <- function(data, time, event) {
       )
       if (length(event) > 1) {
         warning(paste0(
-          "The following variables for event were found in
-                              the data: ", paste0(event, collapse = ", "), ". '", event[1],
+          "The following variables for event were found in the data: ",
+          paste0(event, collapse = ", "), ". '", event[1],
           "' will be used as the event variable"
         ))
       } else {
@@ -92,11 +92,14 @@ checkArgsTimeEvent <- function(data, time, event) {
 #' @export
 #' @examples
 #' library(survival) # for veteran data
-#' checkArgsEventIndicator(data = veteran, event = "celltype", censored.indicator = "smallcell")
+#' checkArgsEventIndicator(data = veteran, event = "celltype",
+#'                         censored.indicator = "smallcell")
 #' checkArgsEventIndicator(data = veteran, event = "status")
 #' data("bmtcrr") # from casebase
-#' checkArgsEventIndicator(data = bmtcrr, event = "Sex", censored.indicator = "M")
-#' checkArgsEventIndicator(data = bmtcrr, event = "D", censored.indicator = "AML")
+#' checkArgsEventIndicator(data = bmtcrr, event = "Sex",
+#'                         censored.indicator = "M")
+#' checkArgsEventIndicator(data = bmtcrr, event = "D",
+#'                         censored.indicator = "AML")
 #' checkArgsEventIndicator(data = bmtcrr, event = "Status")
 checkArgsEventIndicator <- function(data, event, censored.indicator) {
   isFactor <- is.factor(data[[event]])
@@ -109,7 +112,8 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
   }
 
   nLevels <- nlevels(factor(data[[event]]))
-  if (nLevels < 2) stop(strwrap("event variable must have at least two unique values"))
+  if (nLevels < 2) stop(paste("event variable must have",
+                              "at least two unique values"))
 
   if (missing(censored.indicator) || is.null(censored.indicator)) {
     if (isFactor) {
@@ -134,10 +138,10 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
     if (isNumeric) {
       slev <- sort(unique(data[[event]]))
-      if (!any(slev %in% 0)) stop(strwrap("event is a numeric variable that
-                                                doesn't contain 0. if event is a numeric
-                                                it must contain some 0's
-                                                to indicate censored observations"))
+      if (!any(slev %in% 0)) stop(paste("event is a numeric variable that",
+                                        "doesn't contain 0. if event is a",
+                                        "numericit must contain some 0's",
+                                        "to indicate censored observations"))
       event.factored <- if (nLevels == 2) {
         factor(data[[event]],
           labels = c("censored", "event")
@@ -219,10 +223,24 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
 # Add a formula interface to cv.glmnet
 #' @importFrom stats model.matrix
-cv.glmnet.formula <- function(formula, data, event, competingRisk = FALSE, ...) {
-  X <- model.matrix(update(formula, ~ . - 1), data)
+#' @importFrom stats contrasts
+prepareX <- function(formula, data) {
+  whichfac <- sapply(data, inherits, "factor")
+  ctr <- if (any(whichfac)) {
+    lapply(subset(data, select = whichfac),
+           contrasts, contrast = FALSE)
+  } else NULL
+  X <- model.matrix(update(formula, ~ . - 1), data = data, contrasts.arg = ctr)
+  if (any(whichfac))
+    attr(X, "contrasts") = NULL
+  attr(X, "assign") = NULL
+  X
+}
+
+cv.glmnet.formula <- function(formula, data, event,
+                              competingRisk = FALSE, ...) {
+  X <- prepareX(formula, data)
   Y <- data[, event]
-  offset <- data[, "offset"]
   if (competingRisk) {
     fam <- "multinomial"
     offset <- NULL
@@ -230,7 +248,8 @@ cv.glmnet.formula <- function(formula, data, event, competingRisk = FALSE, ...) 
     fam <- "binomial"
     offset <- data[, "offset"]
   }
-  cv.glmnet_offset_hack(X, Y, offset = offset, family = fam, type.multinomial = "grouped", ...)
+  cv.glmnet_offset_hack(X, Y, offset = offset, family = fam,
+                        type.multinomial = "grouped", ...)
 }
 
 cv.glmnet_offset_hack <- function(x, y, offset, ...) {
@@ -289,7 +308,8 @@ trap_int <- function(x, y) {
 }
 
 # Detect if formula contains a function of time or interaction----
-count_matches <- function(pat, vec) sapply(regmatches(vec, gregexpr(pat, vec)), length)
+count_matches <- function(pat, vec) sapply(regmatches(vec, gregexpr(pat, vec)),
+                                           length)
 
 balance_parentheses <- function(str) {
   num_left <- count_matches("\\(", str)
@@ -367,7 +387,8 @@ incrVar <- function(var, increment = 1) {
   function(data) {
     for (i in 1:n) {
       if (is.factor(data[[var[i]]])) {
-        data[[var[i]]] <- fct_shift_ord(data[[var[i]]], increment = increment[i])
+        data[[var[i]]] <- fct_shift_ord(data[[var[i]]],
+                                        increment = increment[i])
       } else {
         data[[var[i]]] <- data[[var[i]]] + increment[i]
       }
@@ -384,7 +405,8 @@ fct_shift_ord <- function(x, increment = 1, cap = TRUE, .fun = `+`) {
   # apply function .fun to the numeric of the ordered vector
   erg <- .fun(as.numeric(x), increment)
 
-  # cap to 1 and x_nlevel if the increment was larger than the original range of the factor levels
+  # cap to 1 and x_nlevel if the increment was larger
+  # than the original range of the factor levels
   if (cap) {
     erg[erg < 1] <- 1
     erg[erg > x_nlevel] <- x_nlevel
