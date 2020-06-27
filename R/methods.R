@@ -2,8 +2,7 @@
 
 #' Population Time Plot
 #'
-#' @description \code{plot} method for objects of class \code{popTime} and
-#'   \code{popTimeExposure}
+#' @description \code{plot} method for objects of class \code{popTime}
 #'
 #' @param x an object of class \code{popTime} or \code{popTimeExposure}.
 #' @param ... Ignored.
@@ -395,8 +394,9 @@ plot.popTime <- function(x, ...,
 #'   function accounts for the possible time-varying exposure effects.
 #' @param x Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This is
 #'   the result from the [casebase::fitSmoothHazard()] function.
-#' @param ... further arguments passed to `plot`. Only used if
-#'   \code{type="hr"}. See [graphics::par()] for details.
+#' @param ... further arguments passed to `plot`. Only used if \code{type="hr"}.
+#'   Any of `lwd`,`lty`,`col`,`pch`,`cex` will be applied to the hazard ratio
+#'   line, or point (if only one time point is supplied to `newdata`).
 #' @param type plot type. Choose one of either \code{"hazard"} for hazard
 #'   function or \code{"hr"} for hazard ratio.  Default: \code{type = "hazard"}.
 #' @param hazard.params Named list of arguments which will override the defaults
@@ -675,7 +675,7 @@ plot.singleEventCB <- function(x, ...,
 #' plot(smooth_risk_brcancer)
 plot.absRiskCB <- function(x, ...,
                            xlab = "time",
-                           ylab = "cumulative incidence",
+                           ylab = ifelse(attr(x, "type") == "CI","cumulative incidence","survival probability"),
                            type = "l",
                            gg = TRUE,
                            id.names,

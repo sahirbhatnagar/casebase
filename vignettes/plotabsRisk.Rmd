@@ -126,8 +126,15 @@ smooth_surv_brcancer <- absoluteRisk(object = mod_cb_glm,
                                      newdata = brcancer[c(1,50),],
                                      type = "survival")
 
-plot(smooth_surv_brcancer, 
-     ylab = "survival probability")
+plot(smooth_surv_brcancer)
+
+smooth_surv_brcancer <- absoluteRisk(object = mod_cb_glm, 
+                                     newdata = brcancer[1,],
+                                     time = 90,
+                                     type = "survival")
+
+plot(smooth_surv_brcancer)
+
 ```
 
 
@@ -135,10 +142,6 @@ plot(smooth_surv_brcancer,
 
 
 ```{r eval=TRUE}
-
-
-pacman::p_load(casebase)
-data("brcancer")
 mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*time + 
                                      horTh + 
                                      age + 

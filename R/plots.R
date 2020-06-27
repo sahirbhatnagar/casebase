@@ -397,6 +397,15 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
   i.backw <- order(xvar_values, decreasing = TRUE)
   i.forw <- order(xvar_values)
 
+  other_plot_args <- list(...)
+  line_args <- grep("^lwd$|^lty$|^col$|^pch$|^cex$", names(other_plot_args))
+
+  if (length(line_args) == 0) {
+    line_args <- list(NULL)
+  } else {
+    line_args <- other_plot_args[line_args]
+  }
+
   # plot CI as polygon shade - if 'se = TRUE' (default)
   if (ci) {
     v2 <- stats::vcov(x)
@@ -407,20 +416,10 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
     x.poly <- c(xvar_values[i.forw], xvar_values[i.backw])
     y.poly <- c(hazard_ratio_lower[i.forw], hazard_ratio_upper[i.backw])
 
-    other_plot_args <- list(...)
-
-    line_args <- grep("^lwd$|^lty$|^col$", names(other_plot_args))
-
-    if (length(line_args) == 0) {
-      line_args <- list(NULL)
-    } else {
-      line_args <- other_plot_args[line_args]
-    }
-
     do.call("plot", utils::modifyList(
       list(
         x = range(x.poly),
-        y = range(y.poly),
+        y = range(y.poly)*c(0.99, 1.01),
         type = "n",
         ylab = "hazard ratio",
         xlab = xvar
@@ -428,20 +427,31 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
       other_plot_args
     ))
 
-    graphics::polygon(x.poly, y.poly, col = ci.col, border = NA)
-
-    do.call("lines", utils::modifyList(
-      list(
-        x = xvar_values[i.forw],
-        y = exp(log_hazard_ratio[i.forw]),
-        lwd = 2,
-        lty = 1,
-        col = "black"
-      ),
-      line_args
-    ))
-
-    # browser()
+    if (length(unique(x.poly)) == 1) {
+      graphics::arrows(x0 = x.poly[1], y0 = y.poly[1], y1 = y.poly[2], angle = 90, length = 0.5, code = 3)
+      do.call("points", utils::modifyList(
+        list(
+          x = xvar_values[i.forw],
+          y = exp(log_hazard_ratio[i.forw]),
+          pch = 19,
+          col = "black",
+          cex = 2
+        ),
+        line_args
+      ))
+    } else {
+      graphics::polygon(x.poly, y.poly, col = ci.col, border = NA)
+      do.call("lines", utils::modifyList(
+        list(
+          x = xvar_values[i.forw],
+          y = exp(log_hazard_ratio[i.forw]),
+          lwd = 2,
+          lty = 1,
+          col = "black"
+        ),
+        line_args
+      ))
+    }
 
     results <- transform(newdata,
       log_hazard_ratio = log_hazard_ratio,
@@ -450,14 +460,30 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
       lowerbound = hazard_ratio_lower,
       upperbound = hazard_ratio_upper
     )
+
   } else {
-    do.call("plot", utils::modifyList(
-      list(
-        x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l",
-        ylab = "hazard ratio", xlab = xvar
-      ),
-      list(...)
-    ))
+
+    # browser()
+
+    if (length(xvar_values) == 1) {
+      do.call("plot", utils::modifyList(
+        list(
+          x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1,
+          pch = 19, cex = 2, ylab = "hazard ratio", xlab = xvar
+        ),
+        other_plot_args
+      ))
+
+    } else {
+
+      do.call("plot", utils::modifyList(
+        list(
+          x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l",
+          ylab = "hazard ratio", xlab = xvar
+        ),
+        other_plot_args
+      ))
+    }
 
     results <- transform(newdata,
       log_hazard_ratio = log_hazard_ratio,
