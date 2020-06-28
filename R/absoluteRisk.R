@@ -8,8 +8,7 @@
 #'
 #' If \code{newdata = "typical"}, we create a typical covariate profile for the
 #' absolute risk computation. This means that we take the median for numerical
-#' and date variables; we take the first element in alphabetical order for
-#' character variables; and we take the reference level for factor variables.
+#' and date variables, and we take the most common level for factor variables.
 #'
 #' In general, the output will include a column corresponding to the provided
 #' time points. Some modifications of the \code{time} vector are done:

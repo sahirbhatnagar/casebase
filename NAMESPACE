@@ -2,6 +2,7 @@
 
 S3method(plot,popTime)
 S3method(plot,singleEventCB)
+S3method(print,absRiskCB)
 export(absoluteRisk)
 export(absoluteRisk.CompRisk)
 export(checkArgsEventIndicator)
