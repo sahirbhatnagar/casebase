@@ -138,15 +138,17 @@
       <small>Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="casebase-0-2-0" class="section level1">
-<h1 class="page-header" data-toc-text="0.2.0">
-<a href="#casebase-0-2-0" class="anchor"></a>casebase 0.2.0<small> Unreleased </small>
+    <div id="casebase-1-0-0" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.0">
+<a href="#casebase-1-0-0" class="anchor"></a>casebase 1.0.0<small> Unreleased </small>
 </h1>
 <ul>
-<li>Major new release</li>
+<li><em>Major new release</em></li>
 <li>Some minor bug fixes</li>
 <li>Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up</li>
 <li>Major refactoring of absoluteRisk</li>
+<li>Users now have further control on the output of <code>absoluteRisk</code> using the arguments <code>type</code> and <code>addZero</code>.</li>
+<li>The output of <code>absoluteRisk</code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
 <li>Population time plots now use <code>geom_ribbon</code> instead of <code>geom_segment</code>
 </li>
 <li>Population time functions now allowed for more flexible plots with user defined arguments</li>

@@ -138,7 +138,7 @@ and then converting this to an estimated survival for each individual." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute absolute risks using the fitted hazard function.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk-cr.R'><code>R/absoluteRisk-cr.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk.R'><code>R/absoluteRisk.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk-cr.R'><code>R/absoluteRisk-cr.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk.R'><code>R/absoluteRisk.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
     <div class="hidden name"><code>absoluteRisk.Rd</code></div>
     </div>
 
@@ -172,7 +172,10 @@ and then converting this to an estimated survival for each individual.</p>
   <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>ntimes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='no'>...</span>
-)</pre>
+)
+
+<span class='co'># S3 method for absRiskCB</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -238,6 +241,11 @@ required (for class <code>cv.glmnet</code>).</p></td>
       <th>...</th>
       <td><p>Extra parameters. Currently these are simply ignored.</p></td>
     </tr>
+    <tr>
+      <th>x</th>
+      <td><p>Object of class <code>absRiskCB</code>, such as the output of
+<code>absoluteRisk</code> with single event.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -251,8 +259,7 @@ with a new column containing the risk estimate at failure times.</p>
 
     <p>If <code>newdata = "typical"</code>, we create a typical covariate profile for the
 absolute risk computation. This means that we take the median for numerical
-and date variables; we take the first element in alphabetical order for
-character variables; and we take the reference level for factor variables.</p>
+and date variables, and we take the most common level for factor variables.</p>
 <p>In general, the output will include a column corresponding to the provided
 time points. Some modifications of the <code>time</code> vector are done:
 <code>time=0</code> is added, the time points are ordered, and duplicates are
