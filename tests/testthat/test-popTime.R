@@ -131,4 +131,3 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
     expect_false(inherits(p7, "try-error"))
 
 })
-

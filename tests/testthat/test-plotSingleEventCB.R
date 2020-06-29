@@ -170,4 +170,3 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     expect_false(inherits(outglm_hr_noci, "try-error"))
     expect_false(inherits(outglm_hr_exposed, "try-error"))
 })
-

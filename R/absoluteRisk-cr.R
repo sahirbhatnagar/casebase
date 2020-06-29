@@ -17,9 +17,6 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
                  call. = FALSE)
         }
         newdata <- object@originalData
-        # colnames(data)[colnames(data) == "event"] <- "status"
-        # Next commented line will break on data.table
-        # newdata <- newdata[, colnames(newdata) != "time"]
         unselectTime <- (names(newdata) != object@timeVar)
         newdata <- subset(newdata, select = unselectTime)
     }
@@ -34,19 +31,20 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
     time_ordered <- unique(c(0, sort(time)))
     # Create array to store output
     if (onlyMain) {
-        output <- matrix(NA, ncol = nrow(newdata) + 1, nrow = length(time_ordered))
-        output[,1] <- time_ordered
+        output <- matrix(NA, ncol = nrow(newdata) + 1,
+                         nrow = length(time_ordered))
+        output[, 1] <- time_ordered
         colnames(output) <- c("time", rep("", nrow(newdata)))
         rownames(output) <- rep("", length(time_ordered))
-        output[1,-1] <- 0
+        output[1, -1] <- 0
     } else {
         J <- length(typeEvents) - 1
         output <- array(NA, dim = c(length(time_ordered), nrow(newdata) + 1, J))
-        output[,1,] <- time_ordered
+        output[, 1, ] <- time_ordered
         dimnames(output) <- list(rep("", length(time_ordered)),
                                  c("time", rep("", nrow(newdata))),
                                  paste("event", typeEvents[-1], sep = "="))
-        output[1,-1,] <- 0
+        output[1, -1, ] <- 0
     }
 
     # Compute subdensities
@@ -58,12 +56,12 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
 
         for (j in seq_len(nrow(newdata))) {
             # Extract current obs
-            current_obs <- newdata[j,,drop = FALSE]
+            current_obs <- newdata[j, , drop = FALSE]
             # Create data.table for prediction
             newdata2 <- data.table::data.table(current_obs)
             newdata2 <- newdata2[rep(1, length(knots))]
-            newdata2[,object@timeVar := knots]
-            newdata2[,"offset" := 0]
+            newdata2[, timeVar := knots]
+            newdata2[, "offset" := 0]
             # Compute all values for all hazards
             lambdas <- exp(predict_CompRisk(object, newdata2))
             lambdas[which(lambdas %in% c(Inf, -Inf))] <- 0
@@ -72,12 +70,12 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
             if (onlyMain) {
                 # Only compute first subdensity
                 subdensity <- lambdas[,1] * survFunction
-                pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
-                output[,j+1] <- pred
+                pred <- trap_int(knots, subdensity)[knots %in% c(0, time)]
+                output[, j + 1] <- pred
             } else {
                 subdensity <- lambdas * drop(survFunction)
-                pred <- trap_int(knots, subdensity)[knots %in% c(0,time)]
-                output[,j+1,] <- pred
+                pred <- trap_int(knots, subdensity)[knots %in% c(0, time)]
+                output[, j + 1, ] <- pred
             }
         }
     } else {
@@ -88,41 +86,50 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
                         min = 0, max = max(time_ordered))
         knots2 <- sort(knots2)
         for (j in seq_len(nrow(newdata))) {
-            current_obs <- newdata[j,,drop = FALSE]
+            current_obs <- newdata[j, , drop = FALSE]
             # Create data.table for prediction
             newdata2 <- data.table(current_obs)
             newdata2 <- newdata2[rep(1, length(knots))]
-            newdata2[,object@timeVar := knots]
-            newdata2[,"offset" := 0]
+            newdata2[, timeVar := knots]
+            newdata2[, "offset" := 0]
             # Compute all values for all hazards
             lambdas <- exp(predict_CompRisk(object, newdata2))
             lambdas[which(lambdas %in% c(Inf, -Inf))] <- 0
             OverallLambda <- rowSums(lambdas)
-            mean_values <- sapply(split(OverallLambda, cut(knots, breaks = knots2)),
+            mean_values <- sapply(split(OverallLambda,
+                                        cut(knots, breaks = knots2)),
                                   mean, na.rm = TRUE)
             mean_values[is.na(mean_values)] <- 0
             survFunction <- exp(-cumsum(c(0, mean_values * diff(knots2))))
             # Second integral---Create data.table for prediction
             newdata2 <- data.table(current_obs)
             newdata2 <- newdata2[rep(1, length(knots2))]
-            newdata2[,object@timeVar := knots2]
-            newdata2[,"offset" := 0]
+            newdata2[, timeVar := knots2]
+            newdata2[, "offset" := 0]
             # Compute all values for all hazards
             lambdas2 <- exp(predict_CompRisk(object, newdata2))
             lambdas2[which(lambdas2 %in% c(Inf, -Inf))] <- 0
             if (onlyMain) {
                 # Only compute first subdensity
-                subdensity <- lambdas2[,1] * survFunction
-                mean_values2 <- sapply(split(subdensity, cut(knots2, breaks = time_ordered)),
+                subdensity <- lambdas2[, 1] * survFunction
+                mean_values2 <- sapply(split(subdensity,
+                                             cut(knots2, breaks = time_ordered)),
                                        mean, na.rm = TRUE)
                 pred <- cumsum(c(0, mean_values2 * diff(time_ordered)))
-                output[,j+1] <- pred
+                output[, j + 1] <- pred
             } else {
                 subdensity <- lambdas2 * drop(survFunction)
-                mean_values2 <- sapply(split(seq_len(nrow(subdensity)), cut(knots2, breaks = time_ordered)),
-                                       function(ind) colMeans(subdensity[ind,,drop = FALSE], na.rm = TRUE))
-                pred <- apply(mean_values2, 1, function(row) cumsum(c(0, row * diff(time_ordered))))
-                output[,j+1,] <- pred
+                mean_values2 <- sapply(split(seq_len(nrow(subdensity)),
+                                             cut(knots2, breaks = time_ordered)),
+                                       function(ind) {
+                                           colMeans(subdensity[ind, ,
+                                                               drop = FALSE],
+                                                    na.rm = TRUE)
+                                           })
+                pred <- apply(mean_values2, 1, function(row) {
+                    cumsum(c(0, row * diff(time_ordered)))
+                    })
+                output[, j + 1, ] <- pred
             }
         }
     }
@@ -379,7 +386,7 @@ absoluteRisk.CompRiskGlmnet <- function(object, time, newdata,
 # }
 
 #' @importFrom stats coef
-predict_CompRisk <- function (object, newdata = NULL) {
+predict_CompRisk <- function(object, newdata = NULL) {
     ttob <- terms(object)
     X <- model.matrix(delete.response(ttob), newdata,
                       contrasts = if (length(object@contrasts)) object@contrasts else NULL,

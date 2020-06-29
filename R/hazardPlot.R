@@ -123,7 +123,7 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
 
     newdata <- newdata[rep(seq_len(nrow(newdata)), each=length(times)), , drop = FALSE]
     newdata$sequence_of_times <- times
-    names(newdata)[names(newdata) == 'sequence_of_times'] <- object[["timeVar"]]
+    names(newdata)[names(newdata) == "sequence_of_times"] <- object[["timeVar"]]
 
     newdata$offset <- 0
     # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
@@ -218,6 +218,3 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     }
     return(invisible(newdata))
 }
-
-
-

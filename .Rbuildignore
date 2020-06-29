@@ -8,6 +8,7 @@
 ^exercises5\.R$
 ^newpoptime\.R$
 ^risksets\.R$
+^visreg\.R$
 ^vignettes\/bmtcrr\.csv$
 ^inst\/doc\/.*R$
 ^inst\/doc\/.*md$
@@ -34,3 +35,4 @@
 ^HR_ci\.R$
 ^doc$
 ^Meta$
+^\.lintr$
