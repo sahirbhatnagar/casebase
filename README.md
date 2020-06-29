@@ -29,6 +29,7 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 2. [Competing Risks Analysis](http://sahirbhatnagar.com/casebase/articles/competingRisk.html)
 3. [Population Time Plots](http://sahirbhatnagar.com/casebase/articles/popTime.html)
 4. [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html)
+5. [Plot Hazards and Hazard Ratios](http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html)
 
 # Class structure
 
@@ -54,6 +55,7 @@ This package is makes use of several existing packages including:
 * [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting multinomial logistic regression models
 * [`survival`](https://cran.r-project.org/package=survival) for survival models
 * [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting the population time plots
+* [`data.table`](https://cran.r-project.org/package=data.table) for efficient handling of large datasets
 
 ## Citation
 

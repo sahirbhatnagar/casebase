@@ -6,15 +6,17 @@ bibentry(
      author = c(
         person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
         role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
-        person("Maxime", "Turgeon", email = "maxime.turgeon@mail.mcgill.ca",
-        role = c("aut"), comment = "http://turgeonmaxime.github.io/"),
+        person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
+        role = c("aut"), comment = c(ORCID = "0000-0003-4863-6035")),
+        person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
+        role = c("aut"), comment = "https://www.jesseislam.com/"),
         person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
         role = c("aut"), comment = "http://individual.utoronto.ca/osaarela/"),
         person("James", "Hanley", email = "james.hanley@mcgill.ca",
         role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
-    ),
-     year = "2017",
-     note = "R package version 0.1.0",
+  ),
+     year = "2020",
+     note = "R package version 0.9.0",
      url = "https://CRAN.R-project.org/package=casebase",
      key = "casebase-package"
    )
