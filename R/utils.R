@@ -365,18 +365,13 @@ get_typical <- function(data) {
     if (is.numeric(col) || inherits(col, "Date")) {
       # For numeric or dates, take median
       median(col, na.rm = TRUE)
-    } else if (is.character(col)) {
-      # If character string, take first value in alphabetical order
-      sort(unique(col))[1]
     } else {
-      # For factors, take reference level
-      factor(levels(col)[1], levels(col))
+      # If character string or factor, take most common value
+      mode <- names(sort(-table(col)))[1]
+      factor(mode, levels = levels(factor(col)))
     }
   }))
 }
-
-
-
 
 #' @rdname plot.singleEventCB
 incrVar <- function(var, increment = 1) {

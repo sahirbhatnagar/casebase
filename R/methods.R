@@ -720,12 +720,23 @@ plot.absRiskCB <- function(x, ...,
 }
 
 
+#################
+# S3 objects----
+#' @param x Object of class \code{absRiskCB}, such as the output of
+#'   \code{absoluteRisk} with single event.
+#' @export
+#' @rdname absoluteRisk
+print.absRiskCB <- function(x, ...) {
+  # Print without attributes for cleaner output
+  print(x[, , drop = FALSE])
+}
+
+#################
+# S4 objects----
+
 #' @import methods
 #' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms
 NULL
-
-#################
-# S4 objects ----
 
 #' An S4 class to store the output of fitSmoothHazard
 #'
