@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.9000</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Introduction to casebase sampling</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-06-28</h4>
+            <h4 class="date">2020-06-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/smoothHazard.Rmd"><code>vignettes/smoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>smoothHazard.Rmd</code></div>
@@ -118,14 +118,15 @@
 <a href="#analysis-of-the-veteran-dataset" class="anchor"></a>Analysis of the <code>veteran</code> dataset</h2>
 <p>The first example we discuss uses the well-known <code>veteran</code> dataset, which is part of the <code>survival</code> package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">12345</span>)
-
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">casebase</span>)</pre></body></html></div>
+<pre><code>## See example usage at http://sahirbhatnagar.com/casebase/</code></pre>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="no">veteran</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">veteran</span>$<span class="no">status</span>)</pre></body></html></div>
 <pre><code>## 
 ##   0   1 
 ##   9 128</code></pre>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">evtimes</span> <span class="kw">&lt;-</span> <span class="no">veteran</span>$<span class="no">time</span>[<span class="no">veteran</span>$<span class="no">status</span> <span class="kw">==</span> <span class="fl">1</span>]
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">evtimes</span> <span class="kw">&lt;-</span> <span class="no">veteran</span>$<span class="no">time</span>[<span class="no">veteran</span>$<span class="no">status</span> <span class="kw">==</span> <span class="fl">1</span>]
 <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span>(<span class="no">evtimes</span>, <span class="kw">nclass</span> <span class="kw">=</span> <span class="fl">30</span>, <span class="kw">main</span> <span class="kw">=</span> <span class="st">''</span>, <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'Survival time (days)'</span>,
      <span class="kw">col</span> <span class="kw">=</span> <span class="st">'gray90'</span>, <span class="kw">probability</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="no">tgrid</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>, <span class="fl">1000</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="fl">10</span>)
@@ -134,12 +135,12 @@
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 <p>As we can see, the empirical survival function ressembles an exponential distribution.</p>
 <p>We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">veteran</span>$<span class="no">prior</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">prior</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">10</span>), <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"no"</span>,<span class="st">"yes"</span>))
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">veteran</span>$<span class="no">prior</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">prior</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">10</span>), <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"no"</span>,<span class="st">"yes"</span>))
 <span class="no">veteran</span>$<span class="no">celltype</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">celltype</span>,
                            <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'large'</span>, <span class="st">'squamous'</span>, <span class="st">'smallcell'</span>, <span class="st">'adeno'</span>))
 <span class="no">veteran</span>$<span class="no">trt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">trt</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">2</span>), <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"standard"</span>, <span class="st">"test"</span>))</pre></body></html></div>
 <p>Using the <code>eha</code> package, we can fit a Weibull form, with different values of the shape parameter. For <code>shape = 1</code>, we get an exponential distribution:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">eha</span>)
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">eha</span>)
 <span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">veteran</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">status</span>))
 
 <span class="no">model1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/eha/man/weibreg.html">weibreg</a></span>(<span class="no">y</span> ~ <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> + <span class="no">celltype</span> + <span class="no">trt</span>,
@@ -176,7 +177,7 @@
 ## Degrees of freedom        8 
 ## Overall p-value           4.64229e-12</code></pre>
 <p>If we take <code>shape = 0</code>, the shape parameter is estimated along with the regression coefficients:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">model2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/eha/man/weibreg.html">weibreg</a></span>(<span class="no">y</span> ~ <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> + <span class="no">celltype</span> + <span class="no">trt</span>,
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">model2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/eha/man/weibreg.html">weibreg</a></span>(<span class="no">y</span> ~ <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> + <span class="no">celltype</span> + <span class="no">trt</span>,
                   <span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>, <span class="kw">shape</span> <span class="kw">=</span> <span class="fl">0</span>)
 <span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model2</span>)</pre></body></html></div>
 <pre><code>## Call:
@@ -209,7 +210,7 @@
 ## Degrees of freedom        8 
 ## Overall p-value           4.65393e-11</code></pre>
 <p>Finally, we can also fit a Cox proportional hazard:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">model3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span>(<span class="no">y</span> ~ <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> + <span class="no">celltype</span> + <span class="no">trt</span>,
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">model3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span>(<span class="no">y</span> ~ <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> + <span class="no">celltype</span> + <span class="no">trt</span>,
                 <span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>)
 <span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">model3</span>)</pre></body></html></div>
 <pre><code>## Call:
@@ -247,19 +248,17 @@
 <p>As we can see, all three models are significant, and they give similar information: <code>karno</code> and <code>celltype</code> are significant predictors, both treatment is not.</p>
 <p>The method available in this package makes use of <em>case-base sampling</em>. That is, person-moments are randomly sampled across the entire follow-up time, with some moments corresponding to cases and others to controls. By sampling person-moments instead of individuals, we can then use logistic regression to fit smooth-in-time parametric hazard functions. See the previous section for more details.</p>
 <p>First, we will look at the follow-up time by using population-time plots:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co"># create popTime object</span>
-<span class="no">pt_veteran</span> <span class="kw">&lt;-</span> <span class="kw pkg">casebase</span><span class="kw ns">::</span><span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="co"># create popTime object</span>
+<span class="no">pt_veteran</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span>(<span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
 <pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">pt_veteran</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">pt_veteran</span>)</pre></body></html></div>
 <pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="co"># plot method for objects of class 'popTime'</span>
+<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="co"># plot method for objects of class 'popTime'</span>
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">pt_veteran</span>)</pre></body></html></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual’s follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.</p>
 <p>Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">casebase</span>)</pre></body></html></div>
-<pre><code>## See example usage at http://sahirbhatnagar.com/casebase/</code></pre>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">model4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="no">time</span> + <span class="no">karno</span> + <span class="no">diagtime</span> + <span class="no">age</span> + <span class="no">prior</span> +
              <span class="no">celltype</span> + <span class="no">trt</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">veteran</span>, <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">100</span>)</pre></body></html></div>
 <pre><code>## 'time' will be used as the time variable</code></pre>
@@ -465,7 +464,7 @@
 <div class="sourceCode" id="cb46"><html><body><pre class="r"><span class="no">linearRisk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">veteran</span>)
 <span class="no">splineRisk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model6</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fl">90</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">veteran</span>)
 
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">linearRisk</span>, <span class="no">splineRisk</span>,
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot.default</a></span>(<span class="no">linearRisk</span>, <span class="no">splineRisk</span>,
      <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Linear"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Splines"</span>, <span class="kw">pch</span> <span class="kw">=</span> <span class="fl">19</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span>(<span class="kw">a</span> <span class="kw">=</span> <span class="fl">0</span>, <span class="kw">b</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">'red'</span>)</pre></body></html></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
@@ -643,24 +642,47 @@ trttest
                        <span class="kw">prior</span> <span class="kw">=</span> <span class="st">"no"</span>)
 
 <span class="co"># calculate cumulative incidence using casebase model</span>
-<span class="no">smooth_risk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>, <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span>),
+<span class="no">smooth_risk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>,
+                            <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span>),
                             <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">new_data</span>)
+
+<span class="no">cols</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#8E063B"</span>,<span class="st">"#023FA5"</span>)
 
 <span class="co"># cumulative incidence function for the Cox model</span>
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="no">model3</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">new_data</span>),
      <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Days"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Cumulative Incidence (%)"</span>, <span class="kw">fun</span> <span class="kw">=</span> <span class="st">"event"</span>,
-     <span class="kw">xlim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">300</span>), <span class="kw">conf.int</span> <span class="kw">=</span> <span class="no">F</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>,
+     <span class="kw">xlim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">300</span>), <span class="kw">conf.int</span> <span class="kw">=</span> <span class="no">F</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">1</span>],
      <span class="kw">main</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"Estimated Cumulative Incidence (risk) of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">karno</span>), <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">diagtime</span>),
                     <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">age</span>)))
 
 <span class="co"># add casebase curve with legend</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">smooth_risk</span>[,<span class="fl">1</span>], <span class="no">smooth_risk</span>[,<span class="fl">2</span>], <span class="kw">type</span> <span class="kw">=</span> <span class="st">"l"</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"blue"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">2</span>], <span class="kw">gg</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"bottomright"</span>,
        <span class="kw">legend</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span>),
-       <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"red"</span>,<span class="st">"blue"</span>),
+       <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>,
        <span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>),
        <span class="kw">bg</span> <span class="kw">=</span> <span class="st">"gray90"</span>)</pre></body></html></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<p>Note that by default, <code>absoulteRisk</code> calculated the cumulative incidence. Alternatively, you can calculate the survival curve by specifying <code>type = 'survival'</code> in the call to <code>absoulteRisk</code>:</p>
+<div class="sourceCode" id="cb48"><html><body><pre class="r"><span class="no">smooth_risk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">model4</span>,
+                            <span class="kw">time</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span>),
+                            <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">new_data</span>,
+                            <span class="kw">type</span> <span class="kw">=</span> <span class="st">"survival"</span>)
+
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span>(<span class="no">model3</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">new_data</span>),
+     <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"Days"</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Survival Probability (%)"</span>,
+     <span class="kw">xlim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>,<span class="fl">300</span>), <span class="kw">conf.int</span> <span class="kw">=</span> <span class="no">F</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">1</span>],
+     <span class="kw">main</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"Estimated Survival Probability of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">karno</span>), <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">diagtime</span>),
+                    <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span>(<span class="no">veteran</span>$<span class="no">age</span>)))
+
+<span class="co"># add casebase curve with legend</span>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">2</span>], <span class="kw">gg</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"topright"</span>,
+       <span class="kw">legend</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span>),
+       <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>,
+       <span class="kw">lty</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">1</span>),
+       <span class="kw">bg</span> <span class="kw">=</span> <span class="st">"gray90"</span>)</pre></body></html></div>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div id="session-information" class="section level2">
 <h2 class="hasAnchor">
@@ -678,13 +700,13 @@ trttest
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] visreg_2.7.0        casebase_1.0.0.9000 eha_2.8.1          
-## [4] survival_3.1-12    
+## [1] visreg_2.7.0        eha_2.8.1           survival_3.1-12    
+## [4] casebase_0.9.0.9000
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] highr_0.8         compiler_4.0.0    pillar_1.4.4      tools_4.0.0      
-##  [5] digest_0.6.25     nlme_3.1-147      evaluate_0.14     memoise_1.1.0    
-##  [9] lifecycle_0.2.0   tibble_3.0.1      gtable_0.3.0      lattice_0.20-41  
+##  [5] digest_0.6.25     lattice_0.20-41   evaluate_0.14     memoise_1.1.0    
+##  [9] lifecycle_0.2.0   tibble_3.0.1      gtable_0.3.0      nlme_3.1-147     
 ## [13] mgcv_1.8-31       pkgconfig_2.0.3   rlang_0.4.6       Matrix_1.2-18    
 ## [17] yaml_2.2.1        pkgdown_1.5.1     xfun_0.15         stringr_1.4.0    
 ## [21] knitr_1.29        desc_1.2.0        fs_1.4.1          vctrs_0.3.1      

@@ -75,7 +75,7 @@ function accounts for the possible time-varying exposure effects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.9000</span>
       </span>
     </div>
 
@@ -181,8 +181,9 @@ the result from the <code><a href='fitSmoothHazard.html'>casebase::fitSmoothHaza
     </tr>
     <tr>
       <th>...</th>
-      <td><p>further arguments passed to <code>plot</code>. Only used if
-<code>type="hr"</code>. See <code><a href='https://rdrr.io/r/graphics/par.html'>graphics::par()</a></code> for details.</p></td>
+      <td><p>further arguments passed to <code>plot</code>. Only used if <code>type="hr"</code>.
+Any of <code>lwd</code>,<code>lty</code>,<code>col</code>,<code>pch</code>,<code>cex</code> will be applied to the hazard ratio
+line, or point (if only one time point is supplied to <code>newdata</code>).</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -371,19 +372,19 @@ visreg. The R Journal, 9: 56-71.</p>
                <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># see data used to create plot</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>result</span>)</div><div class='output co'>#&gt;         treat eventtime log_hazard_ratio standarderror hazard_ratio lowerbound
-#&gt; 5%  treatment 0.3041724         1.788829     0.8993497     5.982444   1.026481
-#&gt; 6%  treatment 0.3674037         1.714654     0.8187964     5.554753   1.116102
-#&gt; 7%  treatment 0.3858805         1.692942     0.7968553     5.435449   1.140121
-#&gt; 8%  treatment 0.4763667         1.586466     0.6998690     4.886447   1.239549
-#&gt; 9%  treatment 0.5281715         1.525462     0.6521671     4.597268   1.280484
-#&gt; 10% treatment 0.5501260         1.499615     0.6336622     4.479963   1.293898
+#&gt; 5%  treatment 0.3598571         1.921424     1.1888859     6.830678  0.6644806
+#&gt; 6%  treatment 0.4018438         1.818140     1.1210188     6.160387  0.6845340
+#&gt; 7%  treatment 0.4378366         1.732305     1.0658413     5.653668  0.6999782
+#&gt; 8%  treatment 0.5120893         1.562981     0.9607002     4.773030  0.7261807
+#&gt; 9%  treatment 0.5841327         1.408469     0.8697710     4.089690  0.7436011
+#&gt; 10% treatment 0.6417341         1.291689     0.8048249     3.638928  0.7514591
 #&gt;     upperbound
-#&gt; 5%    34.86635
-#&gt; 6%    27.64557
-#&gt; 7%    25.91313
-#&gt; 8%    19.26295
-#&gt; 9%    16.50538
-#&gt; 10%   15.51132</div></pre>
+#&gt; 5%    70.21748
+#&gt; 6%    55.43971
+#&gt; 7%    45.66422
+#&gt; 8%    31.37211
+#&gt; 9%    22.49266
+#&gt; 10%   17.62145</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

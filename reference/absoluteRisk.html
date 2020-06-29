@@ -42,7 +42,10 @@
 <meta property="og:title" content="Compute absolute risks using the fitted hazard function. — absoluteRisk.CompRisk" />
 <meta property="og:description" content="Using the output of the function fitSmoothHazard, we can compute
 absolute risks by integrating the fitted hazard function over a time period
-and then converting this to an estimated survival for each individual." />
+and then converting this to an estimated survival for each individual.
+Plot method for objects returned by the absoluteRisk
+function. Current plot types are cumulative incidence and survival
+functions." />
 
 
 
@@ -74,7 +77,7 @@ and then converting this to an estimated survival for each individual." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.9000</span>
       </span>
     </div>
 
@@ -146,6 +149,9 @@ and then converting this to an estimated survival for each individual." />
     <p>Using the output of the function <code>fitSmoothHazard</code>, we can compute
 absolute risks by integrating the fitted hazard function over a time period
 and then converting this to an estimated survival for each individual.</p>
+<p>Plot method for objects returned by the <code>absoluteRisk</code>
+function. Current plot types are cumulative incidence and survival
+functions.</p>
     </div>
 
     <pre class="usage"><span class='fu'>absoluteRisk.CompRisk</span>(
@@ -172,6 +178,19 @@ and then converting this to an estimated survival for each individual.</p>
   <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>ntimes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='no'>...</span>
+)
+
+<span class='co'># S3 method for absRiskCB</span>
+<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
+  <span class='no'>x</span>,
+  <span class='no'>...</span>,
+  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>x</span>, <span class='st'>"type"</span>) <span class='kw'>==</span> <span class='st'>"CI"</span>, <span class='st'>"cumulative incidence"</span>,
+    <span class='st'>"survival probability"</span>),
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"l"</span>,
+  <span class='kw'>gg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>id.names</span>,
+  <span class='no'>legend.title</span>
 )
 
 <span class='co'># S3 method for absRiskCB</span>
@@ -215,9 +234,8 @@ only for the main event of interest? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>Type of output. Can be <code>"CI"</code> (output is on the cumulative
-incidence scale) or <code>"survival"</code> (output is on the survival scale,
-i.e. 1- CI)</p></td>
+      <td><p>Line type. Only used if <code>gg = FALSE</code>. This argument gets passed
+to <code><a href='https://rdrr.io/r/graphics/matplot.html'>graphics::matplot()</a></code>. Default: 'l'</p></td>
     </tr>
     <tr>
       <th>addZero</th>
@@ -239,12 +257,37 @@ required (for class <code>cv.glmnet</code>).</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Extra parameters. Currently these are simply ignored.</p></td>
+      <td><p>further arguments passed to <code>matplot</code>. Only used if
+<code>gg=FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>x</th>
       <td><p>Object of class <code>absRiskCB</code>, such as the output of
 <code>absoluteRisk</code> with single event.</p></td>
+    </tr>
+    <tr>
+      <th>xlab</th>
+      <td><p>xaxis label, Default: 'time'</p></td>
+    </tr>
+    <tr>
+      <th>ylab</th>
+      <td><p>yaxis label. By default, this will use the <code>"type"</code> attribute of
+the <code>absRiskCB</code> object</p></td>
+    </tr>
+    <tr>
+      <th>gg</th>
+      <td><p>Logical for whether the <code>ggplot2</code> package should be used for
+plotting. Default: TRUE</p></td>
+    </tr>
+    <tr>
+      <th>id.names</th>
+      <td><p>Optional character vector used as legend key when <code>gg=TRUE</code>.
+If missing, defaults to V1, V2, ...</p></td>
+    </tr>
+    <tr>
+      <th>legend.title</th>
+      <td><p>Optional character vector of the legend title. Only used
+if <code>gg = FALSE</code>. Default is <code>'ID'</code></p></td>
     </tr>
     </table>
 
@@ -255,6 +298,7 @@ the user-supplied covariate profiles. This will be stored in a matrix or a
 higher dimensional array, depending on the input (see details). If both
 <code>time</code> and <code>newdata</code> are missing, returns the original data
 with a new column containing the risk estimate at failure times.</p>
+<p>A plot of the cumulative incidence or survival curve</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If <code>newdata = "typical"</code>, we create a typical covariate profile for the
@@ -273,6 +317,12 @@ events.</p>
 <p>The numerical method should be good enough in most situation, but Monte Carlo
 integration can give more accurate results when the estimated hazard function
 is not smooth (e.g. when modeling with time-varying covariates).</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='https://rdrr.io/r/graphics/matplot.html'>matplot</a></code>,
+<code>absoluteRisk</code>,
+<code><a href='https://Rdatatable.gitlab.io/data.table/reference/as.data.table.html'>as.data.table</a></code>, <code><a href='https://Rdatatable.gitlab.io/data.table/reference/setattr.html'>setattr</a></code>,
+<code><a href='https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html'>melt.data.table</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simulate censored survival data for two outcome types</span>
@@ -327,7 +377,24 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 #&gt; 1000: 0 255.84352 113.5144522     0 20.0000000</div><div class='input'>
 <span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
 <span class='no'>linear_risk</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='no'>out_linear</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-                            <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='st'>"z"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>)))</div></pre>
+                            <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='st'>"z"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>)))
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"brcancer"</span>)
+<span class='no'>mod_cb_tvc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>cens</span> ~ <span class='no'>estrec</span>*<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) +
+                                <span class='no'>horTh</span> +
+                                <span class='no'>age</span> +
+                                <span class='no'>menostat</span> +
+                                <span class='no'>tsize</span> +
+                                <span class='no'>tgrade</span> +
+                                <span class='no'>pnodes</span> +
+                                <span class='no'>progrec</span>,
+                              <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brcancer</span>,
+                              <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"time"</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='no'>smooth_risk_brcancer</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>mod_cb_tvc</span>,
+                                     <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='no'>brcancer</span>[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>50</span>),])
+
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>smooth_risk_brcancer</span>)</div><div class='output co'>#&gt; [1] "absRiskCB" "matrix"    "array"    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>smooth_risk_brcancer</span>)</div><div class='img'><img src='absoluteRisk-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

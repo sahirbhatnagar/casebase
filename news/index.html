@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.9000</span>
       </span>
     </div>
 
@@ -138,9 +138,9 @@
       <small>Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="casebase-1-0-0" class="section level1">
-<h1 class="page-header" data-toc-text="1.0.0">
-<a href="#casebase-1-0-0" class="anchor"></a>casebase 1.0.0<small> Unreleased </small>
+    <div id="casebase-0-9-0" class="section level1">
+<h1 class="page-header" data-toc-text="0.9.0">
+<a href="#casebase-0-9-0" class="anchor"></a>casebase 0.9.0<small> Unreleased </small>
 </h1>
 <ul>
 <li><em>Major new release</em></li>
@@ -151,7 +151,10 @@
 <li>The output of <code>absoluteRisk</code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
 <li>Population time plots now use <code>geom_ribbon</code> instead of <code>geom_segment</code>
 </li>
-<li>Population time functions now allowed for more flexible plots with user defined arguments</li>
+<li>Population time functions now allowed for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series</li>
+<li>New plotting method for time-dependent hazard functions and hazard ratios. These include confidence intervals. See <code>plot.singleEventCB</code>. The hazard function plot requires <code>visreg</code> package to be installed.</li>
+<li>New plotting method for cumulative incidence and survival curves. See <code>plot.absRiskCB</code>.</li>
+<li>No longer importing the entire namespace of <code>data.table</code> and <code>ggplot2</code>.</li>
 </ul>
 </div>
     <div id="casebase-0-1-0" class="section level1">
