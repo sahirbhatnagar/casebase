@@ -47,7 +47,7 @@
 #'   interval bounds on the hazard scale (i.e. used to plot the confidence
 #'   bands). `standarderror` is the standard error of the log hazard (only if
 #'   `family="glm"` or `family="gam"`)
-#' @seealso [casebase::fitSmoothHazard()], [graphics::par()]
+#' @seealso [casebase::fitSmoothHazard()]
 #' @examples
 #' \dontrun{
 #' if(interactive()){
@@ -71,6 +71,7 @@
 #' @rdname hazardPlot
 #' @export
 #' @importFrom graphics lines matplot par polygon
+#' @importFrom data.table between
 #' @importFrom stats qnorm
 hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
@@ -103,7 +104,7 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         stop("object must be of class glm, gam, gbm or cv.glmnet")
 
     if (ci) {
-        if (!between(ci.lvl, 0,1, incbounds = FALSE))
+        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
             stop("ci.lvl must be between 0 and 1")
         if (!inherits(object, c("glm", "gam"))) {
             warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",obj_class))

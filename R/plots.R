@@ -70,9 +70,8 @@
 #' class(popTimeData)
 #' popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 #' attr(popTimeData, "exposure")
-#' @import data.table
 #' @export
-#' @importFrom data.table as.data.table rbindlist
+#' @importFrom data.table as.data.table rbindlist := setnames .N
 #' @importFrom stats quantile
 popTime <- function(data, time, event, censored.indicator,
                     exposure, percentile_number) {
@@ -282,11 +281,13 @@ popTime <- function(data, time, event, censored.indicator,
 
 # taken verbatim from cowplot::theme_cowplot()
 #' @importFrom stats quantile
+#' @importFrom grid unit
+#' @importFrom ggplot2 theme_grey theme element_line element_rect element_text margin element_blank rel %+replace%
 theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
                       rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
   half_line <- font_size/2
   small_size <- rel_small * font_size
-  theme_grey(base_size = font_size, base_family = font_family) %+replace%
+  ggplot2::theme_grey(base_size = font_size, base_family = font_family) %+replace%
     theme(line = element_line(color = "black", size = line_size,
                               linetype = 1, lineend = "butt"), rect = element_rect(fill = NA,
                                                                                    color = NA, size = line_size, linetype = 1), text = element_text(family = font_family,
@@ -344,6 +345,7 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
 
 
 # taken verbatim from cowplot::panel_border
+#' @importFrom ggplot2 theme element_blank element_rect
 panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE,
                         colour) {
   if (!missing(colour)) {
@@ -363,7 +365,7 @@ panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE
 #' @rdname plot.singleEventCB
 #' @param newdata2 `data.frame` for exposed group. calculated and passed
 #'   internally to `plotHazardRatio` function
-#' @importFrom graphics polygon
+#' @importFrom graphics polygon lines arrows points
 #' @importFrom stats terms delete.response vcov qnorm
 #' @importFrom utils modifyList
 plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,

@@ -31,6 +31,7 @@ The first example we discuss uses the well-known ```veteran``` dataset, which is
 
 ```{r eval=TRUE}
 set.seed(12345)
+library(casebase)
 library(survival)
 data(veteran)
 table(veteran$status)
@@ -102,7 +103,6 @@ Population-time plots are a useful way of visualizing the total follow-up experi
 Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.
 
 ```{r eval=TRUE}
-library(casebase)
 model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio = 100)
 summary(model4)

@@ -30,8 +30,9 @@ incrVar(var, increment = 1)
 \item{x}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This is
 the result from the \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function.}
 
-\item{...}{further arguments passed to \code{plot}. Only used if
-\code{type="hr"}. See \code{\link[graphics:par]{graphics::par()}} for details.}
+\item{...}{further arguments passed to \code{plot}. Only used if \code{type="hr"}.
+Any of \code{lwd},\code{lty},\code{col},\code{pch},\code{cex} will be applied to the hazard ratio
+line, or point (if only one time point is supplied to \code{newdata}).}
 
 \item{type}{plot type. Choose one of either \code{"hazard"} for hazard
 function or \code{"hr"} for hazard ratio.  Default: \code{type = "hazard"}.}
