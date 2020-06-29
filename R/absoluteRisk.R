@@ -217,6 +217,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
 
 # estimate_risk_newtime computes the whole survival curve for each covariate
 # profile
+#' @importFrom data.table data.table :=
 estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                   s, n.trees, type, addZero, ...) {
     if (missing(newdata)) {
@@ -260,7 +261,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                                 as.data.frame(newdata2)))
                 } else {
                     # Create data.table for prediction
-                    newdata2 <- data.table(current_obs)
+                    newdata2 <- data.table::data.table(current_obs)
                     newdata2 <- newdata2[rep(1, length(knots))]
                     newdata2[, object$timeVar := knots]
                 }

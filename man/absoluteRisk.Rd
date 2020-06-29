@@ -4,6 +4,7 @@
 \name{absoluteRisk.CompRisk}
 \alias{absoluteRisk.CompRisk}
 \alias{absoluteRisk}
+\alias{plot.absRiskCB}
 \alias{print.absRiskCB}
 \title{Compute absolute risks using the fitted hazard function.}
 \usage{
@@ -33,6 +34,18 @@ absoluteRisk(
   ...
 )
 
+\method{plot}{absRiskCB}(
+  x,
+  ...,
+  xlab = "time",
+  ylab = ifelse(attr(x, "type") == "CI", "cumulative incidence",
+    "survival probability"),
+  type = "l",
+  gg = TRUE,
+  id.names,
+  legend.title
+)
+
 \method{print}{absRiskCB}(x, ...)
 }
 \arguments{
@@ -57,9 +70,8 @@ or number of sampled points (if \code{method = "montecarlo"}).}
 \item{onlyMain}{Logical. For competing risks, should we return absolute risks
 only for the main event of interest? Defaults to \code{TRUE}.}
 
-\item{type}{Type of output. Can be \code{"CI"} (output is on the cumulative
-incidence scale) or \code{"survival"} (output is on the survival scale,
-i.e. 1- CI)}
+\item{type}{Line type. Only used if \code{gg = FALSE}. This argument gets passed
+to \code{\link[graphics:matplot]{graphics::matplot()}}. Default: 'l'}
 
 \item{addZero}{Logical. Should we add time = 0 at the beginning of the
 output? Defaults to \code{TRUE}.}
@@ -71,10 +83,25 @@ required (for class \code{cv.glmnet}).}
 
 \item{ntimes}{Number of time points (only used if \code{time} is missing).}
 
-\item{...}{Extra parameters. Currently these are simply ignored.}
+\item{...}{further arguments passed to \code{matplot}. Only used if
+\code{gg=FALSE}.}
 
 \item{x}{Object of class \code{absRiskCB}, such as the output of
 \code{absoluteRisk} with single event.}
+
+\item{xlab}{xaxis label, Default: 'time'}
+
+\item{ylab}{yaxis label. By default, this will use the \code{"type"} attribute of
+the \code{absRiskCB} object}
+
+\item{gg}{Logical for whether the \code{ggplot2} package should be used for
+plotting. Default: TRUE}
+
+\item{id.names}{Optional character vector used as legend key when \code{gg=TRUE}.
+If missing, defaults to V1, V2, ...}
+
+\item{legend.title}{Optional character vector of the legend title. Only used
+if \code{gg = FALSE}. Default is \code{'ID'}}
 }
 \value{
 If \code{time} was provided, returns the estimated absolute risk for
@@ -82,11 +109,17 @@ the user-supplied covariate profiles. This will be stored in a matrix or a
 higher dimensional array, depending on the input (see details). If both
 \code{time} and \code{newdata} are missing, returns the original data
 with a new column containing the risk estimate at failure times.
+
+A plot of the cumulative incidence or survival curve
 }
 \description{
 Using the output of the function \code{fitSmoothHazard}, we can compute
 absolute risks by integrating the fitted hazard function over a time period
 and then converting this to an estimated survival for each individual.
+
+Plot method for objects returned by the \code{absoluteRisk}
+function. Current plot types are cumulative incidence and survival
+functions.
 }
 \details{
 If \code{newdata = "typical"}, we create a typical covariate profile for the
@@ -134,4 +167,28 @@ out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 
 linear_risk <- absoluteRisk(out_linear, time = 10,
                             newdata = data.table("z" = c(0,1)))
+library(survival)
+library(ggplot2)
+data("brcancer")
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) +
+                                horTh +
+                                age +
+                                menostat +
+                                tsize +
+                                tgrade +
+                                pnodes +
+                                progrec,
+                              data = brcancer,
+                              time = "time", ratio = 1)
+smooth_risk_brcancer <- absoluteRisk(object = mod_cb_tvc,
+                                     newdata = brcancer[c(1,50),])
+
+class(smooth_risk_brcancer)
+plot(smooth_risk_brcancer)
+}
+\seealso{
+\code{\link[graphics]{matplot}},
+\code{\link[casebase]{absoluteRisk}},
+\code{\link[data.table]{as.data.table}}, \code{\link[data.table]{setattr}},
+\code{\link[data.table]{melt.data.table}}
 }

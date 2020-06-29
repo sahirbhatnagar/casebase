@@ -2,8 +2,7 @@
 
 #' Population Time Plot
 #'
-#' @description \code{plot} method for objects of class \code{popTime} and
-#'   \code{popTimeExposure}
+#' @description \code{plot} method for objects of class \code{popTime}
 #'
 #' @param x an object of class \code{popTime} or \code{popTimeExposure}.
 #' @param ... Ignored.
@@ -100,7 +99,8 @@
 #'   at the top of the y-axis). By randomly distributing them, we can get a
 #'   better sense of the inicidence density. The base series is sampled
 #'   horizontally on the plot using the \code{\link{sampleCaseBase}} function.
-#' @import ggplot2
+#' @importFrom data.table := copy
+#' @importFrom ggplot2 ggplot geom_point scale_fill_manual geom_ribbon aes scale_colour_manual element_blank facet_wrap theme xlab ylab
 #' @seealso
 #' \link{geom_point},\link{geom_ribbon},\link{theme},
 #' \link{scale_colour_manual}, \link{scale_fill_manual},
@@ -382,7 +382,7 @@ plot.popTime <- function(x, ...,
 
   p1 <- ggplot()
 
-  p1 + p2 + xlab(xlab) + ylab(ylab)
+  p1 + p2 + ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
 }
 
 
@@ -395,8 +395,9 @@ plot.popTime <- function(x, ...,
 #'   function accounts for the possible time-varying exposure effects.
 #' @param x Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This is
 #'   the result from the [casebase::fitSmoothHazard()] function.
-#' @param ... further arguments passed to `plot`. Only used if
-#'   \code{type="hr"}. See [graphics::par()] for details.
+#' @param ... further arguments passed to `plot`. Only used if \code{type="hr"}.
+#'   Any of `lwd`,`lty`,`col`,`pch`,`cex` will be applied to the hazard ratio
+#'   line, or point (if only one time point is supplied to `newdata`).
 #' @param type plot type. Choose one of either \code{"hazard"} for hazard
 #'   function or \code{"hr"} for hazard ratio.  Default: \code{type = "hazard"}.
 #' @param hazard.params Named list of arguments which will override the defaults
@@ -626,6 +627,100 @@ plot.singleEventCB <- function(x, ...,
     )
   }
 }
+
+#' @title Plot Cumulative Incidence and Survival Curves
+#' @description Plot method for objects returned by the \code{absoluteRisk}
+#'   function. Current plot types are cumulative incidence and survival
+#'   functions.
+#' @param x Fitted object of class `absRiskCB`. This is the result from the
+#'   [casebase::absoulteRisk()] function.
+#' @param ... further arguments passed to `matplot`. Only used if
+#'   \code{gg=FALSE}.
+#' @param xlab xaxis label, Default: 'time'
+#' @param ylab yaxis label. By default, this will use the `"type"` attribute of
+#'   the `absRiskCB` object
+#' @param type Line type. Only used if `gg = FALSE`. This argument gets passed
+#'   to [graphics::matplot()]. Default: 'l'
+#' @param gg Logical for whether the `ggplot2` package should be used for
+#'   plotting. Default: TRUE
+#' @param id.names Optional character vector used as legend key when `gg=TRUE`.
+#'   If missing, defaults to V1, V2, ...
+#' @param legend.title Optional character vector of the legend title. Only used
+#'   if `gg = FALSE`. Default is `'ID'`
+#' @return A plot of the cumulative incidence or survival curve
+#' @seealso \code{\link[graphics]{matplot}},
+#'   \code{\link[casebase]{absoluteRisk}},
+#'   \code{\link[data.table]{as.data.table}}, \code{\link[data.table]{setattr}},
+#'   \code{\link[data.table]{melt.data.table}}
+#' @rdname absoluteRisk
+#' @export
+#' @importFrom graphics matplot
+#' @importFrom ggplot2 ggplot aes geom_line labs theme
+#' @importFrom data.table as.data.table setnames melt
+#' @examples
+#' library(survival)
+#' library(ggplot2)
+#' data("brcancer")
+#' mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) +
+#'                                 horTh +
+#'                                 age +
+#'                                 menostat +
+#'                                 tsize +
+#'                                 tgrade +
+#'                                 pnodes +
+#'                                 progrec,
+#'                               data = brcancer,
+#'                               time = "time", ratio = 1)
+#' smooth_risk_brcancer <- absoluteRisk(object = mod_cb_tvc,
+#'                                      newdata = brcancer[c(1,50),])
+#'
+#' class(smooth_risk_brcancer)
+#' plot(smooth_risk_brcancer)
+plot.absRiskCB <- function(x, ...,
+                           xlab = "time",
+                           ylab = ifelse(attr(x, "type") == "CI","cumulative incidence","survival probability"),
+                           type = "l",
+                           gg = TRUE,
+                           id.names,
+                           legend.title) {
+  # output of absoluteRisk will always have a column named time
+  # x = linearRisk
+  # ======================
+
+  if (!gg) {
+    graphics::matplot(x = x[,"time"],
+                      y = x[,-which(colnames(x) == c("time"))],
+                      type = type,
+                      xlab = xlab,
+                      ylab = ylab,
+                      ...
+    )
+
+  } else {
+
+    ID = NULL ; value = NULL
+
+    DT <- data.table::as.data.table(x)
+
+    if (!missing(id.names)) {
+      names_to_change <- grep("V", colnames(DT), value = TRUE)
+      if (length(names_to_change) != length(id.names)) {
+        warning("length of 'id.names' not equal to number of covariate profiles. ignoring 'id.names' argument")
+      } else {
+        data.table::setnames(DT, old = names_to_change, new = id.names)
+      }
+    }
+
+    DT.m <- data.table::melt(DT, id.vars = "time", variable.name = "ID")
+
+    ggplot(DT.m, aes(x = time, y = value, color = ID)) +
+      geom_line() + theme_cb() +
+      labs(color = ifelse(missing(legend.title), "ID", legend.title), x = xlab, y = ylab) +
+      theme(legend.position = "bottom")
+  }
+
+}
+
 
 #################
 # S3 objects----

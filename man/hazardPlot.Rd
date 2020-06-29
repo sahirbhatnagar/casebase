@@ -114,5 +114,5 @@ legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
 }
 }
 \seealso{
-\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}, \code{\link[graphics:par]{graphics::par()}}
+\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}
 }

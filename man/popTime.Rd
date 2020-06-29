@@ -185,8 +185,7 @@ specified time column to time}\item{event}{renames the user specified event
 argument to event}}
 }
 \description{
-\code{plot} method for objects of class \code{popTime} and
-\code{popTimeExposure}
+\code{plot} method for objects of class \code{popTime}
 
 Create a data frame for population time plots to give a visual representation
 of incidence density

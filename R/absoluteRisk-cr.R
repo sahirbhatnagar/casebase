@@ -1,4 +1,5 @@
 #' @rdname absoluteRisk
+#' @importFrom data.table := data.table
 #' @export
 absoluteRisk.CompRisk <- function(object, time, newdata,
                                   method = c("numerical", "montecarlo"),
