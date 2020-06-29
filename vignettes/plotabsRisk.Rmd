@@ -66,7 +66,7 @@ summary(mod_cb_glm)
 
 ### Plotting Cumulative Incidence Curves
 
-We can use the `plot` method for objects of class `absRiskCB`, which is returned by the `absoluteRisk` function, to plot cumulative incidence curves. For example, suppose we want to compare the cumulative incidence curves of the 1st and 50th individuals in the `brcancer` dataset:
+We can use the `plot` method for objects of class `absRiskCB`, which is returned by the `absoluteRisk` function, to plot cumulative incidence curves. For example, suppose we want to compare the cumulative incidence curves of the 1st and 50th individuals in the `brcancer` dataset. We first call the `absoluteRisk` function and specify the `newdata` argument. Note that since time is missing, the risk estimate is calculated at the observed failure times. 
 
 ```{r}
 smooth_risk_brcancer <- absoluteRisk(object = mod_cb_glm, 
@@ -93,25 +93,27 @@ plot(smooth_risk_brcancer,
      id.names = c("Covariate Profile 1","Covariate Profile 50"), 
      legend.title = "Type", 
      xlab = "time (days)", 
-     ylab = "Cumulative Incidence (%)") + theme_linedraw() 
+     ylab = "Cumulative Incidence (%)") + ggplot2::theme_linedraw() 
 ```
+
 
 
 ### Using `graphics::matplot`
 
-By default, the `plot` method uses `ggplot2` to produce the curves. Alternatively, you can use `graphics::matplot` by specifying `gg = FALSE`. This option is particularly useful if you want to add the cumulative incidence curve to an existing plot, e.g., adding the adjusted smooth curve to a Kaplan-Meier curve. In this example, we calculate the cumulative incidence for a typical individual in the dataset:
+By default, the `plot` method uses `ggplot2` to produce the curves. Alternatively, you can use `graphics::matplot` by specifying `gg = FALSE`. This option is particularly useful if you want to add the cumulative incidence curve to an existing plot, e.g., adding the adjusted smooth curve to a Kaplan-Meier curve. In this example, we calculate the cumulative incidence for a _typical_ individual in the dataset:
 
 ```{r}
 cols <- c("#8E063B","#023FA5")
 
 smooth_risk_typical <- absoluteRisk(object = mod_cb_glm, newdata = "typical")
-y <- with(brcancer, Surv(time, cens))
-plot(y, fun = "event", conf.int = F, col = cols[1])
-plot(smooth_risk_typical, add = TRUE, col = cols[2], gg = FALSE)
+y <- with(brcancer, survival::Surv(time, cens))
+plot(y, fun = "event", conf.int = F, col = cols[1], lwd = 2)
+plot(smooth_risk_typical, add = TRUE, col = cols[2], lwd = 2, gg = FALSE)
 legend("bottomright", 
        legend = c("Kaplan-Meier", "casebase"), 
        col = cols,
-       lty = c(1, 1), 
+       lty = 1,
+       lwd = 2,
        bg = "gray90")
 ```
 
@@ -127,19 +129,14 @@ smooth_surv_brcancer <- absoluteRisk(object = mod_cb_glm,
                                      type = "survival")
 
 plot(smooth_surv_brcancer)
-
-smooth_surv_brcancer <- absoluteRisk(object = mod_cb_glm, 
-                                     newdata = brcancer[1,],
-                                     time = 90,
-                                     type = "survival")
-
-plot(smooth_surv_brcancer)
-
 ```
 
 
 ## Other families
 
+### `glmnet` 
+
+We can also plot cumulative incidence curves for other families. For example, using the `family = "glmnet"`, we can plot the cumulative incidence curves for the first 10 individuals in the `brcancer` dataset, using the tuning parameter which minimizes the 10-fold cross-validation error ($\lambda_{min}$):
 
 ```{r eval=TRUE}
 mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*time + 
@@ -155,56 +152,32 @@ mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*time +
                                  ratio = 1, 
                                  family = "glmnet")
 
-# these all gives errors
-absoluteRisk(object = mod_cb_glmnet)
-absoluteRisk(object = mod_cb_glmnet, newdata = brcancer)
-absoluteRisk(object = mod_cb_glmnet, newdata = brcancer[1:2,])
-absoluteRisk(object = mod_cb_glmnet, newdata = brcancer[1:2,], time = c(500, 2000))
-absoluteRisk(object = mod_cb_glmnet, newdata = "typical", time = c(500, 2000))
-absoluteRisk(object = mod_cb_glmnet, time = c(500, 2000))
-
-# this is what casebase is doing internally in hazard_estimation
-formula_pred <- formula(delete.response(terms(mod_cb_glmnet$formula)))
-newdata_matrix <- model.matrix(formula_pred, brcancer)
-newdata_matrix <- newdata_matrix[,which(colnames(newdata_matrix) != "(Intercept)")]
-
-# this is missing horThno column
-head(newdata_matrix)
-predict(mod_cb_glmnet, newdata_matrix, s = "lambda.min", newoffset = 0)
-
-# inspection of glmnet coefficients, there is a coef for horThno
-# which is causing the mismatch in the matrix multiplcation of x %*% beta
-coef(mod_cb_glmnet)
-
-# this works, and is actually what is used in casebase:::cv.glmnet.formula
-newdata_matrix_2 <- model.matrix(update.formula(formula_pred, ~.-1), brcancer)
-head(newdata_matrix_2)
-head(predict(mod_cb_glmnet, newdata_matrix_2, s = "lambda.min", newoffset = 0))
-
-
-
-table(brcancer$horTh)
-
-
-
-
-X <- prepareX(brcancer)
-Y <- X[,c("time","cens")]
-X <- X[,-which(colnames(X) %in% c("time","cens"))]
-
-
-mod_cb_glmnet <- fitSmoothHazard.fit(x = X, y = Y,
-                                     time = "time", 
-                                     event = "cens",
-                                     formula_time = ~log(time),
-                                     ratio = 10, family = "glmnet")
-
-coef(mod_cb_glmnet, s = "lambda.min")
-
-str(brcancer[1,])
-smooth_risk_typical <- absoluteRisk(object = mod_cb_glmnet)
-
+smooth_risk_glmnet <- absoluteRisk(object = mod_cb_glmnet, 
+                                   newdata = brcancer[1:10,], 
+                                   s = "lambda.min")
+plot(smooth_risk_glmnet)
 ```
 
+### `gam`
 
+Here we produce the same plot but for `family = "gam"` for generalised additive models. 
+
+```{r}
+mod_cb_gam <- fitSmoothHazard(cens ~ estrec + time + 
+                                     horTh + 
+                                     age + 
+                                     menostat + 
+                                     tsize + 
+                                     tgrade + 
+                                     pnodes + 
+                                     progrec,
+                                 data = brcancer,
+                                 time = "time", 
+                                 ratio = 1, 
+                                 family = "gam")
+
+smooth_risk_gam <- absoluteRisk(object = mod_cb_gam, 
+                                newdata = brcancer[1:10,])
+plot(smooth_risk_gam)
+```
 
