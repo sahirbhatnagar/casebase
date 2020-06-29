@@ -76,8 +76,6 @@
 popTime <- function(data, time, event, censored.indicator,
                     exposure, percentile_number) {
 
-  # data <- DTsim;censored.indicator = NULL;exposure = "z" ; time = "time"; event = "event"
-  # names(data)
   varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
   # varNames <- checkArgsTimeEvent(data)
   # varNames <- checkArgsTimeEvent(data, time = time)
@@ -208,8 +206,8 @@ popTime <- function(data, time, event, censored.indicator,
       i[i[, order(time)], ycoord := (nobs:1)]
     })
 
-    # sample y coordinates for each event, so that we can see the incidence density
-    # on population-time plots. Sampling from people who have an
+    # sample y coordinates for each event, so that we can see the incidence
+    # density on population-time plots. Sampling from people who have an
     # observed time t greater than that of a fixed individual who had the event
     # if there are only two levels, then find out how many controls
     # are left to sample from. if there are three levels,
@@ -283,9 +281,9 @@ popTime <- function(data, time, event, censored.indicator,
 #' @importFrom stats quantile
 #' @importFrom grid unit
 #' @importFrom ggplot2 theme_grey theme element_line element_rect element_text margin element_blank rel %+replace%
-theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
-                      rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
-  half_line <- font_size/2
+theme_cb <- function(font_size = 14, font_family = "", line_size = 0.5,
+                     rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
+  half_line <- 0.5 * font_size
   small_size <- rel_small * font_size
   ggplot2::theme_grey(base_size = font_size, base_family = font_family) %+replace%
     theme(line = element_line(color = "black", size = line_size,
@@ -296,17 +294,18 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
                                                                                                                                                     margin = margin(), debug = FALSE), axis.line = element_line(color = "black",
                                                                                                                                                                                                                 size = line_size, lineend = "square"), axis.line.x = NULL,
           axis.line.y = NULL, axis.text = element_text(color = "black",
-                                                       size = small_size), axis.text.x = element_text(margin = margin(t = small_size/4),
-                                                                                                      vjust = 1), axis.text.x.top = element_text(margin = margin(b = small_size/4),
-                                                                                                                                                 vjust = 0), axis.text.y = element_text(margin = margin(r = small_size/4),
-                                                                                                                                                                                        hjust = 1), axis.text.y.right = element_text(margin = margin(l = small_size/4),
+                                                       size = small_size), axis.text.x = element_text(margin = margin(t = 0.25 * small_size),
+                                                                                                      vjust = 1), axis.text.x.top = element_text(margin = margin(b = 0.25 * small_size),
+                                                                                                                                                 vjust = 0), axis.text.y = element_text(margin = margin(r = 0.25 * small_size),
+                                                                                                                                                                                        hjust = 1), axis.text.y.right = element_text(margin = margin(l = 0.25 * small_size),
                                                                                                                                                                                                                                      hjust = 0), axis.ticks = element_line(color = "black",
-                                                                                                                                                                                                                                                                           size = line_size), axis.ticks.length = unit(half_line/2,
-                                                                                                                                                                                                                                                                                                                       "pt"), axis.title.x = element_text(margin = margin(t = half_line/2),
-                                                                                                                                                                                                                                                                                                                                                          vjust = 1), axis.title.x.top = element_text(margin = margin(b = half_line/2),
+                                                                                                                                                                                                                                                                           size = line_size), axis.ticks.length = unit(0.5 * half_line,
+                                                                                                                                                                                                                                                                                                                       "pt"), axis.title.x = element_text(margin = margin(t = 0.5 * half_line),
+                                                                                                                                                                                                                                                                                                                                                          vjust = 1), axis.title.x.top = element_text(margin = margin(b = 0.5 * half_line),
                                                                                                                                                                                                                                                                                                                                                                                                       vjust = 0), axis.title.y = element_text(angle = 90,
-                                                                                                                                                                                                                                                                                                                                                                                                                                              margin = margin(r = half_line/2), vjust = 1),
-          axis.title.y.right = element_text(angle = -90, margin = margin(l = half_line/2),
+                                                                                                                                                                                                                                                                                                                                                                                                                                              margin = margin(r = 0.5 * half_line),
+                                                                                                                                                                                                                                                                                                                                                                                                                                              vjust = 1),
+          axis.title.y.right = element_text(angle = -90, margin = margin(l = 0.5 * half_line),
                                             vjust = 0), legend.background = element_blank(),
           legend.spacing = unit(font_size, "pt"), legend.spacing.x = NULL,
           legend.spacing.y = NULL, legend.margin = margin(0,
@@ -326,11 +325,11 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
           panel.spacing = unit(half_line, "pt"), panel.spacing.x = NULL,
           panel.spacing.y = NULL, panel.ontop = FALSE, strip.background = element_rect(fill = "grey80"),
           strip.text = element_text(size = rel(rel_small),
-                                    margin = margin(half_line/2, half_line/2, half_line/2,
-                                                    half_line/2)), strip.text.x = NULL, strip.text.y = element_text(angle = -90),
+                                    margin = margin(0.5 * half_line, 0.5 * half_line, 0.5 * half_line,
+                                                    0.5 * half_line)), strip.text.x = NULL, strip.text.y = element_text(angle = -90),
           strip.placement = "inside", strip.placement.x = NULL,
-          strip.placement.y = NULL, strip.switch.pad.grid = unit(half_line/2,
-                                                                 "pt"), strip.switch.pad.wrap = unit(half_line/2,
+          strip.placement.y = NULL, strip.switch.pad.grid = unit(0.5 * half_line,
+                                                                 "pt"), strip.switch.pad.wrap = unit(0.5 * half_line,
                                                                                                      "pt"), plot.background = element_blank(), plot.title = element_text(face = "bold",
                                                                                                                                                                          size = rel(rel_large), hjust = 0, vjust = 1,
                                                                                                                                                                          margin = margin(b = half_line)), plot.subtitle = element_text(size = rel(rel_small),
@@ -346,8 +345,8 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
 
 # taken verbatim from cowplot::panel_border
 #' @importFrom ggplot2 theme element_blank element_rect
-panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE,
-                        colour) {
+panelBorder <- function(color = "grey85", size = 1, linetype = 1,
+                        remove = FALSE, colour) {
   if (!missing(colour)) {
     color <- colour
   }

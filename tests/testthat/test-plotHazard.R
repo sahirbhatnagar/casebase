@@ -9,7 +9,7 @@ skip_if_not_installed("splines")
 library(splines)
 data("simdat")
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
-                                        trt:ns(log(eventtime),df=1),
+                                        trt:ns(log(eventtime),df = 1),
                                     time = "eventtime",
                                     data = simdat,
                                     ratio = 10,
@@ -23,7 +23,7 @@ mod_gam <- casebase::fitSmoothHazard(status ~ trt + s(log(eventtime)) +
                                      family = "gam")
 
 mod_glmnet <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
-                                        trt:ns(log(eventtime),df=1),
+                                        trt:ns(log(eventtime), df = 1),
                                     time = "eventtime",
                                     data = simdat,
                                     ratio = 10,

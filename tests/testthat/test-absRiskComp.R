@@ -17,9 +17,9 @@ lambda_t1 <- lambda11 + lambda21
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-event <- c(rbinom(n, 1, prob = lambda10/lambda_t0),
-           rbinom(n, 1, prob = lambda11/lambda_t1)) + 1
-censor <- rexp(n = 2*n, rate = -log(alp))
+event <- c(rbinom(n, 1, prob = lambda10 / lambda_t0),
+           rbinom(n, 1, prob = lambda11 / lambda_t1)) + 1
+censor <- rexp(n = 2 * n, rate = -log(alp))
 
 times_c <- pmin(times, censor)
 event_c <- event * (times < censor)

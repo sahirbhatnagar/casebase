@@ -3,14 +3,14 @@ linters: with_defaults(
     object_name_linter = NULL, # 172
     commented_code_linter = NULL, # 102
     commas_linter = NULL, # 61
-    infix_spaces_linter = NULL, # 41
+    infix_spaces_linter,
     cyclocomp_linter = NULL, # 8
-    spaces_left_parentheses_linter = NULL, # 6
-    assignment_linter = NULL, # 4
-    function_left_parentheses_linter = NULL, # 4
-    paren_brace_linter = NULL, # 3
-    spaces_inside_linter = NULL, # 3
-    object_usage_linter, # 2
+    spaces_left_parentheses_linter,
+    assignment_linter,
+    function_left_parentheses_linter,
+    paren_brace_linter,
+    spaces_inside_linter,
+    object_usage_linter,
     single_quotes_linter
   )
 exclusions: list(

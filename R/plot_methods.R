@@ -699,8 +699,7 @@ plot.absRiskCB <- function(x, ...,
 
     } else {
 
-        ID = NULL ; value = NULL
-
+        ID <- value <- NULL
         DT <- data.table::as.data.table(x)
 
         if (!missing(id.names)) {

@@ -1,13 +1,13 @@
 context("Matrix interface")
 
 N <- 1000; p <- 30
-nzc <- p/3
-x <- matrix(rnorm(N*p),N,p)
-dimnames(x)[[2]] <- paste0("x",1:p)
+nzc <- 0.33 * p
+x <- matrix(rnorm(N * p), N, p)
+dimnames(x)[[2]] <- paste0("x", seq_len(p))
 beta <- rnorm(nzc)
-fx <- x[,seq(nzc)] %*% beta/3
+fx <- x[, seq(nzc)] %*% (0.33 * beta)
 hx <- exp(fx)
-ty <- rexp(N,hx)
+ty <- rexp(N, hx)
 tcens <- rbinom(n = N,
                 prob = 0.3,
                 size = 1) # censoring indicator

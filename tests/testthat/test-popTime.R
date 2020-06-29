@@ -18,8 +18,8 @@ eost <- 10
 # z is a binary covariate
 DTsim <- data.table(ID = seq_len(nobs), z = rbinom(nobs, 1, 0.5))
 setkey(DTsim, ID)
-DTsim[,`:=`(event_time = rweibull(nobs, a1, b1 * exp(z * c1)^(-1/a1)),
-             competing_time = rweibull(nobs, a2, b2 * exp(z * c2)^(-1/a2)),
+DTsim[,`:=`(event_time = rweibull(nobs, a1, b1 * exp(z * c1)),
+             competing_time = rweibull(nobs, a2, b2 * exp(z * c2)),
              end_of_study_time = eost)]
 DTsim[,`:=`(event = 1 * (event_time < competing_time) +
                 2 * (event_time >= competing_time),

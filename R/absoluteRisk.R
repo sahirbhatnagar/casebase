@@ -172,7 +172,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
             newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar,
                                       drop = FALSE]
             # newdata_matrix matches output from fitSmoothHazard.fit
-            temp_matrix <- model.matrix(update(fit$formula_time, ~ . -1),
+            temp_matrix <- model.matrix(update(fit$formula_time, ~ . - 1),
                                         setNames(data.frame(x), fit$timeVar))
             newdata_matrix <- as.matrix(cbind(temp_matrix,
                                               as.data.frame(newdata_matrix)))
@@ -279,7 +279,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
         }
         if (method == "montecarlo") {
             # Sample points at which we evaluate function
-            knots <- runif(n = length(time_ordered)* nsamp,
+            knots <- runif(n = length(time_ordered) * nsamp,
                            min = 0, max = max(time_ordered))
             for (j in seq_len(nrow(newdata))) {
                 # Extract current obs

@@ -14,14 +14,14 @@ data("brcancer")
 str(brcancer)
 
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
-                                         trt:ns(log(eventtime),df=1),
+                                         trt:ns(log(eventtime),df = 1),
                                      time = "eventtime",
                                      data = simdat[sample(nrow(simdat),
                                                           size = 200),],
                                      ratio = 1,
                                      family = "glm")
 
-mod_brcancer <- fitSmoothHazard(cens ~ ns(time, df = 3)*tgrade,
+mod_brcancer <- fitSmoothHazard(cens ~ ns(time, df = 3) * tgrade,
                                 data = brcancer,
                                 time = "time")
 

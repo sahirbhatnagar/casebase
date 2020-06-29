@@ -9,7 +9,7 @@ testthat::skip_if_not_installed("glmnet")
 
 
 data("brcancer")
-mod_cb_glm <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_glm <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +
@@ -20,7 +20,7 @@ mod_cb_glm <- fitSmoothHazard(cens ~ estrec*log(time) +
                               data = brcancer,
                               time = "time", ratio = 1)
 
-mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +
@@ -31,7 +31,7 @@ mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*log(time) +
                               data = brcancer,
                               time = "time", ratio = 1, family = "glmnet")
 
-mod_cb_gam <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_gam <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +

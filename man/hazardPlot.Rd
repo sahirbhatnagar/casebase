@@ -94,7 +94,7 @@ with a covariate.
 }
 \examples{
 \dontrun{
-if(interactive()){
+if(interactive()) {
 data("simdat")
 library(splines)
 mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
