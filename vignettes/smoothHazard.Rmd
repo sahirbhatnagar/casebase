@@ -20,7 +20,9 @@ editor_options:
 ## Methodological details
 
 ```{r}
-evaluate_vignette <- requireNamespace("eha", quietly = TRUE) & requireNamespace("visreg", quietly = TRUE) & requireNamespace("splines", quietly = TRUE)
+evaluate_vignette <- requireNamespace("eha", quietly = TRUE) && 
+    requireNamespace("visreg", quietly = TRUE) && 
+    requireNamespace("splines", quietly = TRUE)
 knitr::opts_chunk$set(eval = evaluate_vignette)
 ```
 
@@ -35,7 +37,7 @@ The theoretical properties of this approach have been studied in [Saarela and Ar
 
 The first example we discuss uses the well-known ```veteran``` dataset, which is part of the ```survival``` package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:
 
-```{r eval=TRUE}
+```{r}
 set.seed(12345)
 library(casebase)
 library(survival)
@@ -54,7 +56,7 @@ As we can see, the empirical survival function ressembles an exponential distrib
 
 We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.
 
-```{r eval=TRUE}
+```{r}
 veteran$prior <- factor(veteran$prior, levels = c(0, 10), labels = c("no","yes"))
 veteran$celltype <- factor(veteran$celltype, 
                            levels = c('large', 'squamous', 'smallcell', 'adeno'))
@@ -63,7 +65,7 @@ veteran$trt <- factor(veteran$trt, levels = c(1, 2), labels = c("standard", "tes
 
 Using the ```eha``` package, we can fit a Weibull form, with different values of the shape parameter. For `shape = 1`, we get an exponential distribution:
 
-```{r eval=TRUE}
+```{r}
 library(eha)
 y <- with(veteran, Surv(time, status))
 
@@ -74,7 +76,7 @@ summary(model1)
 
 If we take `shape = 0`, the shape parameter is estimated along with the regression coefficients:
 
-```{r eval=TRUE}
+```{r}
 model2 <- weibreg(y ~ karno + diagtime + age + prior + celltype + trt, 
                   data = veteran, shape = 0)
 summary(model2)
@@ -82,7 +84,7 @@ summary(model2)
 
 Finally, we can also fit a Cox proportional hazard:
 
-```{r eval=TRUE}
+```{r}
 model3 <- coxph(y ~ karno + diagtime + age + prior + celltype + trt, 
                 data = veteran)
 summary(model3)
@@ -94,7 +96,7 @@ The method available in this package makes use of *case-base sampling*. That is,
 
 First, we will look at the follow-up time by using population-time plots:
 
-```{r eval=TRUE}
+```{r}
 # create popTime object
 pt_veteran <- popTime(data = veteran)
 
@@ -108,7 +110,7 @@ Population-time plots are a useful way of visualizing the total follow-up experi
 
 Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.
 
-```{r eval=TRUE}
+```{r}
 model4 <- fitSmoothHazard(status ~ time + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio = 100)
 summary(model4)
@@ -125,7 +127,7 @@ plot(model4,
 
 The main purpose of fitting smooth hazard functions is that it is then relatively easy to compute absolute risks. For example, we can use the function ```absoluteRisk``` to compute the mean absolute risk at 90 days, which can then be compared to the empirical measure.
 
-```{r eval=TRUE}
+```{r}
 absRisk4 <- absoluteRisk(object = model4, time = 90)
 mean(absRisk4)
 
@@ -135,7 +137,7 @@ mean(ftime <= 90)
 
 We can also fit a Weibull hazard by using a logarithmic term for time:
 
-```{r eval=TRUE}
+```{r}
 model5 <- fitSmoothHazard(status ~ log(time) + karno + diagtime + age + prior +
              celltype + trt, data = veteran, ratio = 100)
 summary(model5)
@@ -143,7 +145,7 @@ summary(model5)
 
 With case-base sampling, it is straightforward to fit a semi-parametric hazard function using splines, which can then be used to estimate the mean absolute risk.
 
-```{r eval=TRUE}
+```{r}
 # Fit a spline for time
 library(splines)
 model6 <- fitSmoothHazard(status ~ bs(time) + karno + diagtime + age + prior +
@@ -155,7 +157,7 @@ str(absoluteRisk(object = model6, time = 90))
 
 As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:
 
-```{r eval=TRUE}
+```{r}
 linearRisk <- absoluteRisk(object = model4, time = 90, newdata = veteran)
 splineRisk <- absoluteRisk(object = model6, time = 90, newdata = veteran)
 
