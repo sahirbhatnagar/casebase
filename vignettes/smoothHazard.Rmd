@@ -19,6 +19,12 @@ editor_options:
 
 ## Methodological details
 
+```{r}
+evaluate_vignette <- requireNamespace("eha", quietly = TRUE) & requireNamespace("visreg", quietly = TRUE) & requireNamespace("splines", quietly = TRUE)
+knitr::opts_chunk$set(eval = evaluate_vignette)
+```
+
+
 Case-base sampling was proposed by [Hanley and Miettinen, 2009](https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf) as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel, 1973 and then later developped by Efron, 1977, is to sample person-moments, i.e. discrete time points along an subject's follow-up time, in order to construct a base series against which the case series can be compared. 
 
 This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time *logarithmically* recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.

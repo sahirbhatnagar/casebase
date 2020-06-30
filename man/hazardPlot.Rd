@@ -92,27 +92,25 @@ sequence of times at which to estimate the hazard function. These plots are
 useful to visualize the non-proportional hazards, i.e., time dependent
 interactions with a covariate.
 }
+\details{
+This is an earlier version of a function to plot hazards. We
+recommend instead using the plot method for objects returned by
+\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}. See \code{\link[casebase:plot.singleEventCB]{casebase::plot.singleEventCB()}}.
+}
 \examples{
-\dontrun{
-if(interactive()) {
 data("simdat")
-library(splines)
-mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
-                                                      df = 3) +
-                                        trt:ns(log(eventtime),df=1),
+mod_cb <- fitSmoothHazard(status ~ trt * eventtime,
                                     time = "eventtime",
-                                    data = simdat,
-                                    ratio = 100,
+                                    data = simdat[1:200,],
+                                    ratio = 1,
                                     family = "glm")
 
 results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
-           ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+           ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 1, lwd = 2)
 head(results0)
-hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = FALSE,
            ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
 legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
- }
-}
 }
 \seealso{
 \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}

@@ -138,7 +138,7 @@ plot(smooth_surv_brcancer)
 
 We can also plot cumulative incidence curves for other families. For example, using the `family = "glmnet"`, we can plot the cumulative incidence curves for the first 10 individuals in the `brcancer` dataset, using the tuning parameter which minimizes the 10-fold cross-validation error ($\lambda_{min}$):
 
-```{r eval=TRUE}
+```{r eval=requireNamespace("glmnet", quietly = TRUE)}
 mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*time + 
                                      horTh + 
                                      age + 
@@ -179,5 +179,12 @@ mod_cb_gam <- fitSmoothHazard(cens ~ estrec + time +
 smooth_risk_gam <- absoluteRisk(object = mod_cb_gam, 
                                 newdata = brcancer[1:10,])
 plot(smooth_risk_gam)
+```
+
+
+# Session information
+
+```{r echo=FALSE, eval=TRUE}
+print(sessionInfo(), locale = F)
 ```
 

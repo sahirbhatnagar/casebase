@@ -33,6 +33,7 @@ reference:
     - '`fitSmoothHazard`'
     - '`absoluteRisk`'
     - '`plot.singleEventCB`'
+    - '`plot.absRiskCB`'
     - '`hazardPlot`'
 - title: Datasets
   desc: >

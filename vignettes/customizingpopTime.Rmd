@@ -21,6 +21,12 @@ editor_options:
 
 # Setup
 
+```{r}
+evaluate_vignette <- requireNamespace("colorspace", quietly = TRUE)
+knitr::opts_chunk$set(eval = evaluate_vignette)
+```
+
+
 ```{r setup, echo=TRUE, message=FALSE, warning=FALSE}
 library(survival)
 library(casebase)

@@ -39,7 +39,7 @@ log time. The true parameters are 1. \eqn{\beta_0} = -0.5 2. \eqn{\beta_1} =
 0.15 3. \eqn{\lambda} = 0.1 4. \eqn{\gamma} = 1.5
 }
 \examples{
-
+if (requireNamespace("splines", quietly = TRUE)) {
 library(splines)
 data("simdat")
 mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
@@ -48,6 +48,7 @@ mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
                                    time = "eventtime",
                                    data = simdat,
                                    ratio = 1)
+}
 }
 \references{
 Sam Brilleman (2019). simsurv: Simulate Survival Data. R package

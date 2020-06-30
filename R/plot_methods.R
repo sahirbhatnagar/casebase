@@ -490,7 +490,7 @@ plot.popTime <- function(x, ...,
 #'   the user wants more cutomized plot aesthetics, we recommend saving the
 #'   results to a `data.frame` and using  the graphical package of their choice.
 #' @examples
-#' library(splines)
+#' if (requireNamespace("splines", quietly = TRUE)) {
 #' data("simdat") # from casebase package
 #' simdat <- transform(simdat[sample(1:nrow(simdat), size = 200),],
 #'                     treat = factor(trt, levels = 0:1,
@@ -548,6 +548,7 @@ plot.popTime <- function(x, ...,
 #'
 #' # see data used to create plot
 #' head(result)
+#' }
 #' @seealso \code{\link[utils]{modifyList}}, [casebase::fitSmoothHazard()],
 #'   [graphics::par()], [visreg::visreg()]
 #' @rdname plot.singleEventCB

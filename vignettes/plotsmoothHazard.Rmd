@@ -18,8 +18,10 @@ editor_options:
 ---
 
 ```{r setup, include = FALSE}
+evaluate_vignette <- requireNamespace("visreg", quietly = TRUE) & requireNamespace("splines", quietly = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE, 
+  eval = evaluate_vignette,
   results='hide',
   fig.show='all',
   comment = "#>"
@@ -380,6 +382,12 @@ head(result)
 ```
 
 
+# Session information
+
+```{r echo=FALSE, eval=TRUE}
+print(sessionInfo(), locale = F)
+```
+
 
 
 ```{r, echo=FALSE}
@@ -457,8 +465,6 @@ transform(tt, eventtime = newtime)
 
 test2 <- function(...) if(length(list(...))) FALSE else TRUE
 
-test2()
-MagpieS0X
 
 
 
