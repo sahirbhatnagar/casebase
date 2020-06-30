@@ -285,56 +285,56 @@ argument <code>formula_time</code> (the left-hand side is always ignored).</p>
   <span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
   <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>)
 )]</div><div class='output co'>#&gt;      z   t_event    t_comp
-#&gt;   1: 1 155.12036  50.57812
-#&gt;   2: 0 718.29972  90.19652
-#&gt;   3: 1 344.99510  82.28733
-#&gt;   4: 1  49.28765  47.75553
-#&gt;   5: 1  27.37543 105.30413
+#&gt;   1: 0 125.67322 53.090763
+#&gt;   2: 0  27.92365 41.517160
+#&gt;   3: 1 625.41749 23.956800
+#&gt;   4: 0 279.93382 62.361918
+#&gt;   5: 1 315.90292 19.739612
 #&gt;  ---                      
-#&gt; 496: 0 234.80192  33.62008
-#&gt; 497: 0 102.22605  80.79449
-#&gt; 498: 0  12.04995  65.17018
-#&gt; 499: 0 731.51301  27.13172
-#&gt; 500: 0  12.98586  44.39670</div><div class='input'><span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
+#&gt; 496: 1 111.76799 57.900562
+#&gt; 497: 1 153.70621 63.501104
+#&gt; 498: 0  38.02085 14.325562
+#&gt; 499: 0 109.52164 20.573577
+#&gt; 500: 0 575.37257  8.339102</div><div class='input'><span class='no'>DT</span>[, <span class='fu'>`:=`</span>(
   <span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
   <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>)
-)]</div><div class='output co'>#&gt;      z   t_event    t_comp event     time
-#&gt;   1: 1 155.12036  50.57812     2 50.57812
-#&gt;   2: 0 718.29972  90.19652     2 90.19652
-#&gt;   3: 1 344.99510  82.28733     2 82.28733
-#&gt;   4: 1  49.28765  47.75553     2 47.75553
-#&gt;   5: 1  27.37543 105.30413     1 27.37543
-#&gt;  ---                                     
-#&gt; 496: 0 234.80192  33.62008     2 33.62008
-#&gt; 497: 0 102.22605  80.79449     2 80.79449
-#&gt; 498: 0  12.04995  65.17018     1 12.04995
-#&gt; 499: 0 731.51301  27.13172     2 27.13172
-#&gt; 500: 0  12.98586  44.39670     1 12.98586</div><div class='input'><span class='no'>DT</span>[<span class='no'>time</span> <span class='kw'>&gt;=</span> <span class='no'>tlim</span>, <span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='kw'>=</span> <span class='no'>tlim</span>)]</div><div class='output co'>#&gt;      z   t_event    t_comp event     time
-#&gt;   1: 1 155.12036  50.57812     0 20.00000
-#&gt;   2: 0 718.29972  90.19652     0 20.00000
-#&gt;   3: 1 344.99510  82.28733     0 20.00000
-#&gt;   4: 1  49.28765  47.75553     0 20.00000
-#&gt;   5: 1  27.37543 105.30413     0 20.00000
-#&gt;  ---                                     
-#&gt; 496: 0 234.80192  33.62008     0 20.00000
-#&gt; 497: 0 102.22605  80.79449     0 20.00000
-#&gt; 498: 0  12.04995  65.17018     1 12.04995
-#&gt; 499: 0 731.51301  27.13172     0 20.00000
-#&gt; 500: 0  12.98586  44.39670     1 12.98586</div><div class='input'>
+)]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 0 125.67322 53.090763     2 53.090763
+#&gt;   2: 0  27.92365 41.517160     1 27.923655
+#&gt;   3: 1 625.41749 23.956800     2 23.956800
+#&gt;   4: 0 279.93382 62.361918     2 62.361918
+#&gt;   5: 1 315.90292 19.739612     2 19.739612
+#&gt;  ---                                      
+#&gt; 496: 1 111.76799 57.900562     2 57.900562
+#&gt; 497: 1 153.70621 63.501104     2 63.501104
+#&gt; 498: 0  38.02085 14.325562     2 14.325562
+#&gt; 499: 0 109.52164 20.573577     2 20.573577
+#&gt; 500: 0 575.37257  8.339102     2  8.339102</div><div class='input'><span class='no'>DT</span>[<span class='no'>time</span> <span class='kw'>&gt;=</span> <span class='no'>tlim</span>, <span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='kw'>=</span> <span class='no'>tlim</span>)]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 0 125.67322 53.090763     0 20.000000
+#&gt;   2: 0  27.92365 41.517160     0 20.000000
+#&gt;   3: 1 625.41749 23.956800     0 20.000000
+#&gt;   4: 0 279.93382 62.361918     0 20.000000
+#&gt;   5: 1 315.90292 19.739612     2 19.739612
+#&gt;  ---                                      
+#&gt; 496: 1 111.76799 57.900562     0 20.000000
+#&gt; 497: 1 153.70621 63.501104     0 20.000000
+#&gt; 498: 0  38.02085 14.325562     2 14.325562
+#&gt; 499: 0 109.52164 20.573577     0 20.000000
+#&gt; 500: 0 575.37257  8.339102     2  8.339102</div><div class='input'>
 <span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'><span class='no'>out_log</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
 <span class='co'># Use GAMs</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mgcv</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: nlme</span></div><div class='output co'>#&gt; <span class='message'>This is mgcv 1.8-31. For overview type 'help("mgcv-package")'.</span></div><div class='input'><span class='no'>DT</span>[<span class='no'>event</span> <span class='kw'>==</span> <span class='fl'>2</span>, <span class='no'>event</span> <span class='kw'>:=</span> <span class='fl'>1</span>]</div><div class='output co'>#&gt;      z   t_event    t_comp event     time
-#&gt;   1: 1 155.12036  50.57812     0 20.00000
-#&gt;   2: 0 718.29972  90.19652     0 20.00000
-#&gt;   3: 1 344.99510  82.28733     0 20.00000
-#&gt;   4: 1  49.28765  47.75553     0 20.00000
-#&gt;   5: 1  27.37543 105.30413     0 20.00000
-#&gt;  ---                                     
-#&gt; 496: 0 234.80192  33.62008     0 20.00000
-#&gt; 497: 0 102.22605  80.79449     0 20.00000
-#&gt; 498: 0  12.04995  65.17018     1 12.04995
-#&gt; 499: 0 731.51301  27.13172     0 20.00000
-#&gt; 500: 0  12.98586  44.39670     1 12.98586</div><div class='input'><span class='no'>out_gam</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/s.html'>s</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>,
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>mgcv</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: nlme</span></div><div class='output co'>#&gt; <span class='message'>This is mgcv 1.8-31. For overview type 'help("mgcv-package")'.</span></div><div class='input'><span class='no'>DT</span>[<span class='no'>event</span> <span class='kw'>==</span> <span class='fl'>2</span>, <span class='no'>event</span> <span class='kw'>:=</span> <span class='fl'>1</span>]</div><div class='output co'>#&gt;      z   t_event    t_comp event      time
+#&gt;   1: 0 125.67322 53.090763     0 20.000000
+#&gt;   2: 0  27.92365 41.517160     0 20.000000
+#&gt;   3: 1 625.41749 23.956800     0 20.000000
+#&gt;   4: 0 279.93382 62.361918     0 20.000000
+#&gt;   5: 1 315.90292 19.739612     1 19.739612
+#&gt;  ---                                      
+#&gt; 496: 1 111.76799 57.900562     0 20.000000
+#&gt; 497: 1 153.70621 63.501104     0 20.000000
+#&gt; 498: 0  38.02085 14.325562     1 14.325562
+#&gt; 499: 0 109.52164 20.573577     0 20.000000
+#&gt; 500: 0 575.37257  8.339102     1  8.339102</div><div class='input'><span class='no'>out_gam</span> <span class='kw'>&lt;-</span> <span class='fu'>fitSmoothHazard</span>(<span class='no'>event</span> ~ <span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/s.html'>s</a></span>(<span class='no'>time</span>) + <span class='no'>z</span>, <span class='no'>DT</span>,
                            <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"gam"</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
