@@ -1,5 +1,7 @@
 linters: with_defaults(
-    line_length_linter = NULL, # 197
+    line_length_linter(80),
+    no_tab_linter,
+    equals_na_linter,
     object_name_linter = NULL, # Recommends snake case vs camel case
     commented_code_linter,
     commas_linter,

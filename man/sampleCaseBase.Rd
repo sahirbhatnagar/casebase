@@ -61,7 +61,7 @@ offset and the estimation will be wrong.
 }
 
 \examples{
-# Simulate censored survival data for two outcome types from exponential distributions
+# Simulate censored survival data for two outcome types from exponential
 library(data.table)
 set.seed(12345)
 nobs <- 500

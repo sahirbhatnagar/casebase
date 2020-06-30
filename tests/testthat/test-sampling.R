@@ -33,8 +33,10 @@ test_that("Expect error with competing risk but compRisk is not specified", {
 })
 
 test_that("no error in sampling with data.frame or data.table", {
-    out1 <- try(sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE))
-    out2 <- try(sampleCaseBase(DF, time = "time", event = "event", comprisk = TRUE))
+    out1 <- try(sampleCaseBase(DT, time = "time", event = "event",
+                               comprisk = TRUE))
+    out2 <- try(sampleCaseBase(DF, time = "time", event = "event",
+                               comprisk = TRUE))
 
     expect_false(inherits(out1, "try-error"))
     expect_false(inherits(out2, "try-error"))

@@ -233,8 +233,10 @@ But the following will not be recognized: \code{"diagtime","eventtime",
 library(ggplot2)
 data("bmtcrr")
 popTimeData <- popTime(data = bmtcrr, time = "ftime", event = "Status")
-fill_cols <- c("Case series" = "black", "Competing event" = "#009E73", "Base series" = "#0072B2")
-color_cols <- c("Case series" = "black", "Competing event" = "black", "Base series" = "black")
+fill_cols <- c("Case series" = "black", "Competing event" = "#009E73",
+               "Base series" = "#0072B2")
+color_cols <- c("Case series" = "black", "Competing event" = "black",
+                "Base series" = "black")
 
 plot(popTimeData,
   add.case.series = TRUE,

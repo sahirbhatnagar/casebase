@@ -106,8 +106,8 @@ popTime <- function(data, time, event, censored.indicator,
     # short values of t at the top
     DT[DT[, order(time)], ycoord := (nobs:1)]
 
-    # sample y coordinates for each event, so that we can see the incidence density
-    # on population-time plots. Sampling from people who have an
+    # sample y coordinates for each event, so that we can see the incidence
+    # density on population-time plots. Sampling from people who have an
     # observed time t greater than that of a fixed individual who had the event
 
     # need to

@@ -250,7 +250,8 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                 current_obs <- newdata[j, , drop = FALSE]
                 # Use trapezoidal rule for integration----
                 if (inherits(newdata, "matrix")) {
-                    newdata2 <- current_obs[, colnames(newdata) != object$timeVar,
+                    newdata2 <- current_obs[,
+                                            colnames(newdata) != object$timeVar,
                                             drop = FALSE]
                     # newdata2 matches the output from fitSmoothHazard.fit
                     temp_matrix <- model.matrix(update(object$formula_time,

@@ -11,10 +11,11 @@ ty <- rexp(N, hx)
 tcens <- rbinom(n = N,
                 prob = 0.3,
                 size = 1) # censoring indicator
-y <- cbind(time = ty, status = 1 - tcens) # y=Surv(ty,1-tcens) with library(survival)
+y <- cbind(time = ty, status = 1 - tcens)
 
 test_that("no error in fitting fitSmoothHazard.fit", {
-    fit_glm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status", ratio = 10),
+    fit_glm <- try(fitSmoothHazard.fit(x, y, time = "time", event = "status",
+                                       ratio = 10),
                    silent = TRUE)
 
     expect_false(inherits(fit_glm, "try-error"))
@@ -24,10 +25,12 @@ test_that("no error in using nonlinear functions of time", {
     skip_if_not_installed("splines")
     library(splines)
     fit_glm <- try(fitSmoothHazard.fit(x, y, formula_time = ~ log(time),
-                                       time = "time", event = "status", ratio = 10),
+                                       time = "time", event = "status",
+                                       ratio = 10),
                    silent = TRUE)
     fit_glm_splines <- try(fitSmoothHazard.fit(x, y, formula_time = ~ bs(time),
-                                               time = "time", event = "status", ratio = 10),
+                                               time = "time", event = "status",
+                                               ratio = 10),
                            silent = TRUE)
 
     expect_false(inherits(fit_glm, "try-error"))

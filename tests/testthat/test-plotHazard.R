@@ -20,7 +20,8 @@ mod_gam <- casebase::fitSmoothHazard(status ~ trt + s(log(eventtime)) +
                                      ratio = 10,
                                      family = "gam")
 
-mod_glmnet <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+mod_glmnet <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
+                                                          df = 3) +
                                         trt:ns(log(eventtime), df = 1),
                                     time = "eventtime",
                                     data = simdat,
@@ -45,7 +46,8 @@ test_that("no error in hazardPlot for glm, gbm, gam, glmnet using default times"
     outgam <- try(hazardPlot(object = mod_gam, newdata = data.frame(trt = 0),
                              add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
                              line.col = 3, lwd = 2))
-    outglmnet <- try(hazardPlot(object = mod_glmnet, newdata = data.frame(trt = 0),
+    outglmnet <- try(hazardPlot(object = mod_glmnet,
+                                newdata = data.frame(trt = 0),
                                 add = FALSE, s = "lambda.min", ci.lvl = 0.95,
                                 ci = FALSE, lty = 1, line.col = 4, lwd = 2))
 

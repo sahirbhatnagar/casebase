@@ -1,10 +1,10 @@
 #' @title Plot Fitted Hazard Curve as a Funtion of Time
 #' @description Visualize estimated hazard curves as a funtion of time with
 #'   confidence intervals. This function takes as input, the result from the
-#'   [casebase::fitSmoothHazard()] function. The user can also specify a sequence of times
-#'   at which to estimate the hazard function. These plots are useful to
-#'   visualize the non-proportional hazards, i.e., time dependent interactions
-#'   with a covariate.
+#'   [casebase::fitSmoothHazard()] function. The user can also specify a
+#'   sequence of times at which to estimate the hazard function. These plots are
+#'   useful to visualize the non-proportional hazards, i.e., time dependent
+#'   interactions with a covariate.
 #' @param object Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This
 #'   is the result from the [casebase::fitSmoothHazard()] function.
 #' @param newdata A data frame in which to look for variables with which to
@@ -53,7 +53,8 @@
 #' if(interactive()) {
 #' data("simdat")
 #' library(splines)
-#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
+#'                                                       df = 3) +
 #'                                         trt:ns(log(eventtime),df=1),
 #'                                     time = "eventtime",
 #'                                     data = simdat,
@@ -112,7 +113,8 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                             obj_class))
             ci <- FALSE
         }
-        if (any(names(newdata) %in% c("standarderror", "lowerbound", "upperbound")))
+        if (any(names(newdata) %in% c("standarderror", "lowerbound",
+                                      "upperbound")))
             stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
     }
 
@@ -215,7 +217,8 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         matplot(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
                 type = "n", xlab = xlab, ylab = ylab, ylim = ylims, ...)
     if (ci) {
-        polygon(c(newdata[[object[["timeVar"]]]], rev(newdata[[object[["timeVar"]]]])),
+        polygon(c(newdata[[object[["timeVar"]]]],
+                  rev(newdata[[object[["timeVar"]]]])),
                 c(newdata[["lowerbound"]], rev(newdata[["upperbound"]])),
                 col = ci.col,
                 border = ci.col)

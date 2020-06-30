@@ -12,7 +12,8 @@ print.absRiskCB <- function(x, ...) {
 # S4 objects----
 
 #' @import methods
-#' @importFrom stats binomial glm integrate pnorm quantile relevel runif time update terms
+#' @importFrom stats binomial glm integrate pnorm quantile relevel runif time
+#' @importFrom stats update terms
 NULL
 
 #' An S4 class to store the output of fitSmoothHazard
