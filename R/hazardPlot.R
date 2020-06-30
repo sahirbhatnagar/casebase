@@ -1,10 +1,10 @@
 #' @title Plot Fitted Hazard Curve as a Funtion of Time
 #' @description Visualize estimated hazard curves as a funtion of time with
 #'   confidence intervals. This function takes as input, the result from the
-#'   [casebase::fitSmoothHazard()] function. The user can also specify a sequence of times
-#'   at which to estimate the hazard function. These plots are useful to
-#'   visualize the non-proportional hazards, i.e., time dependent interactions
-#'   with a covariate.
+#'   [casebase::fitSmoothHazard()] function. The user can also specify a
+#'   sequence of times at which to estimate the hazard function. These plots are
+#'   useful to visualize the non-proportional hazards, i.e., time dependent
+#'   interactions with a covariate.
 #' @param object Fitted object of class `glm`, `gam`, `cv.glmnet` or `gbm`. This
 #'   is the result from the [casebase::fitSmoothHazard()] function.
 #' @param newdata A data frame in which to look for variables with which to
@@ -50,10 +50,11 @@
 #' @seealso [casebase::fitSmoothHazard()]
 #' @examples
 #' \dontrun{
-#' if(interactive()){
+#' if(interactive()) {
 #' data("simdat")
 #' library(splines)
-#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
+#'                                                       df = 3) +
 #'                                         trt:ns(log(eventtime),df=1),
 #'                                     time = "eventtime",
 #'                                     data = simdat,
@@ -76,7 +77,7 @@
 hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
                        ci.col = "grey", lty = par("lty"), add = FALSE,
-                       ci = !add, rug = !add, s = c("lambda.1se","lambda.min"),
+                       ci = !add, rug = !add, s = c("lambda.1se", "lambda.min"),
                        times = NULL, ...) {
 
     type <- match.arg(type)
@@ -84,19 +85,20 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     if (is.null(newdata))
         stop("newdata argument needs to be specified")
 
-    if(!is.data.frame(newdata))
+    if (!is.data.frame(newdata))
         stop("newdata must be a data.frame")
 
-    if (nrow(newdata)>1) {
+    if (nrow(newdata) > 1) {
         newdata <- newdata[1, , drop = FALSE]
         warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
     }
 
-    if (any(names(newdata) %in% c("sequence_of_times","predictedloghazard")))
+    if (any(names(newdata) %in% c("sequence_of_times", "predictedloghazard")))
         stop("sequence_of_times or predictedloghazard cannot be used as a colunm name in newdata. rename them to something else.")
 
     if (any(names(newdata) %in% object[["timeVar"]]))
-        stop("%s cannot be used as a colunm name in newdata. remove it.",object[["timeVar"]])
+        stop("%s cannot be used as a colunm name in newdata. remove it.",
+             object[["timeVar"]])
 
     obj_class <- class(object)[2]
 
@@ -104,79 +106,86 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         stop("object must be of class glm, gam, gbm or cv.glmnet")
 
     if (ci) {
-        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
+        if (!data.table::between(ci.lvl, 0, 1, incbounds = FALSE))
             stop("ci.lvl must be between 0 and 1")
         if (!inherits(object, c("glm", "gam"))) {
-            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",obj_class))
+            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",
+                            obj_class))
             ci <- FALSE
         }
-        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
+        if (any(names(newdata) %in% c("standarderror", "lowerbound",
+                                      "upperbound")))
             stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
     }
 
     if (is.null(times)) {
-        times <- object[["originalData"]][[ object[["timeVar"]] ]]
-        times <- seq(min(times),max(times),length.out = breaks)
+        times <- object[["originalData"]][[object[["timeVar"]]]]
+        times <- seq(min(times), max(times), length.out = breaks)
     } else {
         times <- times[order(times)]
     }
 
-    newdata <- newdata[rep(seq_len(nrow(newdata)), each=length(times)), , drop = FALSE]
+    newdata <- newdata[rep(seq_len(nrow(newdata)), each = length(times)), ,
+                       drop = FALSE]
     newdata$sequence_of_times <- times
-    names(newdata)[names(newdata) == 'sequence_of_times'] <- object[["timeVar"]]
+    names(newdata)[names(newdata) == "sequence_of_times"] <- object[["timeVar"]]
 
     newdata$offset <- 0
-    # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
-    # The following line silences this warning
+    # If gbm was fitted with an offset, predict.gbm ignores it
+    # but still gives a warning. The following line silences this warning
     if (!inherits(object, "gbm")) attr(object$Terms, "offset") <- NULL
 
-    preds <- switch (obj_class,
-                     glm = {
-                         pp <- predict(object, newdata = newdata, se.fit = ci, type = "link")
-                         newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
-                         pp
+    preds <- switch(obj_class,
+                    glm = {
+                        pp <- predict(object, newdata = newdata,
+                                      se.fit = ci, type = "link")
+                        newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
+                        pp
+                    },
+                    gam = {
+                        pp <- predict(object, newdata = newdata,
+                                      se.fit = ci, type = "link")
+                        newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
+                        pp
                      },
-
-                     gam = {
-                         pp <- predict(object, newdata = newdata, se.fit = ci, type = "link")
-                         newdata$predictedloghazard <- if (ci) pp[["fit"]] else pp
-                         pp
-                     },
-
-                     cv.glmnet = {
-                         if (is.numeric(s)) {
-                             if (length(s)>1) warning("More than one value for s has been supplied. Only first entry will be used")
-                             s <- s[1]
-                         } else if (is.character(s)) {
-                             s <- match.arg(s)
-                         }
-
-                         newx <- model.matrix(update(object$formula[-2], # First extract RHS
-                                                     ~ . -1), # Then remove intercept
-                                              newdata)
-
-                         # the newoffset=0 isn't required for now as glmnet is not using the offset
-                         # because of the hack
-                         pp <- predict(object, newx = newx, s = s, newoffset = 0)
-                         newdata$predictedloghazard <- pp
-                         pp
-                     },
-
-                     gbm = {
-                         # If gbm was fitted with an offset, predict.gbm ignores it but still gives a warning
-                         # The following line silences this warning
-                         attr(object$Terms, "offset") <- NULL
-                         pp <- predict(object, newdata, n.trees = object$n.trees)
-                         newdata$predictedloghazard <- pp
-                         pp
-
-                     }
+                    cv.glmnet = {
+                        if (is.numeric(s)) {
+                            if (length(s) > 1)  {
+                                warning(paste("More than one value for s has",
+                                              "been supplied. Only first entry",
+                                              "will be used"))
+                            }
+                            s <- s[1]
+                        } else if (is.character(s)) {
+                            s <- match.arg(s)
+                        }
+                        # First extract RHS, then remove intercept
+                        newx <- model.matrix(update(object$formula[-2],
+                                                    ~ . - 1),
+                                             newdata)
+                        # the newoffset = 0 isn't required for now as glmnet
+                        # is not using the offset because of the hack
+                        pp <- predict(object, newx = newx, s = s, newoffset = 0)
+                        newdata$predictedloghazard <- pp
+                        pp
+                    },
+                    gbm = {
+                        # If gbm was fitted with an offset
+                        # predict.gbm ignores it but still gives a warning
+                        # The following line silences this warning
+                        attr(object$Terms, "offset") <- NULL
+                        pp <- predict(object, newdata, n.trees = object$n.trees)
+                        newdata$predictedloghazard <- pp
+                        pp
+                    }
     )
 
     if (ci) {
-        newdata$standarderror <- preds$se.fit
-        newdata$lowerbound <- exp(newdata$predictedloghazard + qnorm((1-ci.lvl)/2) * newdata$standarderror)
-        newdata$upperbound <- exp(newdata$predictedloghazard + qnorm(1-(1-ci.lvl)/2) * newdata$standarderror)
+        std_err <- newdata$standarderror <- preds$se.fit
+        newdata$lowerbound <- exp(newdata$predictedloghazard +
+                                      qnorm(0.5 * (1 - ci.lvl)) * std_err)
+        newdata$upperbound <- exp(newdata$predictedloghazard +
+                                      qnorm(1 - 0.5 * (1 - ci.lvl)) * std_err)
     }
 
     newdata$predictedhazard <- exp(newdata$predictedloghazard)
@@ -185,24 +194,31 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         xlab <- object[["timeVar"]]
     if (is.null(ylab))
         ylab <- switch(type, hr = "Hazard ratio", hazard = "Hazard",
-                       surv = "Survival", density = "Density", sdiff = "Survival difference",
-                       hdiff = "Hazard difference", cumhaz = "Cumulative hazard",
+                       surv = "Survival", density = "Density",
+                       sdiff = "Survival difference",
+                       hdiff = "Hazard difference", marghaz = "Marginal hazard",
                        loghazard = "log(hazard)", link = "Linear predictor",
-                       meansurv = "Mean survival", meansurvdiff = "Difference in mean survival",
-                       meanhr = "Mean hazard ratio", odds = "Odds", or = "Odds ratio",
-                       margsurv = "Marginal survival", marghaz = "Marginal hazard",
+                       meansurv = "Mean survival", cumhaz = "Cumulative hazard",
+                       meansurvdiff = "Difference in mean survival",
+                       meanhr = "Mean hazard ratio", odds = "Odds",
+                       or = "Odds ratio", margsurv = "Marginal survival",
                        marghr = "Marginal hazard ratio", haz = "Hazard",
-                       fail = "Failure", meanhaz = "Mean hazard", margfail = "Marginal failure",
-                       af = "Attributable fraction", meanmargsurv = "Mean marginal survival",
+                       fail = "Failure", meanhaz = "Mean hazard",
+                       margfail = "Marginal failure",
+                       af = "Attributable fraction",
+                       meanmargsurv = "Mean marginal survival",
                        uncured = "Uncured distribution")
 
-    ylims <- if (ci) range(newdata$lowerbound,newdata$upperbound) else range(newdata$predictedhazard)
+    ylims <- if (ci) {
+        range(newdata$lowerbound, newdata$upperbound)
+        } else range(newdata$predictedhazard)
 
     if (!add)
         matplot(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
                 type = "n", xlab = xlab, ylab = ylab, ylim = ylims, ...)
     if (ci) {
-        polygon(c(newdata[[object[["timeVar"]]]], rev(newdata[[object[["timeVar"]]]])),
+        polygon(c(newdata[[object[["timeVar"]]]],
+                  rev(newdata[[object[["timeVar"]]]])),
                 c(newdata[["lowerbound"]], rev(newdata[["upperbound"]])),
                 col = ci.col,
                 border = ci.col)
@@ -211,13 +227,10 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     } else lines(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
                  col = line.col, lty = lty, ...)
     if (rug) {
-        # rug(object[["originalData"]][[ object[["timeVar"]] ]], col = line.col)
-        events <- object[["originalData"]][[object[["eventVar"]] ]]
-        rug(object[["originalData"]][which(events==1),,drop=F][[ object[["timeVar"]]  ]],
-            col = line.col, quiet = TRUE) # Silence warnings about clipped values
+        events <- object[["originalData"]][[object[["eventVar"]]]]
+        rug(object[["originalData"]][which(events == 1), ,
+                                     drop = FALSE][[object[["timeVar"]]]],
+            col = line.col, quiet = TRUE) # Silence warning about clipped values
     }
     return(invisible(newdata))
 }
-
-
-

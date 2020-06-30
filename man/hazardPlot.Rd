@@ -87,17 +87,18 @@ bands). \code{standarderror} is the standard error of the log hazard (only if
 \description{
 Visualize estimated hazard curves as a funtion of time with
 confidence intervals. This function takes as input, the result from the
-\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function. The user can also specify a sequence of times
-at which to estimate the hazard function. These plots are useful to
-visualize the non-proportional hazards, i.e., time dependent interactions
-with a covariate.
+\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function. The user can also specify a
+sequence of times at which to estimate the hazard function. These plots are
+useful to visualize the non-proportional hazards, i.e., time dependent
+interactions with a covariate.
 }
 \examples{
 \dontrun{
-if(interactive()){
+if(interactive()) {
 data("simdat")
 library(splines)
-mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
+                                                      df = 3) +
                                         trt:ns(log(eventtime),df=1),
                                     time = "eventtime",
                                     data = simdat,

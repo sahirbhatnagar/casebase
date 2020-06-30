@@ -115,7 +115,7 @@ test_that("no error in absolute risk with data tables--typical profile", {
 
 # Using new data
 newDT <- data.table("Z" = c(0, 1))
-newDF <- data.frame("Z" = c(0,1))
+newDF <- data.frame("Z" = c(0, 1))
 
 test_that("no error in absolute risk with data frames - new data", {
     foo1 <- try(withCallingHandlers(absoluteRisk(fitDF, time = 1,
@@ -248,7 +248,6 @@ test_that(paste("should output probabilities with data tables",
 
 # Absolute risk at time = 0
 target <- matrix(0, ncol = 2, nrow = 1)
-# class(target) <- c("absRiskCB", class(target))
 
 test_that("should give probability 0 at time 0 with data frames", {
     absRiskMC <- absoluteRisk(fitDF, time = 0, newdata = newDF,

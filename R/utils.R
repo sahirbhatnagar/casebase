@@ -1,6 +1,5 @@
 # This is where all utility functions should appear
 # These functions are not exported
-# roundUp <- function(x) 10^ceiling(log10(x))
 
 `%ni%` <- Negate("%in%")
 
@@ -208,18 +207,6 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
 # Remove offset from formula
 # https://stackoverflow.com/a/40313732/2836971
-# remove_offset <- function(x) {
-#   proc <- function(x) {
-#     if (length(x) == 1) {
-#       return(x)
-#     }
-#     if (x[[1]] == as.name("offset")) {
-#       return(x[[1]])
-#     }
-#     replace(x, -1, lapply(x[-1], proc))
-#   }
-#   update(proc(x), . ~ . - offset)
-# }
 
 # Add a formula interface to cv.glmnet
 #' @importFrom stats model.matrix
@@ -232,8 +219,8 @@ prepareX <- function(formula, data) {
   } else NULL
   X <- model.matrix(update(formula, ~ . - 1), data = data, contrasts.arg = ctr)
   if (any(whichfac))
-    attr(X, "contrasts") = NULL
-  attr(X, "assign") = NULL
+    attr(X, "contrasts") <- NULL
+  attr(X, "assign") <- NULL
   X
 }
 
@@ -302,7 +289,7 @@ trap_int <- function(x, y) {
   m <- length(x)
   y <- as.matrix(y)
   n <- ncol(y)
-  dt <- kronecker(matrix(1, 1, n), diff(x)/2)
+  dt <- kronecker(matrix(1, 1, n), 0.5 * diff(x))
   ct <- apply(dt * (y[1:(m - 1), ] + y[2:m, ]), 2, cumsum)
   return(rbind(0, ct))
 }

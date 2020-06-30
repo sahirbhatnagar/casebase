@@ -10,12 +10,12 @@ b2 <- 50
 # t observed time/endpoint
 # z is a binary covariate
 DT <- data.table(z = rbinom(nobs, 1, 0.5))
-DT[,`:=`("t_event" = rweibull(nobs, 1, b1),
+DT[, `:=`("t_event" = rweibull(nobs, 1, b1),
          "t_comp" = rweibull(nobs, 1, b2))]
-DT[,`:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
+DT[, `:=`("event" = 1 * (t_event < t_comp) + 2 * (t_event >= t_comp),
          "time" = pmin(t_event, t_comp))]
 DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
-DT[,c("t_event", "t_comp") := NULL]
+DT[, c("t_event", "t_comp") := NULL]
 
 DF <- data.frame(z = rbinom(nobs, 1, 0.5),
                  t_event = rweibull(nobs, 1, b1),
@@ -33,8 +33,10 @@ test_that("Expect error with competing risk but compRisk is not specified", {
 })
 
 test_that("no error in sampling with data.frame or data.table", {
-    out1 <- try(sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE))
-    out2 <- try(sampleCaseBase(DF, time = "time", event = "event", comprisk = TRUE))
+    out1 <- try(sampleCaseBase(DT, time = "time", event = "event",
+                               comprisk = TRUE))
+    out2 <- try(sampleCaseBase(DF, time = "time", event = "event",
+                               comprisk = TRUE))
 
     expect_false(inherits(out1, "try-error"))
     expect_false(inherits(out2, "try-error"))

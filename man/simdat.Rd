@@ -12,7 +12,7 @@ indicator}}
 }
 \source{
 See \code{simsurv} vignette:
-\url{https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects}
+\url{https://cran.r-project.org/package=simsurv/vignettes/simsurv_usage.html}
 }
 \usage{
 simdat
@@ -42,7 +42,8 @@ log time. The true parameters are 1. \eqn{\beta_0} = -0.5 2. \eqn{\beta_1} =
 
 library(splines)
 data("simdat")
-mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
+mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
+                                                      df = 3) +
                                    trt:ns(log(eventtime),df=1),
                                    time = "eventtime",
                                    data = simdat,

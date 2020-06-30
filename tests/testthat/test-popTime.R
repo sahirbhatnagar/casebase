@@ -18,18 +18,18 @@ eost <- 10
 # z is a binary covariate
 DTsim <- data.table(ID = seq_len(nobs), z = rbinom(nobs, 1, 0.5))
 setkey(DTsim, ID)
-DTsim[,`:=`(event_time = rweibull(nobs, a1, b1 * exp(z * c1)^(-1/a1)),
-             competing_time = rweibull(nobs, a2, b2 * exp(z * c2)^(-1/a2)),
+DTsim[, `:=`(event_time = rweibull(nobs, a1, b1 * exp(z * c1)),
+             competing_time = rweibull(nobs, a2, b2 * exp(z * c2)),
              end_of_study_time = eost)]
-DTsim[,`:=`(event = 1 * (event_time < competing_time) +
+DTsim[, `:=`(event = 1 * (event_time < competing_time) +
                 2 * (event_time >= competing_time),
             time = pmin(event_time, competing_time))]
 DTsim[time >= end_of_study_time, event := 0]
 DTsim[time >= end_of_study_time, time := end_of_study_time]
 
-DFsim <- data.frame("z" = DTsim[,z],
-                    "event" = DTsim[,event],
-                    "time" = DTsim[,time])
+DFsim <- data.frame("z" = DTsim[, z],
+                    "event" = DTsim[, event],
+                    "time" = DTsim[, time])
 
 # data.frames input
 out1 <- popTime(data = DFsim, time = "time", event = "event")
@@ -92,15 +92,27 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = TRUE,
                    legend = TRUE,
-                   case.params = list(mapping = aes(x = time, y = yc, color = "Relapse", fill = "Relapse")),
-                   base.params = list(mapping = aes(x = time, y = ycoord, color = "Base series", fill = "Base series")),
-                   competing.params = list(mapping = aes(x = time, y = yc, color = "Competing event", fill = "Competing event")),
+                   case.params = list(mapping = aes(x = time, y = yc,
+                                                    color = "Relapse",
+                                                    fill = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord,
+                                                    color = "Base series",
+                                                    fill = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc,
+                                                         color = "Competing event",
+                                                         fill = "Competing event")),
                    fill.params = list(name = "Legend Name",
-                                        breaks = c("Relapse", "Base series", "Competing event"),
-                                        values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                                        breaks = c("Relapse", "Base series",
+                                                   "Competing event"),
+                                        values = c("Relapse" = "blue",
+                                                   "Competing event" = "yellow",
+                                                   "Base series" = "orange")),
                    color.params = list(name = "Legend Name",
-                                      breaks = c("Relapse", "Base series", "Competing event"),
-                                      values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                                      breaks = c("Relapse", "Base series",
+                                                 "Competing event"),
+                                      values = c("Relapse" = "blue",
+                                                 "Competing event" = "yellow",
+                                                 "Base series" = "orange")),
                    theme.params = list(legend.position = "right")))
 
 
@@ -112,15 +124,27 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
                    ratio = 1,
                    comprisk = TRUE,
                    legend = TRUE,
-                   case.params = list(mapping = aes(x = time, y = yc, color = "Relapse", fill = "Relapse")),
-                   base.params = list(mapping = aes(x = time, y = ycoord, color = "Base series", fill = "Base series")),
-                   competing.params = list(mapping = aes(x = time, y = yc, color = "Competing event", fill = "Competing event")),
+                   case.params = list(mapping = aes(x = time, y = yc,
+                                                    color = "Relapse",
+                                                    fill = "Relapse")),
+                   base.params = list(mapping = aes(x = time, y = ycoord,
+                                                    color = "Base series",
+                                                    fill = "Base series")),
+                   competing.params = list(mapping = aes(x = time, y = yc,
+                                                         color = "Competing event",
+                                                         fill = "Competing event")),
                    fill.params = list(name = "Legend Name",
-                                        breaks = c("Relapse", "Base series", "Competing event"),
-                                        values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                                        breaks = c("Relapse", "Base series",
+                                                   "Competing event"),
+                                        values = c("Relapse" = "blue",
+                                                   "Competing event" = "yellow",
+                                                   "Base series" = "orange")),
                    color.params = list(name = "Legend Name",
-                                      breaks = c("Relapse", "Base series", "Competing event"),
-                                      values = c("Relapse" = "blue", "Competing event" = "yellow", "Base series" = "orange")),
+                                      breaks = c("Relapse", "Base series",
+                                                 "Competing event"),
+                                      values = c("Relapse" = "blue",
+                                                 "Competing event" = "yellow",
+                                                 "Base series" = "orange")),
                    casebase.theme = FALSE))
 
     expect_false(inherits(p1, "try-error"))
@@ -131,4 +155,3 @@ test_that("plot methods-no error in popTime with data.frame or data.table", {
     expect_false(inherits(p7, "try-error"))
 
 })
-

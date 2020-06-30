@@ -79,7 +79,8 @@ data("support")
 x <- model.matrix(death ~ . - d.time - 1, data = support)
 y <- with(support, cbind(death, d.time))
 
-fit_cb <- casebase::fitSmoothHazard.fit(x, y, time = "d.time", event = "death",
+fit_cb <- casebase::fitSmoothHazard.fit(x, y, time = "d.time",
+                                        event = "death",
                                         formula_time = ~ log(d.time),
                                         ratio = 1)
 }

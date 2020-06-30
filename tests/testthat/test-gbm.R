@@ -50,7 +50,7 @@ test_that("warnings witn non-linear functions of time or interactions", {
     expect_warning(fitSmoothHazard(event ~ log(ftime) + Z,
                                    data = DF, time = "ftime", family = "gbm"),
                    regexp = "gbm may throw an error")
-    expect_warning(fitSmoothHazard(event ~ ftime*Z,
+    expect_warning(fitSmoothHazard(event ~ ftime * Z,
                                    data = DF, time = "ftime", family = "gbm"),
                    regexp = "gbm may throw an error")
 })
@@ -61,8 +61,8 @@ fitDF_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime",
 fitDT_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime",
                              family = "gbm", ratio = 10)
 
-newDT <- data.table("Z" = c(0,1))
-newDF <- data.frame("Z" = c(0,1))
+newDT <- data.table("Z" = c(0, 1))
+newDF <- data.frame("Z" = c(0, 1))
 
 test_that("no error in fitting gbm", {
     riskDF <- try(absoluteRisk(fitDF_gbm, time = 0.5, newdata = newDF,
@@ -118,13 +118,13 @@ test_that("output probabilities", {
 
 # Matrix interface----
 N <- 1000; p <- 30
-nzc <- p/3
-x <- matrix(rnorm(N*p),N,p)
-dimnames(x)[[2]] <- paste0("x",1:p)
+nzc <- 0.33 * p
+x <- matrix(rnorm(N * p), N, p)
+dimnames(x)[[2]] <- paste0("x", seq_len(p))
 beta <- rnorm(nzc)
-fx <- x[,seq(nzc)] %*% beta/3
+fx <- x[, seq(nzc)] %*% (0.33 * beta)
 hx <- exp(fx)
-ty <- rexp(N,hx)
+ty <- rexp(N, hx)
 tcens <- rbinom(n = N,
                 prob = 0.3,
                 size = 1) # censoring indicator

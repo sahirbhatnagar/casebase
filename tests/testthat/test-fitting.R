@@ -7,7 +7,7 @@ lambda_t1 <- 3
 
 times <- c(rexp(n = n, rate = lambda_t0),
            rexp(n = n, rate = lambda_t1))
-censor <- rexp(n = 2*n, rate = -log(alp))
+censor <- rexp(n = 2 * n, rate = -log(alp))
 
 times_c <- pmin(times, censor)
 event_c <- 1 * (times < censor)
@@ -53,7 +53,7 @@ test_that("sampling first and then fitting", {
 form <- formula(event ~ exposure + time)
 form_bs <- formula(event ~ exposure + bs(time))
 form_log <- formula(event ~ exposure + log(time))
-form_int <- formula(event ~ exposure*time)
+form_int <- formula(event ~ exposure * time)
 form_nested <- formula(cens ~ horTh * nsx(log(time), df = 3) + age * time)
 
 form_bs_extra <- formula(event ~ exposure + bs(time, df = 3))
@@ -73,7 +73,7 @@ test_that("detecting non-linear functions of time", {
 wrong <- formula(event ~ exposure + time + wrongtime)
 wrong_bs <- formula(event ~ exposure + time + bs(wrongtime))
 wrong_log <- formula(event ~ exposure + time + log(wrongtime))
-wrong_int <- formula(event ~ exposure*wrongtime + time)
+wrong_int <- formula(event ~ exposure * wrongtime + time)
 
 wrong2 <- formula(event ~ exposure + time + timewrong)
 wrong2_bs <- formula(event ~ exposure + time + bs(timewrong))

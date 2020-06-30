@@ -97,10 +97,12 @@ for (t in 1:15) text(t,0,toString(t), cex=0.75)
 text(15.25,0,"Year", cex=0.75,adj=c(0,0.5))
 
 for (n in seq(0,90000,10000)) {
-    if(n> 0 & n < 80000) text(-0.1,n+OFF,format(n,big.mark=","), cex=0.75,adj=c(1,0.5))
-    if(n> 0) text(-0.1,-n-OFF,format(n,big.mark=","), cex=0.75,adj=c(1,0.5))
-    segments(-0.05,  n+OFF, 0, n+OFF , lwd=0.5)
-    segments(-0.05, -n-OFF, 0, -n-OFF, lwd=0.5 )
+    if(n > 0 & n < 80000) text(-0.1, n + OFF, format(n, big.mark = ","),
+                               cex = 0.75, adj = c(1,0.5))
+    if(n > 0) text(-0.1, -n - OFF, format(n, big.mark = ","),
+                   cex = 0.75, adj = c(1,0.5))
+    segments(-0.05, n + OFF, 0, n + OFF, lwd = 0.5)
+    segments(-0.05, -n - OFF, 0, -n - OFF, lwd = 0.5 )
 
 }
 text(4, 70000+OFF,"Screening Arm of ERSPC", cex=1,adj=c(0,0.5))
@@ -112,21 +114,21 @@ h = 50000+OFF
 points(9.5,h, pch=19,cex=0.25,col="red")
 text(9.6,h,"Death from Prostate Cancer", adj=c(0,0.5))
 
-#The randomization of the Finnish cohorts were carried out on January 1 of
-#each of the 4 years 1996 to 1999. This, coupled with the uniform December 31
-#2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8
-#years of follow-up.
+# The randomization of the Finnish cohorts were carried out on January 1 of
+# each of the 4 years 1996 to 1999. This, coupled with the uniform December
+# 31 2006 censoring date, lead to large numbers of men with exactly 11, 10,
+# 9 or 8 years of follow-up.
 
-#Tracked backwards in time (i.e. from right to left) , the PopulationTime
-#plot shows the recruitment pattern from its beginning in 1991, and in
-#particular the Jan 1 entries in successive years.
+# Tracked backwards in time (i.e. from right to left), the Population-Time
+# plot shows the recruitment pattern from its beginning in 1991, and in
+# particular the Jan 1 entries in successive years.
 
-#Tracked forwards in time (i.e. from left to right), the plot for the first
-#three years shows attrition due entirely to death (mainly from other causes).
-#Since the Swedish and Belgian centres were the last to close their
-#recruitment - in December 2003 - the minimum potential follow-up is three
-#years. Tracked further forwards in time (i.e. after year 3) the attrition is
-#a combination of deaths and staggered entries.
+# Tracked forwards in time (i.e. from left to right), the plot for the first
+# 3 years shows attrition due entirely to death (mainly from other causes).
+# Since the Swedish and Belgian centres were the last to close their
+# recruitment - in December 2003 - the minimum potential follow-up is three
+# years. Tracked further forwards in time (i.e. after year 3) the attrition
+# is a combination of deaths and staggered entries.
 }
 
 

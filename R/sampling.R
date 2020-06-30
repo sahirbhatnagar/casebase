@@ -36,7 +36,7 @@
 #'   case or the base series.
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from exponential distributions
+#' # Simulate censored survival data for two outcome types from exponential
 #' library(data.table)
 #' set.seed(12345)
 #' nobs <- 500
@@ -61,7 +61,8 @@
 #' DT[time >= tlim, `:=`("event" = 0, "time" = tlim)]
 #'
 #' out <- sampleCaseBase(DT, time = "time", event = "event", comprisk = TRUE)
-sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, censored.indicator) {
+sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE,
+                           censored.indicator) {
   # Get the variables names for time and event
   varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
   timeVar <- varNames$time
@@ -101,12 +102,15 @@ sampleCaseBase <- function(data, time, event, ratio = 10, comprisk = FALSE, cens
 
   # Combine base series with covariate data
   selectTimeEvent <- !(colnames(data) %in% c(timeVar, eventName))
-  bSeries <- cbind(bSeries, subset(data, select = selectTimeEvent)[which_pm, , drop = FALSE])
+  bSeries <- cbind(bSeries,
+                   subset(data, select = selectTimeEvent)[which_pm, ,
+                                                          drop = FALSE])
   # Rename columns appropriately
   names(bSeries)[names(bSeries) == "status"] <- eventName
   names(bSeries)[names(bSeries) == "time"] <- timeVar
 
-  cSeries <- data[which(subset(data, select = (names(data) == eventName)) != 0), ]
+  cSeries <- data[which(subset(data,
+                               select = (names(data) == eventName)) != 0), ]
 
   # Combine case and base series
   cbSeries <- rbind(cSeries, bSeries)

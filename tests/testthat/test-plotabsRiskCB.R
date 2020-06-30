@@ -9,7 +9,7 @@ testthat::skip_if_not_installed("glmnet")
 
 
 data("brcancer")
-mod_cb_glm <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_glm <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +
@@ -20,7 +20,7 @@ mod_cb_glm <- fitSmoothHazard(cens ~ estrec*log(time) +
                               data = brcancer,
                               time = "time", ratio = 1)
 
-mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +
@@ -31,7 +31,7 @@ mod_cb_glmnet <- fitSmoothHazard(cens ~ estrec*log(time) +
                               data = brcancer,
                               time = "time", ratio = 1, family = "glmnet")
 
-mod_cb_gam <- fitSmoothHazard(cens ~ estrec*log(time) +
+mod_cb_gam <- fitSmoothHazard(cens ~ estrec * log(time) +
                                   horTh +
                                   age +
                                   menostat +
@@ -43,13 +43,13 @@ mod_cb_gam <- fitSmoothHazard(cens ~ estrec*log(time) +
                               time = "time", ratio = 1, family = "gam")
 
 smooth_risk_glm <- absoluteRisk(object = mod_cb_glm,
-                                newdata = brcancer[1:10,])
+                                newdata = brcancer[1:10, ])
 
 smooth_risk_glmnet <- absoluteRisk(object = mod_cb_glmnet,
-                                newdata = brcancer[1:10,])
+                                newdata = brcancer[1:10, ])
 
 smooth_risk_gam <- absoluteRisk(object = mod_cb_gam,
-                                newdata = brcancer[1:10,])
+                                newdata = brcancer[1:10, ])
 
 test_that("no error in plot method for absRiskCB objects - ggplot", {
 
@@ -64,7 +64,7 @@ test_that("no error in plot method for absRiskCB objects - ggplot", {
 
     # specify id names
     outglm_names <- try(plot(smooth_risk_glm,
-                             id.names = paste0("Covariate Profile ",1:10),
+                             id.names = paste0("Covariate Profile ", 1:10),
                              legend.title = "Type",
                              xlab = "time (days)",
                              ylab = "Cumulative Incidence (%)"),
@@ -72,7 +72,7 @@ test_that("no error in plot method for absRiskCB objects - ggplot", {
 
     # not enough ID names supplied
     expect_warning(plot(smooth_risk_glm,
-                        id.names = paste0("Covariate Profile ",1:9),
+                        id.names = paste0("Covariate Profile ", 1:9),
                         legend.title = "Type",
                         xlab = "time (days)",
                         ylab = "Cumulative Incidence (%)"))

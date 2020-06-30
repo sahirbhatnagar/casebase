@@ -60,7 +60,8 @@
 #'   results.
 #' @export
 #' @examples
-#' # Simulate censored survival data for two outcome types from exponential distributions
+#' # Simulate censored survival data for two outcome types from exponential
+#' # distributions
 #' library(data.table)
 #' nobs <- 500
 #' tlim <- 20
@@ -110,7 +111,6 @@ fitSmoothHazard <- function(formula, data, time,
   }
   formula <- expand_dot_formula(formula, data = data)
   # Infer name of event variable from LHS of formula
-  # eventVar <- as.character(attr(terms(formula), "variables")[[2]])
   eventVar <- all.vars(formula[[2]])
 
   if (missing(time)) {
@@ -150,11 +150,13 @@ fitSmoothHazard <- function(formula, data, time,
     # gbm doesn't play nice with interactions and functions of time
     if (family == "gbm") {
         # So warn the user
-        if(detect_nonlinear_time(formula, timeVar)) {
-            warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
-                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        if (detect_nonlinear_time(formula, timeVar)) {
+          warning(sprintf(paste("You may be using a nonlinear function",
+                                "of %s.\ngbm may throw an error."),
+                          timeVar),
+                  call. = FALSE)
         }
-        if(detect_interaction(formula)) {
+        if (detect_interaction(formula)) {
             warning("gbm may throw an error when using interaction terms",
                     call. = FALSE)
         }
@@ -163,10 +165,14 @@ fitSmoothHazard <- function(formula, data, time,
   # Fit a binomial model if there are no competing risks
   if (length(typeEvents) == 2) {
     fittingFunction <- switch(family,
-      "glm" = function(formula) glm(formula, data = sampleData, family = binomial),
-      "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData, event = eventVar, ...),
-      "gam" = function(formula) mgcv::gam(formula, sampleData, family = "binomial", ...),
-      "gbm" = function(formula) gbm::gbm(formula, sampleData, distribution = "bernoulli", ...)
+      "glm" = function(formula) glm(formula, data = sampleData,
+                                    family = binomial),
+      "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData,
+                                                     event = eventVar, ...),
+      "gam" = function(formula) mgcv::gam(formula, sampleData,
+                                          family = "binomial", ...),
+      "gbm" = function(formula) gbm::gbm(formula, sampleData,
+                                         distribution = "bernoulli", ...)
     )
 
     out <- fittingFunction(formula)
@@ -183,26 +189,12 @@ fitSmoothHazard <- function(formula, data, time,
   } else {
     # Otherwise fit a multinomial regression
     if (!family %in% c("glm")) {
-      stop(sprintf("Competing-risk analysis is not available for family=%s", family),
+      stop(sprintf("Competing-risk analysis is not available for family=%s",
+                   family),
         .call = FALSE
       )
     }
-    # fittingFunction <- switch(family,
-    #   "glm" = function(formula) {
-    #     VGAM::vglm(formula,
-    #       data = sampleData,
-    #       family = multinomial(refLevel = 1)
-    #     )
-    #   },
-    #   "glmnet" = function(formula) {
-    #     cv.glmnet.formula(formula, sampleData,
-    #       event = eventVar,
-    #       competingRisk = TRUE, ...
-    #     )
-    #   }
-    # )
-    # # because of glmnet parametrization, constant offsets are dropped, so we simply remove them
-    # if (family == "glmnet") formula <- remove_offset(formula)
+
     fittingFunction <- function(formula) {
       VGAM::vglm(formula,
                  data = sampleData,
@@ -244,11 +236,14 @@ fitSmoothHazard <- function(formula, data, time,
 #' @export
 #' @rdname fitSmoothHazard
 #' @param x Matrix containing covariates.
-#' @param y Matrix containing two columns: one corresponding to time, the other to the event type.
-#' @param formula_time A formula describing how the hazard depends on time. Defaults to linear.
+#' @param y Matrix containing two columns: one corresponding to time, the other
+#'   to the event type.
+#' @param formula_time A formula describing how the hazard depends on time.
+#'   Defaults to linear.
 #' @param event a character string giving the name of the event variable.
 #' @importFrom stats glm.fit
-fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm", "gbm", "glmnet"),
+fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
+                                family = c("glm", "gbm", "glmnet"),
                                 censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
   if (family == "gam") stop("The matrix interface is not available for gam")
@@ -268,7 +263,9 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     formula_time <- formula(paste("~", time))
     timeVar <- time
   } else {
-    timeVar <- if (length(formula_time) == 3) all.vars(formula_time[[3]]) else all.vars(formula_time)
+    timeVar <- if (length(formula_time) == 3) {
+      all.vars(formula_time[[3]])
+    } else all.vars(formula_time)
   }
   # There should only be one time variable
   stopifnot(length(timeVar) == 1)
@@ -284,11 +281,13 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     # gbm doesn't play nice with interactions and functions of time
     if (family == "gbm") {
         # So warn the user
-        if(detect_nonlinear_time(formula_time, timeVar)) {
-            warning(paste(sprintf("You may be using a nonlinear function of %s.", timeVar),
-                          "gbm may throw an error.", collapse = "\n"), call. = FALSE)
+        if (detect_nonlinear_time(formula_time, timeVar)) {
+            warning(sprintf(paste("You may be using a nonlinear function",
+                                  "of %s.\ngbm may throw an error."),
+                            timeVar),
+                    call. = FALSE)
         }
-        if(detect_interaction(formula_time)) {
+        if (detect_interaction(formula_time)) {
             warning("gbm may throw an error when using interaction terms",
                     call. = FALSE)
         }
@@ -314,7 +313,7 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
       censored.indicator, ratio
     )
   }
-  # Format everything into matrices and expand variables that need to be expanded
+  # Format everything into matrices and expand variables that need to be
   sample_event <- as.matrix(sampleData[, eventVar])
   sample_time <- if (family %in% c("glmnet", "gbm")) {
     model.matrix(
@@ -326,7 +325,8 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
   }
   sample_time_x <- cbind(
     sample_time,
-    as.matrix(sampleData[, !names(sampleData) %in% c(eventVar, timeVar, "offset")])
+    as.matrix(sampleData[, !names(sampleData) %in% c(eventVar, timeVar,
+                                                     "offset")])
   )
   sample_offset <- sampleData$offset
 
@@ -359,21 +359,6 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event, family = c("glm
     class(out) <- c("singleEventCB", class(out))
   } else {
     stop("The matrix interface is not available for competing risks")
-    # if (family == "glm") stop("The matrix interface is not available for glm and competing risks")
-    # if (family != "glmnet") stop("Not implemented yet")
-    # # because of glmnet parametrization, constant offsets are dropped
-    # out <- glmnet::cv.glmnet(sample_time_x, sample_event,
-    #   family = "multinomial",
-    #   type.multinomial = "grouped", ...
-    # )
-    #
-    # out$originalData <- originalData
-    # out$typeEvents <- typeEvents
-    # out$timeVar <- timeVar
-    # out$eventVar <- eventVar
-    # out$matrix.fit <- TRUE
-    # out$formula_time <- formula_time
-    # class(out) <- c("CompRiskGlmnet", class(out))
   }
   return(out)
 }

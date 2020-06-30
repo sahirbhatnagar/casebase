@@ -57,9 +57,11 @@ of the case series. Defaults to 100.}
 
 \item{x}{Matrix containing covariates.}
 
-\item{y}{Matrix containing two columns: one corresponding to time, the other to the event type.}
+\item{y}{Matrix containing two columns: one corresponding to time, the other
+to the event type.}
 
-\item{formula_time}{A formula describing how the hazard depends on time. Defaults to linear.}
+\item{formula_time}{A formula describing how the hazard depends on time.
+Defaults to linear.}
 
 \item{event}{a character string giving the name of the event variable.}
 }
@@ -104,7 +106,8 @@ functions of time should be specified as a one-sided formula through the
 argument \code{formula_time} (the left-hand side is always ignored).
 }
 \examples{
-# Simulate censored survival data for two outcome types from exponential distributions
+# Simulate censored survival data for two outcome types from exponential
+# distributions
 library(data.table)
 nobs <- 500
 tlim <- 20

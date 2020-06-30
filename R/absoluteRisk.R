@@ -97,8 +97,8 @@ absoluteRisk <- function(object, time, newdata,
     }
     if (inherits(object, "CompRisk")) {
         return(absoluteRisk.CompRisk(object, time, newdata, method,
-                                     nsamp = nsamp, onlyMain = onlyMain, type = type,
-                                     addZero = addZero))
+                                     nsamp = nsamp, onlyMain = onlyMain,
+                                     type = type, addZero = addZero))
     }
 
     # Parse arguments
@@ -169,10 +169,10 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     if (inherits(object, "cv.glmnet") && !is.null(object$matrix.fit)) {
         hazard <- function(x, fit, newdata, s, n.trees, ...) {
             # Note: the offset should be set to zero when estimating the hazard.
-            newdata_matrix <- newdata[,colnames(newdata) != fit$timeVar,
+            newdata_matrix <- newdata[, colnames(newdata) != fit$timeVar,
                                       drop = FALSE]
             # newdata_matrix matches output from fitSmoothHazard.fit
-            temp_matrix <- model.matrix(update(fit$formula_time, ~ . -1),
+            temp_matrix <- model.matrix(update(fit$formula_time, ~ . - 1),
                                         setNames(data.frame(x), fit$timeVar))
             newdata_matrix <- as.matrix(cbind(temp_matrix,
                                               as.data.frame(newdata_matrix)))
@@ -196,7 +196,7 @@ estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
     risk_res <- sapply(seq_len(nrow(newdata)), function(j) {
         integrate(hazard, lower = 0, upper = time_vector[j],
                   fit = object, subdivisions = nsamp,
-                  newdata = newdata[j,,drop = FALSE],
+                  newdata = newdata[j, , drop = FALSE],
                   s = s, n.trees = n.trees)$value
     })
 
@@ -247,14 +247,15 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
             knots <- unique(sort(c(knots, time_ordered)))
             for (j in seq_len(nrow(newdata))) {
                 # Extract current obs
-                current_obs <- newdata[j,,drop = FALSE]
+                current_obs <- newdata[j, , drop = FALSE]
                 # Use trapezoidal rule for integration----
                 if (inherits(newdata, "matrix")) {
-                    newdata2 <- current_obs[,colnames(newdata) != object$timeVar,
+                    newdata2 <- current_obs[,
+                                            colnames(newdata) != object$timeVar,
                                             drop = FALSE]
                     # newdata2 matches the output from fitSmoothHazard.fit
                     temp_matrix <- model.matrix(update(object$formula_time,
-                                                       ~ . -1),
+                                                       ~ . - 1),
                                                 setNames(data.frame(knots),
                                                          object$timeVar))
                     newdata2 <- as.matrix(cbind(temp_matrix,
@@ -279,15 +280,15 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
         }
         if (method == "montecarlo") {
             # Sample points at which we evaluate function
-            knots <- runif(n = length(time_ordered)* nsamp,
+            knots <- runif(n = length(time_ordered) * nsamp,
                            min = 0, max = max(time_ordered))
             for (j in seq_len(nrow(newdata))) {
                 # Extract current obs
-                current_obs <- newdata[j,,drop = FALSE]
+                current_obs <- newdata[j, , drop = FALSE]
                 # Create data.table for prediction
                 newdata2 <- data.table(current_obs)
                 newdata2 <- newdata2[rep(1, length(knots))]
-                newdata2[,object$timeVar := knots]
+                newdata2[, object$timeVar := knots]
                 pred <- estimate_hazard(object = object, newdata = newdata2,
                                         plot = FALSE, ci = FALSE,
                                         s = s, n.trees = n.trees, ...)
@@ -298,14 +299,15 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                             cut(knots, breaks = time_ordered)),
                                       mean, na.rm = TRUE)
                 integral_estimates <- mean_values * diff(time_ordered)
-                output[,j + 1] <- cumsum(c(0, integral_estimates))
+                output[, j + 1] <- cumsum(c(0, integral_estimates))
             }
         }
-        output[,-1] <- exp(-output[,-1])
-        if (type == "CI") output[,-1] <- 1 - output[,-1]
+        output[, -1] <- exp(-output[, -1])
+        if (type == "CI") output[, -1] <- 1 - output[, -1]
     }
     # Sometimes montecarlo integration gives nonsensical probability estimates
-    if (method == "montecarlo" && (any(output[,-1] < 0) | any(output[,-1] > 1))) {
+    if (method == "montecarlo" && (any(output[, -1] < 0) |
+                                   any(output[, -1] > 1))) {
         warning(paste("Some probabilities are out of range. Consider",
                       "increasing nsamp or using numerical integration"),
                 call. = FALSE)

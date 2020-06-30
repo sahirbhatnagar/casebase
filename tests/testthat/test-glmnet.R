@@ -72,8 +72,8 @@ fitDF_glmnet <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
 fitDT_glmnet <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
                                 family = "glmnet", ratio = 10)
 
-newDT <- data.table("Z" = c(0,1))
-newDF <- data.frame("Z" = c(0,1))
+newDT <- data.table("Z" = c(0, 1))
+newDF <- data.frame("Z" = c(0, 1))
 
 extra_vars_new <- matrix(rnorm(10 * 2), ncol = 10)
 colnames(extra_vars_new) <- paste0("V", 1:10)
@@ -127,13 +127,13 @@ test_that("output probabilities", {
 
 # Matrix interface----
 N <- 1000; p <- 30
-nzc <- p/3
-x <- matrix(rnorm(N*p),N,p)
-dimnames(x)[[2]] <- paste0("x",1:p)
+nzc <- 0.33 * p
+x <- matrix(rnorm(N * p), N, p)
+dimnames(x)[[2]] <- paste0("x", seq_len(p))
 beta <- rnorm(nzc)
-fx <- x[,seq(nzc)] %*% beta/3
+fx <- x[, seq(nzc)] %*% (0.33 * beta)
 hx <- exp(fx)
-ty <- rexp(N,hx)
+ty <- rexp(N, hx)
 tcens <- rbinom(n = N,
                 prob = 0.3,
                 size = 1) # censoring indicator

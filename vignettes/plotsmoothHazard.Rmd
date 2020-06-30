@@ -37,7 +37,6 @@ The hazard function plots require the [`visreg`](https://cran.r-project.org/pack
 
 To illustrate hazard function plots, we will use the breast cancer dataset which contains the observations of 686 women taken from the [`TH.data`](https://cran.r-project.org/package=TH.data) package. This dataset is also available from the `casebase` package. In the following, we will show different hazard functions for different combinations of continuous, binary variables as well as their interactions.
 
-
 ```{r}
 library(casebase)
 library(visreg)
@@ -46,7 +45,6 @@ library(ggplot2)
 data("brcancer")
 str(brcancer)
 ```
-
 
 ## One binary predictor, no interactions
 
@@ -59,15 +57,14 @@ mod_cb <- fitSmoothHazard(cens ~ ns(log(time), df = 3) + hormon,
 summary(mod_cb)
 ```
 
-
 ### Hazard functions on separate plots
 
-All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are `list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay= TRUE)`. For example, if you want a 95% confidence band, specify `hazard.params = list(alpha = 0.05)`. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
+All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are `list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay = TRUE)`. For example, if you want a 95% confidence band, specify `hazard.params = list(alpha = 0.05)`. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
 
-We first plot the hazard as a function of time, for hormon=0 and hormon=1. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
+We first plot the hazard as a function of time, for `hormon = 0` and `hormon = 1`. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
 
-```{r, results='hide',fig.show='all'}
-par(mfrow = c(1,2))
+```{r, results='hide', fig.show='all'}
+par(mfrow = c(1, 2))
 plot(mod_cb,
      hazard.params = list(xvar = "time",
                           cond = list(hormon = 0),
@@ -80,8 +77,6 @@ plot(mod_cb,
                           alpha = 0.05,
                           main = "Hormonal Therapy Hazard Function"))
 ```
-
-
 
 ### Hazard functions on same plots
 
@@ -111,11 +106,9 @@ plot_results <- plot(mod_cb,
 head(plot_results$fit)
 ```
 
-
-
 ### ggplot2 version 
 
-The function is flexible because you may leverage `ggplot2` just by specifying `gg=TRUE`, the plot will return a `ggplot` object:
+The function is flexible because you may leverage `ggplot2` just by specifying `gg = TRUE`, the plot will return a `ggplot` object:
 
 ```{r}
 gg_object <- plot(mod_cb,
@@ -130,7 +123,7 @@ gg_object <- plot(mod_cb,
 attr(gg_object,"class")
 ```
 
-Now we can use it downstream for any plot while leveraging the entire ggplot2 ecosystem of packages and functions:
+Now we can use it downstream for any plot while leveraging the entire `ggplot2` ecosystem of packages and functions:
 
 ```{r}
 gg_object + 
@@ -140,19 +133,18 @@ gg_object +
   scale_x_continuous(n.breaks = 10)
 ```
 
-
 ## One binary predictor with interaction
 
-Next, we fit an interaction model with a time-varying covariate, i.e., to test the hypothesis that the effect of hormonal therapy on the hazard varies with time. 
+Next, we fit an interaction model with a time-varying covariate, i.e. to test the hypothesis that the effect of hormonal therapy on the hazard varies with time. 
 
 ```{r, results='show'}
-mod_cb_tvc <- fitSmoothHazard(cens ~ hormon*ns(log(time), df = 3),
+mod_cb_tvc <- fitSmoothHazard(cens ~ hormon * ns(log(time), df = 3),
                               data = brcancer,
                               time = "time")
 summary(mod_cb_tvc)
 ```
 
-Now we can easily plot the hazard function over time for each hormon group:
+Now we can easily plot the hazard function over time for each `hormon` group:
 
 ```{r}
 plot(mod_cb_tvc,
@@ -162,19 +154,16 @@ plot(mod_cb_tvc,
                           ylab = "Hazard")) 
 ```
 
-
-
 ## One continuous predictor with interaction
 
-Now we fit a model with an interaction between a continous variable, estrogen receptor (in fmol), and time. 
+Now we fit a model with an interaction between a continuous variable, estrogen receptor (in `fmol`), and time. 
 
 ```{r, results='show'}
-mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3),
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec * ns(log(time), df = 3),
                               data = brcancer,
                               time = "time")
 summary(mod_cb_tvc)
 ```
-
 
 There are now many ways to plot the time-varying effect of estrogen receptor on the hazard function. The default is to plot the 10th, 50th and 90th quantiles of the `by` variable:
 
@@ -187,7 +176,6 @@ plot(mod_cb_tvc,
                           ylab = "Hazard")) 
 ```
 
-
 We can also show the quartiles of `estrec` by specifying the `breaks` argument. If `breaks` is a single number, that will be the used as the number of breaks:
 
 ```{r}
@@ -199,7 +187,6 @@ plot(mod_cb_tvc,
                           breaks = 4,
                           ylab = "Hazard")) 
 ```
-
 
 Alternatively, if `breaks` is a vector, it will be used as the actual values to be used:
 
@@ -215,7 +202,7 @@ plot(mod_cb_tvc,
 
 ### Image and Perspective Plots
 
-Instead of taking a cross-section of the effect of `estrec` on the hazrd, we can plot a surface using the `visreg2d` function:
+Instead of taking a cross-section of the effect of `estrec` on the hazard, we can plot a surface using the `visreg2d` function:
 
 ```{r perspective-plots}
 visreg2d(mod_cb_tvc, 
@@ -244,13 +231,12 @@ visreg2d(mod_cb_tvc,
 #          plot.type = "rgl")
 ```
 
-
 ## One continuous predictor with interaction and several other predictors
 
-All the examples so far have only included 2 predictors in the regression equation. In this example, we fit a smooth hazard model with several predictors:
+All the examples so far have only included two predictors in the regression equation. In this example, we fit a smooth hazard model with several predictors:
 
 ```{r multiple-predictors, results='show'}
-mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*ns(log(time), df = 3) + 
+mod_cb_tvc <- fitSmoothHazard(cens ~ estrec * ns(log(time), df = 3) + 
                                 horTh + 
                                 age + 
                                 menostat + 
@@ -274,8 +260,7 @@ plot(mod_cb_tvc,
                           ylab = "Hazard"))
 ```
 
-You can of course set the values of the other covariates as before, i.e., by specifying the `cond` argument as a named list to the `hazard.params` argument:
-
+You can of course set the values of the other covariates as before, i.e. by specifying the `cond` argument as a named list to the `hazard.params` argument:
 
 ```{r many-predictors-plot-2, results='show', R.options=list(max.print=1)}
 plot(mod_cb_tvc,
@@ -287,19 +272,16 @@ plot(mod_cb_tvc,
                           ylab = "Hazard"))
 ```
 
-
-
-
 # Hazard Ratio
 
-In this section we illustrate how to plot hazard ratios using the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. Note, that these function have only been thoroughly tested with `family="glm"`.
+In this section we illustrate how to plot hazard ratios using the `plot` method for objects of class `singleEventCB` which is obtained from running the `fitSmoothHazard` function. Note that these function have only been thoroughly tested with `family = "glm"`.
 
 In what follows, the hazard ratio for a variable $X$ is defined as 
 
 $$
 \frac{h\left(t | X=x_1, \mathbf{Z}=\mathbf{z_1} ; \hat{\beta}\right)}{h(t | X=x_0, \mathbf{Z}=\mathbf{z_0} ; \hat{\beta})}
 $$
-where $h(t|\cdot;\hat{\beta})$ is the hazard rate as a function of the variable $t$ (which is usually time, but can be any other continous variable), $x_1$ is the value of $X$ for the exposed group, $x_0$ is the value of $X$ for the unexposed group, $\mathbf{Z}$ are other covariates in the model which are equal to $\mathbf{z_1}$ in the exposed and $\mathbf{z_0}$ in the unexposed group, and $\hat{\beta}$ are the estimated regression coefficients. 
+where $h(t|\cdot;\hat{\beta})$ is the hazard rate as a function of the variable $t$ (which is usually time, but can be any other continuous variable), $x_1$ is the value of $X$ for the exposed group, $x_0$ is the value of $X$ for the unexposed group, $\mathbf{Z}$ are other covariates in the model which are equal to $\mathbf{z_1}$ in the exposed and $\mathbf{z_0}$ in the unexposed group, and $\hat{\beta}$ are the estimated regression coefficients. 
 
 As indicated by the formula above, it is most instructive to plot the hazard ratio as a function of a variable $t$ only if there is an interaction between $t$ and $X$. Otherwise, the resulting plot will simply be a horizontal line across time. 
 
@@ -312,7 +294,7 @@ We fit a model with the interaction between time and treatment arm. We are there
 ```{r eprchd, results='show'}
 data("eprchd")
 eprchd <- transform(eprchd, 
-                                  treatment = factor(treatment, levels = c("placebo","estPro")))
+                    treatment = factor(treatment, levels = c("placebo","estPro")))
 str(eprchd)
 
 fit_mason <- fitSmoothHazard(status ~ treatment*time,
@@ -321,16 +303,15 @@ fit_mason <- fitSmoothHazard(status ~ treatment*time,
 summary(fit_mason)
 ```
 
-
 To plot the hazard ratio, we must specify the `newdata` argument with a covariate pattern for the reference group. In this example, we treat the `placebo` as the reference group. Because we have fit an interaction with time, we also provide a sequence of times at which we would like to calculate the hazard ratio. 
 
-
 ```{r plot-mason, results='show'}
-newtime <- quantile(fit_mason[["originalData"]][[fit_mason[["timeVar"]]]], probs = seq(0.01, 0.99, 0.01))
+newtime <- quantile(fit_mason[["originalData"]][[fit_mason[["timeVar"]]]], 
+                    probs = seq(0.01, 0.99, 0.01))
 
 # reference category
 newdata <- data.frame(treatment = factor("placebo", 
-                                         levels = c("placebo","estPro")), 
+                                         levels = c("placebo", "estPro")), 
                       time = newtime)
 str(newdata)
 
@@ -344,7 +325,7 @@ plot(fit_mason,
      rug = T)
 ```
 
-In the call to `plot` we specify the `xvar` which is the variable plotted on the x-axis, the `var` argument which specified the variable for which we want the hazard ratio. The `increment=1` indicates that we want to increment `var` by 1 level, which in this case is `estPro`. Alternatively, we can specify the `exposed` argument which should be a function that takes `newdata` and returns the exposed dataset. The following call is equivalent to the one above: 
+In the call to `plot` we specify the `xvar` which is the variable plotted on the x-axis, the `var` argument which specified the variable for which we want the hazard ratio. The `increment = 1` indicates that we want to increment `var` by 1 level, which in this case is `estPro`. Alternatively, we can specify the `exposed` argument which should be a function that takes `newdata` and returns the exposed dataset. The following call is equivalent to the one above: 
 
 ```{r}
 plot(fit_mason, 
@@ -356,19 +337,18 @@ plot(fit_mason,
      rug = T)
 ```
 
-
-Alternatively, if we want the `placebo` group to be the exposed group, we change the `newdata` argument to:
+Alternatively, if we want the `placebo` group to be the exposed group, we can change the `newdata` argument to the following:
 
 ```{r, results='show'}
 newdata <- data.frame(treatment = factor("estPro", 
-                                         levels = c("placebo","estPro")), 
+                                         levels = c("placebo", "estPro")), 
                       time = newtime)
 str(newdata)
 
 levels(newdata$treatment)
 ```
 
-Note that the reference category in `newdata` is still `placebo`. Therefore we must set `increment=-1` in order to get the `exposed` dataset:
+Note that the reference category in `newdata` is still `placebo`. Therefore we must set `increment = -1` in order to get the `exposed` dataset:
 
 ```{r}
 plot(fit_mason, 
@@ -377,12 +357,11 @@ plot(fit_mason,
      var = "treatment",
      increment = -1,
      xvar = "time",
-     ci = T,
-     rug = T)
+     ci = TRUE,
+     rug = TRUE)
 ```
 
-
-If the $X$ variable has more than two levels, than, `increment` works the same way, e.g., `increment = 2` will provide an `exposed` group two levels above the value in `newdata`. 
+If the $X$ variable has more than two levels, than, `increment` works the same way, e.g. `increment = 2` will provide an `exposed` group two levels above the value in `newdata`. 
 
 ## Save results
 
@@ -395,8 +374,8 @@ result <- plot(fit_mason,
                var = "treatment",
                increment = -1,
                xvar = "time",
-               ci = T,
-               rug = T)
+               ci = TRUE,
+               rug = TRUE)
 head(result)
 ```
 
@@ -407,7 +386,7 @@ head(result)
 knitr::knit_exit()
 ```
 
-
+<!-- Everything below is not run -->
 
 
 ```{r}
@@ -492,10 +471,10 @@ MagpieS0X
 ```{r}
 # load packages and data --------------------------------------------------
 
-pacman::p_load(rstpm2) # for nsx function
-pacman::p_load(splines)
-pacman::p_load(numDeriv) # Load numerical derivative package
-pacman::p_load(bench)
+library(rstpm2) # for nsx function
+library(splines)
+library(numDeriv) # Load numerical derivative package
+library(bench)
 devtools::load_all("~/git_repositories/casebase/")
 data("simdat") # from casebase package
 str(simdat)
@@ -708,11 +687,11 @@ lines(newtime, ci.upper.2.2, lty = 3, lwd = 2, col = "red")
 
 
 ```{r}
-pacman::p_load(rstpm2) # for brcancer data
-pacman::p_load(TH.data) # same as brcancer data but with proper names
-pacman::p_load(splines)
+library(rstpm2) # for brcancer data
+library(TH.data) # same as brcancer data but with proper names
+library(splines)
 devtools::load_all("~/git_repositories/casebase/")
-pacman::p_load(visreg)
+library(visreg)
 
 # data("brcancer")
 # factoring hormon, breaks the plot method for rstpm2 with interactions!!!
@@ -913,7 +892,7 @@ hasNonlinearXvar <- any(grepl(sprintf("(?<=\\()(%s)(?=\\))",xvar), xvar_labels, 
 hasNonlinearBy <- any(grepl(sprintf("(?<=\\()(%s)(?=\\))",by), by_labels, perl = TRUE))
 InteractionTerms <- all.labels[which(orderTerms >= 2)]
 
-# pacman::p_load(RVerbalExpressions)
+# library(RVerbalExpressions)
 # rx() %>% 
 #   rx_seek_prefix('(') %>% 
 #   rx_something() %>% 
@@ -984,7 +963,7 @@ sqrt(v['x1','x1'] + (mean(x2)^2)*v['x1:x2','x1:x2'] + 2*mean(x2)*v['x1','x1:x2']
 
 
 library(car)
-pacman::p_load(RcmdrMisc)
+library(RcmdrMisc)
 DeltaMethod(m, "exp(b1/b2)")
 
 
@@ -1103,7 +1082,7 @@ dim(SE)
 sqrt(SE)
 
 library(car)
-pacman::p_load(RcmdrMisc)
+library(RcmdrMisc)
 DeltaMethod(m, "exp(b1/b2)")
 
 
@@ -1194,7 +1173,7 @@ get_HR_data
 # abline(a=1, b=0, col="grey")
 
 library(car)
-pacman::p_load(RcmdrMisc)
+library(RcmdrMisc)
 DeltaMethod(lm(prestige ~ income*education, data=Duncan), "exp(b1/b2)")
 
 DeltaMethod(mod_cb_tvc, "b1 + b5 + b6 + b7")
@@ -1206,7 +1185,7 @@ vcov(mod_cb_tvc)
 
 
 ```{r}
-pacman::p_load(bcaboot)
+library(bcaboot)
 load(system.file("extdata", "neonates.rda", package = "bcaboot"))
 str(neonates)
 weights <- with(neonates, ifelse(y == 0, 1, 4))
@@ -1236,9 +1215,4 @@ glm_bca <- bcapar(t0 = glm_boot_out$theta,
 plot(glm_bca)
 knitr::kable(glm_bca$lims, digits = 3)
 confint(glm_model)
-```
-
-
-```{r}
-knitr::knit_exit()
 ```

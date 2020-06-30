@@ -1,9 +1,7 @@
 context("plot.singleEventCB")
 # Uncomment next line to skip tests in non-interactive session
-# skip_if_not(interactive())
-# skip_if_not_installed("glmnet")
-# skip_if_not_installed("mgcv")
-# skip_if_not_installed("gbm")
+skip_if_not_installed("glmnet")
+skip_if_not_installed("gbm")
 skip_if_not_installed("splines")
 skip_if_not_installed("visreg")
 
@@ -14,14 +12,14 @@ data("brcancer")
 str(brcancer)
 
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
-                                         trt:ns(log(eventtime),df=1),
+                                         trt:ns(log(eventtime), df = 1),
                                      time = "eventtime",
                                      data = simdat[sample(nrow(simdat),
-                                                          size = 200),],
+                                                          size = 200), ],
                                      ratio = 1,
                                      family = "glm")
 
-mod_brcancer <- fitSmoothHazard(cens ~ ns(time, df = 3)*tgrade,
+mod_brcancer <- fitSmoothHazard(cens ~ ns(time, df = 3) * tgrade,
                                 data = brcancer,
                                 time = "time")
 
@@ -103,7 +101,7 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     # and that the dataset is returned invisibly
     expect_invisible(plot(mod_brcancer,
                           type = "hr",
-                          newdata = brcancer[1,],
+                          newdata = brcancer[1, ],
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
@@ -114,7 +112,7 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     # and that the dataset is returned invisibly
     expect_invisible(plot(mod_brcancer,
                           type = "hr",
-                          newdata = brcancer[1,],
+                          newdata = brcancer[1, ],
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
@@ -126,7 +124,7 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     # when CI=F and other plot params are passed to ...
     expect_invisible(plot(mod_brcancer,
                           type = "hr",
-                          newdata = brcancer[1,],
+                          newdata = brcancer[1, ],
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
@@ -170,4 +168,3 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     expect_false(inherits(outglm_hr_noci, "try-error"))
     expect_false(inherits(outglm_hr_exposed, "try-error"))
 })
-

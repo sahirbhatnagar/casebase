@@ -4,8 +4,8 @@ author: "Maxime Turgeon"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
-    fig_height: 8
-    fig_width: 11
+    fig_height: 6
+    fig_width: 8
     toc: yes
     toc_depth: 4
 vignette: >

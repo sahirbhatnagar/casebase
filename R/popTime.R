@@ -76,11 +76,7 @@
 popTime <- function(data, time, event, censored.indicator,
                     exposure, percentile_number) {
 
-  # data <- DTsim;censored.indicator = NULL;exposure = "z" ; time = "time"; event = "event"
-  # names(data)
   varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
-  # varNames <- checkArgsTimeEvent(data)
-  # varNames <- checkArgsTimeEvent(data, time = time)
   ycoord <- yc <- n_available <- NULL
 
   DT <- data.table::as.data.table(data)
@@ -93,13 +89,11 @@ popTime <- function(data, time, event, censored.indicator,
   if (missing(exposure)) {
     nobs <- nrow(DT)
 
-    # names(veteran)
     DT[, "original.time" := get(varNames$time)]
     DT[, "original.event" := get(varNames$event)]
 
     if (varNames$time != "time") setnames(DT, varNames$time, "time")
     if (varNames$event != "event") setnames(DT, varNames$event, "event")
-    # browser()
     modifiedEvent <- checkArgsEventIndicator(
       data = data, event = varNames$event,
       censored.indicator = censored.indicator
@@ -107,14 +101,13 @@ popTime <- function(data, time, event, censored.indicator,
 
     DT[, event := modifiedEvent$event.numeric]
     DT[, "event status" := modifiedEvent$event.factored]
-    # nLevels <- modifiedEvent$nLevels
 
     # people with
     # short values of t at the top
     DT[DT[, order(time)], ycoord := (nobs:1)]
 
-    # sample y coordinates for each event, so that we can see the incidence density
-    # on population-time plots. Sampling from people who have an
+    # sample y coordinates for each event, so that we can see the incidence
+    # density on population-time plots. Sampling from people who have an
     # observed time t greater than that of a fixed individual who had the event
 
     # need to
@@ -135,8 +128,6 @@ popTime <- function(data, time, event, censored.indicator,
     # point is less than 10, then sample regardless of case status
     ### NEED TO MAKE THIS LESS STRINGENT##############??????
     if (DT[, stats::quantile(n_available, probs = percentile_number)] < 15) {
-      # message("Sampling from all remaining individuals under study,
-      #         regardless of event status")
       DT[
         event == 1,
         n_available := sapply(
@@ -158,10 +149,6 @@ popTime <- function(data, time, event, censored.indicator,
       # use original coordinate if there is no one left to sample from
       DT[event == 1 & n_available == 0, yc := ycoord]
     } else {
-
-      # message("Sampling only from individuals who never experienced
-      #         the event of interest")
-
       DT[
         event == 1 & n_available > 0,
         yc := sapply(
@@ -208,8 +195,8 @@ popTime <- function(data, time, event, censored.indicator,
       i[i[, order(time)], ycoord := (nobs:1)]
     })
 
-    # sample y coordinates for each event, so that we can see the incidence density
-    # on population-time plots. Sampling from people who have an
+    # sample y coordinates for each event, so that we can see the incidence
+    # density on population-time plots. Sampling from people who have an
     # observed time t greater than that of a fixed individual who had the event
     # if there are only two levels, then find out how many controls
     # are left to sample from. if there are three levels,
@@ -229,8 +216,6 @@ popTime <- function(data, time, event, censored.indicator,
       # if the 50th percentile number of available subjects at any given
       # point is less than 10, then sample regardless of case status
       if (K[, quantile(n_available, probs = percentile_number)] < 10) {
-        # message("Sampling from all remaining individuals under study,
-        #     regardless of event status")
         K[
           event == 1,
           n_available := sapply(
@@ -252,10 +237,6 @@ popTime <- function(data, time, event, censored.indicator,
         # use original coordinate if there is no one left to sample from
         K[event == 1 & n_available == 0, yc := ycoord]
       } else {
-
-        # message("Sampling only from individuals who never experienced
-        #     the event of interest")
-
         K[
           event == 1 & n_available > 0,
           yc := sapply(
@@ -282,10 +263,11 @@ popTime <- function(data, time, event, censored.indicator,
 # taken verbatim from cowplot::theme_cowplot()
 #' @importFrom stats quantile
 #' @importFrom grid unit
-#' @importFrom ggplot2 theme_grey theme element_line element_rect element_text margin element_blank rel %+replace%
-theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
-                      rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
-  half_line <- font_size/2
+#' @importFrom ggplot2 theme_grey theme element_line element_rect element_text
+#' @importFrom ggplot2 margin element_blank rel %+replace%
+theme_cb <- function(font_size = 14, font_family = "", line_size = 0.5,
+                     rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
+  half_line <- 0.5 * font_size
   small_size <- rel_small * font_size
   ggplot2::theme_grey(base_size = font_size, base_family = font_family) %+replace%
     theme(line = element_line(color = "black", size = line_size,
@@ -296,17 +278,18 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
                                                                                                                                                     margin = margin(), debug = FALSE), axis.line = element_line(color = "black",
                                                                                                                                                                                                                 size = line_size, lineend = "square"), axis.line.x = NULL,
           axis.line.y = NULL, axis.text = element_text(color = "black",
-                                                       size = small_size), axis.text.x = element_text(margin = margin(t = small_size/4),
-                                                                                                      vjust = 1), axis.text.x.top = element_text(margin = margin(b = small_size/4),
-                                                                                                                                                 vjust = 0), axis.text.y = element_text(margin = margin(r = small_size/4),
-                                                                                                                                                                                        hjust = 1), axis.text.y.right = element_text(margin = margin(l = small_size/4),
+                                                       size = small_size), axis.text.x = element_text(margin = margin(t = 0.25 * small_size),
+                                                                                                      vjust = 1), axis.text.x.top = element_text(margin = margin(b = 0.25 * small_size),
+                                                                                                                                                 vjust = 0), axis.text.y = element_text(margin = margin(r = 0.25 * small_size),
+                                                                                                                                                                                        hjust = 1), axis.text.y.right = element_text(margin = margin(l = 0.25 * small_size),
                                                                                                                                                                                                                                      hjust = 0), axis.ticks = element_line(color = "black",
-                                                                                                                                                                                                                                                                           size = line_size), axis.ticks.length = unit(half_line/2,
-                                                                                                                                                                                                                                                                                                                       "pt"), axis.title.x = element_text(margin = margin(t = half_line/2),
-                                                                                                                                                                                                                                                                                                                                                          vjust = 1), axis.title.x.top = element_text(margin = margin(b = half_line/2),
+                                                                                                                                                                                                                                                                           size = line_size), axis.ticks.length = unit(0.5 * half_line,
+                                                                                                                                                                                                                                                                                                                       "pt"), axis.title.x = element_text(margin = margin(t = 0.5 * half_line),
+                                                                                                                                                                                                                                                                                                                                                          vjust = 1), axis.title.x.top = element_text(margin = margin(b = 0.5 * half_line),
                                                                                                                                                                                                                                                                                                                                                                                                       vjust = 0), axis.title.y = element_text(angle = 90,
-                                                                                                                                                                                                                                                                                                                                                                                                                                              margin = margin(r = half_line/2), vjust = 1),
-          axis.title.y.right = element_text(angle = -90, margin = margin(l = half_line/2),
+                                                                                                                                                                                                                                                                                                                                                                                                                                              margin = margin(r = 0.5 * half_line),
+                                                                                                                                                                                                                                                                                                                                                                                                                                              vjust = 1),
+          axis.title.y.right = element_text(angle = -90, margin = margin(l = 0.5 * half_line),
                                             vjust = 0), legend.background = element_blank(),
           legend.spacing = unit(font_size, "pt"), legend.spacing.x = NULL,
           legend.spacing.y = NULL, legend.margin = margin(0,
@@ -326,11 +309,11 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
           panel.spacing = unit(half_line, "pt"), panel.spacing.x = NULL,
           panel.spacing.y = NULL, panel.ontop = FALSE, strip.background = element_rect(fill = "grey80"),
           strip.text = element_text(size = rel(rel_small),
-                                    margin = margin(half_line/2, half_line/2, half_line/2,
-                                                    half_line/2)), strip.text.x = NULL, strip.text.y = element_text(angle = -90),
+                                    margin = margin(0.5 * half_line, 0.5 * half_line, 0.5 * half_line,
+                                                    0.5 * half_line)), strip.text.x = NULL, strip.text.y = element_text(angle = -90),
           strip.placement = "inside", strip.placement.x = NULL,
-          strip.placement.y = NULL, strip.switch.pad.grid = unit(half_line/2,
-                                                                 "pt"), strip.switch.pad.wrap = unit(half_line/2,
+          strip.placement.y = NULL, strip.switch.pad.grid = unit(0.5 * half_line,
+                                                                 "pt"), strip.switch.pad.wrap = unit(0.5 * half_line,
                                                                                                      "pt"), plot.background = element_blank(), plot.title = element_text(face = "bold",
                                                                                                                                                                          size = rel(rel_large), hjust = 0, vjust = 1,
                                                                                                                                                                          margin = margin(b = half_line)), plot.subtitle = element_text(size = rel(rel_small),
@@ -346,8 +329,8 @@ theme_cb <- function (font_size = 14, font_family = "", line_size = 0.5,
 
 # taken verbatim from cowplot::panel_border
 #' @importFrom ggplot2 theme element_blank element_rect
-panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE,
-                        colour) {
+panelBorder <- function(color = "grey85", size = 1, linetype = 1,
+                        remove = FALSE, colour) {
   if (!missing(colour)) {
     color <- colour
   }
@@ -358,149 +341,4 @@ panelBorder <- function(color = "grey85", size = 1, linetype = 1, remove = FALSE
     color = color, fill = NA,
     linetype = linetype, size = size
   ))
-}
-
-
-
-#' @rdname plot.singleEventCB
-#' @param newdata2 `data.frame` for exposed group. calculated and passed
-#'   internally to `plotHazardRatio` function
-#' @importFrom graphics polygon lines arrows points
-#' @importFrom stats terms delete.response vcov qnorm
-#' @importFrom utils modifyList
-plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
-                            rug, xvar, ...) {
-  tt <- stats::terms(x)
-  Terms <- stats::delete.response(tt)
-  beta2 <- coef(x)
-  # browser()
-  gradient <- hrJacobian(
-    object = x, newdata = newdata,
-    newdata2 = newdata2, term = Terms
-  )
-
-  log_hazard_ratio <- gradient %*% beta2
-
-  if (is.null(xvar)) {
-    xvar <- x[["timeVar"]]
-  } else {
-    if (length(xvar) > 1) warning("more than one xvar supplied. Only plotting hazard ratio for first element.")
-    xvar <- xvar[1]
-  }
-
-  if (xvar %ni% colnames(newdata)) {
-    stop(sprintf("%s column (which you supplied to 'xvar' argument) not found in newdata", xvar))
-  } else {
-    xvar_values <- newdata[[xvar]]
-  }
-
-  # browser()
-  # sorting indices for ploting
-  i.backw <- order(xvar_values, decreasing = TRUE)
-  i.forw <- order(xvar_values)
-
-  other_plot_args <- list(...)
-  line_args <- grep("^lwd$|^lty$|^col$|^pch$|^cex$", names(other_plot_args))
-
-  if (length(line_args) == 0) {
-    line_args <- list(NULL)
-  } else {
-    line_args <- other_plot_args[line_args]
-  }
-
-  # plot CI as polygon shade - if 'se = TRUE' (default)
-  if (ci) {
-    v2 <- stats::vcov(x)
-    SE_log_hazard_ratio <- sqrt(diag(gradient %*% tcrossprod(v2, gradient)))
-
-    hazard_ratio_lower <- exp(stats::qnorm(p = (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
-    hazard_ratio_upper <- exp(stats::qnorm(p = 1 - (1 - ci.lvl) / 2, mean = log_hazard_ratio, sd = SE_log_hazard_ratio))
-    x.poly <- c(xvar_values[i.forw], xvar_values[i.backw])
-    y.poly <- c(hazard_ratio_lower[i.forw], hazard_ratio_upper[i.backw])
-
-    do.call("plot", utils::modifyList(
-      list(
-        x = range(x.poly),
-        y = range(y.poly)*c(0.99, 1.01),
-        type = "n",
-        ylab = "hazard ratio",
-        xlab = xvar
-      ),
-      other_plot_args
-    ))
-
-    if (length(unique(x.poly)) == 1) {
-      graphics::arrows(x0 = x.poly[1], y0 = y.poly[1], y1 = y.poly[2], angle = 90, length = 0.5, code = 3)
-      do.call("points", utils::modifyList(
-        list(
-          x = xvar_values[i.forw],
-          y = exp(log_hazard_ratio[i.forw]),
-          pch = 19,
-          col = "black",
-          cex = 2
-        ),
-        line_args
-      ))
-    } else {
-      graphics::polygon(x.poly, y.poly, col = ci.col, border = NA)
-      do.call("lines", utils::modifyList(
-        list(
-          x = xvar_values[i.forw],
-          y = exp(log_hazard_ratio[i.forw]),
-          lwd = 2,
-          lty = 1,
-          col = "black"
-        ),
-        line_args
-      ))
-    }
-
-    results <- transform(newdata,
-      log_hazard_ratio = log_hazard_ratio,
-      standarderror = SE_log_hazard_ratio,
-      hazard_ratio = exp(log_hazard_ratio),
-      lowerbound = hazard_ratio_lower,
-      upperbound = hazard_ratio_upper
-    )
-
-  } else {
-
-    # browser()
-
-    if (length(xvar_values) == 1) {
-      do.call("plot", utils::modifyList(
-        list(
-          x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1,
-          pch = 19, cex = 2, ylab = "hazard ratio", xlab = xvar
-        ),
-        other_plot_args
-      ))
-
-    } else {
-
-      do.call("plot", utils::modifyList(
-        list(
-          x = xvar_values, y = exp(log_hazard_ratio), lwd = 2, lty = 1, type = "l",
-          ylab = "hazard ratio", xlab = xvar
-        ),
-        other_plot_args
-      ))
-    }
-
-    results <- transform(newdata,
-      log_hazard_ratio = log_hazard_ratio,
-      hazard_ratio = exp(log_hazard_ratio)
-    )
-  }
-
-  if (rug) {
-    events <- x[["originalData"]][[x[["eventVar"]]]]
-    rug(x[["originalData"]][which(events == 1), , drop = F][[xvar]],
-      quiet = TRUE
-    ) # Silence warnings about clipped values
-  }
-
-  # abline(a = 1, b = 0, lty = 2, col = "grey80")
-
-  invisible(results)
 }
