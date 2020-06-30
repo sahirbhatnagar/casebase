@@ -62,7 +62,7 @@ The user can have greater control over the aesthetics of a population plot by sp
 
 Following the suggestion from the [ggplot2 book](https://ggplot2-book.org/programming.html#multiple-components), we use the `utils::modifyList` function to replace the corresponding default values. For example, the default arguments passed to the `geom_ribbon` function for plotting the area are given by
 
-```{r, eval=TRUE}
+```{r}
 list(data = x,
      mapping = aes(x = time, ymin = 0, ymax = ycoord),
      fill = "grey80",
@@ -71,13 +71,13 @@ list(data = x,
 
 Note that the variables `time` and `ycoord` are columns created by the `casebase::popTime` function, so we should always leave these specified as is. Suppose we want to change the fill color. We simply specify this color in the `ribbon.params` argument:
 
-```{r, eval=TRUE}
+```{r}
 ribbon.params <- list(fill = "#0072B2")
 ```
 
 We then call the `utils::modifyList` function to override the function defaults:
 
-```{r, eval=TRUE}
+```{r}
 (new_ribbon_params <- utils::modifyList(list(data = x,
                                             mapping = aes(x = time, ymin = 0, ymax = ycoord),
                                             fill = "grey80",
@@ -88,7 +88,7 @@ We then call the `utils::modifyList` function to override the function defaults:
 
 Finally, we use `base::do.call` to execute the `geom_ribbon` function on this list:
 
-```{r, eval=TRUE}
+```{r}
 ggplot() + base::do.call("geom_ribbon", new_ribbon_params)
 ```
 
