@@ -106,6 +106,9 @@ functions." />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -141,7 +144,7 @@ functions." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute absolute risks using the fitted hazard function.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk-cr.R'><code>R/absoluteRisk-cr.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk.R'><code>R/absoluteRisk.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk-cr.R'><code>R/absoluteRisk-cr.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/absoluteRisk.R'><code>R/absoluteRisk.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/methods.R'><code>R/methods.R</code></a>, and 1 more</small>
     <div class="hidden name"><code>absoluteRisk.Rd</code></div>
     </div>
 
@@ -181,6 +184,9 @@ functions.</p>
 )
 
 <span class='co'># S3 method for absRiskCB</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for absRiskCB</span>
 <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
   <span class='no'>x</span>,
   <span class='no'>...</span>,
@@ -191,10 +197,7 @@ functions.</p>
   <span class='kw'>gg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='no'>id.names</span>,
   <span class='no'>legend.title</span>
-)
-
-<span class='co'># S3 method for absRiskCB</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -262,8 +265,8 @@ required (for class <code>cv.glmnet</code>).</p></td>
     </tr>
     <tr>
       <th>x</th>
-      <td><p>Object of class <code>absRiskCB</code>, such as the output of
-<code>absoluteRisk</code> with single event.</p></td>
+      <td><p>Fitted object of class <code>absRiskCB</code>. This is the result from the
+<code>casebase::absoluteRisk()</code> function.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
@@ -378,6 +381,7 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 <span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
 <span class='no'>linear_risk</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='no'>out_linear</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='fl'>10</span>,
                             <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='st'>"z"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>)))
+<span class='co'># Plot CI curves----</span>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"brcancer"</span>)
@@ -406,7 +410,7 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

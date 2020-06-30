@@ -106,6 +106,9 @@ included only tracks follow-up time and death." />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -228,7 +231,8 @@ doi: <a href='https://doi.org/10.7326/0003-4819-122-3-199502010-00007'>10.7326/0
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/model.matrix.html'>model.matrix</a></span>(<span class='no'>death</span> ~ <span class='no'>.</span> - <span class='no'>d.time</span> - <span class='fl'>1</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>support</span>)
 <span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span>(<span class='no'>support</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span>(<span class='no'>death</span>, <span class='no'>d.time</span>))
 
-<span class='no'>fit_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard.fit</a></span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"death"</span>,
+<span class='no'>fit_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard.fit</a></span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"d.time"</span>,
+                                        <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"death"</span>,
                                         <span class='kw'>formula_time</span> <span class='kw'>=</span> ~ <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>d.time</span>),
                                         <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>)</div></pre>
   </div>
@@ -242,7 +246,7 @@ doi: <a href='https://doi.org/10.7326/0003-4819-122-3-199502010-00007'>10.7326/0
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

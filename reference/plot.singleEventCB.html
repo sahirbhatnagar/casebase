@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot Hazards and Hazard Ratios — plot.singleEventCB • casebase</title>
+<title>Plot Hazards and Hazard Ratios — plotHazardRatio • casebase</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Plot Hazards and Hazard Ratios — plot.singleEventCB" />
+<meta property="og:title" content="Plot Hazards and Hazard Ratios — plotHazardRatio" />
 <meta property="og:description" content="Plot method for objects returned by the fitSmoothHazard
 function. Current plot types are hazard function and hazard ratio. The
 visreg package must be installed for type=&quot;hazard&quot;. This
@@ -104,6 +104,9 @@ function accounts for the possible time-varying exposure effects." />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -139,7 +142,7 @@ function accounts for the possible time-varying exposure effects." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot Hazards and Hazard Ratios</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/methods.R'><code>R/methods.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/plots.R'><code>R/plots.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/plotHazardRatio.R'><code>R/plotHazardRatio.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/plot_methods.R'><code>R/plot_methods.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>plot.singleEventCB.Rd</code></div>
     </div>
 
@@ -150,7 +153,9 @@ function. Current plot types are hazard function and hazard ratio. The
 function accounts for the possible time-varying exposure effects.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for singleEventCB</span>
+    <pre class="usage"><span class='fu'>plotHazardRatio</span>(<span class='no'>x</span>, <span class='no'>newdata</span>, <span class='no'>newdata2</span>, <span class='no'>ci</span>, <span class='no'>ci.lvl</span>, <span class='no'>ci.col</span>, <span class='no'>rug</span>, <span class='no'>xvar</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for singleEventCB</span>
 <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
   <span class='no'>x</span>,
   <span class='no'>...</span>,
@@ -167,8 +172,6 @@ function accounts for the possible time-varying exposure effects.</p>
   <span class='kw'>ci.col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>
 )
 
-<span class='fu'>plotHazardRatio</span>(<span class='no'>x</span>, <span class='no'>newdata</span>, <span class='no'>newdata2</span>, <span class='no'>ci</span>, <span class='no'>ci.lvl</span>, <span class='no'>ci.col</span>, <span class='no'>rug</span>, <span class='no'>xvar</span>, <span class='no'>...</span>)
-
 <span class='fu'>incrVar</span>(<span class='no'>var</span>, <span class='kw'>increment</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -178,6 +181,53 @@ function accounts for the possible time-varying exposure effects.</p>
       <th>x</th>
       <td><p>Fitted object of class <code>glm</code>, <code>gam</code>, <code>cv.glmnet</code> or <code>gbm</code>. This is
 the result from the <code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code> function.</p></td>
+    </tr>
+    <tr>
+      <th>newdata</th>
+      <td><p>Required for <code>type="hr"</code>. The <code>newdata</code> argument is
+the "unexposed" group, while the exposed group is defined by either: (i) a
+change (defined by the <code>increment</code> argument) in a variable in newdata
+defined by the <code>var</code> argument ; or (ii) an exposed function that takes
+a data-frame and returns the "exposed" group (e.g. <code>exposed =
+  function(data) transform(data, treat=1)</code>). This is a generalization of the
+behavior of the rstpm2 plot function. It allows both numeric and factor
+variables to be incremented or decremented. See references for rstpm2
+package. Only used for <code>type="hr"</code></p></td>
+    </tr>
+    <tr>
+      <th>newdata2</th>
+      <td><p><code>data.frame</code> for exposed group. calculated and passed
+internally to <code>plotHazardRatio</code> function</p></td>
+    </tr>
+    <tr>
+      <th>ci</th>
+      <td><p>Logical; if TRUE confidence bands are calculated. Only available
+for <code>family="glm"</code> and <code>family="gam"</code>, and only used for <code>type="hr"</code>,
+Default: !add. Confidence intervals for hazard ratios are calculated using
+the Delta Method.</p></td>
+    </tr>
+    <tr>
+      <th>ci.lvl</th>
+      <td><p>Confidence level. Must be in (0,1), Default: 0.95. Only used
+for <code>type="hr"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>ci.col</th>
+      <td><p>Confidence band color. Only used if argument <code>ci=TRUE</code>,
+Default: 'grey'. Only used for <code>type="hr"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>rug</th>
+      <td><p>Logical. Adds a rug representation (1-d plot) of the event times
+(only for <code>status=1</code>), Default: !ci. Only used for <code>type="hr"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>xvar</th>
+      <td><p>Variable to be used on x-axis for hazard ratio plots. If NULL,
+the function defaults to using the time variable used in the call to
+<code>fitSmoothHazard</code>. In general, this should be any continuous variable
+which has an interaction term with another variable. Only used for
+<code>type="hr"</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -202,18 +252,6 @@ value for one of the terms in the model; any elements left unspecified are
 filled in with the median/most common category. Only used for
 <code>type="hazard"</code>. All other argument are used for <code>type="hr"</code>. Note that the
 <code>visreg</code> package must be installed for <code>type="hazard"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>newdata</th>
-      <td><p>Required for <code>type="hr"</code>. The <code>newdata</code> argument is
-the "unexposed" group, while the exposed group is defined by either: (i) a
-change (defined by the <code>increment</code> argument) in a variable in newdata
-defined by the <code>var</code> argument ; or (ii) an exposed function that takes
-a data-frame and returns the "exposed" group (e.g. <code>exposed =
-  function(data) transform(data, treat=1)</code>). This is a generalization of the
-behavior of the rstpm2 plot function. It allows both numeric and factor
-variables to be incremented or decremented. See references for rstpm2
-package. Only used for <code>type="hr"</code></p></td>
     </tr>
     <tr>
       <th>exposed</th>
@@ -246,41 +284,6 @@ categorical variable by specifying a negative value, e.g.,
 <code>newdata</code>. If <code>var</code> is a numeric, than <code>increment</code> will
 increment (if positive) or decrement (if negative) by the supplied value.
 Only used for <code>type="hr"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>xvar</th>
-      <td><p>Variable to be used on x-axis for hazard ratio plots. If NULL,
-the function defaults to using the time variable used in the call to
-<code>fitSmoothHazard</code>. In general, this should be any continuous variable
-which has an interaction term with another variable. Only used for
-<code>type="hr"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>ci</th>
-      <td><p>Logical; if TRUE confidence bands are calculated. Only available
-for <code>family="glm"</code> and <code>family="gam"</code>, and only used for <code>type="hr"</code>,
-Default: !add. Confidence intervals for hazard ratios are calculated using
-the Delta Method.</p></td>
-    </tr>
-    <tr>
-      <th>ci.lvl</th>
-      <td><p>Confidence level. Must be in (0,1), Default: 0.95. Only used
-for <code>type="hr"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>rug</th>
-      <td><p>Logical. Adds a rug representation (1-d plot) of the event times
-(only for <code>status=1</code>), Default: !ci. Only used for <code>type="hr"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>ci.col</th>
-      <td><p>Confidence band color. Only used if argument <code>ci=TRUE</code>,
-Default: 'grey'. Only used for <code>type="hr"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>newdata2</th>
-      <td><p><code>data.frame</code> for exposed group. calculated and passed
-internally to <code>plotHazardRatio</code> function</p></td>
     </tr>
     </table>
 
@@ -365,7 +368,8 @@ visreg. The R Journal, 9: 56-71.</p>
 <span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>fit_factor_exposure</span>,
                <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hr"</span>,
                <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>treat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='st'>"treatment"</span>,
-                         <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)), <span class='kw'>eventtime</span> <span class='kw'>=</span> <span class='no'>newtime</span>),
+                                    <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)),
+                                    <span class='kw'>eventtime</span> <span class='kw'>=</span> <span class='no'>newtime</span>),
                <span class='kw'>var</span> <span class='kw'>=</span> <span class='st'>"treat"</span>,
                <span class='kw'>increment</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
                <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
@@ -396,7 +400,7 @@ visreg. The R Journal, 9: 56-71.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

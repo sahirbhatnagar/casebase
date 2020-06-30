@@ -102,6 +102,9 @@ in the core age group between the ages of 55 and 69 years at entry." />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -247,10 +250,12 @@ Prostate-Cancer Mortality in a Randomized European Study. N Engl J Med
 <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='fl'>15.25</span>,<span class='fl'>0</span>,<span class='st'>"Year"</span>, <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.75</span>,<span class='kw'>adj</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0.5</span>))
 
 <span class='kw'>for</span> (<span class='no'>n</span> <span class='kw'>in</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0</span>,<span class='fl'>90000</span>,<span class='fl'>10000</span>)) {
-    <span class='kw'>if</span>(<span class='no'>n</span><span class='kw'>&gt;</span> <span class='fl'>0</span> <span class='kw'>&amp;</span> <span class='no'>n</span> <span class='kw'>&lt;</span> <span class='fl'>80000</span>) <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(-<span class='fl'>0.1</span>,<span class='no'>n</span>+<span class='no'>OFF</span>,<span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='no'>n</span>,<span class='kw'>big.mark</span><span class='kw'>=</span><span class='st'>","</span>), <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.75</span>,<span class='kw'>adj</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0.5</span>))
-    <span class='kw'>if</span>(<span class='no'>n</span><span class='kw'>&gt;</span> <span class='fl'>0</span>) <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(-<span class='fl'>0.1</span>,-<span class='no'>n</span>-<span class='no'>OFF</span>,<span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='no'>n</span>,<span class='kw'>big.mark</span><span class='kw'>=</span><span class='st'>","</span>), <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.75</span>,<span class='kw'>adj</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0.5</span>))
-    <span class='fu'><a href='https://rdrr.io/r/graphics/segments.html'>segments</a></span>(-<span class='fl'>0.05</span>,  <span class='no'>n</span>+<span class='no'>OFF</span>, <span class='fl'>0</span>, <span class='no'>n</span>+<span class='no'>OFF</span> , <span class='kw'>lwd</span><span class='kw'>=</span><span class='fl'>0.5</span>)
-    <span class='fu'><a href='https://rdrr.io/r/graphics/segments.html'>segments</a></span>(-<span class='fl'>0.05</span>, -<span class='no'>n</span>-<span class='no'>OFF</span>, <span class='fl'>0</span>, -<span class='no'>n</span>-<span class='no'>OFF</span>, <span class='kw'>lwd</span><span class='kw'>=</span><span class='fl'>0.5</span> )
+    <span class='kw'>if</span>(<span class='no'>n</span> <span class='kw'>&gt;</span> <span class='fl'>0</span> <span class='kw'>&amp;</span> <span class='no'>n</span> <span class='kw'>&lt;</span> <span class='fl'>80000</span>) <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(-<span class='fl'>0.1</span>, <span class='no'>n</span> + <span class='no'>OFF</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='no'>n</span>, <span class='kw'>big.mark</span> <span class='kw'>=</span> <span class='st'>","</span>),
+                               <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>adj</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0.5</span>))
+    <span class='kw'>if</span>(<span class='no'>n</span> <span class='kw'>&gt;</span> <span class='fl'>0</span>) <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(-<span class='fl'>0.1</span>, -<span class='no'>n</span> - <span class='no'>OFF</span>, <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span>(<span class='no'>n</span>, <span class='kw'>big.mark</span> <span class='kw'>=</span> <span class='st'>","</span>),
+                   <span class='kw'>cex</span> <span class='kw'>=</span> <span class='fl'>0.75</span>, <span class='kw'>adj</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>0.5</span>))
+    <span class='fu'><a href='https://rdrr.io/r/graphics/segments.html'>segments</a></span>(-<span class='fl'>0.05</span>, <span class='no'>n</span> + <span class='no'>OFF</span>, <span class='fl'>0</span>, <span class='no'>n</span> + <span class='no'>OFF</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
+    <span class='fu'><a href='https://rdrr.io/r/graphics/segments.html'>segments</a></span>(-<span class='fl'>0.05</span>, -<span class='no'>n</span> - <span class='no'>OFF</span>, <span class='fl'>0</span>, -<span class='no'>n</span> - <span class='no'>OFF</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>0.5</span> )
 
 }
 <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='fl'>4</span>, <span class='fl'>70000</span>+<span class='no'>OFF</span>,<span class='st'>"Screening Arm of ERSPC"</span>, <span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>1</span>,<span class='kw'>adj</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0.5</span>))
@@ -262,21 +267,21 @@ Men being Followed"</span>, <span class='kw'>cex</span><span class='kw'>=</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span>(<span class='fl'>9.5</span>,<span class='no'>h</span>, <span class='kw'>pch</span><span class='kw'>=</span><span class='fl'>19</span>,<span class='kw'>cex</span><span class='kw'>=</span><span class='fl'>0.25</span>,<span class='kw'>col</span><span class='kw'>=</span><span class='st'>"red"</span>)
 <span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='fl'>9.6</span>,<span class='no'>h</span>,<span class='st'>"Death from Prostate Cancer"</span>, <span class='kw'>adj</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0.5</span>))
 
-<span class='co'>#The randomization of the Finnish cohorts were carried out on January 1 of</span>
-<span class='co'>#each of the 4 years 1996 to 1999. This, coupled with the uniform December 31</span>
-<span class='co'>#2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8</span>
-<span class='co'>#years of follow-up.</span>
+<span class='co'># The randomization of the Finnish cohorts were carried out on January 1 of</span>
+<span class='co'># each of the 4 years 1996 to 1999. This, coupled with the uniform December</span>
+<span class='co'># 31 2006 censoring date, lead to large numbers of men with exactly 11, 10,</span>
+<span class='co'># 9 or 8 years of follow-up.</span>
 
-<span class='co'>#Tracked backwards in time (i.e. from right to left) , the PopulationTime</span>
-<span class='co'>#plot shows the recruitment pattern from its beginning in 1991, and in</span>
-<span class='co'>#particular the Jan 1 entries in successive years.</span>
+<span class='co'># Tracked backwards in time (i.e. from right to left), the Population-Time</span>
+<span class='co'># plot shows the recruitment pattern from its beginning in 1991, and in</span>
+<span class='co'># particular the Jan 1 entries in successive years.</span>
 
-<span class='co'>#Tracked forwards in time (i.e. from left to right), the plot for the first</span>
-<span class='co'>#three years shows attrition due entirely to death (mainly from other causes).</span>
-<span class='co'>#Since the Swedish and Belgian centres were the last to close their</span>
-<span class='co'>#recruitment - in December 2003 - the minimum potential follow-up is three</span>
-<span class='co'>#years. Tracked further forwards in time (i.e. after year 3) the attrition is</span>
-<span class='co'>#a combination of deaths and staggered entries.</span>
+<span class='co'># Tracked forwards in time (i.e. from left to right), the plot for the first</span>
+<span class='co'># 3 years shows attrition due entirely to death (mainly from other causes).</span>
+<span class='co'># Since the Swedish and Belgian centres were the last to close their</span>
+<span class='co'># recruitment - in December 2003 - the minimum potential follow-up is three</span>
+<span class='co'># years. Tracked further forwards in time (i.e. after year 3) the attrition</span>
+<span class='co'># is a combination of deaths and staggered entries.</span>
 }</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -289,7 +294,7 @@ Men being Followed"</span>, <span class='kw'>cex</span><span class='kw'>=</span>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

@@ -60,6 +60,9 @@
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -369,8 +372,9 @@
      <span class="kw">comprisk</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">legend</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">fill.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">values</span> <span class="kw">=</span> <span class="no">fill_colors</span>))</pre></body></html></div>
-<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series = TRUE, : fill.params has been specified by the user but color.params has not.
-##                 Setting color.params to be equal to fill.params.</code></pre>
+<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series
+## = TRUE, : fill.params has been specified by the user but color.params has not.
+## Setting color.params to be equal to fill.params.</code></pre>
 <p><img src="customizingpopTime_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div id="change-point-color-and-legend-labels" class="section level2">
@@ -393,8 +397,9 @@
      <span class="kw">fill.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">name</span> <span class="kw">=</span> <span class="st">"Legend Name"</span>,
                           <span class="kw">breaks</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span>, <span class="st">"Base series"</span>, <span class="st">"Competing event"</span>),
                           <span class="kw">values</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Relapse"</span> <span class="kw">=</span> <span class="st">"blue"</span>, <span class="st">"Competing event"</span> <span class="kw">=</span> <span class="st">"hotpink"</span>, <span class="st">"Base series"</span> <span class="kw">=</span> <span class="st">"orange"</span>)))</pre></body></html></div>
-<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series = TRUE, : fill.params has been specified by the user but color.params has not.
-##                 Setting color.params to be equal to fill.params.</code></pre>
+<pre><code>## Warning in plot.popTime(popTimeData, add.case.series = TRUE, add.base.series
+## = TRUE, : fill.params has been specified by the user but color.params has not.
+## Setting color.params to be equal to fill.params.</code></pre>
 <p><img src="customizingpopTime_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 <p>NOTE: the lists being passed to the <code>.params</code> arguments must be named arguments, otherwise they will give unexpected behavior. For example</p>
 <div class="sourceCode" id="cb32"><html><body><pre class="r"><span class="co"># this will work because mapping is the name of the </span>
@@ -449,7 +454,7 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="http://maxturgeon.ca/">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>.</p>
+  <p>Developed by <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="https://maxturgeon.ca/">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

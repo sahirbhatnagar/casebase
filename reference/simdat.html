@@ -102,6 +102,9 @@ simsurv." />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -160,7 +163,7 @@ indicator</p></dd>
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
     <p>See <code>simsurv</code> vignette:
-<a href='https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects'>https://cran.r-project.org/web/packages/simsurv/vignettes/simsurv_usage.html#example-3-simulating-under-a-weibull-model-with-time-dependent-effects</a></p>
+<a href='https://cran.r-project.org/package=simsurv/vignettes/simsurv_usage.html'>https://cran.r-project.org/package=simsurv/vignettes/simsurv_usage.html</a></p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Simulated data under a standard Weibull survival model that incorporates a
@@ -187,7 +190,8 @@ version 0.2.3. https://CRAN.R-project.org/package=simsurv</p>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>splines</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"simdat"</span>)
-<span class='no'>mod_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>status</span> ~ <span class='no'>trt</span> + <span class='fu'><a href='https://rdrr.io/r/splines/ns.html'>ns</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>eventtime</span>), <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>3</span>) +
+<span class='no'>mod_cb</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>status</span> ~ <span class='no'>trt</span> + <span class='fu'><a href='https://rdrr.io/r/splines/ns.html'>ns</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>eventtime</span>),
+                                                      <span class='kw'>df</span> <span class='kw'>=</span> <span class='fl'>3</span>) +
                                    <span class='no'>trt</span>:<span class='fu'><a href='https://rdrr.io/r/splines/ns.html'>ns</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>eventtime</span>),<span class='kw'>df</span><span class='kw'>=</span><span class='fl'>1</span>),
                                    <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
                                    <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>simdat</span>,
@@ -203,7 +207,7 @@ version 0.2.3. https://CRAN.R-project.org/package=simsurv</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">

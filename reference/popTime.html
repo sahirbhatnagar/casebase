@@ -103,6 +103,9 @@ of incidence density" />
       <a href="../articles/plotsmoothHazard.html">Plotting Hazards and Hazard Ratios</a>
     </li>
     <li>
+      <a href="../articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a>
+    </li>
+    <li>
       <a href="../articles/competingRisk.html">Competing risk analysis using case-base sampling</a>
     </li>
     <li>
@@ -138,7 +141,7 @@ of incidence density" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Population Time Plot</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/methods.R'><code>R/methods.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/plots.R'><code>R/plots.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/plot_methods.R'><code>R/plot_methods.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/popTime.R'><code>R/popTime.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>popTime.Rd</code></div>
     </div>
 
@@ -438,8 +441,10 @@ But the following will not be recognized: <code>"diagtime","eventtime",
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"bmtcrr"</span>)
 <span class='no'>popTimeData</span> <span class='kw'>&lt;-</span> <span class='fu'>popTime</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>bmtcrr</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"ftime"</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"Status"</span>)
-<span class='no'>fill_cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Case series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Competing event"</span> <span class='kw'>=</span> <span class='st'>"#009E73"</span>, <span class='st'>"Base series"</span> <span class='kw'>=</span> <span class='st'>"#0072B2"</span>)
-<span class='no'>color_cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Case series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Competing event"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Base series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>)
+<span class='no'>fill_cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Case series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Competing event"</span> <span class='kw'>=</span> <span class='st'>"#009E73"</span>,
+               <span class='st'>"Base series"</span> <span class='kw'>=</span> <span class='st'>"#0072B2"</span>)
+<span class='no'>color_cols</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Case series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>, <span class='st'>"Competing event"</span> <span class='kw'>=</span> <span class='st'>"black"</span>,
+                <span class='st'>"Base series"</span> <span class='kw'>=</span> <span class='st'>"black"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>popTimeData</span>,
   <span class='kw'>add.case.series</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
@@ -470,7 +475,7 @@ But the following will not be recognized: <code>"diagtime","eventtime",
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='http://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
+  <p>Developed by <a href='http://sahirbhatnagar.com/'>Sahir Bhatnagar</a>, <a href='https://maxturgeon.ca/'>Maxime Turgeon</a>, <a href='https://www.jesseislam.com/'>Jesse Islam</a>, <a href='http://individual.utoronto.ca/osaarela/'>Olli Saarela</a>, <a href='http://www.medicine.mcgill.ca/epidemiology/hanley/'>James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">
