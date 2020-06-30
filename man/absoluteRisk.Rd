@@ -168,7 +168,6 @@ out_linear <- fitSmoothHazard(event ~ time + z, DT, ratio = 10)
 linear_risk <- absoluteRisk(out_linear, time = 10,
                             newdata = data.table("z" = c(0,1)))
 # Plot CI curves----
-library(survival)
 library(ggplot2)
 data("brcancer")
 mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) +

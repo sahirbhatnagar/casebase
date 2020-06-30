@@ -133,8 +133,9 @@ the user wants more cutomized plot aesthetics, we recommend saving the
 results to a \code{data.frame} and using  the graphical package of their choice.
 }
 \examples{
-library(splines)
+if (requireNamespace("splines", quietly = TRUE)) {
 data("simdat") # from casebase package
+library(splines)
 simdat <- transform(simdat[sample(1:nrow(simdat), size = 200),],
                     treat = factor(trt, levels = 0:1,
                     labels = c("control","treatment")))
@@ -191,6 +192,7 @@ result <- plot(fit_factor_exposure,
 
 # see data used to create plot
 head(result)
+}
 }
 \references{
 Mark Clements and Xing-Rong Liu (2019). rstpm2: Smooth Survival

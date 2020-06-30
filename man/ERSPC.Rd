@@ -40,7 +40,7 @@ This data set lists the individual observations for 159,893 men
 in the core age group between the ages of 55 and 69 years at entry.
 }
 \details{
-The men were recruited from seven European countries (centres). Each
+The men were recruited from seven European countries (centers). Each
 centre began recruitment at a different time, ranging from 1991 to 1998.
 The last entry was in December 2003. The uniform censoring date was
 December 31, 2006. The randomization ratio was 1:1 in six of the seven
@@ -49,89 +49,35 @@ at 32,000 subjects. Because the whole birth cohort underwent randomization,
 this led to a ratio, for the screening group to the control group, of
 approximately 1 to 1.5, and to the non-screening arm being larger than the
 screening arm.
+
+The randomization of the Finnish cohorts were carried out on January 1 of
+each of the 4 years 1996 to 1999. This, coupled with the uniform December
+31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9
+or 8 years of follow-up.
+
+Tracked backwards in time (i.e. from right to left), the Population-Time
+plot shows the recruitment pattern from its beginning in 1991, and in
+particular the Jan 1 entries in successive years.
+
+Tracked forwards in time (i.e. from left to right), the plot for the first
+3 years shows attrition due entirely to death (mainly from other causes).
+Since the Swedish and Belgian centres were the last to close their
+recruitment - in December 2003 - the minimum potential follow-up is three
+years. Tracked further forwards in time (i.e. after year 3) the attrition
+is a combination of deaths and staggered entries.
 }
 \examples{
-\dontrun{
-
-###  cumulative incidence plots
-library(survival)
-library(casebase)
 data("ERSPC")
-KM = survfit(Surv(Follow.Up.Time,DeadOfPrCa) ~ ScrArm, data = ERSPC)
-str(KM)
-par(mfrow=c(1,1),mar = c(5,5,0.1,0.1))
-plot(KM$time[    1: 1501], 1-KM$surv[   1:1501], type="s", col="red" ,
-     ylab = "Risk", xlab="Years since Randomization")
-lines(KM$time[1502: 2923], 1-KM$surv[1502: 2923], type="s", col="green" )
+ERSPC$ScrArm <- factor(ERSPC$ScrArm,
+                       levels = c(0,1),
+                       labels = c("Control group", "Screening group"))
+set.seed(12345)
+pt_object_strat <- casebase::popTime(ERSPC[sample(1:nrow(ERSPC), 10000),],
+                                     event = "DeadOfPrCa",
+                                     exposure = "ScrArm")
 
-###  PopulationTime plots
-ds <- ERSPC
-par(mfrow=c(1,1),mar = c(0.01,0.01,0.1,0.1))
-
-plot(c(-0.5,15.75),c(-93000,80000), col="white" )
-set.seed(7654321)
-
-OFF = 2000
-
-
-for(i in 0:1) {
-    t=seq(0.01,14.9,0.01)
-    S = function(x) sum(ds$Follow.Up.Time[ds$ScrArm==i] >= x)
-    n = unlist(lapply(t,"S"))
-    if(i==1) yy =  c(0,n,0) + OFF
-    if(i==0) yy =  c(0,-n,0) - OFF
-    polygon(c(0,t,14.9),yy,col="grey80",border=NA)
-
-    t.d = ds$Follow.Up.Time[ds$ScrArm==i & ds$DeadOfPrCa==1]
-
-    for( j in 1:length(t.d) ) {
-        time.index =  ceiling(t.d[j]/0.01)
-        nn   = n[ time.index ]
-        if(i==1) h = runif(1,0.01*nn,0.99*nn)  + OFF
-        if(i==0) h = runif(1,-0.99*nn,-0.01*nn) - OFF
-        points(t.d[j],h, pch=19,cex=0.25,col="red")
-    }
-}
-
-for (t in 1:15) text(t,0,toString(t), cex=0.75)
-text(15.25,0,"Year", cex=0.75,adj=c(0,0.5))
-
-for (n in seq(0,90000,10000)) {
-    if(n > 0 & n < 80000) text(-0.1, n + OFF, format(n, big.mark = ","),
-                               cex = 0.75, adj = c(1,0.5))
-    if(n > 0) text(-0.1, -n - OFF, format(n, big.mark = ","),
-                   cex = 0.75, adj = c(1,0.5))
-    segments(-0.05, n + OFF, 0, n + OFF, lwd = 0.5)
-    segments(-0.05, -n - OFF, 0, -n - OFF, lwd = 0.5 )
-
-}
-text(4, 70000+OFF,"Screening Arm of ERSPC", cex=1,adj=c(0,0.5))
-text(4,-85000-OFF,"No-Screening Arm", cex=1,adj=c(0,0.5))
-
-text(-0.75,78000+OFF,"Number of
-Men being Followed", cex=1,adj=c(0,0.5))
-h = 50000+OFF
-points(9.5,h, pch=19,cex=0.25,col="red")
-text(9.6,h,"Death from Prostate Cancer", adj=c(0,0.5))
-
-# The randomization of the Finnish cohorts were carried out on January 1 of
-# each of the 4 years 1996 to 1999. This, coupled with the uniform December
-# 31 2006 censoring date, lead to large numbers of men with exactly 11, 10,
-# 9 or 8 years of follow-up.
-
-# Tracked backwards in time (i.e. from right to left), the Population-Time
-# plot shows the recruitment pattern from its beginning in 1991, and in
-# particular the Jan 1 entries in successive years.
-
-# Tracked forwards in time (i.e. from left to right), the plot for the first
-# 3 years shows attrition due entirely to death (mainly from other causes).
-# Since the Swedish and Belgian centres were the last to close their
-# recruitment - in December 2003 - the minimum potential follow-up is three
-# years. Tracked further forwards in time (i.e. after year 3) the attrition
-# is a combination of deaths and staggered entries.
-}
-
-
+plot(pt_object_strat,
+     facet.params = list(ncol = 2))
 }
 \references{
 Liu Z, Rich B, Hanley JA. Recovering the raw data behind a

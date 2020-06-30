@@ -39,6 +39,9 @@
 #'   calculated. Default: NULL which means this function will use the minimum
 #'   and maximum of observed event times with the `breaks` argument.
 #' @param ... further arguments passed to [graphics::matplot()]
+#' @details This is an earlier version of a function to plot hazards. We
+#'   recommend instead using the plot method for objects returned by
+#'   [casebase::fitSmoothHazard()]. See [casebase::plot.singleEventCB()].
 #' @return a plot of the hazard function and a data.frame of original data used
 #'   in the fitting along with the data used to create the plots including
 #'   `predictedhazard` which is the predicted hazard for a given covariate
@@ -49,26 +52,19 @@
 #'   `family="glm"` or `family="gam"`)
 #' @seealso [casebase::fitSmoothHazard()]
 #' @examples
-#' \dontrun{
-#' if(interactive()) {
 #' data("simdat")
-#' library(splines)
-#' mod_cb <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
-#'                                                       df = 3) +
-#'                                         trt:ns(log(eventtime),df=1),
+#' mod_cb <- fitSmoothHazard(status ~ trt * eventtime,
 #'                                     time = "eventtime",
-#'                                     data = simdat,
-#'                                     ratio = 100,
+#'                                     data = simdat[1:200,],
+#'                                     ratio = 1,
 #'                                     family = "glm")
 #'
 #' results0 <- hazardPlot(object = mod_cb, newdata = data.frame(trt = 0),
-#'            ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 1, lwd = 2)
+#'            ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 1, lwd = 2)
 #' head(results0)
-#' hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = TRUE,
+#' hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = FALSE,
 #'            ci.lvl = 0.95, add = TRUE, lty = 2, line.col = 2, lwd = 2)
 #' legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
-#'  }
-#' }
 #' @rdname hazardPlot
 #' @export
 #' @importFrom graphics lines matplot par polygon

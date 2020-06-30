@@ -19,7 +19,7 @@ This data was reconstructed from the curves in figure 2
 }
 \examples{
 data("eprchd")
-fit<-casebase::fitSmoothHazard(status~time + treatment,data=eprchd)
+fit <- fitSmoothHazard(status ~ time + treatment, data = eprchd)
 }
 \references{
 Manson, J. E., Hsia, J., Johnson, K. C., Rossouw, J. E., Assaf,

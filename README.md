@@ -30,6 +30,7 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 3. [Population Time Plots](http://sahirbhatnagar.com/casebase/articles/popTime.html)
 4. [Customizing Population Time Plots](http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html)
 5. [Plot Hazards and Hazard Ratios](http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html)
+6. [Plot Cumulative Incidence and Survival Curves](http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html)
 
 # Class structure
 
