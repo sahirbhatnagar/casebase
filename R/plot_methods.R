@@ -675,7 +675,6 @@ plot.singleEventCB <- function(x, ...,
 #' @importFrom data.table as.data.table setnames melt
 #' @examples
 #' # Plot CI curves----
-#' library(survival)
 #' library(ggplot2)
 #' data("brcancer")
 #' mod_cb_tvc <- fitSmoothHazard(cens ~ estrec*log(time) +

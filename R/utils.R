@@ -90,10 +90,12 @@ checkArgsTimeEvent <- function(data, time, event) {
 #'
 #' @export
 #' @examples
+#' if (requireNamespace("survival", quietly = TRUE)) {
 #' library(survival) # for veteran data
 #' checkArgsEventIndicator(data = veteran, event = "celltype",
 #'                         censored.indicator = "smallcell")
 #' checkArgsEventIndicator(data = veteran, event = "status")
+#' }
 #' data("bmtcrr") # from casebase
 #' checkArgsEventIndicator(data = bmtcrr, event = "Sex",
 #'                         censored.indicator = "M")

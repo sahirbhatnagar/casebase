@@ -33,10 +33,12 @@ Checks for event categories and gives a warning message indicating which
 level is assumed to be the reference level.
 }
 \examples{
+if (requireNamespace("survival", quietly = TRUE)) {
 library(survival) # for veteran data
 checkArgsEventIndicator(data = veteran, event = "celltype",
                         censored.indicator = "smallcell")
 checkArgsEventIndicator(data = veteran, event = "status")
+}
 data("bmtcrr") # from casebase
 checkArgsEventIndicator(data = bmtcrr, event = "Sex",
                         censored.indicator = "M")
