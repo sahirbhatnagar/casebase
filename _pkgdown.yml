@@ -8,7 +8,7 @@ authors:
   Sahir Bhatnagar:
     href: http://sahirbhatnagar.com/
   Maxime Turgeon:
-    href: http://maxturgeon.ca/
+    href: https://maxturgeon.ca/
   Jesse Islam:
     href: https://www.jesseislam.com/
   Olli Saarela:
@@ -75,6 +75,8 @@ navbar:
         href: articles/smoothHazard.html
       - text: Plotting Hazards and Hazard Ratios
         href: articles/plotsmoothHazard.html
+      - text: Plot Cumulative Incidence and Survival Curves
+        href: articles/plotabsRisk.html
       - text: Competing risk analysis using case-base sampling
         href: articles/competingRisk.html
       - text: Customizing Population Time Plots
@@ -85,6 +87,4 @@ navbar:
     news:
       text: Changelog
       href: news/index.html
-
-
 
