@@ -185,40 +185,12 @@ numeric</p></td>
 the second element is the numeric representation of the event</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>) <span class='co'># for veteran data</span>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"survival"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>) <span class='co'># for veteran data</span>
 <span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>veteran</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"celltype"</span>,
-                        <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"smallcell"</span>)</div><div class='output co'>#&gt; <span class='message'>assuming smallcell represents a censored observation and squamous is the event of interest</span></div><div class='output co'>#&gt; $event.factored
-#&gt;   [1] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
-#&gt;   [8] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
-#&gt;  [15] squamous  smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt;  [22] smallcell smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt;  [29] smallcell smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt;  [36] smallcell smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt;  [43] smallcell smallcell smallcell adeno     adeno     adeno     adeno    
-#&gt;  [50] adeno     adeno     adeno     adeno     adeno     large     large    
-#&gt;  [57] large     large     large     large     large     large     large    
-#&gt;  [64] large     large     large     large     large     large     squamous 
-#&gt;  [71] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
-#&gt;  [78] squamous  squamous  squamous  squamous  squamous  squamous  squamous 
-#&gt;  [85] squamous  squamous  squamous  squamous  squamous  smallcell smallcell
-#&gt;  [92] smallcell smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt;  [99] smallcell smallcell smallcell smallcell smallcell smallcell smallcell
-#&gt; [106] smallcell smallcell adeno     adeno     adeno     adeno     adeno    
-#&gt; [113] adeno     adeno     adeno     adeno     adeno     adeno     adeno    
-#&gt; [120] adeno     adeno     adeno     adeno     adeno     adeno     large    
-#&gt; [127] large     large     large     large     large     large     large    
-#&gt; [134] large     large     large     large    
-#&gt; Levels: smallcell squamous adeno large
-#&gt; 
-#&gt; $event.numeric
-#&gt;   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-#&gt;  [38] 0 0 0 0 0 0 0 0 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 1 1 1 1
-#&gt;  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2 2 2 2
-#&gt; [112] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3
-#&gt; 
-#&gt; $nLevels
-#&gt; [1] 4
-#&gt; </div><div class='input'><span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>veteran</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"status"</span>)</div><div class='output co'>#&gt; $event.factored
+                        <span class='kw'>censored.indicator</span> <span class='kw'>=</span> <span class='st'>"smallcell"</span>)
+<span class='fu'>checkArgsEventIndicator</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>veteran</span>, <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"status"</span>)
+}</div><div class='output co'>#&gt; <span class='message'>assuming smallcell represents a censored observation and squamous is the event of interest</span></div><div class='output co'>#&gt; $event.factored
 #&gt;   [1] event    event    event    event    event    event    event    event   
 #&gt;   [9] event    censored event    event    event    censored event    event   
 #&gt;  [17] event    event    event    event    censored censored event    event   

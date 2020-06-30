@@ -319,8 +319,9 @@ visreg. The R Journal, 9: 56-71.</p>
 <code><a href='https://rdrr.io/r/graphics/par.html'>graphics::par()</a></code>, <code><a href='https://rdrr.io/pkg/visreg/man/visreg.html'>visreg::visreg()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>splines</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"splines"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"simdat"</span>) <span class='co'># from casebase package</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>splines</span>)
 <span class='no'>simdat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/transform.html'>transform</a></span>(<span class='no'>simdat</span>[<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>simdat</span>), <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>200</span>),],
                     <span class='kw'>treat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>trt</span>, <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>1</span>,
                     <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)))
@@ -373,22 +374,24 @@ visreg. The R Journal, 9: 56-71.</p>
                <span class='kw'>var</span> <span class='kw'>=</span> <span class='st'>"treat"</span>,
                <span class='kw'>increment</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
                <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
-               <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='input'>
+               <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
 <span class='co'># see data used to create plot</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>result</span>)</div><div class='output co'>#&gt;         treat eventtime log_hazard_ratio standarderror hazard_ratio lowerbound
-#&gt; 5%  treatment 0.3027579         2.166611     1.0657425     8.728652   1.080900
-#&gt; 6%  treatment 0.3563914         2.054223     0.9854047     7.800775   1.130732
-#&gt; 7%  treatment 0.4282202         1.910305     0.8879722     6.755150   1.185200
-#&gt; 8%  treatment 0.4477576         1.872447     0.8634869     6.504191   1.197269
-#&gt; 9%  treatment 0.5127021         1.750493     0.7882979     5.757439   1.228087
-#&gt; 10% treatment 0.6293218         1.546197     0.6771082     4.693585   1.244942
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>result</span>)
+}</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;         treat eventtime log_hazard_ratio standarderror hazard_ratio lowerbound
+#&gt; 5%  treatment 0.3488444        0.5617254     0.7422200     1.753696  0.4094260
+#&gt; 6%  treatment 0.3902785        0.6649501     0.7012281     1.944394  0.4919237
+#&gt; 7%  treatment 0.4148271        0.7239973     0.6788513     2.062662  0.5452413
+#&gt; 8%  treatment 0.4512202        0.8086798     0.6482910     2.244942  0.6300556
+#&gt; 9%  treatment 0.4636149        0.8367497     0.6385929     2.308850  0.6604266
+#&gt; 10% treatment 0.4862850        0.8870854     0.6217826     2.428043  0.7177844
 #&gt;     upperbound
-#&gt; 5%    70.48697
-#&gt; 6%    53.81654
-#&gt; 7%    38.50156
-#&gt; 8%    35.33415
-#&gt; 9%    26.99167
-#&gt; 10%   17.69539</div></pre>
+#&gt; 5%    7.511610
+#&gt; 6%    7.685473
+#&gt; 7%    7.803102
+#&gt; 8%    7.998922
+#&gt; 9%    8.071737
+#&gt; 10%   8.213317</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

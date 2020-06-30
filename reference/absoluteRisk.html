@@ -382,7 +382,6 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 <span class='no'>linear_risk</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='no'>out_linear</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='fl'>10</span>,
                             <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='st'>"z"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>)))
 <span class='co'># Plot CI curves----</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>survival</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"brcancer"</span>)
 <span class='no'>mod_cb_tvc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>cens</span> ~ <span class='no'>estrec</span>*<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) +
