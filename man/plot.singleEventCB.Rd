@@ -135,6 +135,7 @@ results to a \code{data.frame} and using  the graphical package of their choice.
 \examples{
 if (requireNamespace("splines", quietly = TRUE)) {
 data("simdat") # from casebase package
+library(splines)
 simdat <- transform(simdat[sample(1:nrow(simdat), size = 200),],
                     treat = factor(trt, levels = 0:1,
                     labels = c("control","treatment")))
