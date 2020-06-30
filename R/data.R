@@ -268,16 +268,22 @@
 #' http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/Csupport.html
 "support"
 
-#' Data extracted from the mason trial
+#' Estrogen plus Progestin and the Risk of Coronary Heart Disease (eprchd)
 #'
-#' Compares placebo to hormone treatment. THIS IS NOT EXTENSIVE. Will add
-#' details later.
-#'
+#' @description This data was reconstructed from the curves in figure 2
+#'  (Manson 2003).Compares placebo to hormone treatment.
+#' @examples
+#' data("eprchd")
+#' fit<-casebase::fitSmoothHazard(status~time + treatment,data=eprchd)
 #' @format A dataframe with 16608 observations and 3 variables:
-#' @source taken from the following paper:
-#' @references proper reference for the data.
-"masonTrialExtraction"
-
+#'   \describe{ \item{time}{ Years (continuous) } \item{status}{
+#'   0=censored, 1=event } \item{treatment}{ placebo,
+#'   estPro}}
+#' @references Manson, J. E., Hsia, J., Johnson, K. C., Rossouw, J. E., Assaf,
+#'  A. R., Lasser, N. L., ... & Strickland, O. L. (2003). Estrogen plus
+#'  progestin and the risk of coronary heart disease. New England Journal of
+#'  Medicine, 349(6), 523-534.
+"eprchd"
 
 #' German Breast Cancer Study Group 2
 #'
