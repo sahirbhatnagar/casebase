@@ -61,8 +61,8 @@ fitDF_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DF, time = "ftime",
 fitDT_gbm <- fitSmoothHazard(event ~ ftime + Z, data = DT, time = "ftime",
                              family = "gbm", ratio = 10)
 
-newDT <- data.table("Z" = c(0,1))
-newDF <- data.frame("Z" = c(0,1))
+newDT <- data.table("Z" = c(0, 1))
+newDF <- data.frame("Z" = c(0, 1))
 
 test_that("no error in fitting gbm", {
     riskDF <- try(absoluteRisk(fitDF_gbm, time = 0.5, newdata = newDF,

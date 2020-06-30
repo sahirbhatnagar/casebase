@@ -1,10 +1,10 @@
 linters: with_defaults(
     line_length_linter = NULL, # 197
-    object_name_linter = NULL, # 172
-    commented_code_linter = NULL, # 102
-    commas_linter = NULL, # 61
+    object_name_linter = NULL, # Recommends snake case vs camel case
+    commented_code_linter,
+    commas_linter,
     infix_spaces_linter,
-    cyclocomp_linter = NULL, # 8
+    cyclocomp_linter = NULL, # Code complexity
     spaces_left_parentheses_linter,
     assignment_linter,
     function_left_parentheses_linter,

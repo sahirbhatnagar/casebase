@@ -24,7 +24,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
     ###################################################
     # In competing risks, we can get a cumulative
     # incidence function using a nested double integral
-    # f_j = lambda_j * Survival
+    # subdensity f_j = lambda_j * Survival
     # F_j = P(T <= t, J = j : covariates) = int_0^t f_j
     ###################################################
     time_ordered <- unique(c(0, sort(time)))
@@ -68,7 +68,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
             survFunction <- exp(-trap_int(knots, OverallLambda))
             if (onlyMain) {
                 # Only compute first subdensity
-                subdensity <- lambdas[,1] * survFunction
+                subdensity <- lambdas[, 1] * survFunction
                 pred <- trap_int(knots, subdensity)[knots %in% c(0, time)]
                 output[, j + 1] <- pred
             } else {
@@ -145,7 +145,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
     } else {
         # Switch to survival scale?
         if (type == "survival") {
-            output[,-1,] <- 1 - output[, -1, ]
+            output[, -1, ] <- 1 - output[, -1, ]
         }
         # Add time = 0?
         if (!addZero) output <- output[-1, , , drop = FALSE]
@@ -167,7 +167,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
 absoluteRisk.CompRiskGlmnet <- function(object, time, newdata,
                                         method = c("numerical", "montecarlo"),
                                         nsamp = 100, onlyMain = TRUE,
-                                        s = c("lambda.1se","lambda.min"),
+                                        s = c("lambda.1se", "lambda.min"),
                                         type = c("CI", "survival"),
                                         addZero = TRUE, ...) {
     # The current implementation doesn't work

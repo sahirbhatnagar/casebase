@@ -72,8 +72,8 @@ fitDF_glmnet <- fitSmoothHazard(formula_glmnet, data = DF_ext, time = "ftime",
 fitDT_glmnet <- fitSmoothHazard(formula_glmnet, data = DT_ext, time = "ftime",
                                 family = "glmnet", ratio = 10)
 
-newDT <- data.table("Z" = c(0,1))
-newDF <- data.frame("Z" = c(0,1))
+newDT <- data.table("Z" = c(0, 1))
+newDF <- data.frame("Z" = c(0, 1))
 
 extra_vars_new <- matrix(rnorm(10 * 2), ncol = 10)
 colnames(extra_vars_new) <- paste0("V", 1:10)

@@ -34,7 +34,7 @@ test_that("no error in using nonlinear functions of time", {
     expect_false(inherits(fit_glm_splines, "try-error"))
 })
 
-test_that("error with glm.fit",{
+test_that("error with glm.fit", {
     expect_error(absoluteRisk(fit_glm, time = 1,
                               newdata = new_x, nsamp = 100))
 })

@@ -9,7 +9,6 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
     tt <- stats::terms(x)
     Terms <- stats::delete.response(tt)
     beta2 <- coef(x)
-    # browser()
     gradient <- hrJacobian(
         object = x, newdata = newdata,
         newdata2 = newdata2, term = Terms
@@ -34,7 +33,6 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
         xvar_values <- newdata[[xvar]]
     }
 
-    # browser()
     # sorting indices for ploting
     i.backw <- order(xvar_values, decreasing = TRUE)
     i.forw <- order(xvar_values)
@@ -110,8 +108,6 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
 
     } else {
 
-        # browser()
-
         if (length(xvar_values) == 1) {
             do.call("plot", utils::modifyList(
                 list(
@@ -145,8 +141,6 @@ plotHazardRatio <- function(x, newdata, newdata2, ci, ci.lvl, ci.col,
             quiet = TRUE
         ) # Silence warnings about clipped values
     }
-
-    # abline(a = 1, b = 0, lty = 2, col = "grey80")
 
     invisible(results)
 }

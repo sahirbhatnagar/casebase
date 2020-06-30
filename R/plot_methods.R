@@ -158,7 +158,6 @@ plot.popTime <- function(x, ...,
                          point.colour) { # Deprecated
 
     # To prevent "no visble binding for global variable"
-    # ycoord <- yc <- `event status` <- event <- comprisk.event <- NULL
     ycoord <- yc <- event <- comprisk.event <- NULL
 
     # Okabe Ito colors
@@ -259,7 +258,7 @@ plot.popTime <- function(x, ...,
                 comprisk = comprisk,
                 censored.indicator = censored.indicator
             )
-            # browser()
+
             do.call("geom_point", utils::modifyList(
                 list(
                     data = basedata[event == 0],
@@ -574,8 +573,6 @@ plot.singleEventCB <- function(x, ...,
             hazard.params
         ))
 
-        # print(tt)
-
         invisible(tt)
 
         return(tt)
@@ -591,8 +588,6 @@ plot.singleEventCB <- function(x, ...,
             object = x, newdata = newdata, plot = FALSE,
             ci = ci, ci.lvl = ci.lvl
         )
-
-        # browser()
 
         if (missing(exposed) & missing(var)) {
             stop("One of either 'var' or 'exposed' arguments must be specified.")
@@ -679,18 +674,20 @@ plot.singleEventCB <- function(x, ...,
 #' plot(smooth_risk_brcancer)
 plot.absRiskCB <- function(x, ...,
                            xlab = "time",
-                           ylab = ifelse(attr(x, "type") == "CI","cumulative incidence","survival probability"),
+                           ylab = ifelse(attr(x, "type") == "CI",
+                                         "cumulative incidence",
+                                         "survival probability"),
                            type = "l",
                            gg = TRUE,
                            id.names,
                            legend.title) {
     # output of absoluteRisk will always have a column named time
-    # x = linearRisk
+    # x equals linearRisk
     # ======================
 
     if (!gg) {
-        graphics::matplot(x = x[,"time"],
-                          y = x[,-which(colnames(x) == c("time"))],
+        graphics::matplot(x = x[, "time"],
+                          y = x[, -which(colnames(x) == c("time"))],
                           type = type,
                           xlab = xlab,
                           ylab = ylab,

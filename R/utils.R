@@ -1,6 +1,5 @@
 # This is where all utility functions should appear
 # These functions are not exported
-# roundUp <- function(x) 10^ceiling(log10(x))
 
 `%ni%` <- Negate("%in%")
 
@@ -208,18 +207,6 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 
 # Remove offset from formula
 # https://stackoverflow.com/a/40313732/2836971
-# remove_offset <- function(x) {
-#   proc <- function(x) {
-#     if (length(x) == 1) {
-#       return(x)
-#     }
-#     if (x[[1]] == as.name("offset")) {
-#       return(x[[1]])
-#     }
-#     replace(x, -1, lapply(x[-1], proc))
-#   }
-#   update(proc(x), . ~ . - offset)
-# }
 
 # Add a formula interface to cv.glmnet
 #' @importFrom stats model.matrix

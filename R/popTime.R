@@ -77,8 +77,6 @@ popTime <- function(data, time, event, censored.indicator,
                     exposure, percentile_number) {
 
   varNames <- checkArgsTimeEvent(data = data, time = time, event = event)
-  # varNames <- checkArgsTimeEvent(data)
-  # varNames <- checkArgsTimeEvent(data, time = time)
   ycoord <- yc <- n_available <- NULL
 
   DT <- data.table::as.data.table(data)
@@ -91,13 +89,11 @@ popTime <- function(data, time, event, censored.indicator,
   if (missing(exposure)) {
     nobs <- nrow(DT)
 
-    # names(veteran)
     DT[, "original.time" := get(varNames$time)]
     DT[, "original.event" := get(varNames$event)]
 
     if (varNames$time != "time") setnames(DT, varNames$time, "time")
     if (varNames$event != "event") setnames(DT, varNames$event, "event")
-    # browser()
     modifiedEvent <- checkArgsEventIndicator(
       data = data, event = varNames$event,
       censored.indicator = censored.indicator
@@ -105,7 +101,6 @@ popTime <- function(data, time, event, censored.indicator,
 
     DT[, event := modifiedEvent$event.numeric]
     DT[, "event status" := modifiedEvent$event.factored]
-    # nLevels <- modifiedEvent$nLevels
 
     # people with
     # short values of t at the top
@@ -133,8 +128,6 @@ popTime <- function(data, time, event, censored.indicator,
     # point is less than 10, then sample regardless of case status
     ### NEED TO MAKE THIS LESS STRINGENT##############??????
     if (DT[, stats::quantile(n_available, probs = percentile_number)] < 15) {
-      # message("Sampling from all remaining individuals under study,
-      #         regardless of event status")
       DT[
         event == 1,
         n_available := sapply(
@@ -156,10 +149,6 @@ popTime <- function(data, time, event, censored.indicator,
       # use original coordinate if there is no one left to sample from
       DT[event == 1 & n_available == 0, yc := ycoord]
     } else {
-
-      # message("Sampling only from individuals who never experienced
-      #         the event of interest")
-
       DT[
         event == 1 & n_available > 0,
         yc := sapply(
@@ -227,8 +216,6 @@ popTime <- function(data, time, event, censored.indicator,
       # if the 50th percentile number of available subjects at any given
       # point is less than 10, then sample regardless of case status
       if (K[, quantile(n_available, probs = percentile_number)] < 10) {
-        # message("Sampling from all remaining individuals under study,
-        #     regardless of event status")
         K[
           event == 1,
           n_available := sapply(
@@ -250,10 +237,6 @@ popTime <- function(data, time, event, censored.indicator,
         # use original coordinate if there is no one left to sample from
         K[event == 1 & n_available == 0, yc := ycoord]
       } else {
-
-        # message("Sampling only from individuals who never experienced
-        #     the event of interest")
-
         K[
           event == 1 & n_available > 0,
           yc := sapply(
@@ -280,7 +263,8 @@ popTime <- function(data, time, event, censored.indicator,
 # taken verbatim from cowplot::theme_cowplot()
 #' @importFrom stats quantile
 #' @importFrom grid unit
-#' @importFrom ggplot2 theme_grey theme element_line element_rect element_text margin element_blank rel %+replace%
+#' @importFrom ggplot2 theme_grey theme element_line element_rect element_text
+#' @importFrom ggplot2 margin element_blank rel %+replace%
 theme_cb <- function(font_size = 14, font_family = "", line_size = 0.5,
                      rel_small = 12/14, rel_tiny = 11/14, rel_large = 16/14) {
   half_line <- 0.5 * font_size

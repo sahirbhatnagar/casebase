@@ -76,7 +76,7 @@
 hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        breaks = 100, ci.lvl = 0.95, ylab = NULL, line.col = 1,
                        ci.col = "grey", lty = par("lty"), add = FALSE,
-                       ci = !add, rug = !add, s = c("lambda.1se","lambda.min"),
+                       ci = !add, rug = !add, s = c("lambda.1se", "lambda.min"),
                        times = NULL, ...) {
 
     type <- match.arg(type)
@@ -92,11 +92,12 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         warning("More than 1 row supplied to 'newdata'. Only the first row will be used.")
     }
 
-    if (any(names(newdata) %in% c("sequence_of_times","predictedloghazard")))
+    if (any(names(newdata) %in% c("sequence_of_times", "predictedloghazard")))
         stop("sequence_of_times or predictedloghazard cannot be used as a colunm name in newdata. rename them to something else.")
 
     if (any(names(newdata) %in% object[["timeVar"]]))
-        stop("%s cannot be used as a colunm name in newdata. remove it.",object[["timeVar"]])
+        stop("%s cannot be used as a colunm name in newdata. remove it.",
+             object[["timeVar"]])
 
     obj_class <- class(object)[2]
 
@@ -104,19 +105,20 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
         stop("object must be of class glm, gam, gbm or cv.glmnet")
 
     if (ci) {
-        if (!data.table::between(ci.lvl, 0,1, incbounds = FALSE))
+        if (!data.table::between(ci.lvl, 0, 1, incbounds = FALSE))
             stop("ci.lvl must be between 0 and 1")
         if (!inherits(object, c("glm", "gam"))) {
-            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",obj_class))
+            warning(sprintf("Confidence intervals cannot be calculated for objects of class %s.",
+                            obj_class))
             ci <- FALSE
         }
-        if (any(names(newdata) %in% c("standarderror","lowerbound","upperbound")))
+        if (any(names(newdata) %in% c("standarderror", "lowerbound", "upperbound")))
             stop("'standarderror','lowerbound' and 'upperbound' cannot be used as column names in newdata. rename it.")
     }
 
     if (is.null(times)) {
         times <- object[["originalData"]][[object[["timeVar"]]]]
-        times <- seq(min(times),max(times),length.out = breaks)
+        times <- seq(min(times), max(times), length.out = breaks)
     } else {
         times <- times[order(times)]
     }
@@ -206,7 +208,7 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
                        uncured = "Uncured distribution")
 
     ylims <- if (ci) {
-        range(newdata$lowerbound,newdata$upperbound)
+        range(newdata$lowerbound, newdata$upperbound)
         } else range(newdata$predictedhazard)
 
     if (!add)
@@ -222,7 +224,6 @@ hazardPlot <- function(object, newdata, type = c("hazard"), xlab = NULL,
     } else lines(newdata[[object[["timeVar"]]]], newdata[["predictedhazard"]],
                  col = line.col, lty = lty, ...)
     if (rug) {
-        # rug(object[["originalData"]][[ object[["timeVar"]]]], col = line.col)
         events <- object[["originalData"]][[object[["eventVar"]]]]
         rug(object[["originalData"]][which(events == 1), ,
                                      drop = FALSE][[object[["timeVar"]]]],
