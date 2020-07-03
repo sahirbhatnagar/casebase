@@ -55,7 +55,8 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 
 ## useR! 2019 Toulouse - Presentation
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DlppjRYVklQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Jesse useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
+
 
 
 ## Quickstart

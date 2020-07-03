@@ -65,9 +65,8 @@ example usage of the functions. This includes
 
 ## useR\! 2019 Toulouse - Presentation
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/DlppjRYVklQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-
-</iframe>
+[![Jesse
+useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
 
 ## Quickstart
 
@@ -122,26 +121,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2477  -0.1480  -0.1383  -0.1269   3.1485  
+#> -0.2625  -0.1474  -0.1373  -0.1276   3.1495  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                       -5.86465    0.29845 -19.650  < 2e-16 ***
-#> treatmentestPro                    0.63765    0.37526   1.699   0.0893 .  
-#> ns(time, df = 3)1                 -0.42587    0.36090  -1.180   0.2380    
-#> ns(time, df = 3)2                  0.80586    0.72936   1.105   0.2692    
-#> ns(time, df = 3)3                  1.36741    0.34263   3.991 6.58e-05 ***
-#> treatmentestPro:ns(time, df = 3)1  0.08876    0.48752   0.182   0.8555    
-#> treatmentestPro:ns(time, df = 3)2 -1.37141    0.93619  -1.465   0.1430    
-#> treatmentestPro:ns(time, df = 3)3 -1.12623    0.48513  -2.322   0.0203 *  
+#> (Intercept)                        -5.8675     0.2999 -19.566  < 2e-16 ***
+#> treatmentestPro                     0.6444     0.3774   1.708   0.0877 .  
+#> ns(time, df = 3)1                  -0.4813     0.3632  -1.325   0.1851    
+#> ns(time, df = 3)2                   0.9012     0.7330   1.229   0.2189    
+#> ns(time, df = 3)3                   1.4706     0.3463   4.247 2.17e-05 ***
+#> treatmentestPro:ns(time, df = 3)1   0.1648     0.4900   0.336   0.7366    
+#> treatmentestPro:ns(time, df = 3)2  -1.5224     0.9419  -1.616   0.1060    
+#> treatmentestPro:ns(time, df = 3)3  -1.2393     0.4892  -2.534   0.0113 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3614.7  on 32716  degrees of freedom
-#> AIC: 3630.7
+#> Residual deviance: 3613.9  on 32716  degrees of freedom
+#> AIC: 3629.9
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
