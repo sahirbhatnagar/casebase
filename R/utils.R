@@ -210,9 +210,15 @@ checkArgsEventIndicator <- function(data, event, censored.indicator) {
 # Remove offset from formula
 # https://stackoverflow.com/a/40313732/2836971
 
-# Add a formula interface to cv.glmnet
+
 #' @importFrom stats model.matrix
 #' @importFrom stats contrasts
+#' @details `prepareX` is a slightly modified version of the same function from
+#'   the `glmnet` package. It can be used to convert a data.frame to a matrix
+#'   with categorical variables converted to dummy variables using one-hot
+#'   encoding
+#' @rdname fitSmoothHazard
+#' @export
 prepareX <- function(formula, data) {
   whichfac <- sapply(data, inherits, "factor")
   ctr <- if (any(whichfac)) {

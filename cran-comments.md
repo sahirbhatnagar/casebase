@@ -1,15 +1,12 @@
 ## Test environments
-* local ubuntu 16.04 install, R 3.3.3
-* ubuntu 12.04 (on travis-ci), R 3.3.3
+
+* local ubuntu 18.04 install, R 3.6.2
+* ubuntu 16.04 (on travis-ci), R-release, R-devel
+* appveyor Windows Server 2012 R2 x64, R-devel
 * win-builder (devel and release)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
+0 ERRORs | 0 WARNINGs | 0 NOTES.
 
-* This is a new release.
-
-## Reverse dependencies
-
-This is a new release, so there are no reverse dependencies.
 

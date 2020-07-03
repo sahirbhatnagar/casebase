@@ -121,26 +121,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2401  -0.1478  -0.1371  -0.1270   3.1427  
+#> -0.2536  -0.1481  -0.1380  -0.1268   3.1490  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                       -5.83082    0.29960 -19.462  < 2e-16 ***
-#> treatmentestPro                    0.64174    0.37625   1.706 0.088076 .  
-#> ns(time, df = 3)1                 -0.34094    0.36042  -0.946 0.344175    
-#> ns(time, df = 3)2                  0.68171    0.73153   0.932 0.351385    
-#> ns(time, df = 3)3                  1.31406    0.34190   3.843 0.000121 ***
-#> treatmentestPro:ns(time, df = 3)1 -0.02636    0.48641  -0.054 0.956778    
-#> treatmentestPro:ns(time, df = 3)2 -1.33145    0.93719  -1.421 0.155412    
-#> treatmentestPro:ns(time, df = 3)3 -1.04596    0.48305  -2.165 0.030364 *  
+#> (Intercept)                        -5.8604     0.3032 -19.326  < 2e-16 ***
+#> treatmentestPro                     0.6316     0.3796   1.664   0.0962 .  
+#> ns(time, df = 3)1                  -0.4202     0.3627  -1.158   0.2467    
+#> ns(time, df = 3)2                   0.8155     0.7404   1.101   0.2707    
+#> ns(time, df = 3)3                   1.4242     0.3474   4.100 4.13e-05 ***
+#> treatmentestPro:ns(time, df = 3)1   0.1292     0.4896   0.264   0.7919    
+#> treatmentestPro:ns(time, df = 3)2  -1.3944     0.9456  -1.475   0.1403    
+#> treatmentestPro:ns(time, df = 3)3  -1.1521     0.4883  -2.359   0.0183 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3614.8  on 32716  degrees of freedom
-#> AIC: 3630.8
+#> Residual deviance: 3614.1  on 32716  degrees of freedom
+#> AIC: 3630.1
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
