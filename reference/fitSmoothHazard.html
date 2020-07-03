@@ -142,7 +142,7 @@ hazard using logistic regression." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Fit smooth-in-time parametric hazard functions.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/fitting.R'><code>R/fitting.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/fitting.R'><code>R/fitting.R</code></a>, <a href='https://github.com/sahirbhatnagar/casebase/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>fitSmoothHazard.Rd</code></div>
     </div>
 
@@ -173,7 +173,9 @@ hazard using logistic regression.</p>
   <span class='no'>censored.indicator</span>,
   <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='no'>...</span>
-)</pre>
+)
+
+<span class='fu'>prepareX</span>(<span class='no'>formula</span>, <span class='no'>data</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -271,6 +273,10 @@ cumbersome as the number of variables increases. In this setting, the matrix
 of time in order to perform case-base sampling. Therefore, nonlinear
 functions of time should be specified as a one-sided formula through the
 argument <code>formula_time</code> (the left-hand side is always ignored).</p>
+<p><code>prepareX</code> is a slightly modified version of the same function from
+the <code>glmnet</code> package. It can be used to convert a data.frame to a matrix
+with categorical variables converted to dummy variables using one-hot
+encoding</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simulate censored survival data for two outcome types from exponential</span>

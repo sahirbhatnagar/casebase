@@ -152,7 +152,8 @@
 <ul>
 <li>The output of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
 <li>Population time plots now use <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code> instead of <code><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">ggplot2::geom_segment()</a></code>.</li>
-<li>Population time functions now allow for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series. These are now passed as a list to the <code>*.params</code> arguments. Several arguments are now depracated.</li>
+<li>Population time functions now allow for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series. These are now passed as a list to the <code>*.params</code> arguments. Several arguments are now deprecated.</li>
+<li>Removed <code>popTimeExposure</code> class and the corresponding <code>plot</code> method. <code><a href="../reference/popTime.html">popTime()</a></code> now returns an <code>exposure</code> attribute which contains the name of the exposure variable in the dataset. The plot method for objects of class <code>popTime</code> will use this exposure attribute to create exposure stratified population time plots.</li>
 </ul>
 </div>
 <div id="new-features" class="section level2">

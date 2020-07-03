@@ -358,8 +358,10 @@ reference level is the censored indicator</p></td>
       <td><p>a character string of length 1 giving the name of the
 exposure variable which must be contained in <code>data</code>. Default is
 <code>NULL</code>. This is used to produced exposure stratified plots. If an
-<code>exposure</code> is specified, <code>popTime</code> returns an object of class
-<code>popTimeExposure</code></p></td>
+<code>exposure</code> is specified, <code>popTime</code> returns an <code>exposure</code>
+attribute which contains the name of the exposure variable in the dataset.
+The plot method for objects of class <code>popTime</code> will use this exposure
+attribute to create exposure stratified population time plots.</p></td>
     </tr>
     <tr>
       <th>percentile_number</th>
