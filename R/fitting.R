@@ -19,7 +19,7 @@
 #'
 #' For single-event survival analysis, it is possible to fit the hazard function
 #' using \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family
-#' is controled by the parameter \code{family}. The default value is \code{glm},
+#' is controlled by the parameter \code{family}. The default value is \code{glm},
 #' which corresponds to logistic regression. For competing risk analysis, only
 #' \code{glm} and \code{glmnet} are allowed.
 #'

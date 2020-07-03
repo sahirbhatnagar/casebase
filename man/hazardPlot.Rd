@@ -2,7 +2,7 @@
 % Please edit documentation in R/hazardPlot.R
 \name{hazardPlot}
 \alias{hazardPlot}
-\title{Plot Fitted Hazard Curve as a Funtion of Time}
+\title{Plot Fitted Hazard Curve as a Function of Time}
 \usage{
 hazardPlot(
   object,
@@ -85,7 +85,7 @@ bands). \code{standarderror} is the standard error of the log hazard (only if
 \code{family="glm"} or \code{family="gam"})
 }
 \description{
-Visualize estimated hazard curves as a funtion of time with
+Visualize estimated hazard curves as a function of time with
 confidence intervals. This function takes as input, the result from the
 \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function. The user can also specify a
 sequence of times at which to estimate the hazard function. These plots are

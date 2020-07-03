@@ -129,7 +129,7 @@ function accounts for the possible time-varying exposure effects.
 }
 \details{
 This function has only been thoroughly tested for \code{family="glm"}. If
-the user wants more cutomized plot aesthetics, we recommend saving the
+the user wants more customized plot aesthetics, we recommend saving the
 results to a \code{data.frame} and using  the graphical package of their choice.
 }
 \examples{

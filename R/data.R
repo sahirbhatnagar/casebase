@@ -77,7 +77,7 @@
 #' Data on transplant patients
 #'
 #' Data on patients who underwent haematopoietic stem cell transplantation for
-#' acute leukaemia.
+#' acute leukemia.
 #'
 #' @format A dataframe with 177 observations and 7 variables: \describe{
 #'   \item{Sex}{Gender of the individual} \item{D}{Disease: lymphoblastic or
@@ -164,7 +164,7 @@
 #'   we imputed a single dataset using \pkg{mice} with default settings. After
 #'   imputation, we noted that the covariate for surrogate activities of daily
 #'   living was not imputed. This is due to collinearity between the other two
-#'   covariates for activities of daily living. Therefore, surrogate activites
+#'   covariates for activities of daily living. Therefore, surrogate activities
 #'   of daily living was removed.
 #'
 #' @format A dataframe with 9104 observations and 34 variables after imputation
@@ -182,13 +182,13 @@
 #'   disease classes. } \item{num.co}{ the number of comorbidities. }
 #'   \item{edu}{ years of education of patient. } \item{scoma}{ The SUPPORT coma
 #'   score based on Glasgow D3. } \item{avtisst}{ Average TISS, days 3-25. }
-#'   \item{race}{ Indicates race. White, black, asian, hispanic or other. }
+#'   \item{race}{ Indicates race. White, Black, Asian, Hispanic or other. }
 #'   \item{hday}{Day in Hospital at Study Admit} \item{diabetes}{Diabetes (Com
 #'   27-28, Dx 73)} \item{dementia}{Dementia (Comorbidity 6) } \item{ca}{Cancer
 #'   State} \item{meanbp}{ Mean Arterial Blood Pressure Day 3. } \item{wblc}{
 #'   White blood cell count on day 3. } \item{hrt}{ Heart rate day 3. }
 #'   \item{resp}{ Respiration Rate day 3. } \item{temp}{ Temperature, in
-#'   celcius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{
+#'   Celsius, on day 3. } \item{pafi}{ PaO2/(0.01*FiO2) Day 3. } \item{alb}{
 #'   Serum albumin day 3. } \item{bili}{ Bilirubin Day 3. } \item{crea}{ Serum
 #'   creatinine day 3. } \item{sod}{ Serum sodium day 3. } \item{ph}{ Serum pH
 #'   (in arteries) day 3. } \item{glucose}{ Serum glucose day 3. } \item{bun}{

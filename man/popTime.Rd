@@ -110,7 +110,7 @@ numeric}
 have multiple event types and that we want to consider some of them as
 competing risks. This argument is passed to the
 \code{\link{sampleCaseBase}} function. Note: should be \code{TRUE} if your
-data has competing risks, even if you dont want to add competing risk
+data has competing risks, even if you don't want to add competing risk
 points (\code{add.competing.event=FALSE}). Default: FALSE}
 
 \item{legend}{Logical indicating if a legend should be added to the plot.

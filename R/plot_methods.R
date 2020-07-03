@@ -57,7 +57,7 @@
 #'   have multiple event types and that we want to consider some of them as
 #'   competing risks. This argument is passed to the
 #'   \code{\link{sampleCaseBase}} function. Note: should be \code{TRUE} if your
-#'   data has competing risks, even if you dont want to add competing risk
+#'   data has competing risks, even if you don't want to add competing risk
 #'   points (\code{add.competing.event=FALSE}). Default: FALSE
 #' @param legend Logical indicating if a legend should be added to the plot.
 #'   Note that if you want to change the colors of the points, through the
@@ -487,7 +487,7 @@ plot.popTime <- function(x, ...,
 #'   scale) and `lowerbound` and `upperbound` of the `hazard_ratio` are
 #'   returned.
 #' @details This function has only been thoroughly tested for `family="glm"`. If
-#'   the user wants more cutomized plot aesthetics, we recommend saving the
+#'   the user wants more customized plot aesthetics, we recommend saving the
 #'   results to a `data.frame` and using  the graphical package of their choice.
 #' @examples
 #' if (requireNamespace("splines", quietly = TRUE)) {

@@ -1,5 +1,5 @@
-#' @title Plot Fitted Hazard Curve as a Funtion of Time
-#' @description Visualize estimated hazard curves as a funtion of time with
+#' @title Plot Fitted Hazard Curve as a Function of Time
+#' @description Visualize estimated hazard curves as a function of time with
 #'   confidence intervals. This function takes as input, the result from the
 #'   [casebase::fitSmoothHazard()] function. The user can also specify a
 #'   sequence of times at which to estimate the hazard function. These plots are

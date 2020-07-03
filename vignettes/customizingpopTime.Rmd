@@ -102,7 +102,7 @@ exposure_variable <- attr(x, "exposure")
 default_facet_params <- list(facets = exposure_variable, ncol = 1)
 ```
 
-The poulation time area stratified by treatment arm is then plotted using the following code
+The population time area stratified by treatment arm is then plotted using the following code
 
 ```{r}
 ggplot() + 

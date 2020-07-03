@@ -23,7 +23,7 @@ bmtcrr
 }
 \description{
 Data on patients who underwent haematopoietic stem cell transplantation for
-acute leukaemia.
+acute leukemia.
 }
 \references{
 Scrucca L, Santucci A, Aversa F. Competing risk analysis using R:

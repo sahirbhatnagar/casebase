@@ -80,9 +80,9 @@ points((ftime[ord])[cases[ord]], moved_cases, pch = 20,
        col = "red", cex = 1)
 ```
 
-We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.
+We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occurred; this could be due to either censoring or the competing event.
 
-To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:
+To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occurred at each time point:
 
 ```{r poptime2, eval=TRUE}
 # Plot at-risk and events
@@ -104,7 +104,7 @@ legend("topright", legend = c("Relapse", "At-risk"),
        pch = 15)
 ```
 
-Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:
+Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can't differentiate between the two contributions. For this reason we can also keep track of the number of competing events at each time point:
 
 ```{r poptime3, eval=TRUE}
 plot(0, type = 'n', xlim = c(0, max(ftime)), ylim = c(0, nobs), 
@@ -137,7 +137,7 @@ From this last plot, we can see that there is no censoring during the first 10 m
 
 ## Analysis
 
-We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:
+We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitly include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:
 
 ```{r eval=TRUE, warning=FALSE}
 model1 <- fitSmoothHazard(Status ~ ftime + Sex + D + Phase + Source + Age, 
