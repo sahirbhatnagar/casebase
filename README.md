@@ -72,14 +72,14 @@ useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
 
 This is a basic example which shows you some of the main functionalities
 of the `casebase` package. We use data from the estrogen plus progestin
-trial from the [Women’s Health Initiative](DOI:10.1056/nejmoa030808)
-(included in the `casebase` package). This randomized clinical trial
-investigated the effect of estrogen plus progestin (`estPro`) on
-coronary heart disease (CHD) risk in 16,608 postmenopausal women who
-were 50 to 79 years of age at base line. Participants were randomly
-assigned to receive `estPro` or `placebo`. The primary efficacy outcome
-of the trial was CHD (nonfatal myocardial infarction or death due to
-CHD).
+trial from the [Women’s Health
+Initiative](https://www.doi.org/10.1056/nejmoa030808) (included in the
+`casebase` package). This randomized clinical trial investigated the
+effect of estrogen plus progestin (`estPro`) on coronary heart disease
+(CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age
+at base line. Participants were randomly assigned to receive `estPro` or
+`placebo`. The primary efficacy outcome of the trial was CHD (nonfatal
+myocardial infarction or death due to CHD).
 
 ``` r
 library(casebase)
@@ -121,26 +121,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2625  -0.1474  -0.1373  -0.1276   3.1495  
+#> -0.2401  -0.1478  -0.1371  -0.1270   3.1427  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                        -5.8675     0.2999 -19.566  < 2e-16 ***
-#> treatmentestPro                     0.6444     0.3774   1.708   0.0877 .  
-#> ns(time, df = 3)1                  -0.4813     0.3632  -1.325   0.1851    
-#> ns(time, df = 3)2                   0.9012     0.7330   1.229   0.2189    
-#> ns(time, df = 3)3                   1.4706     0.3463   4.247 2.17e-05 ***
-#> treatmentestPro:ns(time, df = 3)1   0.1648     0.4900   0.336   0.7366    
-#> treatmentestPro:ns(time, df = 3)2  -1.5224     0.9419  -1.616   0.1060    
-#> treatmentestPro:ns(time, df = 3)3  -1.2393     0.4892  -2.534   0.0113 *  
+#> (Intercept)                       -5.83082    0.29960 -19.462  < 2e-16 ***
+#> treatmentestPro                    0.64174    0.37625   1.706 0.088076 .  
+#> ns(time, df = 3)1                 -0.34094    0.36042  -0.946 0.344175    
+#> ns(time, df = 3)2                  0.68171    0.73153   0.932 0.351385    
+#> ns(time, df = 3)3                  1.31406    0.34190   3.843 0.000121 ***
+#> treatmentestPro:ns(time, df = 3)1 -0.02636    0.48641  -0.054 0.956778    
+#> treatmentestPro:ns(time, df = 3)2 -1.33145    0.93719  -1.421 0.155412    
+#> treatmentestPro:ns(time, df = 3)3 -1.04596    0.48305  -2.165 0.030364 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3613.9  on 32716  degrees of freedom
-#> AIC: 3629.9
+#> Residual deviance: 3614.8  on 32716  degrees of freedom
+#> AIC: 3630.8
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```

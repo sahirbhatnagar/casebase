@@ -61,7 +61,7 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 
 ## Quickstart
 
-This is a basic example which shows you some of the main functionalities of the `casebase` package. We use data from the estrogen plus progestin trial from the [Women's Health Initiative](<DOI:10.1056/nejmoa030808>) (included in the `casebase` package). This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).  
+This is a basic example which shows you some of the main functionalities of the `casebase` package. We use data from the estrogen plus progestin trial from the [Women's Health Initiative](https://www.doi.org/10.1056/nejmoa030808) (included in the `casebase` package). This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).  
 
 ```{r example}
 library(casebase)
