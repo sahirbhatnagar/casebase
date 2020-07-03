@@ -41,10 +41,10 @@ reference:
   contents:
     - '`ERSPC`'
     - '`bmtcrr`'
-    - '`support`'
-    - '`simdat`'
     - '`brcancer`'
-    - '`masonTrialExtraction`'
+    - '`eprchd`'
+    - '`simdat`'
+    - '`support`'
 - title: Internal Utility Functions
   desc: >
     Functions not really meant for the user
