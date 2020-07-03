@@ -145,20 +145,45 @@
 <h1 class="page-header" data-toc-text="0.9.0">
 <a href="#casebase-0-9-0" class="anchor"></a>casebase 0.9.0<small> Unreleased </small>
 </h1>
+<p>This is a <em>Major new release</em></p>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
 <ul>
-<li><em>Major new release</em></li>
-<li>Some minor bug fixes</li>
-<li>Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up</li>
-<li>Major refactoring of absoluteRisk</li>
-<li>Users now have further control on the output of <code>absoluteRisk</code> using the arguments <code>type</code> and <code>addZero</code>.</li>
-<li>The output of <code>absoluteRisk</code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
-<li>Population time plots now use <code>geom_ribbon</code> instead of <code>geom_segment</code>
-</li>
-<li>Population time functions now allowed for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series</li>
-<li>New plotting method for time-dependent hazard functions and hazard ratios. These include confidence intervals. See <code>plot.singleEventCB</code>. The hazard function plot requires <code>visreg</code> package to be installed.</li>
-<li>New plotting method for cumulative incidence and survival curves. See <code>plot.absRiskCB</code>.</li>
-<li>No longer importing the entire namespace of <code>data.table</code> and <code>ggplot2</code>.</li>
+<li>The output of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
+<li>Population time plots now use <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code> instead of <code><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">ggplot2::geom_segment()</a></code>.</li>
+<li>Population time functions now allow for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series. These are now passed as a list to the <code>*.params</code> arguments. Several arguments are now depracated.</li>
 </ul>
+</div>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h2>
+<ul>
+<li>Major refactoring of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code>. Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up.</li>
+<li>Users now have further control on the output of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> using the arguments <code>type</code> and <code>addZero</code>.</li>
+<li>New plotting method for time-dependent hazard functions and hazard ratios. These include confidence intervals. See <code><a href="../reference/plot.singleEventCB.html">plot.singleEventCB()</a></code>. The hazard function plot requires the <code>visreg</code> package to be installed.</li>
+<li>New plotting method for cumulative incidence and survival curves. See <code><a href="../reference/absoluteRisk.html">plot.absRiskCB()</a></code>.</li>
+<li>When <code>time</code> is unspecified, <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> now computes the cumulative incidence at <code>ntimes</code> equidistant points between 0 and the max failure time.</li>
+<li>
+<code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> can now compute the cumulative incidence for a <code>"typical"</code> covariate profile with <code>newdata = "typical"</code>. “Typical” corresponds to the median for continuous variables and the mode for factors (each variable is summarised independently).</li>
+<li>Added <code>eprchd</code>, <code>brcancer</code>, <code>support</code> and <code>simdat</code> datasets to the package.</li>
+<li>Implemented <code>riskRegression::predictRisk()</code> method for <code>singleEventCB</code> objects.</li>
+</ul>
+</div>
+<div id="minor-improvements-and-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-improvements-and-fixes" class="anchor"></a>Minor improvements and fixes</h2>
+<ul>
+<li>No longer importing the entire namespace of <code>data.table</code> and <code>ggplot2</code>.</li>
+<li>Moved from make the docs to pkgdown for package website.</li>
+<li>A warning is given when <code>family="gbm"</code> and nonlinear functions of time or interactions are specified.</li>
+<li>Add <code>singleEventCB</code> class to object returned by <code><a href="../reference/fitSmoothHazard.html">fitSmoothHazard()</a></code>
+</li>
+<li>Add <code>absRiskCB</code> class to object returned by <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code>
+</li>
+<li>Use <code><a href="https://rdrr.io/pkg/glmnet/man/glmnet-internal.html">glmnet::prepareX</a></code> to convert factors into indicator variables</li>
+</ul>
+</div>
 </div>
     <div id="casebase-0-1-0" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
