@@ -7,6 +7,7 @@ This is a *Major new release*
 * The output of `absoluteRisk()` now always contains the time variable in the first column, regardless of the length of `time`. This will break earlier code that depended on the previous behaviour.
 * Population time plots now use `ggplot2::geom_ribbon()` instead of `ggplot2::geom_segment()`. 
 * Population time functions now allow for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series. These are now passed as a list to the `*.params` arguments. Several arguments are now depracated. 
+* Removed `popTimeExposure` class and the corresponding `plot` method. `popTime()` now returns an `exposure` attribute which contains the name of the exposure variable in the dataset. The plot method for objects of class `popTime` will use this exposure attribute to create exposure stratified population time plots.
 
 ## New features
 

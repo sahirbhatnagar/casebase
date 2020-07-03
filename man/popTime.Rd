@@ -156,8 +156,10 @@ reference level is the censored indicator}
 \item{exposure}{a character string of length 1 giving the name of the
 exposure variable which must be contained in \code{data}. Default is
 \code{NULL}. This is used to produced exposure stratified plots. If an
-\code{exposure} is specified, \code{popTime} returns an object of class
-\code{popTimeExposure}}
+\code{exposure} is specified, \code{popTime} returns an \code{exposure}
+attribute which contains the name of the exposure variable in the dataset.
+The plot method for objects of class \code{popTime} will use this exposure
+attribute to create exposure stratified population time plots.}
 
 \item{percentile_number}{Default=0.5. Give a value between 0-1. if the
 percentile number of available subjects at any given point is less than 10,
