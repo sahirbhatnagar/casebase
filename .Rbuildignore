@@ -38,3 +38,4 @@
 ^\.lintr$
 ^original_erspc_hanley_popTime\.R$
 ^README\.Rmd$
+^CRAN-RELEASE$
