@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Population Time Plots</h1>
                         <h4 class="author">Sahir R. Bhatnagar</h4>
             
-            <h4 class="date">2020-07-03</h4>
+            <h4 class="date">2020-07-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/popTime.Rmd"><code>vignettes/popTime.Rmd</code></a></small>
       <div class="hidden name"><code>popTime.Rmd</code></div>
@@ -175,7 +175,7 @@
 <p><img src="popTime_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>One benefit from these plots is that it allows you to see the incidence density. This can be seen from the distribution of the red dots in the above plot. We can see that more events are observed later on in time. Therefore a constant hazard model would not be appropriate in this instance as it would overestimate the cumulative incidence earlier on in time, and underestimate it later on.</p>
 <p>The unique ‘step shape’ of the population time plot is due to the randomization of the Finnish cohorts which were carried out on January 1 of each of the 4 years 1996 to 1999. This, coupled with the uniform December 31 2006 censoring date, lead to large numbers of men with exactly 11, 10, 9 or 8 years of follow-up.</p>
-<p>It is important to note that the red points are random distributed across the grey area for each time of event. That is, imagine we draw a vertical line at a specific event time. We then plot the red point at a randomly sampled y-coordinate along this vertical line. This is done to avoid having all red points along the upper edge of the plot (because the subjects with the least amount of observation time are plotted at the top of the y-axis). By randomly distributing them, we can get a better sense of the inicidence density.</p>
+<p>It is important to note that the red points are random distributed across the gray area for each time of event. That is, imagine we draw a vertical line at a specific event time. We then plot the red point at a randomly sampled y-coordinate along this vertical line. This is done to avoid having all red points along the upper edge of the plot (because the subjects with the least amount of observation time are plotted at the top of the y-axis). By randomly distributing them, we can get a better sense of the incidence density.</p>
 <div id="exposure-stratified-population-time-plot" class="section level2">
 <h2 class="hasAnchor">
 <a href="#exposure-stratified-population-time-plot" class="anchor"></a>Exposure Stratified Population Time Plot</h2>
@@ -280,7 +280,7 @@
      <span class="kw">add.case.series</span> <span class="kw">=</span> <span class="fl">TRUE</span>,
      <span class="kw">comprisk</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<p>In the above plot we can clearly see many of the deaths occur at the beginning, so in this case, a constant hazard assumption isnt valid. This information is useful when deciding on the type of model to use.</p>
+<p>In the above plot we can clearly see many of the deaths occur at the beginning, so in this case, a constant hazard assumption isn’t valid. This information is useful when deciding on the type of model to use.</p>
 </div>
 <div id="plot-the-base-series" class="section level2">
 <h2 class="hasAnchor">
@@ -426,7 +426,7 @@
 <pre><code>## 'event' will be used as the event variable</code></pre>
 <div class="sourceCode" id="cb66"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">popTimeData</span>)</pre></body></html></div>
 <p><img src="popTime_files/figure-html/unnamed-chunk-24-1.png" width="700"></p>
-<p>In the plot above we see that those who didnt receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.</p>
+<p>In the plot above we see that those who didn’t receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.</p>
 </div>
 <div id="ncctg-lung-cancer-data" class="section level1">
 <h1 class="hasAnchor">

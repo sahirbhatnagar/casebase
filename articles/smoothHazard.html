@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Introduction to casebase sampling</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-07-03</h4>
+            <h4 class="date">2020-07-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/smoothHazard.Rmd"><code>vignettes/smoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>smoothHazard.Rmd</code></div>
@@ -116,7 +116,7 @@
     <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"visreg"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>) <span class="kw">&amp;&amp;</span>
     <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"splines"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 <span class="kw pkg">knitr</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span>$<span class="fu">set</span>(<span class="kw">eval</span> <span class="kw">=</span> <span class="no">evaluate_vignette</span>)</pre></body></html></div>
-<p>Case-base sampling was proposed by <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Hanley and Miettinen, 2009</a> as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel, 1973 and then later developped by Efron, 1977, is to sample person-moments, i.e. discrete time points along an subject’s follow-up time, in order to construct a base series against which the case series can be compared.</p>
+<p>Case-base sampling was proposed by <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Hanley and Miettinen, 2009</a> as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel, 1973 and then later developed by Efron, 1977, is to sample person-moments, i.e. discrete time points along an subject’s follow-up time, in order to construct a base series against which the case series can be compared.</p>
 <p>This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time <em>logarithmically</em> recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.</p>
 <p>The theoretical properties of this approach have been studied in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela_et_al-2015-Scandinavian_Journal_of_Statistics.pdf">Saarela and Arjas, 2015</a> and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf">Saarela, 2015</a>.</p>
 </div>
@@ -140,7 +140,7 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span>(<span class="no">tgrid</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">dexp</a></span>(<span class="no">tgrid</span>, <span class="kw">rate</span> <span class="kw">=</span> <span class="fl">1.0</span>/<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">evtimes</span>)),
       <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">'red'</span>)</pre></body></html></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<p>As we can see, the empirical survival function ressembles an exponential distribution.</p>
+<p>As we can see, the empirical survival function resembles an exponential distribution.</p>
 <p>We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">veteran</span>$<span class="no">prior</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">prior</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fl">10</span>), <span class="kw">labels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"no"</span>,<span class="st">"yes"</span>))
 <span class="no">veteran</span>$<span class="no">celltype</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">veteran</span>$<span class="no">celltype</span>,

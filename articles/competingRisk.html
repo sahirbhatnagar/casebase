@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Competing risk analysis</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2020-07-03</h4>
+            <h4 class="date">2020-07-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/competingRisk.Rmd"><code>vignettes/competingRisk.Rmd</code></a></small>
       <div class="hidden name"><code>competingRisk.Rmd</code></div>
@@ -212,8 +212,8 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span>((<span class="no">ftime</span>[<span class="no">ord</span>])[<span class="no">cases</span>[<span class="no">ord</span>]], <span class="no">moved_cases</span>, <span class="kw">pch</span> <span class="kw">=</span> <span class="fl">20</span>,
        <span class="kw">col</span> <span class="kw">=</span> <span class="st">"red"</span>, <span class="kw">cex</span> <span class="kw">=</span> <span class="fl">1</span>)</pre></body></html></div>
 <p><img src="competingRisk_files/figure-html/poptime1-1.png" width="700"></p>
-<p>We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occured; this could be due to either censoring or the competing event.</p>
-<p>To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occured at each time point:</p>
+<p>We can right away draw a few conclusions from this plot: first of all, we get a sense of how quickly the size of the risk set changes over time. We also see that the incidence density is non-constant: most relapses occur before 15 months. Finally, we also see that the risk set keeps shrinking after the last event has occurred; this could be due to either censoring or the competing event.</p>
+<p>To get an idea of whether only relapse is responsible for the shrinking of the risk set in the first few months of follow-up, we can also keep track of how many events have occurred at each time point:</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Plot at-risk and events</span>
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fl">0</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">'n'</span>, <span class="kw">xlim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">ftime</span>)), <span class="kw">ylim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="no">nobs</span>),
      <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'Follow-up time'</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">'Population'</span>)
@@ -232,7 +232,7 @@
        <span class="kw">col</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"firebrick3"</span>, <span class="st">"grey90"</span>),
        <span class="kw">pch</span> <span class="kw">=</span> <span class="fl">15</span>)</pre></body></html></div>
 <p><img src="competingRisk_files/figure-html/poptime2-1.png" width="700"></p>
-<p>Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can’t differentiate bwetween the two contributions. For this reason we can also keep track of the number of competing events at each time point:</p>
+<p>Therefore, there is also censoring and loss due to competing events happening in the first few months. However, with this plot, we can’t differentiate between the two contributions. For this reason we can also keep track of the number of competing events at each time point:</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fl">0</span>, <span class="kw">type</span> <span class="kw">=</span> <span class="st">'n'</span>, <span class="kw">xlim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">ftime</span>)), <span class="kw">ylim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="no">nobs</span>),
      <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">'Follow-up time'</span>, <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">'Population'</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/polygon.html">polygon</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">ftime</span>), <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">ftime</span>), <span class="fl">0</span>),
@@ -263,7 +263,7 @@
 <div id="analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analysis" class="anchor"></a>Analysis</h2>
-<p>We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitely include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:</p>
+<p>We now turn to the analysis of this dataset. The population-time plots above give evidence of non-constant hazard; therefore, we will explicitly include time in the model. Note that we also include all other variables as possible confounders. First, we include time as a linear term:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">model1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">Status</span> ~ <span class="no">ftime</span> + <span class="no">Sex</span> + <span class="no">D</span> + <span class="no">Phase</span> + <span class="no">Source</span> + <span class="no">Age</span>,
                           <span class="kw">data</span> <span class="kw">=</span> <span class="no">bmtcrr</span>,
                           <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">100</span>,
