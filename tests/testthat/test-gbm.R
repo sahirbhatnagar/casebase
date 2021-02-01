@@ -135,9 +135,16 @@ muffler <- function(msg) {
         invokeRestart("muffleWarning")
         }
 }
+
+skip_next_tests <- (Sys.getenv("_R_CHECK_LENGTH_1_CONDITION_") == "true" ||
+                        Sys.getenv("_R_CHECK_LENGTH_1_LOGIC2_") == "true")
+
+testthat::skip_if(skip_next_tests,
+                  "gbm throws an error because it checks for equality of class\ninstead of using inherits (version 2.1.8)")
+
 test_that("no error in fitting fitSmoothHazard.fit", {
-    # gbm throws a warning because it check for equality of class
-    # instead of using inherits (version 2.1.5)
+    # gbm throws a warning because it checks for equality of class
+    # instead of using inherits (version 2.1.8)
     fit_gbm <- try(withCallingHandlers(fitSmoothHazard.fit(x, y, time = "time",
                                                            event = "status",
                                        family = "gbm", ratio = 10),

@@ -99,6 +99,7 @@ fitSmoothHazard <- function(formula, data, time,
                             family = c("glm", "gam", "gbm", "glmnet"),
                             censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
+  cl <- match.call()
   if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
     stop("Pkg gbm needed for this function to work. Please install it.",
       call. = FALSE
@@ -176,6 +177,7 @@ fitSmoothHazard <- function(formula, data, time,
     )
 
     out <- fittingFunction(formula)
+    out$call <- cl
     out$originalData <- originalData
     out$typeEvents <- typeEvents
     out$timeVar <- timeVar
@@ -229,6 +231,7 @@ fitSmoothHazard <- function(formula, data, time,
         class = c("CompRiskGlmnet", class(model))
       )
     )
+    out@call <- cl
   }
   return(out)
 }

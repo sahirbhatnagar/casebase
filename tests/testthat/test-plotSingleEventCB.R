@@ -9,7 +9,6 @@ library(splines)
 library(visreg)
 data("simdat")
 data("brcancer")
-str(brcancer)
 
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
                                          trt:ns(log(eventtime), df = 1),

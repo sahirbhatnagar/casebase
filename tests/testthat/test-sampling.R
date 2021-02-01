@@ -63,9 +63,11 @@ data("bmtcrr") # from casebase
 bmtcrr$Sex <- as.character(bmtcrr$Sex)
 
 test_that("no error with different types of event variables", {
-    out1 <- try(checkArgsEventIndicator(data = veteran, event = "celltype",
+    out1 <- try(checkArgsEventIndicator(data = survival::veteran,
+                                        event = "celltype",
                                         censored.indicator = "smallcell"))
-    out2 <- try(checkArgsEventIndicator(data = veteran, event = "status"))
+    out2 <- try(checkArgsEventIndicator(data = survival::veteran,
+                                        event = "status"))
     out3 <- try(checkArgsEventIndicator(data = bmtcrr, event = "Sex",
                                         censored.indicator = "M"))
 
@@ -75,14 +77,16 @@ test_that("no error with different types of event variables", {
 })
 
 test_that("warning when baseline not specified", {
-    expect_warning(checkArgsEventIndicator(data = veteran, event = "celltype"),
+    expect_warning(checkArgsEventIndicator(data = survival::veteran,
+                                           event = "celltype"),
                    regexp = "censor.indicator not specified")
     expect_warning(checkArgsEventIndicator(data = bmtcrr, event = "Sex"),
                    regexp = "censor.indicator not specified")
 })
 
 test_that("warning when baseline is specified for numeric", {
-    expect_warning(checkArgsEventIndicator(data = veteran, event = "status",
+    expect_warning(checkArgsEventIndicator(data = survival::veteran,
+                                           event = "status",
                                            censored.indicator = 0L),
                    regexp = "censored.indicator specified but ignored")
     expect_warning(checkArgsEventIndicator(data = bmtcrr, event = "Status",
