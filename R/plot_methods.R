@@ -580,7 +580,7 @@ plot.singleEventCB <- function(x, ...,
             stop("visreg package needed for this function. please install it first.")
         }
 
-        tt <- do.call("visreg::visreg", utils::modifyList(
+        tt <- do.call(visreg::visreg, utils::modifyList(
             list(
                 fit = x,
                 trans = exp,
