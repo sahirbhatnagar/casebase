@@ -573,6 +573,9 @@ plot.singleEventCB <- function(x, ...,
                                ci.lvl = 0.95,
                                rug = !ci,
                                ci.col = "grey") {
+    # Switch back call slot
+    # otherwise we get an error from visreg
+    x$call <- x$lower_call
     type <- match.arg(type)
 
     if (type == "hazard") {
@@ -584,7 +587,7 @@ plot.singleEventCB <- function(x, ...,
             list(
                 fit = x,
                 trans = exp,
-                plot = T,
+                plot = TRUE,
                 rug = FALSE,
                 alpha = 1,
                 partial = FALSE,
@@ -593,10 +596,6 @@ plot.singleEventCB <- function(x, ...,
             ),
             hazard.params
         ))
-
-        invisible(tt)
-
-        return(tt)
     }
 
 
@@ -641,7 +640,9 @@ plot.singleEventCB <- function(x, ...,
             x = x, newdata = newdata, newdata2 = newdata2, ci = ci,
             ci.lvl = ci.lvl, ci.col = ci.col, rug = rug, xvar = xvar, ...
         )
+        tt <- NULL
     }
+    invisible(tt)
 }
 
 #' @title Plot Cumulative Incidence and Survival Curves

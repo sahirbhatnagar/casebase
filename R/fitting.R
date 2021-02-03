@@ -177,6 +177,7 @@ fitSmoothHazard <- function(formula, data, time,
     )
 
     out <- fittingFunction(formula)
+    out$lower_call <- out$call # Save lower call for plot method
     out$call <- cl
     out$originalData <- originalData
     out$typeEvents <- typeEvents
