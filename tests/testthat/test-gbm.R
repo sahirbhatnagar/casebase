@@ -116,6 +116,17 @@ test_that("output probabilities", {
     expect_true(all(riskDT_gbm <= 1))
 })
 
+# Summary method
+test_that("no error in summary method for gbm", {
+    sumDF <- try(print(summary(fitDF_gbm)),
+                 silent = TRUE)
+    sumDT <- try(print(summary(fitDT_gbm)),
+                 silent = TRUE)
+
+    expect_false(inherits(sumDF, "try-error"))
+    expect_false(inherits(sumDT, "try-error"))
+})
+
 # Matrix interface----
 N <- 1000; p <- 30
 nzc <- 0.33 * p

@@ -206,7 +206,7 @@ plot(mod_cb_tvc,
 
 Instead of taking a cross-section of the effect of `estrec` on the hazard, we can plot a surface using the `visreg2d` function:
 
-```{r perspective-plots}
+```{r perspective-plots, eval = FALSE}
 visreg2d(mod_cb_tvc, 
          xvar = "time",
          yvar = "estrec",

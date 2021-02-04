@@ -183,6 +183,10 @@ fitSmoothHazard <- function(formula, data, time,
     out$typeEvents <- typeEvents
     out$timeVar <- timeVar
     out$eventVar <- eventVar
+    # Count person-moment types
+    num_pm <- table(sampleData[[eventVar]])
+    out$num_cm <- num_pm[2]
+    out$num_bm <- num_pm[1]
     if (family == "glmnet") out$formula <- formula
     # Reset offset for absolute risk estimation, but keep track of it
     out$offset <- out$data$offset
@@ -365,4 +369,27 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
     stop("The matrix interface is not available for competing risks")
   }
   return(out)
+}
+
+# Customise the summary method slightly----
+#' @method summary singleEventCB
+#' @export
+summary.singleEventCB <- function(object, ...) {
+  ans <- NextMethod()
+  class(ans) <- c("summary.singleEventCB", class(ans))
+  # Keep person moment stats
+  attr(ans, "num_cm") <- object$num_cm
+  attr(ans, "num_bm") <- object$num_bm
+  attr(ans, "sampsize") <- nrow(object$originalData)
+  return(ans)
+}
+
+#' @export
+print.summary.singleEventCB <- function(x, ...) {
+  cat("Fitting smooth hazards with case-base sampling\n\n")
+  cat(paste("Sample size:", attr(x, "sampsize"), "\n"))
+  cat(paste("Number of events:", attr(x, "num_cm"), "\n"))
+  cat(paste("Number of base moments:", attr(x, "num_bm"), "\n"))
+  cat("----\n")
+  NextMethod()
 }
