@@ -17,7 +17,7 @@ eost <- 10
 # t observed time/endpoint
 # z is a binary covariate
 DTsim <- data.table(ID = seq_len(nobs), z = rbinom(nobs, 1, 0.5))
-setkey(DTsim, ID)
+data.table::setkey(DTsim, ID)
 DTsim[, `:=`(event_time = rweibull(nobs, a1, b1 * exp(z * c1)),
              competing_time = rweibull(nobs, a2, b2 * exp(z * c2)),
              end_of_study_time = eost)]

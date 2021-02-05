@@ -28,7 +28,7 @@ incrVar(var, increment = 1)
 }
 \arguments{
 \item{x}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This is
-the result from the \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function.}
+the result from the \code{\link[=fitSmoothHazard]{fitSmoothHazard()}} function.}
 
 \item{newdata}{Required for \code{type="hr"}. The \code{newdata} argument is
 the "unexposed" group, while the exposed group is defined by either: (i) a
@@ -203,6 +203,6 @@ Breheny P and Burchett W (2017). Visualization of Regression Models Using
 visreg. The R Journal, 9: 56-71.
 }
 \seealso{
-\code{\link[utils]{modifyList}}, \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}},
+\code{\link[utils]{modifyList}}, \code{\link[=fitSmoothHazard]{fitSmoothHazard()}},
 \code{\link[graphics:par]{graphics::par()}}, \code{\link[visreg:visreg]{visreg::visreg()}}
 }

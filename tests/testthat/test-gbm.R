@@ -116,6 +116,17 @@ test_that("output probabilities", {
     expect_true(all(riskDT_gbm <= 1))
 })
 
+# Summary method
+test_that("no error in summary method for gbm", {
+    sumDF <- try(print(summary(fitDF_gbm)),
+                 silent = TRUE)
+    sumDT <- try(print(summary(fitDT_gbm)),
+                 silent = TRUE)
+
+    expect_false(inherits(sumDF, "try-error"))
+    expect_false(inherits(sumDT, "try-error"))
+})
+
 # Matrix interface----
 N <- 1000; p <- 30
 nzc <- 0.33 * p
@@ -135,9 +146,16 @@ muffler <- function(msg) {
         invokeRestart("muffleWarning")
         }
 }
+
+skip_next_tests <- (Sys.getenv("_R_CHECK_LENGTH_1_CONDITION_") == "true" ||
+                        Sys.getenv("_R_CHECK_LENGTH_1_LOGIC2_") == "true")
+
+testthat::skip_if(skip_next_tests,
+                  "gbm throws an error because it checks for equality of class\ninstead of using inherits (version 2.1.8)")
+
 test_that("no error in fitting fitSmoothHazard.fit", {
-    # gbm throws a warning because it check for equality of class
-    # instead of using inherits (version 2.1.5)
+    # gbm throws a warning because it checks for equality of class
+    # instead of using inherits (version 2.1.8)
     fit_gbm <- try(withCallingHandlers(fitSmoothHazard.fit(x, y, time = "time",
                                                            event = "status",
                                        family = "gbm", ratio = 10),

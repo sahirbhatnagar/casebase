@@ -48,6 +48,22 @@ test_that("sampling first and then fitting", {
     expect_false(inherits(model, "try-error"))
 })
 
+# Summary method
+test_that("no error in summary method for gam", {
+    fitDF <- try(fitSmoothHazard(event ~ Z, data = DF, time = "ftime"),
+                 silent = TRUE)
+    fitDT <- try(fitSmoothHazard(event ~ Z, data = DT, time = "ftime"),
+                 silent = TRUE)
+
+    sumDF <- try(print(summary(fitDF)),
+                 silent = TRUE)
+    sumDT <- try(print(summary(fitDT)),
+                 silent = TRUE)
+
+    expect_false(inherits(sumDF, "try-error"))
+    expect_false(inherits(sumDT, "try-error"))
+})
+
 #####################
 # Formula parsing----
 form <- formula(event ~ exposure + time)

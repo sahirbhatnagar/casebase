@@ -25,7 +25,7 @@ hazardPlot(
 }
 \arguments{
 \item{object}{Fitted object of class \code{glm}, \code{gam}, \code{cv.glmnet} or \code{gbm}. This
-is the result from the \code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function.}
+is the result from the \code{\link[=fitSmoothHazard]{fitSmoothHazard()}} function.}
 
 \item{newdata}{A data frame in which to look for variables with which to
 predict. This is required and must contain all the variables used in the
@@ -87,7 +87,7 @@ bands). \code{standarderror} is the standard error of the log hazard (only if
 \description{
 Visualize estimated hazard curves as a function of time with
 confidence intervals. This function takes as input, the result from the
-\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}} function. The user can also specify a
+\code{\link[=fitSmoothHazard]{fitSmoothHazard()}} function. The user can also specify a
 sequence of times at which to estimate the hazard function. These plots are
 useful to visualize the non-proportional hazards, i.e., time dependent
 interactions with a covariate.
@@ -95,7 +95,7 @@ interactions with a covariate.
 \details{
 This is an earlier version of a function to plot hazards. We
 recommend instead using the plot method for objects returned by
-\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}. See \code{\link[casebase:plot.singleEventCB]{casebase::plot.singleEventCB()}}.
+\code{\link[=fitSmoothHazard]{fitSmoothHazard()}}. See \code{\link[=plot.singleEventCB]{plot.singleEventCB()}}.
 }
 \examples{
 data("simdat")
@@ -113,5 +113,5 @@ hazardPlot(object = mod_cb, newdata = data.frame(trt = 1), ci = FALSE,
 legend("topleft", c("trt=0","trt=1"),lty=1:2,col=1:2,bty="y", lwd = 2)
 }
 \seealso{
-\code{\link[casebase:fitSmoothHazard]{casebase::fitSmoothHazard()}}
+\code{\link[=fitSmoothHazard]{fitSmoothHazard()}}
 }

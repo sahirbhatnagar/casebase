@@ -6,6 +6,11 @@ jobs:
   include:
   - r: devel
   - r: release
+    addons:
+        apt:
+          packages:
+          - libharfbuzz-dev
+          - libfribidi-dev
     after_success:
     - Rscript -e 'covr::codecov()'
     before_cache:

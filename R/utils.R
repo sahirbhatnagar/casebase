@@ -1,8 +1,8 @@
 # This is where all utility functions should appear
 # These functions are not exported
-
 `%ni%` <- Negate("%in%")
 
+# Handlers for handling particular conditions----
 # Handling warning messages coming from predictvglm when offset = 0
 handler_offset <- function(msg) {
   if (any(grepl("offset", msg))) invokeRestart("muffleWarning")
@@ -14,6 +14,14 @@ handler_bsplines <- function(msg) {
 # Handling warning messages coming from vglm.fitter
 handler_fitter <- function(msg) {
   if (any(grepl("vglm.fitter", msg))) invokeRestart("muffleWarning")
+}
+# Improve error message when using fitSmoothHazard with a single covariate
+handler_singleCovariate <- function(err) {
+  msg <- conditionMessage(err)
+  if (msg == "x should be a matrix with 2 or more columns") {
+    stop('Only use family = "glmnet" when you have multiple covariates',
+         call. = FALSE)
+  } else stop(err, call. = FALSE)
 }
 
 # Check if provided time and event variables are in the dataset
@@ -258,7 +266,8 @@ cv.glmnet_offset_hack <- function(x, y, offset, ...) {
 
   offset_value <- unique(offset)[1]
   # 1. Fit without offset
-  out <- glmnet::cv.glmnet(x, y, ...)
+  tryCatch(out <- glmnet::cv.glmnet(x, y, ...),
+           error = handler_singleCovariate)
   # 2. Fix the intercept
   out$glmnet.fit$a0 <- out$glmnet.fit$a0 - offset_value
 

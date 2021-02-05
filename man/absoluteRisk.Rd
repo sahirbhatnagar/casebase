@@ -87,7 +87,7 @@ required (for class \code{cv.glmnet}).}
 \code{gg=FALSE}.}
 
 \item{x}{Fitted object of class \code{absRiskCB}. This is the result from the
-\code{\link[casebase:absoluteRisk]{casebase::absoluteRisk()}} function.}
+\code{\link[=absoluteRisk]{absoluteRisk()}} function.}
 
 \item{xlab}{xaxis label, Default: 'time'}
 
