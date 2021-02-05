@@ -81,7 +81,7 @@ in the core age group between the ages of 55 and 69 years at entry." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -122,7 +122,7 @@ in the core age group between the ages of 55 and 69 years at entry." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -149,12 +149,12 @@ in the core age group between the ages of 55 and 69 years at entry." />
 in the core age group between the ages of 55 and 69 years at entry.</p>
     </div>
 
-    <pre class="usage"><span class='no'>ERSPC</span></pre>
+    <pre class="usage"><span class='va'>ERSPC</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A data frame with 159,893 observations on the following 3 variables:</p><dl'>
+    <p>A data frame with 159,893 observations on the following 3 variables:</p><dl>
 <dt>ScrArm</dt><dd><p>Whether in Screening Arm (1) or non-Screening arm
 (0) (<code>numeric</code>)</p></dd> <dt>Follow.Up.Time</dt><dd><p>The time, measured in years
 from randomization, at which follow-up was terminated</p></dd>
@@ -217,16 +217,18 @@ Prostate-Cancer Mortality in a Randomized European Study. N Engl J Med
 .</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"ERSPC"</span>)
-<span class='no'>ERSPC</span>$<span class='no'>ScrArm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>ERSPC</span>$<span class='no'>ScrArm</span>,
-                       <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>),
-                       <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Control group"</span>, <span class='st'>"Screening group"</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
-<span class='no'>pt_object_strat</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>casebase</span><span class='kw ns'>::</span><span class='fu'><a href='popTime.html'>popTime</a></span>(<span class='no'>ERSPC</span>[<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>ERSPC</span>), <span class='fl'>10000</span>),],
-                                     <span class='kw'>event</span> <span class='kw'>=</span> <span class='st'>"DeadOfPrCa"</span>,
-                                     <span class='kw'>exposure</span> <span class='kw'>=</span> <span class='st'>"ScrArm"</span>)</div><div class='output co'>#&gt; <span class='message'>'Follow.Up.Time' will be used as the time variable</span></div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>pt_object_strat</span>,
-     <span class='kw'>facet.params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>))</div><div class='img'><img src='ERSPC-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"ERSPC"</span><span class='op'>)</span>
+<span class='va'>ERSPC</span><span class='op'>$</span><span class='va'>ScrArm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>ERSPC</span><span class='op'>$</span><span class='va'>ScrArm</span>,
+                       levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>1</span><span class='op'>)</span>,
+                       labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Control group"</span>, <span class='st'>"Screening group"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>12345</span><span class='op'>)</span>
+<span class='va'>pt_object_strat</span> <span class='op'>&lt;-</span> <span class='fu'>casebase</span><span class='fu'>::</span><span class='fu'><a href='plot.popTime.html'>popTime</a></span><span class='op'>(</span><span class='va'>ERSPC</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>ERSPC</span><span class='op'>)</span>, <span class='fl'>10000</span><span class='op'>)</span>,<span class='op'>]</span>,
+                                     event <span class='op'>=</span> <span class='st'>"DeadOfPrCa"</span>,
+                                     exposure <span class='op'>=</span> <span class='st'>"ScrArm"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>'Follow.Up.Time' will be used as the time variable</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>pt_object_strat</span>,
+     facet.params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ncol <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='ERSPC-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -242,7 +244,7 @@ Prostate-Cancer Mortality in a Randomized European Study. N Engl J Med
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

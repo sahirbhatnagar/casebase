@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -80,7 +80,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Plot Cumulative Incidence and Survival Curves</h1>
                         <h4 class="author">Sahir Rai Bhatnagar</h4>
             
-            <h4 class="date">2020-07-06</h4>
+            <h4 class="date">2021-02-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/plotabsRisk.Rmd"><code>vignettes/plotabsRisk.Rmd</code></a></small>
       <div class="hidden name"><code>plotabsRisk.Rmd</code></div>
@@ -119,48 +119,52 @@
 <h2 class="hasAnchor">
 <a href="#analysis-of-the-brcancer-dataset" class="anchor"></a>Analysis of the <code>brcancer</code> dataset</h2>
 <p>To illustrate hazard function plots, we will use the breast cancer dataset which contains the observations of 686 women taken from the <a href="https://cran.r-project.org/package=TH.data"><code>TH.data</code></a> package. This dataset is also available from the <code>casebase</code> package. In the following, we will show the CI curve for several covariate profiles.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">casebase</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span>
 <span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">survival</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 
 
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"brcancer"</span>)
-<span class="no">mod_cb_glm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">cens</span> ~ <span class="no">estrec</span>*<span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span>(<span class="no">time</span>) +
-                                  <span class="no">horTh</span> +
-                                  <span class="no">age</span> +
-                                  <span class="no">menostat</span> +
-                                  <span class="no">tsize</span> +
-                                  <span class="no">tgrade</span> +
-                                  <span class="no">pnodes</span> +
-                                  <span class="no">progrec</span>,
-                              <span class="kw">data</span> <span class="kw">=</span> <span class="no">brcancer</span>,
-                              <span class="kw">time</span> <span class="kw">=</span> <span class="st">"time"</span>, <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">10</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"brcancer"</span><span class="op">)</span>
+<span class="va">mod_cb_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">cens</span> <span class="op">~</span> <span class="va">estrec</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> 
+                                  <span class="va">horTh</span> <span class="op">+</span> 
+                                  <span class="va">age</span> <span class="op">+</span> 
+                                  <span class="va">menostat</span> <span class="op">+</span> 
+                                  <span class="va">tsize</span> <span class="op">+</span> 
+                                  <span class="va">tgrade</span> <span class="op">+</span> 
+                                  <span class="va">pnodes</span> <span class="op">+</span> 
+                                  <span class="va">progrec</span>,
+                              data <span class="op">=</span> <span class="va">brcancer</span>,
+                              time <span class="op">=</span> <span class="st">"time"</span>, ratio <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span>(<span class="no">mod_cb_glm</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">mod_cb_glm</span><span class="op">)</span></code></pre></div>
 <div id="plotting-cumulative-incidence-curves" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plotting-cumulative-incidence-curves" class="anchor"></a>Plotting Cumulative Incidence Curves</h3>
 <p>We can use the <code>plot</code> method for objects of class <code>absRiskCB</code>, which is returned by the <code>absoluteRisk</code> function, to plot cumulative incidence curves. For example, suppose we want to compare the cumulative incidence curves of the 1st and 50th individuals in the <code>brcancer</code> dataset. We first call the <code>absoluteRisk</code> function and specify the <code>newdata</code> argument. Note that since time is missing, the risk estimate is calculated at the observed failure times.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">smooth_risk_brcancer</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">mod_cb_glm</span>,
-                                     <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">brcancer</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">50</span>),])
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">smooth_risk_brcancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod_cb_glm</span>, 
+                                     newdata <span class="op">=</span> <span class="va">brcancer</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">50</span><span class="op">)</span>,<span class="op">]</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">smooth_risk_brcancer</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_brcancer</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">smooth_risk_brcancer</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_brcancer</span><span class="op">)</span></code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>These curves can be further customized. For example, suppose we want to change the legend title and legend keys:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_brcancer</span>,
-     <span class="kw">id.names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Covariate Profile 1"</span>,<span class="st">"Covariate Profile 50"</span>),
-     <span class="kw">legend.title</span> <span class="kw">=</span> <span class="st">"Type"</span>,
-     <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"time (days)"</span>,
-     <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Cumulative Incidence (%)"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_brcancer</span>, 
+     id.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Covariate Profile 1"</span>,<span class="st">"Covariate Profile 50"</span><span class="op">)</span>, 
+     legend.title <span class="op">=</span> <span class="st">"Type"</span>, 
+     xlab <span class="op">=</span> <span class="st">"time (days)"</span>, 
+     ylab <span class="op">=</span> <span class="st">"Cumulative Incidence (%)"</span><span class="op">)</span> </code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>The call to <code>plot</code> on a <code>absRiskCB</code> object returns a <code>ggplot2</code> object, and therefore can be used downstream with other <code>ggplot2</code> functions. For example, suppose we want to change the theme:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_brcancer</span>,
-     <span class="kw">id.names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Covariate Profile 1"</span>,<span class="st">"Covariate Profile 50"</span>),
-     <span class="kw">legend.title</span> <span class="kw">=</span> <span class="st">"Type"</span>,
-     <span class="kw">xlab</span> <span class="kw">=</span> <span class="st">"time (days)"</span>,
-     <span class="kw">ylab</span> <span class="kw">=</span> <span class="st">"Cumulative Incidence (%)"</span>) + <span class="kw pkg">ggplot2</span><span class="kw ns">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_linedraw</a></span>()</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_brcancer</span>, 
+     id.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Covariate Profile 1"</span>,<span class="st">"Covariate Profile 50"</span><span class="op">)</span>, 
+     legend.title <span class="op">=</span> <span class="st">"Type"</span>, 
+     xlab <span class="op">=</span> <span class="st">"time (days)"</span>, 
+     ylab <span class="op">=</span> <span class="st">"Cumulative Incidence (%)"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_linedraw</a></span><span class="op">(</span><span class="op">)</span> </code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
 <div id="using-graphicsmatplot" class="section level3">
@@ -168,18 +172,19 @@
 <a href="#using-graphicsmatplot" class="anchor"></a>Using <code>graphics::matplot</code>
 </h3>
 <p>By default, the <code>plot</code> method uses <code>ggplot2</code> to produce the curves. Alternatively, you can use <code><a href="https://rdrr.io/r/graphics/matplot.html">graphics::matplot</a></code> by specifying <code>gg = FALSE</code>. This option is particularly useful if you want to add the cumulative incidence curve to an existing plot, e.g., adding the adjusted smooth curve to a Kaplan-Meier curve. In this example, we calculate the cumulative incidence for a <em>typical</em> individual in the dataset:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">cols</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#8E063B"</span>,<span class="st">"#023FA5"</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#8E063B"</span>,<span class="st">"#023FA5"</span><span class="op">)</span>
 
-<span class="no">smooth_risk_typical</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">mod_cb_glm</span>, <span class="kw">newdata</span> <span class="kw">=</span> <span class="st">"typical"</span>)
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span>(<span class="no">brcancer</span>, <span class="kw pkg">survival</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span>(<span class="no">time</span>, <span class="no">cens</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">y</span>, <span class="kw">fun</span> <span class="kw">=</span> <span class="st">"event"</span>, <span class="kw">conf.int</span> <span class="kw">=</span> <span class="no">F</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">1</span>], <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_typical</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>[<span class="fl">2</span>], <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>, <span class="kw">gg</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span>(<span class="st">"bottomright"</span>,
-       <span class="kw">legend</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Kaplan-Meier"</span>, <span class="st">"casebase"</span>),
-       <span class="kw">col</span> <span class="kw">=</span> <span class="no">cols</span>,
-       <span class="kw">lty</span> <span class="kw">=</span> <span class="fl">1</span>,
-       <span class="kw">lwd</span> <span class="kw">=</span> <span class="fl">2</span>,
-       <span class="kw">bg</span> <span class="kw">=</span> <span class="st">"gray90"</span>)</pre></body></html></div>
+<span class="va">smooth_risk_typical</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod_cb_glm</span>, newdata <span class="op">=</span> <span class="st">"typical"</span><span class="op">)</span>
+<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">brcancer</span>, <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">cens</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">y</span>, fun <span class="op">=</span> <span class="st">"event"</span>, conf.int <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_typical</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, gg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, 
+       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Kaplan-Meier"</span>, <span class="st">"casebase"</span><span class="op">)</span>, 
+       col <span class="op">=</span> <span class="va">cols</span>,
+       lty <span class="op">=</span> <span class="fl">1</span>,
+       lwd <span class="op">=</span> <span class="fl">2</span>,
+       bg <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span></code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 </div>
@@ -187,11 +192,12 @@
 <h2 class="hasAnchor">
 <a href="#survival-curves" class="anchor"></a>Survival Curves</h2>
 <p>We can also easily calculate and plot survival curves by specifying <code>type = 'survival'</code> in the call to <code>absoluteRisk</code>. The corresponding call to <code>plot</code> is the same as with cumulative incidence curves:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">smooth_surv_brcancer</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">mod_cb_glm</span>,
-                                     <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">brcancer</span>[<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">50</span>),],
-                                     <span class="kw">type</span> <span class="kw">=</span> <span class="st">"survival"</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">smooth_surv_brcancer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod_cb_glm</span>, 
+                                     newdata <span class="op">=</span> <span class="va">brcancer</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">50</span><span class="op">)</span>,<span class="op">]</span>,
+                                     type <span class="op">=</span> <span class="st">"survival"</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_surv_brcancer</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_surv_brcancer</span><span class="op">)</span></code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
 <div id="other-families" class="section level2">
@@ -202,23 +208,24 @@
 <a href="#glmnet" class="anchor"></a><code>glmnet</code>
 </h3>
 <p>We can also plot cumulative incidence curves for other families. For example, using the <code>family = "glmnet"</code>, we can plot the cumulative incidence curves for the first 10 individuals in the <code>brcancer</code> dataset, using the tuning parameter which minimizes the 10-fold cross-validation error (<span class="math inline">\(\lambda_{min}\)</span>):</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">mod_cb_glmnet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">cens</span> ~ <span class="no">estrec</span>*<span class="no">time</span> +
-                                     <span class="no">horTh</span> +
-                                     <span class="no">age</span> +
-                                     <span class="no">menostat</span> +
-                                     <span class="no">tsize</span> +
-                                     <span class="no">tgrade</span> +
-                                     <span class="no">pnodes</span> +
-                                     <span class="no">progrec</span>,
-                                 <span class="kw">data</span> <span class="kw">=</span> <span class="no">brcancer</span>,
-                                 <span class="kw">time</span> <span class="kw">=</span> <span class="st">"time"</span>,
-                                 <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                 <span class="kw">family</span> <span class="kw">=</span> <span class="st">"glmnet"</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod_cb_glmnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">cens</span> <span class="op">~</span> <span class="va">estrec</span><span class="op">*</span><span class="va">time</span> <span class="op">+</span> 
+                                     <span class="va">horTh</span> <span class="op">+</span> 
+                                     <span class="va">age</span> <span class="op">+</span> 
+                                     <span class="va">menostat</span> <span class="op">+</span> 
+                                     <span class="va">tsize</span> <span class="op">+</span> 
+                                     <span class="va">tgrade</span> <span class="op">+</span> 
+                                     <span class="va">pnodes</span> <span class="op">+</span> 
+                                     <span class="va">progrec</span>,
+                                 data <span class="op">=</span> <span class="va">brcancer</span>,
+                                 time <span class="op">=</span> <span class="st">"time"</span>, 
+                                 ratio <span class="op">=</span> <span class="fl">1</span>, 
+                                 family <span class="op">=</span> <span class="st">"glmnet"</span><span class="op">)</span>
 
-<span class="no">smooth_risk_glmnet</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">mod_cb_glmnet</span>,
-                                   <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">brcancer</span>[<span class="fl">1</span>:<span class="fl">10</span>,],
-                                   <span class="kw">s</span> <span class="kw">=</span> <span class="st">"lambda.min"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_glmnet</span>)</pre></body></html></div>
+<span class="va">smooth_risk_glmnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod_cb_glmnet</span>, 
+                                   newdata <span class="op">=</span> <span class="va">brcancer</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span>, 
+                                   s <span class="op">=</span> <span class="st">"lambda.min"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_glmnet</span><span class="op">)</span></code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 <div id="gam" class="section level3">
@@ -226,22 +233,23 @@
 <a href="#gam" class="anchor"></a><code>gam</code>
 </h3>
 <p>Here we produce the same plot but for <code>family = "gam"</code> for generalised additive models.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">mod_cb_gam</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">cens</span> ~ <span class="no">estrec</span> + <span class="no">time</span> +
-                                     <span class="no">horTh</span> +
-                                     <span class="no">age</span> +
-                                     <span class="no">menostat</span> +
-                                     <span class="no">tsize</span> +
-                                     <span class="no">tgrade</span> +
-                                     <span class="no">pnodes</span> +
-                                     <span class="no">progrec</span>,
-                                 <span class="kw">data</span> <span class="kw">=</span> <span class="no">brcancer</span>,
-                                 <span class="kw">time</span> <span class="kw">=</span> <span class="st">"time"</span>,
-                                 <span class="kw">ratio</span> <span class="kw">=</span> <span class="fl">1</span>,
-                                 <span class="kw">family</span> <span class="kw">=</span> <span class="st">"gam"</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod_cb_gam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">cens</span> <span class="op">~</span> <span class="va">estrec</span> <span class="op">+</span> <span class="va">time</span> <span class="op">+</span> 
+                                     <span class="va">horTh</span> <span class="op">+</span> 
+                                     <span class="va">age</span> <span class="op">+</span> 
+                                     <span class="va">menostat</span> <span class="op">+</span> 
+                                     <span class="va">tsize</span> <span class="op">+</span> 
+                                     <span class="va">tgrade</span> <span class="op">+</span> 
+                                     <span class="va">pnodes</span> <span class="op">+</span> 
+                                     <span class="va">progrec</span>,
+                                 data <span class="op">=</span> <span class="va">brcancer</span>,
+                                 time <span class="op">=</span> <span class="st">"time"</span>, 
+                                 ratio <span class="op">=</span> <span class="fl">1</span>, 
+                                 family <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span>
 
-<span class="no">smooth_risk_gam</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">mod_cb_gam</span>,
-                                <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">brcancer</span>[<span class="fl">1</span>:<span class="fl">10</span>,])
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk_gam</span>)</pre></body></html></div>
+<span class="va">smooth_risk_gam</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">mod_cb_gam</span>, 
+                                newdata <span class="op">=</span> <span class="va">brcancer</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="op">]</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk_gam</span><span class="op">)</span></code></pre></div>
 <p><img src="plotabsRisk_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 </div>
@@ -266,7 +274,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -42,7 +42,7 @@
 <meta property="og:title" content="Plot Fitted Hazard Curve as a Function of Time — hazardPlot" />
 <meta property="og:description" content="Visualize estimated hazard curves as a function of time with
 confidence intervals. This function takes as input, the result from the
-casebase::fitSmoothHazard() function. The user can also specify a
+fitSmoothHazard() function. The user can also specify a
 sequence of times at which to estimate the hazard function. These plots are
 useful to visualize the non-proportional hazards, i.e., time dependent
 interactions with a covariate." />
@@ -85,7 +85,7 @@ interactions with a covariate." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -126,7 +126,7 @@ interactions with a covariate." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -151,30 +151,30 @@ interactions with a covariate." />
     <div class="ref-description">
     <p>Visualize estimated hazard curves as a function of time with
 confidence intervals. This function takes as input, the result from the
-<code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code> function. The user can also specify a
+<code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code> function. The user can also specify a
 sequence of times at which to estimate the hazard function. These plots are
 useful to visualize the non-proportional hazards, i.e., time dependent
 interactions with a covariate.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>hazardPlot</span>(
-  <span class='no'>object</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"hazard"</span>),
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>ci.lvl</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>line.col</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>ci.col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>,
-  <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='st'>"lty"</span>),
-  <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ci</span> <span class='kw'>=</span> !<span class='no'>add</span>,
-  <span class='kw'>rug</span> <span class='kw'>=</span> !<span class='no'>add</span>,
-  <span class='kw'>s</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span>),
-  <span class='kw'>times</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>hazardPlot</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>newdata</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"hazard"</span><span class='op'>)</span>,
+  xlab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  breaks <span class='op'>=</span> <span class='fl'>100</span>,
+  ci.lvl <span class='op'>=</span> <span class='fl'>0.95</span>,
+  ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  line.col <span class='op'>=</span> <span class='fl'>1</span>,
+  ci.col <span class='op'>=</span> <span class='st'>"grey"</span>,
+  lty <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span><span class='st'>"lty"</span><span class='op'>)</span>,
+  add <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ci <span class='op'>=</span> <span class='op'>!</span><span class='va'>add</span>,
+  rug <span class='op'>=</span> <span class='op'>!</span><span class='va'>add</span>,
+  s <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span><span class='op'>)</span>,
+  times <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,7 +182,7 @@ interactions with a covariate.</p>
     <tr>
       <th>object</th>
       <td><p>Fitted object of class <code>glm</code>, <code>gam</code>, <code>cv.glmnet</code> or <code>gbm</code>. This
-is the result from the <code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code> function.</p></td>
+is the result from the <code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>newdata</th>
@@ -277,28 +277,32 @@ bands). <code>standarderror</code> is the standard error of the log hazard (only
 
     <p>This is an earlier version of a function to plot hazards. We
 recommend instead using the plot method for objects returned by
-<code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code>. See <code><a href='plot.singleEventCB.html'>casebase::plot.singleEventCB()</a></code>.</p>
+<code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code>. See <code><a href='plotHazardRatio.html'>plot.singleEventCB()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"simdat"</span>)
-<span class='no'>mod_cb</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>status</span> ~ <span class='no'>trt</span> * <span class='no'>eventtime</span>,
-                                    <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
-                                    <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>simdat</span>[<span class='fl'>1</span>:<span class='fl'>200</span>,],
-                                    <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                                    <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"glm"</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"simdat"</span><span class='op'>)</span>
+<span class='va'>mod_cb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span><span class='op'>(</span><span class='va'>status</span> <span class='op'>~</span> <span class='va'>trt</span> <span class='op'>*</span> <span class='va'>eventtime</span>,
+                                    time <span class='op'>=</span> <span class='st'>"eventtime"</span>,
+                                    data <span class='op'>=</span> <span class='va'>simdat</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>200</span>,<span class='op'>]</span>,
+                                    ratio <span class='op'>=</span> <span class='fl'>1</span>,
+                                    family <span class='op'>=</span> <span class='st'>"glm"</span><span class='op'>)</span>
 
-<span class='no'>results0</span> <span class='kw'>&lt;-</span> <span class='fu'>hazardPlot</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>mod_cb</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>trt</span> <span class='kw'>=</span> <span class='fl'>0</span>),
-           <span class='kw'>ci.lvl</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>line.col</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>results0</span>)</div><div class='output co'>#&gt;     trt eventtime offset predictedloghazard predictedhazard
+<span class='va'>results0</span> <span class='op'>&lt;-</span> <span class='fu'>hazardPlot</span><span class='op'>(</span>object <span class='op'>=</span> <span class='va'>mod_cb</span>, newdata <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>trt <span class='op'>=</span> <span class='fl'>0</span><span class='op'>)</span>,
+           ci.lvl <span class='op'>=</span> <span class='fl'>0.95</span>, ci <span class='op'>=</span> <span class='cn'>FALSE</span>, lty <span class='op'>=</span> <span class='fl'>1</span>, line.col <span class='op'>=</span> <span class='fl'>1</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>results0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;     trt eventtime offset predictedloghazard predictedhazard
 #&gt; 1     0 0.2695865      0          -2.186588       0.1122993
 #&gt; 1.1   0 0.3173684      0          -2.164438       0.1148144
 #&gt; 1.2   0 0.3651504      0          -2.142289       0.1173859
 #&gt; 1.3   0 0.4129323      0          -2.120139       0.1200149
 #&gt; 1.4   0 0.4607143      0          -2.097989       0.1227029
-#&gt; 1.5   0 0.5084963      0          -2.075840       0.1254510</div><div class='input'><span class='fu'>hazardPlot</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>mod_cb</span>, <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>trt</span> <span class='kw'>=</span> <span class='fl'>1</span>), <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-           <span class='kw'>ci.lvl</span> <span class='kw'>=</span> <span class='fl'>0.95</span>, <span class='kw'>add</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>line.col</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span>(<span class='st'>"topleft"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"trt=0"</span>,<span class='st'>"trt=1"</span>),<span class='kw'>lty</span><span class='kw'>=</span><span class='fl'>1</span>:<span class='fl'>2</span>,<span class='kw'>col</span><span class='kw'>=</span><span class='fl'>1</span>:<span class='fl'>2</span>,<span class='kw'>bty</span><span class='kw'>=</span><span class='st'>"y"</span>, <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='img'><img src='hazardPlot-1.png' alt='' width='700' height='433' /></div></pre>
+#&gt; 1.5   0 0.5084963      0          -2.075840       0.1254510</div><div class='input'><span class='fu'>hazardPlot</span><span class='op'>(</span>object <span class='op'>=</span> <span class='va'>mod_cb</span>, newdata <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>trt <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, ci <span class='op'>=</span> <span class='cn'>FALSE</span>,
+           ci.lvl <span class='op'>=</span> <span class='fl'>0.95</span>, add <span class='op'>=</span> <span class='cn'>TRUE</span>, lty <span class='op'>=</span> <span class='fl'>2</span>, line.col <span class='op'>=</span> <span class='fl'>2</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/legend.html'>legend</a></span><span class='op'>(</span><span class='st'>"topleft"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"trt=0"</span>,<span class='st'>"trt=1"</span><span class='op'>)</span>,lty<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,col<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,bty<span class='op'>=</span><span class='st'>"y"</span>, lwd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='img'><img src='hazardPlot-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -314,7 +318,7 @@ recommend instead using the plot method for objects returned by
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

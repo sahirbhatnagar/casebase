@@ -83,7 +83,7 @@ function accounts for the possible time-varying exposure effects." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -124,7 +124,7 @@ function accounts for the possible time-varying exposure effects." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -153,26 +153,26 @@ function. Current plot types are hazard function and hazard ratio. The
 function accounts for the possible time-varying exposure effects.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotHazardRatio</span>(<span class='no'>x</span>, <span class='no'>newdata</span>, <span class='no'>newdata2</span>, <span class='no'>ci</span>, <span class='no'>ci.lvl</span>, <span class='no'>ci.col</span>, <span class='no'>rug</span>, <span class='no'>xvar</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>plotHazardRatio</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>newdata</span>, <span class='va'>newdata2</span>, <span class='va'>ci</span>, <span class='va'>ci.lvl</span>, <span class='va'>ci.col</span>, <span class='va'>rug</span>, <span class='va'>xvar</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for singleEventCB</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"hazard"</span>, <span class='st'>"hr"</span>),
-  <span class='kw'>hazard.params</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='no'>newdata</span>,
-  <span class='no'>exposed</span>,
-  <span class='kw'>increment</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='no'>var</span>,
-  <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>ci.lvl</span> <span class='kw'>=</span> <span class='fl'>0.95</span>,
-  <span class='kw'>rug</span> <span class='kw'>=</span> !<span class='no'>ci</span>,
-  <span class='kw'>ci.col</span> <span class='kw'>=</span> <span class='st'>"grey"</span>
-)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"hazard"</span>, <span class='st'>"hr"</span><span class='op'>)</span>,
+  hazard.params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  <span class='va'>newdata</span>,
+  <span class='va'>exposed</span>,
+  increment <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>var</span>,
+  xvar <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ci <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ci.lvl <span class='op'>=</span> <span class='fl'>0.95</span>,
+  rug <span class='op'>=</span> <span class='op'>!</span><span class='va'>ci</span>,
+  ci.col <span class='op'>=</span> <span class='st'>"grey"</span>
+<span class='op'>)</span>
 
-<span class='fu'>incrVar</span>(<span class='no'>var</span>, <span class='kw'>increment</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+<span class='fu'>incrVar</span><span class='op'>(</span><span class='va'>var</span>, increment <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,7 +180,7 @@ function accounts for the possible time-varying exposure effects.</p>
     <tr>
       <th>x</th>
       <td><p>Fitted object of class <code>glm</code>, <code>gam</code>, <code>cv.glmnet</code> or <code>gbm</code>. This is
-the result from the <code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code> function.</p></td>
+the result from the <code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>newdata</th>
@@ -315,83 +315,71 @@ https://CRAN.R-project.org/package=rstpm2</p>
 visreg. The R Journal, 9: 56-71.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='https://rdrr.io/r/utils/modifyList.html'>modifyList</a></code>, <code><a href='fitSmoothHazard.html'>casebase::fitSmoothHazard()</a></code>,
+    <div class='dont-index'><p><code><a href='https://rdrr.io/r/utils/modifyList.html'>modifyList</a></code>, <code><a href='fitSmoothHazard.html'>fitSmoothHazard()</a></code>,
 <code><a href='https://rdrr.io/r/graphics/par.html'>graphics::par()</a></code>, <code><a href='https://rdrr.io/pkg/visreg/man/visreg.html'>visreg::visreg()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span>(<span class='st'>"splines"</span>, <span class='kw'>quietly</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)) {
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"simdat"</span>) <span class='co'># from casebase package</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>splines</span>)
-<span class='no'>simdat</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/transform.html'>transform</a></span>(<span class='no'>simdat</span>[<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1</span>:<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>simdat</span>), <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>200</span>),],
-                    <span class='kw'>treat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>trt</span>, <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fl'>0</span>:<span class='fl'>1</span>,
-                    <span class='kw'>labels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)))
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ns-load.html'>requireNamespace</a></span><span class='op'>(</span><span class='st'>"splines"</span>, quietly <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"simdat"</span><span class='op'>)</span> <span class='co'># from casebase package</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>splines</span><span class='op'>)</span>
+<span class='va'>simdat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html'>transform</a></span><span class='op'>(</span><span class='va'>simdat</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>simdat</span><span class='op'>)</span>, size <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,<span class='op'>]</span>,
+                    treat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>trt</span>, levels <span class='op'>=</span> <span class='fl'>0</span><span class='op'>:</span><span class='fl'>1</span>,
+                    labels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"control"</span>,<span class='st'>"treatment"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>fit_numeric_exposure</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>status</span> ~ <span class='no'>trt</span>*<span class='fu'><a href='https://rdrr.io/r/splines/bs.html'>bs</a></span>(<span class='no'>eventtime</span>),
-                                        <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>simdat</span>,
-                                        <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                                        <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>)
+<span class='va'>fit_numeric_exposure</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span><span class='op'>(</span><span class='va'>status</span> <span class='op'>~</span> <span class='va'>trt</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/splines/bs.html'>bs</a></span><span class='op'>(</span><span class='va'>eventtime</span><span class='op'>)</span>,
+                                        data <span class='op'>=</span> <span class='va'>simdat</span>,
+                                        ratio <span class='op'>=</span> <span class='fl'>1</span>,
+                                        time <span class='op'>=</span> <span class='st'>"eventtime"</span><span class='op'>)</span>
 
-<span class='no'>fit_factor_exposure</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>status</span> ~ <span class='no'>treat</span>*<span class='fu'><a href='https://rdrr.io/r/splines/bs.html'>bs</a></span>(<span class='no'>eventtime</span>),
-                                       <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>simdat</span>,
-                                       <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-                                       <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>)
+<span class='va'>fit_factor_exposure</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span><span class='op'>(</span><span class='va'>status</span> <span class='op'>~</span> <span class='va'>treat</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/splines/bs.html'>bs</a></span><span class='op'>(</span><span class='va'>eventtime</span><span class='op'>)</span>,
+                                       data <span class='op'>=</span> <span class='va'>simdat</span>,
+                                       ratio <span class='op'>=</span> <span class='fl'>1</span>,
+                                       time <span class='op'>=</span> <span class='st'>"eventtime"</span><span class='op'>)</span>
 
-<span class='no'>newtime</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span>(<span class='no'>fit_factor_exposure</span><span class='kw'>[[</span><span class='st'>"data"</span>]]<span class='kw'>[[</span><span class='no'>fit_factor_exposure</span><span class='kw'>[[</span><span class='st'>"timeVar"</span>]]]],
-                    <span class='kw'>probs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.95</span>, <span class='fl'>0.01</span>))
+<span class='va'>newtime</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/quantile.html'>quantile</a></span><span class='op'>(</span><span class='va'>fit_factor_exposure</span><span class='op'>[[</span><span class='st'>"data"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>[[</span><span class='va'>fit_factor_exposure</span><span class='op'>[[</span><span class='st'>"timeVar"</span><span class='op'>]</span><span class='op'>]</span><span class='op'>]</span><span class='op'>]</span>,
+                    probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span>, <span class='fl'>0.01</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span>(<span class='kw'>mfrow</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>3</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>fit_numeric_exposure</span>,
-     <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hr"</span>,
-     <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>trt</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eventtime</span> <span class='kw'>=</span> <span class='no'>newtime</span>),
-     <span class='kw'>exposed</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>data</span>) <span class='fu'><a href='https://rdrr.io/r/base/transform.html'>transform</a></span>(<span class='no'>data</span>, <span class='kw'>trt</span> <span class='kw'>=</span> <span class='fl'>1</span>),
-     <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
-     <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fit_numeric_exposure</span>,
+     type <span class='op'>=</span> <span class='st'>"hr"</span>,
+     newdata <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>trt <span class='op'>=</span> <span class='fl'>0</span>, eventtime <span class='op'>=</span> <span class='va'>newtime</span><span class='op'>)</span>,
+     exposed <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/transform.data.table.html'>transform</a></span><span class='op'>(</span><span class='va'>data</span>, trt <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>,
+     xvar <span class='op'>=</span> <span class='st'>"eventtime"</span>,
+     ci <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'>#by default this will increment `var` by 1 for exposed category</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>fit_factor_exposure</span>,
-     <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hr"</span>,
-     <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>treat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='st'>"control"</span>,
-              <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)), <span class='kw'>eventtime</span> <span class='kw'>=</span> <span class='no'>newtime</span>),
-     <span class='kw'>var</span> <span class='kw'>=</span> <span class='st'>"treat"</span>,
-     <span class='kw'>increment</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-     <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
-     <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-     <span class='kw'>ci.col</span> <span class='kw'>=</span> <span class='st'>"lightblue"</span>,
-     <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"Time"</span>,
-     <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Hazard Ratio for Treatment"</span>,
-     <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='st'>"Hazard Ratio"</span>,
-     <span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-     <span class='kw'>lwd</span> <span class='kw'>=</span> <span class='fl'>7</span>,
-     <span class='kw'>rug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fit_factor_exposure</span>,
+     type <span class='op'>=</span> <span class='st'>"hr"</span>,
+     newdata <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>treat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='st'>"control"</span>,
+              levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"control"</span>,<span class='st'>"treatment"</span><span class='op'>)</span><span class='op'>)</span>, eventtime <span class='op'>=</span> <span class='va'>newtime</span><span class='op'>)</span>,
+     var <span class='op'>=</span> <span class='st'>"treat"</span>,
+     increment <span class='op'>=</span> <span class='fl'>1</span>,
+     xvar <span class='op'>=</span> <span class='st'>"eventtime"</span>,
+     ci <span class='op'>=</span> <span class='cn'>TRUE</span>,
+     ci.col <span class='op'>=</span> <span class='st'>"lightblue"</span>,
+     xlab <span class='op'>=</span> <span class='st'>"Time"</span>,
+     main <span class='op'>=</span> <span class='st'>"Hazard Ratio for Treatment"</span>,
+     ylab <span class='op'>=</span> <span class='st'>"Hazard Ratio"</span>,
+     lty <span class='op'>=</span> <span class='fl'>5</span>,
+     lwd <span class='op'>=</span> <span class='fl'>7</span>,
+     rug <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 
 <span class='co'># we can also decrement `var` by 1 to give hazard ratio for control/treatment</span>
-<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>fit_factor_exposure</span>,
-               <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"hr"</span>,
-               <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>treat</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='st'>"treatment"</span>,
-                                    <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"control"</span>,<span class='st'>"treatment"</span>)),
-                                    <span class='kw'>eventtime</span> <span class='kw'>=</span> <span class='no'>newtime</span>),
-               <span class='kw'>var</span> <span class='kw'>=</span> <span class='st'>"treat"</span>,
-               <span class='kw'>increment</span> <span class='kw'>=</span> -<span class='fl'>1</span>,
-               <span class='kw'>xvar</span> <span class='kw'>=</span> <span class='st'>"eventtime"</span>,
-               <span class='kw'>ci</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='va'>result</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fit_factor_exposure</span>,
+               type <span class='op'>=</span> <span class='st'>"hr"</span>,
+               newdata <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>treat <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='st'>"treatment"</span>,
+                                    levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"control"</span>,<span class='st'>"treatment"</span><span class='op'>)</span><span class='op'>)</span>,
+                                    eventtime <span class='op'>=</span> <span class='va'>newtime</span><span class='op'>)</span>,
+               var <span class='op'>=</span> <span class='st'>"treat"</span>,
+               increment <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>,
+               xvar <span class='op'>=</span> <span class='st'>"eventtime"</span>,
+               ci <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># see data used to create plot</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>result</span>)
-}</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;         treat eventtime log_hazard_ratio standarderror hazard_ratio lowerbound
-#&gt; 5%  treatment 0.3488444        0.5617254     0.7422200     1.753696  0.4094260
-#&gt; 6%  treatment 0.3902785        0.6649501     0.7012281     1.944394  0.4919237
-#&gt; 7%  treatment 0.4148271        0.7239973     0.6788513     2.062662  0.5452413
-#&gt; 8%  treatment 0.4512202        0.8086798     0.6482910     2.244942  0.6300556
-#&gt; 9%  treatment 0.4636149        0.8367497     0.6385929     2.308850  0.6604266
-#&gt; 10% treatment 0.4862850        0.8870854     0.6217826     2.428043  0.7177844
-#&gt;     upperbound
-#&gt; 5%    7.511610
-#&gt; 6%    7.685473
-#&gt; 7%    7.803102
-#&gt; 8%    7.998922
-#&gt; 9%    8.071737
-#&gt; 10%   8.213317</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>result</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -407,7 +395,7 @@ visreg. The R Journal, 9: 56-71.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

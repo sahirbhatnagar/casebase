@@ -85,7 +85,7 @@ functions." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -126,7 +126,7 @@ functions." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -157,47 +157,47 @@ function. Current plot types are cumulative incidence and survival
 functions.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>absoluteRisk.CompRisk</span>(
-  <span class='no'>object</span>,
-  <span class='no'>time</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
-  <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
-  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+    <pre class="usage"><span class='fu'>absoluteRisk.CompRisk</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>time</span>,
+  <span class='va'>newdata</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span><span class='op'>)</span>,
+  nsamp <span class='op'>=</span> <span class='fl'>100</span>,
+  onlyMain <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CI"</span>, <span class='st'>"survival"</span><span class='op'>)</span>,
+  addZero <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
-<span class='fu'>absoluteRisk</span>(
-  <span class='no'>object</span>,
-  <span class='no'>time</span>,
-  <span class='no'>newdata</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span>),
-  <span class='kw'>nsamp</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>s</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span>),
-  <span class='no'>n.trees</span>,
-  <span class='kw'>onlyMain</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"CI"</span>, <span class='st'>"survival"</span>),
-  <span class='kw'>addZero</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ntimes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='no'>...</span>
-)
-
-<span class='co'># S3 method for absRiskCB</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>absoluteRisk</span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>time</span>,
+  <span class='va'>newdata</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"numerical"</span>, <span class='st'>"montecarlo"</span><span class='op'>)</span>,
+  nsamp <span class='op'>=</span> <span class='fl'>100</span>,
+  s <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"lambda.1se"</span>, <span class='st'>"lambda.min"</span><span class='op'>)</span>,
+  <span class='va'>n.trees</span>,
+  onlyMain <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"CI"</span>, <span class='st'>"survival"</span><span class='op'>)</span>,
+  addZero <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  ntimes <span class='op'>=</span> <span class='fl'>100</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
 
 <span class='co'># S3 method for absRiskCB</span>
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(
-  <span class='no'>x</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>xlab</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>x</span>, <span class='st'>"type"</span>) <span class='kw'>==</span> <span class='st'>"CI"</span>, <span class='st'>"cumulative incidence"</span>,
-    <span class='st'>"survival probability"</span>),
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"l"</span>,
-  <span class='kw'>gg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>id.names</span>,
-  <span class='no'>legend.title</span>
-)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for absRiskCB</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>...</span>,
+  xlab <span class='op'>=</span> <span class='st'>"time"</span>,
+  ylab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"type"</span><span class='op'>)</span> <span class='op'>==</span> <span class='st'>"CI"</span>, <span class='st'>"cumulative incidence"</span>,
+    <span class='st'>"survival probability"</span><span class='op'>)</span>,
+  type <span class='op'>=</span> <span class='st'>"l"</span>,
+  gg <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>id.names</span>,
+  <span class='va'>legend.title</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -266,7 +266,7 @@ required (for class <code>cv.glmnet</code>).</p></td>
     <tr>
       <th>x</th>
       <td><p>Fitted object of class <code>absRiskCB</code>. This is the result from the
-<code>casebase::absoluteRisk()</code> function.</p></td>
+<code>absoluteRisk()</code> function.</p></td>
     </tr>
     <tr>
       <th>xlab</th>
@@ -329,21 +329,22 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Simulate censored survival data for two outcome types</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>data.table</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>12345</span>)
-<span class='no'>nobs</span> <span class='kw'>&lt;-</span> <span class='fl'>1000</span>
-<span class='no'>tlim</span> <span class='kw'>&lt;-</span> <span class='fl'>20</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://Rdatatable.gitlab.io/data.table'>data.table</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>12345</span><span class='op'>)</span>
+<span class='va'>nobs</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
+<span class='va'>tlim</span> <span class='op'>&lt;-</span> <span class='fl'>20</span>
 
 <span class='co'># simulation parameters</span>
-<span class='no'>b1</span> <span class='kw'>&lt;-</span> <span class='fl'>200</span>
-<span class='no'>b2</span> <span class='kw'>&lt;-</span> <span class='fl'>50</span>
+<span class='va'>b1</span> <span class='op'>&lt;-</span> <span class='fl'>200</span>
+<span class='va'>b2</span> <span class='op'>&lt;-</span> <span class='fl'>50</span>
 
 <span class='co'># event type 0-censored, 1-event of interest, 2-competing event</span>
 <span class='co'># t observed time/endpoint</span>
 <span class='co'># z is a binary covariate</span>
-<span class='no'>DT</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='kw'>z</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span>))
-<span class='no'>DT</span>[,<span class='fu'>`:=`</span> (<span class='st'>"t_event"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b1</span>),
-          <span class='st'>"t_comp"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span>(<span class='no'>nobs</span>, <span class='fl'>1</span>, <span class='no'>b2</span>))]</div><div class='output co'>#&gt;       z   t_event      t_comp
+<span class='va'>DT</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span>z <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom</a></span><span class='op'>(</span><span class='va'>nobs</span>, <span class='fl'>1</span>, <span class='fl'>0.5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>DT</span><span class='op'>[</span>,<span class='fu'>`:=`</span> <span class='op'>(</span><span class='st'>"t_event"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span><span class='va'>nobs</span>, <span class='fl'>1</span>, <span class='va'>b1</span><span class='op'>)</span>,
+          <span class='st'>"t_comp"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Weibull.html'>rweibull</a></span><span class='op'>(</span><span class='va'>nobs</span>, <span class='fl'>1</span>, <span class='va'>b2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span>
+</div><div class='output co'>#&gt;       z   t_event      t_comp
 #&gt;    1: 1 510.83410   2.3923947
 #&gt;    2: 1  33.98842  23.7578470
 #&gt;    3: 1 997.76445  31.5864062
@@ -354,8 +355,9 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 #&gt;  997: 0 238.05336  60.3685477
 #&gt;  998: 0 142.60033   3.6318489
 #&gt;  999: 0 103.37601  24.5722384
-#&gt; 1000: 0 255.84352 113.5144522</div><div class='input'><span class='no'>DT</span>[,<span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>1</span> * (<span class='no'>t_event</span> <span class='kw'>&lt;</span> <span class='no'>t_comp</span>) + <span class='fl'>2</span> * (<span class='no'>t_event</span> <span class='kw'>&gt;=</span> <span class='no'>t_comp</span>),
-         <span class='st'>"time"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span>(<span class='no'>t_event</span>, <span class='no'>t_comp</span>))]</div><div class='output co'>#&gt;       z   t_event      t_comp event        time
+#&gt; 1000: 0 255.84352 113.5144522</div><div class='input'><span class='va'>DT</span><span class='op'>[</span>,<span class='fu'>`:=`</span><span class='op'>(</span><span class='st'>"event"</span> <span class='op'>=</span> <span class='fl'>1</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>t_event</span> <span class='op'>&lt;</span> <span class='va'>t_comp</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='op'>(</span><span class='va'>t_event</span> <span class='op'>&gt;=</span> <span class='va'>t_comp</span><span class='op'>)</span>,
+         <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>pmin</a></span><span class='op'>(</span><span class='va'>t_event</span>, <span class='va'>t_comp</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span>
+</div><div class='output co'>#&gt;       z   t_event      t_comp event        time
 #&gt;    1: 1 510.83410   2.3923947     2   2.3923947
 #&gt;    2: 1  33.98842  23.7578470     2  23.7578470
 #&gt;    3: 1 997.76445  31.5864062     2  31.5864062
@@ -366,7 +368,8 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 #&gt;  997: 0 238.05336  60.3685477     2  60.3685477
 #&gt;  998: 0 142.60033   3.6318489     2   3.6318489
 #&gt;  999: 0 103.37601  24.5722384     2  24.5722384
-#&gt; 1000: 0 255.84352 113.5144522     2 113.5144522</div><div class='input'><span class='no'>DT</span>[<span class='no'>time</span> <span class='kw'>&gt;=</span> <span class='no'>tlim</span>, <span class='fu'>`:=`</span>(<span class='st'>"event"</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='kw'>=</span> <span class='no'>tlim</span>)]</div><div class='output co'>#&gt;       z   t_event      t_comp event       time
+#&gt; 1000: 0 255.84352 113.5144522     2 113.5144522</div><div class='input'><span class='va'>DT</span><span class='op'>[</span><span class='va'>time</span> <span class='op'>&gt;=</span> <span class='va'>tlim</span>, <span class='fu'>`:=`</span><span class='op'>(</span><span class='st'>"event"</span> <span class='op'>=</span> <span class='fl'>0</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='va'>tlim</span><span class='op'>)</span><span class='op'>]</span>
+</div><div class='output co'>#&gt;       z   t_event      t_comp event       time
 #&gt;    1: 1 510.83410   2.3923947     2  2.3923947
 #&gt;    2: 1  33.98842  23.7578470     0 20.0000000
 #&gt;    3: 1 997.76445  31.5864062     0 20.0000000
@@ -378,26 +381,29 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 #&gt;  998: 0 142.60033   3.6318489     2  3.6318489
 #&gt;  999: 0 103.37601  24.5722384     0 20.0000000
 #&gt; 1000: 0 255.84352 113.5144522     0 20.0000000</div><div class='input'>
-<span class='no'>out_linear</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>event</span> ~ <span class='no'>time</span> + <span class='no'>z</span>, <span class='no'>DT</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
-<span class='no'>linear_risk</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='no'>out_linear</span>, <span class='kw'>time</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-                            <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span>(<span class='st'>"z"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>1</span>)))
+<span class='va'>out_linear</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span><span class='op'>(</span><span class='va'>event</span> <span class='op'>~</span> <span class='va'>time</span> <span class='op'>+</span> <span class='va'>z</span>, <span class='va'>DT</span>, ratio <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>'time' will be used as the time variable</span></div><div class='input'>
+<span class='va'>linear_risk</span> <span class='op'>&lt;-</span> <span class='fu'>absoluteRisk</span><span class='op'>(</span><span class='va'>out_linear</span>, time <span class='op'>=</span> <span class='fl'>10</span>,
+                            newdata <span class='op'>=</span> <span class='fu'><a href='https://Rdatatable.gitlab.io/data.table/reference/data.table.html'>data.table</a></span><span class='op'>(</span><span class='st'>"z"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='co'># Plot CI curves----</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"brcancer"</span>)
-<span class='no'>mod_cb_tvc</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span>(<span class='no'>cens</span> ~ <span class='no'>estrec</span>*<span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>time</span>) +
-                                <span class='no'>horTh</span> +
-                                <span class='no'>age</span> +
-                                <span class='no'>menostat</span> +
-                                <span class='no'>tsize</span> +
-                                <span class='no'>tgrade</span> +
-                                <span class='no'>pnodes</span> +
-                                <span class='no'>progrec</span>,
-                              <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>brcancer</span>,
-                              <span class='kw'>time</span> <span class='kw'>=</span> <span class='st'>"time"</span>, <span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='no'>smooth_risk_brcancer</span> <span class='kw'>&lt;-</span> <span class='fu'>absoluteRisk</span>(<span class='kw'>object</span> <span class='kw'>=</span> <span class='no'>mod_cb_tvc</span>,
-                                     <span class='kw'>newdata</span> <span class='kw'>=</span> <span class='no'>brcancer</span>[<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>,<span class='fl'>50</span>),])
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"brcancer"</span><span class='op'>)</span>
+<span class='va'>mod_cb_tvc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fitSmoothHazard.html'>fitSmoothHazard</a></span><span class='op'>(</span><span class='va'>cens</span> <span class='op'>~</span> <span class='va'>estrec</span><span class='op'>*</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>time</span><span class='op'>)</span> <span class='op'>+</span>
+                                <span class='va'>horTh</span> <span class='op'>+</span>
+                                <span class='va'>age</span> <span class='op'>+</span>
+                                <span class='va'>menostat</span> <span class='op'>+</span>
+                                <span class='va'>tsize</span> <span class='op'>+</span>
+                                <span class='va'>tgrade</span> <span class='op'>+</span>
+                                <span class='va'>pnodes</span> <span class='op'>+</span>
+                                <span class='va'>progrec</span>,
+                              data <span class='op'>=</span> <span class='va'>brcancer</span>,
+                              time <span class='op'>=</span> <span class='st'>"time"</span>, ratio <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>smooth_risk_brcancer</span> <span class='op'>&lt;-</span> <span class='fu'>absoluteRisk</span><span class='op'>(</span>object <span class='op'>=</span> <span class='va'>mod_cb_tvc</span>,
+                                     newdata <span class='op'>=</span> <span class='va'>brcancer</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>50</span><span class='op'>)</span>,<span class='op'>]</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>smooth_risk_brcancer</span>)</div><div class='output co'>#&gt; [1] "absRiskCB" "matrix"    "array"    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='no'>smooth_risk_brcancer</span>)</div><div class='img'><img src='absoluteRisk-1.png' alt='' width='700' height='433' /></div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>smooth_risk_brcancer</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "absRiskCB" "matrix"    "array"    </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>smooth_risk_brcancer</span><span class='op'>)</span>
+</div><div class='img'><img src='absoluteRisk-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -413,7 +419,7 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

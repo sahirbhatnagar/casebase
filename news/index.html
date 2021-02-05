@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -120,7 +120,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -155,23 +155,23 @@
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking changes</h2>
 <ul>
-<li>The output of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
+<li>The output of <code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code> now always contains the time variable in the first column, regardless of the length of <code>time</code>. This will break earlier code that depended on the previous behaviour.</li>
 <li>Population time plots now use <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">ggplot2::geom_ribbon()</a></code> instead of <code><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">ggplot2::geom_segment()</a></code>.</li>
 <li>Population time functions now allow for more flexible plots with user defined arguments including sequentially adding base, case, and competing event series. These are now passed as a list to the <code>*.params</code> arguments. Several arguments are now deprecated.</li>
-<li>Removed <code>popTimeExposure</code> class and the corresponding <code>plot</code> method. <code><a href="../reference/popTime.html">popTime()</a></code> now returns an <code>exposure</code> attribute which contains the name of the exposure variable in the dataset. The plot method for objects of class <code>popTime</code> will use this exposure attribute to create exposure stratified population time plots.</li>
+<li>Removed <code>popTimeExposure</code> class and the corresponding <code>plot</code> method. <code><a href="../reference/plot.popTime.html">popTime()</a></code> now returns an <code>exposure</code> attribute which contains the name of the exposure variable in the dataset. The plot method for objects of class <code>popTime</code> will use this exposure attribute to create exposure stratified population time plots.</li>
 </ul>
 </div>
 <div id="new-features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h2>
 <ul>
-<li>Major refactoring of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code>. Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up.</li>
-<li>Users now have further control on the output of <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> using the arguments <code>type</code> and <code>addZero</code>.</li>
-<li>New plotting method for time-dependent hazard functions and hazard ratios. These include confidence intervals. See <code><a href="../reference/plot.singleEventCB.html">plot.singleEventCB()</a></code>. The hazard function plot requires the <code>visreg</code> package to be installed.</li>
-<li>New plotting method for cumulative incidence and survival curves. See <code><a href="../reference/absoluteRisk.html">plot.absRiskCB()</a></code>.</li>
-<li>When <code>time</code> is unspecified, <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> now computes the cumulative incidence at <code>ntimes</code> equidistant points between 0 and the max failure time.</li>
+<li>Major refactoring of <code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code>. Trapezoidal rule to perform numerical integration for absolute risk estimation, providing significant speed up.</li>
+<li>Users now have further control on the output of <code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code> using the arguments <code>type</code> and <code>addZero</code>.</li>
+<li>New plotting method for time-dependent hazard functions and hazard ratios. These include confidence intervals. See <code><a href="../reference/plotHazardRatio.html">plot.singleEventCB()</a></code>. The hazard function plot requires the <code>visreg</code> package to be installed.</li>
+<li>New plotting method for cumulative incidence and survival curves. See <code><a href="../reference/absoluteRisk.CompRisk.html">plot.absRiskCB()</a></code>.</li>
+<li>When <code>time</code> is unspecified, <code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code> now computes the cumulative incidence at <code>ntimes</code> equidistant points between 0 and the max failure time.</li>
 <li>
-<code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code> can now compute the cumulative incidence for a <code>"typical"</code> covariate profile with <code>newdata = "typical"</code>. “Typical” corresponds to the median for continuous variables and the mode for factors (each variable is summarised independently).</li>
+<code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code> can now compute the cumulative incidence for a <code>"typical"</code> covariate profile with <code>newdata = "typical"</code>. “Typical” corresponds to the median for continuous variables and the mode for factors (each variable is summarised independently).</li>
 <li>Added <code>eprchd</code>, <code>brcancer</code>, <code>support</code> and <code>simdat</code> datasets to the package.</li>
 <li>Implemented <code>riskRegression::predictRisk()</code> method for <code>singleEventCB</code> objects.</li>
 </ul>
@@ -185,9 +185,9 @@
 <li>A warning is given when <code>family="gbm"</code> and nonlinear functions of time or interactions are specified.</li>
 <li>Add <code>singleEventCB</code> class to object returned by <code><a href="../reference/fitSmoothHazard.html">fitSmoothHazard()</a></code>
 </li>
-<li>Add <code>absRiskCB</code> class to object returned by <code><a href="../reference/absoluteRisk.html">absoluteRisk()</a></code>
+<li>Add <code>absRiskCB</code> class to object returned by <code><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk()</a></code>
 </li>
-<li>Use <code><a href="https://rdrr.io/pkg/glmnet/man/glmnet-internal.html">glmnet::prepareX</a></code> to convert factors into indicator variables</li>
+<li>Use <code><a href="https://glmnet.stanford.edu/reference/glmnet-internal.html">glmnet::prepareX</a></code> to convert factors into indicator variables</li>
 </ul>
 </div>
 </div>
@@ -217,7 +217,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

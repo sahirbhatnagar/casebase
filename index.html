@@ -47,7 +47,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,7 +88,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sahirbhatnagar/casebase/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -114,10 +114,12 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the released version of casebase from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"casebase"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"casebase"</span><span class="op">)</span></code></pre></div>
 <p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("devtools")</span>
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu">install_github</span>(<span class="st">"sahirbhatnagar/casebase"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"sahirbhatnagar/casebase"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="vignettes" class="section level2">
 <h2 class="hasAnchor">
@@ -141,29 +143,32 @@
 <h2 class="hasAnchor">
 <a href="#quickstart" class="anchor"></a>Quickstart</h2>
 <p>This is a basic example which shows you some of the main functionalities of the <code>casebase</code> package. We use data from the estrogen plus progestin trial from the <a href="https://www.doi.org/10.1056/nejmoa030808">Women’s Health Initiative</a> (included in the <code>casebase</code> package). This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">casebase</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span>
 <span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">visreg</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">splines</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"eprchd"</span>)</pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg">visreg</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"eprchd"</span><span class="op">)</span></code></pre></div>
 <div id="population-time-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#population-time-plots" class="anchor"></a>Population Time Plots</h3>
 <p>We first visualize the data with a population time plot. For each treatment arm, we plot the observed person time in gray, and the case series as colored dots. It gives us a good visual representation of the incidence density:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="fu"><a href="reference/popTime.html">popTime</a></span>(<span class="no">eprchd</span>, <span class="kw">exposure</span> <span class="kw">=</span> <span class="st">"treatment"</span>))</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/plot.popTime.html">popTime</a></span><span class="op">(</span><span class="va">eprchd</span>, exposure <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
 </div>
 <div id="fit-a-smooth-hazard-model" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fit-a-smooth-hazard-model" class="anchor"></a>Fit a Smooth Hazard Model</h3>
 <p>We model the hazard as a function of time, treatment arm and their interaction:</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="no">eprchd</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span>(<span class="no">eprchd</span>,
-                    <span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">treatment</span>, <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>,<span class="st">"estPro"</span>)))
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eprchd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span><span class="op">(</span><span class="va">eprchd</span>, 
+                    treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>,<span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="no">fit</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/fitSmoothHazard.html">fitSmoothHazard</a></span>(<span class="no">status</span> ~ <span class="no">treatment</span>*<span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span>(<span class="no">time</span>, <span class="kw">df</span> <span class="kw">=</span> <span class="fl">3</span>),
-                       <span class="kw">data</span> <span class="kw">=</span> <span class="no">eprchd</span>,
-                       <span class="kw">time</span> <span class="kw">=</span> <span class="st">"time"</span>)
-<span class="fu"><a href="reference/CompRisk-class.html">summary</a></span>(<span class="no">fit</span>)
+<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">treatment</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">time</span>, df <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,
+                       data <span class="op">=</span> <span class="va">eprchd</span>,
+                       time <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span>
+<span class="fu"><a href="reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Call:</span>
 <span class="co">#&gt; glm(formula = formula, family = binomial, data = sampleData)</span>
@@ -191,17 +196,18 @@
 <span class="co">#&gt; Residual deviance: 3614.1  on 32716  degrees of freedom</span>
 <span class="co">#&gt; AIC: 3630.1</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></pre></div>
+<span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></code></pre></div>
 <p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>.</p>
 </div>
 <div id="time-dependent-hazard-function" class="section level3">
 <h3 class="hasAnchor">
 <a href="#time-dependent-hazard-function" class="anchor"></a>Time-Dependent Hazard Function</h3>
 <p>The treatment effect on the hazard is somewhat difficult to interpret because of its interaction with the spline term on time. In these situations, it is often more instructive to visualize the relationship. For example, we can easily plot the hazard function for each treatment arm:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit</span>, <span class="kw">hazard.params</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xvar</span> <span class="kw">=</span> <span class="st">"time"</span>, <span class="kw">by</span> <span class="kw">=</span> <span class="st">"treatment"</span>))
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit</span>, hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>, by <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Conditions used in construction of plot</span>
 <span class="co">#&gt; treatment: placebo / estPro</span>
-<span class="co">#&gt; offset: 0</span></pre></div>
+<span class="co">#&gt; offset: 0</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co">#&gt; $fit</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt;      treatment time offset status visregFit visregLwr visregUpr</span></a>
@@ -215,32 +221,34 @@
 <h3 class="hasAnchor">
 <a href="#time-dependent-hazard-ratio" class="anchor"></a>Time-Dependent Hazard Ratio</h3>
 <p>We can also plot the time-dependent hazard ratio and 95% confidence band:</p>
-<div class="sourceCode" id="cb8"><pre class="r"><span class="no">newtime</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span>(<span class="no">eprchd</span>$<span class="no">time</span>,
-                    <span class="kw">probs</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span>))
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">newtime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">eprchd</span><span class="op">$</span><span class="va">time</span>, 
+                    probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># reference category</span>
-<span class="no">newdata</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="st">"placebo"</span>,
-                                         <span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>, <span class="st">"estPro"</span>)),
-                      <span class="kw">time</span> <span class="kw">=</span> <span class="no">newtime</span>)
+<span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="st">"placebo"</span>, 
+                                         levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span>, 
+                      time <span class="op">=</span> <span class="va">newtime</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">fit</span>,
-     <span class="kw">type</span> <span class="kw">=</span> <span class="st">"hr"</span>,
-     <span class="kw">newdata</span> <span class="kw">=</span> <span class="no">newdata</span>,
-     <span class="kw">var</span> <span class="kw">=</span> <span class="st">"treatment"</span>,
-     <span class="kw">increment</span> <span class="kw">=</span> <span class="fl">1</span>,
-     <span class="kw">xvar</span> <span class="kw">=</span> <span class="st">"time"</span>,
-     <span class="kw">ci</span> <span class="kw">=</span> <span class="no">T</span>,
-     <span class="kw">rug</span> <span class="kw">=</span> <span class="no">T</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit</span>, 
+     type <span class="op">=</span> <span class="st">"hr"</span>, 
+     newdata <span class="op">=</span> <span class="va">newdata</span>,
+     var <span class="op">=</span> <span class="st">"treatment"</span>,
+     increment <span class="op">=</span> <span class="fl">1</span>,
+     xvar <span class="op">=</span> <span class="st">"time"</span>,
+     ci <span class="op">=</span> <span class="cn">T</span>,
+     rug <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-plot-mason-1.png" width="100%"></p>
 </div>
 <div id="cumulative-incidence-function-cif" class="section level3">
 <h3 class="hasAnchor">
 <a href="#cumulative-incidence-function-cif" class="anchor"></a>Cumulative Incidence Function (CIF)</h3>
 <p>We can also calculate and plot the cumulative incidence function:</p>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="no">smooth_risk</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/absoluteRisk.html">absoluteRisk</a></span>(<span class="kw">object</span> <span class="kw">=</span> <span class="no">fit</span>,
-                            <span class="kw">newdata</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">treatment</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>, <span class="st">"estPro"</span>)))
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, 
+                            newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">smooth_risk</span>, <span class="kw">id.names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"placebo"</span>, <span class="st">"estPro"</span>))</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, id.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 </div>
 </div>
@@ -282,7 +290,8 @@
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
-<div class="sourceCode" id="cb11"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">'casebase'</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span><span class="st">'casebase'</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; To cite casebase in publications use:</span>
 <span class="co">#&gt; </span>
@@ -306,7 +315,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; To see these entries in BibTeX format, use 'print(&lt;citation&gt;,</span>
 <span class="co">#&gt; bibtex=TRUE)', 'toBibtex(.)', or set</span>
-<span class="co">#&gt; 'options(citation.bibtex.max=999)'.</span></pre></div>
+<span class="co">#&gt; 'options(citation.bibtex.max=999)'.</span></code></pre></div>
 </div>
 <div id="contact" class="section level2">
 <h2 class="hasAnchor">
@@ -399,7 +408,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
