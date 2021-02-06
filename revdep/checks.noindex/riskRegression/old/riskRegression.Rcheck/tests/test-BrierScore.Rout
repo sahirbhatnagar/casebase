@@ -1,0 +1,47 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> library(data.table)
+> context("Prediction error")
+> # {{{ "Brier score censored data order"
+> test_that("Brier score censored data order",{
++     library(riskRegression)
++     library(survival)
++     library(prodlim)
++     data(Melanoma)
++     setDT(Melanoma)
++     fit <- coxph(Surv(time,status!=0)~invasion+epicel+logthick,data=Melanoma,x=TRUE)
++     ## many ties in Melanoma
++     setkey(Melanoma,age)
++     a <- Score(list(fit),data=Melanoma,Surv(time,status!=0)~invasion+epicel+logthick,cens.model="marginal",metric="Brier")
++     A <- Score(list(fit),data=Melanoma,Surv(time,status!=0)~invasion+epicel+logthick,cens.model="cox",metric="Brier")
++     setkey(Melanoma,logthick)
++     b <- Score(list(fit),data=Melanoma,Surv(time,status!=0)~invasion+epicel+logthick,cens.model="marginal",metric="Brier")
++     B <- Score(list(fit),data=Melanoma,Surv(time,status!=0)~invasion+epicel+logthick,cens.model="cox",metric="Brier")
++     a$call <- b$call <- A$call <- B$call <- NULL
++     ## expect_error(expect_equal(a,b,tolerance = .002))
++     expect_equal(a,b,tolerance = .02)
++     expect_equal(A,B,tolerance=.02)
++ })
+Test passed 🥳
+> 
+> # }}}
+> 
+> proc.time()
+   user  system elapsed 
+  4.705   0.483   5.439 

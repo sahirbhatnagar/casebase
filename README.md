@@ -9,8 +9,8 @@
 Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
-[![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
+[![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
 [![Lifecycle:
@@ -115,32 +115,39 @@ fit <- fitSmoothHazard(status ~ treatment*ns(time, df = 3),
                        data = eprchd,
                        time = "time")
 summary(fit)
+#> Fitting smooth hazards with case-base sampling
+#> 
+#> Sample size: 16608 
+#> Number of events: 324 
+#> Number of base moments: 32400 
+#> ----
 #> 
 #> Call:
-#> glm(formula = formula, family = binomial, data = sampleData)
+#> fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), 
+#>     data = eprchd, time = "time")
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2536  -0.1481  -0.1380  -0.1268   3.1490  
+#> -0.2579  -0.1481  -0.1377  -0.1273   3.1543  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                        -5.8604     0.3032 -19.326  < 2e-16 ***
-#> treatmentestPro                     0.6316     0.3796   1.664   0.0962 .  
-#> ns(time, df = 3)1                  -0.4202     0.3627  -1.158   0.2467    
-#> ns(time, df = 3)2                   0.8155     0.7404   1.101   0.2707    
-#> ns(time, df = 3)3                   1.4242     0.3474   4.100 4.13e-05 ***
-#> treatmentestPro:ns(time, df = 3)1   0.1292     0.4896   0.264   0.7919    
-#> treatmentestPro:ns(time, df = 3)2  -1.3944     0.9456  -1.475   0.1403    
-#> treatmentestPro:ns(time, df = 3)3  -1.1521     0.4883  -2.359   0.0183 *  
+#> (Intercept)                        -5.8423     0.3007 -19.431  < 2e-16 ***
+#> treatmentestPro                     0.6382     0.3772   1.692   0.0907 .  
+#> ns(time, df = 3)1                  -0.4667     0.3611  -1.292   0.1963    
+#> ns(time, df = 3)2                   0.7903     0.7331   1.078   0.2811    
+#> ns(time, df = 3)3                   1.4514     0.3431   4.230 2.34e-05 ***
+#> treatmentestPro:ns(time, df = 3)1   0.1975     0.4880   0.405   0.6857    
+#> treatmentestPro:ns(time, df = 3)2  -1.4337     0.9385  -1.528   0.1266    
+#> treatmentestPro:ns(time, df = 3)3  -1.1912     0.4844  -2.459   0.0139 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3614.1  on 32716  degrees of freedom
-#> AIC: 3630.1
+#> Residual deviance: 3612.7  on 32716  degrees of freedom
+#> AIC: 3628.7
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
@@ -164,14 +171,6 @@ plot(fit, hazard.params = list(xvar = "time", by = "treatment"))
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
-
-    #> $fit
-    #>      treatment time offset status visregFit visregLwr visregUpr
-    #>  [ reached 'max' / getOption("max.print") -- omitted 202 rows ]
-    #> 
-    #>  [ reached getOption("max.print") -- omitted 2 entries ]
-    #> attr(,"class")
-    #> [1] "visreg"
 
 ### Time-Dependent Hazard Ratio
 
@@ -288,7 +287,7 @@ citation('casebase')
 ## Latest news
 
 You can see the most recent changes to the package in the [NEWS
-file](https://sahirbhatnagar.com/casebase/news)
+file](https://sahirbhatnagar.com/casebase/news/)
 
 ## Code of Conduct
 

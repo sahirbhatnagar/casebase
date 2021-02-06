@@ -1,0 +1,50 @@
+Package: casebase
+Type: Package
+Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via
+        Logistic and Multinomial Regression
+Version: 0.9.1
+Date: 2021-02-05
+Authors@R: c(
+  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
+  role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
+  person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
+  role = c("aut"), comment = c(ORCID = "0000-0003-4863-6035")),
+  person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
+  role = c("aut"), comment = "https://www.jesseislam.com/"),
+  person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
+  role = c("aut"), comment = "http://individual.utoronto.ca/osaarela/"),
+  person("James", "Hanley", email = "james.hanley@mcgill.ca",
+  role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
+  )
+Description: Fit flexible and fully parametric hazard regression models to survival data with single event type or multiple 
+    competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms 
+    of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the 
+    fitted hazard model, we provide functions to readily calculate and plot cumulative incidence and survival 
+    curves for a given covariate profile. This approach accommodates any log-linear hazard function of 
+    prognostic time, treatment, and covariates, and readily allows for non-proportionality. We also provide 
+    a plot method for visualizing incidence density via population time plots. Based on the case-base sampling 
+    approach of Hanley and Miettinen (2009) <DOI:10.2202/1557-4679.1125>, Saarela and Arjas (2015) <DOI:10.1111/sjos.12125>, 
+    and Saarela (2015) <DOI:10.1007/s10985-015-9352-x>.
+Depends: R (>= 3.5.0)
+Imports: data.table, ggplot2, methods, mgcv, stats, survival, VGAM
+License: MIT + file LICENSE
+LazyData: TRUE
+Suggests: eha, gbm, glmnet, knitr, rmarkdown, splines, colorspace,
+        visreg, testthat
+VignetteBuilder: knitr
+URL: http://sahirbhatnagar.com/casebase/
+BugReports: https://github.com/sahirbhatnagar/casebase/issues
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Encoding: UTF-8
+RemoteType: local
+RemoteUrl: /Users/maxturgeon/Documents/git_repos/casebase
+NeedsCompilation: no
+Packaged: 2021-02-06 02:38:40 UTC; maxturgeon
+Author: Sahir Bhatnagar [aut, cre] (http://sahirbhatnagar.com/),
+  Maxime Turgeon [aut] (<https://orcid.org/0000-0003-4863-6035>),
+  Jesse Islam [aut] (https://www.jesseislam.com/),
+  Olli Saarela [aut] (http://individual.utoronto.ca/osaarela/),
+  James Hanley [aut] (http://www.medicine.mcgill.ca/epidemiology/hanley/)
+Maintainer: Sahir Bhatnagar <sahir.bhatnagar@gmail.com>
+Built: R 4.0.2; ; 2021-02-06 02:38:41 UTC; unix

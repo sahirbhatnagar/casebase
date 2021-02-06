@@ -1,0 +1,371 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ### test-summary-score.R --- 
+> #----------------------------------------------------------------------
+> ## Author: Thomas Alexander Gerds
+> ## Created: Apr 12 2020 (07:48) 
+> ## Version: 
+> ## Last-Updated: Apr 12 2020 (09:46) 
+> ##           By: Thomas Alexander Gerds
+> ##     Update #: 2
+> #----------------------------------------------------------------------
+> ## 
+> ### Commentary: 
+> ## 
+> ### Change Log:
+> #----------------------------------------------------------------------
+> ## 
+> ### Code:
+> library(testthat)
+> library(survival)
+> library(riskRegression)
+riskRegression version 2020.12.08
+> library(data.table)
+> context("riskRegression")
+> # {{{ "binary"
+> d1 <- sampleData(n=112,outcome="binary")
+> d2 <- sampleData(n=80,outcome="binary")
+> f1 <- glm(Y~X2+X8,data=d1,family="binomial")
+> f2 <- glm(Y~X1+X2+X5+X8+X6,data=d1,family="binomial")
+> # with null and se
+> x <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2)
+> xa <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="auc")
+> xb <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="brier")
+> print(x)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC lower upper
+1: model.1 59.8  46.9  72.6
+2: model.2 79.9  70.1  89.6
+
+Results of model comparisons:
+
+     model reference delta.AUC lower upper     p
+1: model.2   model.1      20.1   8.9  31.3 4e-04
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+
+Metric Brier:
+
+Results by model:
+
+        model Brier lower upper
+1: Null model  23.7  21.3  26.2
+2:    model.1  24.0  21.0  27.0
+3:    model.2  18.7  13.2  24.2
+
+Results of model comparisons:
+
+     model  reference delta.Brier lower upper          p
+1: model.1 Null model         0.3  -3.3   3.8 0.88310005
+2: model.2 Null model        -5.0 -11.0   1.0 0.10004756
+3: model.2    model.1        -5.3  -9.8  -0.7 0.02253469
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(x)
+$score
+        Model          AUC (%)        Brier (%)
+1: Null model             50.0 23.7 [21.3;26.2]
+2:    model.1 59.8 [46.9;72.6] 24.0 [21.0;27.0]
+3:    model.2 79.9 [70.1;89.6] 18.7 [13.2;24.2]
+
+$contrasts
+     Model  Reference   delta AUC (%) p-value  delta Brier (%) p-value
+1: model.1 Null model                           0.3 [-3.3;3.8] 0.88310
+2: model.2 Null model                         -5.0 [-11.0;1.0] 0.10005
+3: model.2    model.1 20.1 [8.9;31.3] < 0.001 -5.3 [-9.8;-0.7] 0.02253
+
+> print(xa)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC lower upper
+1: model.1 59.8  46.9  72.6
+2: model.2 79.9  70.1  89.6
+
+Results of model comparisons:
+
+     model reference delta.AUC lower upper     p
+1: model.2   model.1      20.1   8.9  31.3 4e-04
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+> summary(xa)
+$score
+        Model          AUC (%)
+1: Null model             50.0
+2:    model.1 59.8 [46.9;72.6]
+3:    model.2 79.9 [70.1;89.6]
+
+$contrasts
+     Model Reference   delta AUC (%) p-value
+1: model.2   model.1 20.1 [8.9;31.3] < 0.001
+
+> print(xb)
+
+Metric Brier:
+
+Results by model:
+
+        model Brier lower upper
+1: Null model  23.7  21.3  26.2
+2:    model.1  24.0  21.0  27.0
+3:    model.2  18.7  13.2  24.2
+
+Results of model comparisons:
+
+     model  reference delta.Brier lower upper          p
+1: model.1 Null model         0.3  -3.3   3.8 0.88310005
+2: model.2 Null model        -5.0 -11.0   1.0 0.10004756
+3: model.2    model.1        -5.3  -9.8  -0.7 0.02253469
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(xb)
+$score
+        Model        Brier (%)
+1: Null model 23.7 [21.3;26.2]
+2:    model.1 24.0 [21.0;27.0]
+3:    model.2 18.7 [13.2;24.2]
+
+$contrasts
+     Model  Reference  delta Brier (%) p-value
+1: model.1 Null model   0.3 [-3.3;3.8] 0.88310
+2: model.2 Null model -5.0 [-11.0;1.0] 0.10005
+3: model.2    model.1 -5.3 [-9.8;-0.7] 0.02253
+
+> # without null with se
+> x <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,null.model=0L)
+> xa <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="auc",null.model=0L)
+> xb <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="brier",null.model=0L)
+> print(x)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC lower upper
+1: model.1 59.8  46.9  72.6
+2: model.2 79.9  70.1  89.6
+
+Results of model comparisons:
+
+     model reference delta.AUC lower upper     p
+1: model.2   model.1      20.1   8.9  31.3 4e-04
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+
+Metric Brier:
+
+Results by model:
+
+     model Brier lower upper
+1: model.1  24.0  21.0  27.0
+2: model.2  18.7  13.2  24.2
+
+Results of model comparisons:
+
+     model reference delta.Brier lower upper          p
+1: model.2   model.1        -5.3  -9.8  -0.7 0.02253469
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(x)
+$score
+     Model          AUC (%)        Brier (%)
+1: model.1 59.8 [46.9;72.6] 24.0 [21.0;27.0]
+2: model.2 79.9 [70.1;89.6] 18.7 [13.2;24.2]
+
+$contrasts
+     Model Reference   delta AUC (%) p-value  delta Brier (%) p-value
+1: model.2   model.1 20.1 [8.9;31.3] < 0.001 -5.3 [-9.8;-0.7] 0.02253
+
+> print(xa)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC lower upper
+1: model.1 59.8  46.9  72.6
+2: model.2 79.9  70.1  89.6
+
+Results of model comparisons:
+
+     model reference delta.AUC lower upper     p
+1: model.2   model.1      20.1   8.9  31.3 4e-04
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+> summary(xa)
+$score
+     Model          AUC (%)
+1:    <NA>             50.0
+2: model.1 59.8 [46.9;72.6]
+3: model.2 79.9 [70.1;89.6]
+
+$contrasts
+     Model Reference   delta AUC (%) p-value
+1: model.2   model.1 20.1 [8.9;31.3] < 0.001
+
+> print(xb)
+
+Metric Brier:
+
+Results by model:
+
+     model Brier lower upper
+1: model.1  24.0  21.0  27.0
+2: model.2  18.7  13.2  24.2
+
+Results of model comparisons:
+
+     model reference delta.Brier lower upper          p
+1: model.2   model.1        -5.3  -9.8  -0.7 0.02253469
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(xb)
+$score
+     Model        Brier (%)
+1: model.1 24.0 [21.0;27.0]
+2: model.2 18.7 [13.2;24.2]
+
+$contrasts
+     Model Reference  delta Brier (%) p-value
+1: model.2   model.1 -5.3 [-9.8;-0.7] 0.02253
+
+> # without null without se
+> x <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,null.model=0L,se.fit=0L)
+> xa <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="auc",null.model=0L,se.fit=0L)
+> xb <- Score(list(model.1=f1,model.2=f2),formula=Y~1,data=d2,metric="brier",null.model=0L,se.fit=0L)
+> print(x)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC
+1: model.1 59.8
+2: model.2 79.9
+
+Results of model comparisons:
+
+     model reference delta.AUC
+1: model.2   model.1      20.1
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+
+Metric Brier:
+
+Results by model:
+
+     model Brier
+1: model.1  24.0
+2: model.2  18.7
+
+Results of model comparisons:
+
+     model reference delta.Brier
+1: model.2   model.1        -5.3
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(x)
+$score
+     Model AUC (%) Brier (%)
+1: model.1    59.8      24.0
+2: model.2    79.9      18.7
+
+$contrasts
+     Model Reference delta AUC (%) delta Brier (%)
+1: model.2   model.1       20.0790            -5.3
+
+> print(xa)
+
+Metric AUC:
+
+Results by model:
+
+     model  AUC
+1: model.1 59.8
+2: model.2 79.9
+
+Results of model comparisons:
+
+     model reference delta.AUC
+1: model.2   model.1      20.1
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The higher AUC the better.
+> summary(xa)
+$score
+     Model AUC (%)
+1:    <NA>    50.0
+2: model.1    59.8
+3: model.2    79.9
+
+$contrasts
+     Model Reference delta AUC (%)
+1: model.2   model.1       20.0790
+
+> print(xb)
+
+Metric Brier:
+
+Results by model:
+
+     model Brier
+1: model.1  24.0
+2: model.2  18.7
+
+Results of model comparisons:
+
+     model reference delta.Brier
+1: model.2   model.1        -5.3
+
+NOTE: Values are multiplied by 100 and given in %.
+NOTE: The lower Brier the better.
+> summary(xb)
+$score
+     Model Brier (%)
+1: model.1      24.0
+2: model.2      18.7
+
+$contrasts
+     Model Reference delta Brier (%)
+1: model.2   model.1            -5.3
+
+> 
+> 
+> 
+> ######################################################################
+> ### test-summary-score.R ends here
+> 
+> proc.time()
+   user  system elapsed 
+  4.466   0.413   5.243 

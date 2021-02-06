@@ -95,7 +95,7 @@
 #'   This is done to avoid having all points along the upper edge of the plot
 #'   (because the subjects with the least amount of observation time are plotted
 #'   at the top of the y-axis). By randomly distributing them, we can get a
-#'   better sense of the inicidence density. The base series is sampled
+#'   better sense of the incidence density. The base series is sampled
 #'   horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 #' @importFrom data.table := copy
 #' @importFrom ggplot2 ggplot geom_point scale_fill_manual geom_ribbon aes

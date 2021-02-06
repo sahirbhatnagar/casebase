@@ -1,0 +1,124 @@
+* installing *source* package ‘riskRegression’ ...
+** package ‘riskRegression’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c AUCijFun.cpp -o AUCijFun.o
+In file included from AUCijFun.cpp:3:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c RcppExports.cpp -o RcppExports.o
+In file included from RcppExports.cpp:4:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c baseHaz.cpp -o baseHaz.o
+In file included from baseHaz.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c calcSeCSC.cpp -o calcSeCSC.o
+In file included from calcSeCSC.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c calcSeCox.cpp -o calcSeCox.o
+In file included from calcSeCox.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c colCumSum.cpp -o colCumSum.o
+In file included from colCumSum.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c colSumsCrossprod.cpp -o colSumsCrossprod.o
+In file included from colSumsCrossprod.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c confBand.cpp -o confBand.o
+In file included from confBand.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c iidCox.cpp -o iidCox.o
+In file included from iidCox.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c predictCIF.cpp -o predictCIF.o
+In file included from predictCIF.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c rowCumSum.cpp -o rowCumSum.o
+In file included from rowCumSum.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c rowSumsCrossprod.cpp -o rowSumsCrossprod.o
+In file included from rowSumsCrossprod.cpp:3:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/usr/local/opt/gettext/include -I/usr/local/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include   -fPIC  -Wall -g -O2  -c sweepCenterScale.cpp -o sweepCenterScale.o
+In file included from sweepCenterScale.cpp:2:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include/RcppArmadillo.h:34:
+In file included from /Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp.h:57:
+/Users/maxturgeon/Documents/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include/Rcpp/DataFrame.h:136:18: warning: unused variable 'data' [-Wunused-variable]
+            SEXP data = Parent::get__();
+                 ^
+1 warning generated.
+clang++ -mmacosx-version-min=10.13 -std=gnu++11 -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress -L/Library/Frameworks/R.framework/Resources/lib -L/usr/local/opt/gettext/lib -L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib -o riskRegression.so AUCijFun.o RcppExports.o baseHaz.o calcSeCSC.o calcSeCox.o colCumSum.o colSumsCrossprod.o confBand.o iidCox.o predictCIF.o rowCumSum.o rowSumsCrossprod.o sweepCenterScale.o -L/Library/Frameworks/R.framework/Resources/lib -lRlapack -L/Library/Frameworks/R.framework/Resources/lib -lRblas -L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/8.2.0 -L/usr/local/gfortran/lib -lgfortran -lquadmath -lm -F/Library/Frameworks/R.framework/.. -framework R -Wl,-framework -Wl,CoreFoundation
+ld: warning: directory not found for option '-L/usr/local/gfortran/lib/gcc/x86_64-apple-darwin18/8.2.0'
+installing to /Users/maxturgeon/Documents/git_repos/casebase/revdep/checks.noindex/riskRegression/old/riskRegression.Rcheck/00LOCK-riskRegression/00new/riskRegression/libs
+** R
+** data
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (riskRegression)

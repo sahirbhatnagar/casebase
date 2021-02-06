@@ -166,7 +166,7 @@ plot.default(linearRisk, splineRisk,
 abline(a = 0, b = 1, lty = 2, lwd = 2, col = 'red')
 ```
 
-These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential. 
+These last three models give similar information as the first three, i.e. the main predictors for the hazard are ```karno``` and ```celltype```, with treatment being non-significant. Moreover, by explicitly including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential. 
 
 Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for "case-base"):
 

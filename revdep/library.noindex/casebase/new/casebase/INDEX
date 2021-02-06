@@ -1,0 +1,22 @@
+CompRisk-class          An S4 class to store the output of
+                        fitSmoothHazard
+ERSPC                   Data on the men in the European Randomized
+                        Study of Prostate Cancer Screening
+absoluteRisk.CompRisk   Compute absolute risks using the fitted hazard
+                        function.
+bmtcrr                  Data on transplant patients
+brcancer                German Breast Cancer Study Group 2
+checkArgsEventIndicator
+                        Check that Event is in Correct Format
+eprchd                  Estrogen plus Progestin and the Risk of
+                        Coronary Heart Disease (eprchd)
+fitSmoothHazard         Fit smooth-in-time parametric hazard functions.
+hazardPlot              Plot Fitted Hazard Curve as a Function of Time
+plot.popTime            Population Time Plot
+plotHazardRatio         Plot Hazards and Hazard Ratios
+sampleCaseBase          Create case-base dataset for use in fitting
+                        parametric hazard functions
+simdat                  Simulated data under Weibull model with
+                        Time-Dependent Treatment Effect
+support                 Study to Understand Prognoses Preferences
+                        Outcomes and Risks of Treatment (SUPPORT)
