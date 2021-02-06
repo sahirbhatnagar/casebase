@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Introduction to casebase sampling</h1>
                         <h4 class="author">Maxime Turgeon</h4>
             
-            <h4 class="date">2021-02-05</h4>
+            <h4 class="date">2021-02-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/smoothHazard.Rmd"><code>vignettes/smoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>smoothHazard.Rmd</code></div>
@@ -505,7 +505,7 @@
      xlab <span class="op">=</span> <span class="st">"Linear"</span>, ylab <span class="op">=</span> <span class="st">"Splines"</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
-<p>These last three models give similar information as the first three, i.e. the main predictors for the hazard are <code>karno</code> and <code>celltype</code>, with treatment being non-significant. Moreover, by explicitely including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.</p>
+<p>These last three models give similar information as the first three, i.e. the main predictors for the hazard are <code>karno</code> and <code>celltype</code>, with treatment being non-significant. Moreover, by explicitly including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.</p>
 <p>Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for “case-base”):</p>
 <table class="table">
 <thead><tr>
@@ -739,8 +739,7 @@ trttest
 ## [8] base     
 ## 
 ## other attached packages:
-## [1] visreg_2.7.0        eha_2.8.5           survival_3.1-12    
-## [4] casebase_0.9.0.9000
+## [1] visreg_2.7.0    eha_2.8.5       survival_3.1-12 casebase_0.9.1 
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] highr_0.8         pillar_1.4.7      compiler_4.0.2    tools_4.0.2      
