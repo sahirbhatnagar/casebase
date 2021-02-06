@@ -1,3 +1,8 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Fixed redirected URL.
+
 ## Test environments
 
 * local macOS 10.16, R 4.0.2

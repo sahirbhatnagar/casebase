@@ -6,15 +6,15 @@
 <!-- badges: start -->
 
 [![Build
-Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase)
+Status](https://api.travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/github/sahirbhatnagar/casebase)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
+[![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 `casebase` is an R package for fitting flexible and fully parametric
@@ -128,26 +128,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2579  -0.1481  -0.1377  -0.1273   3.1543  
+#> -0.2479  -0.1482  -0.1373  -0.1268   3.1490  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                        -5.8423     0.3007 -19.431  < 2e-16 ***
-#> treatmentestPro                     0.6382     0.3772   1.692   0.0907 .  
-#> ns(time, df = 3)1                  -0.4667     0.3611  -1.292   0.1963    
-#> ns(time, df = 3)2                   0.7903     0.7331   1.078   0.2811    
-#> ns(time, df = 3)3                   1.4514     0.3431   4.230 2.34e-05 ***
-#> treatmentestPro:ns(time, df = 3)1   0.1975     0.4880   0.405   0.6857    
-#> treatmentestPro:ns(time, df = 3)2  -1.4337     0.9385  -1.528   0.1266    
-#> treatmentestPro:ns(time, df = 3)3  -1.1912     0.4844  -2.459   0.0139 *  
+#> (Intercept)                       -5.85621    0.30013 -19.512  < 2e-16 ***
+#> treatmentestPro                    0.66414    0.37783   1.758   0.0788 .  
+#> ns(time, df = 3)1                 -0.41110    0.35944  -1.144   0.2527    
+#> ns(time, df = 3)2                  0.77792    0.73254   1.062   0.2883    
+#> ns(time, df = 3)3                  1.37771    0.34131   4.036 5.43e-05 ***
+#> treatmentestPro:ns(time, df = 3)1  0.07468    0.48613   0.154   0.8779    
+#> treatmentestPro:ns(time, df = 3)2 -1.40359    0.94189  -1.490   0.1362    
+#> treatmentestPro:ns(time, df = 3)3 -1.06823    0.48634  -2.196   0.0281 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3612.7  on 32716  degrees of freedom
-#> AIC: 3628.7
+#> Residual deviance: 3613.4  on 32716  degrees of freedom
+#> AIC: 3629.4
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
