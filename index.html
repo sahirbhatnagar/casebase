@@ -182,26 +182,26 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.2579  -0.1481  -0.1377  -0.1273   3.1543  </span>
+<span class="co">#&gt; -0.2479  -0.1482  -0.1373  -0.1268   3.1490  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                                   Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                        -5.8423     0.3007 -19.431  &lt; 2e-16 ***</span>
-<span class="co">#&gt; treatmentestPro                     0.6382     0.3772   1.692   0.0907 .  </span>
-<span class="co">#&gt; ns(time, df = 3)1                  -0.4667     0.3611  -1.292   0.1963    </span>
-<span class="co">#&gt; ns(time, df = 3)2                   0.7903     0.7331   1.078   0.2811    </span>
-<span class="co">#&gt; ns(time, df = 3)3                   1.4514     0.3431   4.230 2.34e-05 ***</span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)1   0.1975     0.4880   0.405   0.6857    </span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)2  -1.4337     0.9385  -1.528   0.1266    </span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)3  -1.1912     0.4844  -2.459   0.0139 *  </span>
+<span class="co">#&gt; (Intercept)                       -5.85621    0.30013 -19.512  &lt; 2e-16 ***</span>
+<span class="co">#&gt; treatmentestPro                    0.66414    0.37783   1.758   0.0788 .  </span>
+<span class="co">#&gt; ns(time, df = 3)1                 -0.41110    0.35944  -1.144   0.2527    </span>
+<span class="co">#&gt; ns(time, df = 3)2                  0.77792    0.73254   1.062   0.2883    </span>
+<span class="co">#&gt; ns(time, df = 3)3                  1.37771    0.34131   4.036 5.43e-05 ***</span>
+<span class="co">#&gt; treatmentestPro:ns(time, df = 3)1  0.07468    0.48613   0.154   0.8779    </span>
+<span class="co">#&gt; treatmentestPro:ns(time, df = 3)2 -1.40359    0.94189  -1.490   0.1362    </span>
+<span class="co">#&gt; treatmentestPro:ns(time, df = 3)3 -1.06823    0.48634  -2.196   0.0281 *  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3635.4  on 32723  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3612.7  on 32716  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3628.7</span>
+<span class="co">#&gt; Residual deviance: 3613.4  on 32716  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3629.4</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></code></pre></div>
 <p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>.</p>
@@ -391,12 +391,12 @@
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/sahirbhatnagar/casebase"><img src="https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://travis-ci.org/github/sahirbhatnagar/casebase"><img src="https://api.travis-ci.org/sahirbhatnagar/casebase.svg?branch=master" alt="Build Status"></a></li>
 <li><a href="https://codecov.io/github/sahirbhatnagar/casebase?branch=master"><img src="https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg" alt="Coverage Status"></a></li>
 <li><a href="https://cran.r-project.org/package=casebase"><img src="https://www.r-pkg.org/badges/version/casebase?color=blue" alt="CRAN"></a></li>
-<li><a href="https://www.r-pkg.org/pkg/casebase"><img src="http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green" alt="Downloads"></a></li>
+<li><a href="https://www.r-pkg.org/pkg/casebase"><img src="https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green" alt="Downloads"></a></li>
 <li><a href="https://ci.appveyor.com/project/sahirbhatnagar/casebase"><img src="https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
 </ul>
 </div>
 </div>

@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Plot Hazards and Hazard Ratios</h1>
                         <h4 class="author">Sahir Rai Bhatnagar</h4>
             
-            <h4 class="date">2021-02-06</h4>
+            <h4 class="date">2021-02-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/plotsmoothHazard.Rmd"><code>vignettes/plotsmoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>plotsmoothHazard.Rmd</code></div>
@@ -150,23 +150,23 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1804  -0.1600  -0.1471  -0.1246   3.8475  </span>
+<span class="co">#&gt; -0.1801  -0.1601  -0.1476  -0.1245   3.8257  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;                         Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)            -104.5072    23.8591  -4.380 1.19e-05 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)1   65.1227    15.8241   4.115 3.87e-05 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2  186.0277    46.2281   4.024 5.72e-05 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3   39.0269     9.5634   4.081 4.49e-05 ***</span>
-<span class="co">#&gt; hormon                   -0.3553     0.1255  -2.830  0.00465 ** </span>
+<span class="co">#&gt;                        Estimate Std. Error z value Pr(&gt;|z|)    </span>
+<span class="co">#&gt; (Intercept)            -64.7753    14.0107  -4.623 3.78e-06 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)1  38.0764     9.1596   4.157 3.22e-05 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2 110.1617    27.3181   4.033 5.52e-05 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3  22.8441     5.5983   4.081 4.49e-05 ***</span>
+<span class="co">#&gt; hormon                  -0.3829     0.1256  -3.048   0.0023 ** </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3275.4  on 30194  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3285.4</span>
+<span class="co">#&gt; Residual deviance: 3276.1  on 30194  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3286.1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 10</span></code></pre></div>
 <div id="hazard-functions-on-separate-plots" class="section level3">
@@ -211,12 +211,12 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">plot_results</span><span class="op">$</span><span class="va">fit</span><span class="op">)</span>
 <span class="co">#&gt;           time hormon offset cens    visregFit    visregLwr    visregUpr</span>
-<span class="co">#&gt; 1 3.740789e-03      0      0    0 4.102991e-46 3.709697e-63 4.537982e-29</span>
-<span class="co">#&gt; 2 2.634095e+01      0      0    0 2.732053e-07 1.665172e-08 4.482489e-06</span>
-<span class="co">#&gt; 3 5.267816e+01      0      0    0 7.136386e-06 1.526971e-06 3.335230e-05</span>
-<span class="co">#&gt; 4 7.901537e+01      0      0    0 3.269394e-05 1.230684e-05 8.685364e-05</span>
-<span class="co">#&gt; 5 1.053526e+02      0      0    0 8.027896e-05 4.152737e-05 1.551919e-04</span>
-<span class="co">#&gt; 6 1.316898e+02      0      0    0 1.447946e-04 9.097477e-05 2.304537e-04</span></code></pre></div>
+<span class="co">#&gt; 1   0.05326367      0      0    0 7.386267e-29 7.242465e-39 7.532924e-19</span>
+<span class="co">#&gt; 2  26.63920357      0      0    0 3.792034e-07 2.556597e-08 5.624478e-06</span>
+<span class="co">#&gt; 3  53.22514348      0      0    0 8.442803e-06 1.892414e-06 3.766665e-05</span>
+<span class="co">#&gt; 4  79.81108338      0      0    0 3.633305e-05 1.404300e-05 9.400344e-05</span>
+<span class="co">#&gt; 5 106.39702329      0      0    0 8.629346e-05 4.537116e-05 1.641254e-04</span>
+<span class="co">#&gt; 6 132.98296319      0      0    0 1.524907e-04 9.679866e-05 2.402246e-04</span></code></pre></div>
 </div>
 <div id="ggplot2-version" class="section level3">
 <h3 class="hasAnchor">
@@ -265,26 +265,26 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1804  -0.1597  -0.1456  -0.1265   3.7648  </span>
+<span class="co">#&gt; -0.1802  -0.1605  -0.1462  -0.1255   3.7653  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                               Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                     -64.23      16.54  -3.883 0.000103 ***</span>
-<span class="co">#&gt; hormon                          -31.33      38.09  -0.823 0.410780    </span>
-<span class="co">#&gt; ns(log(time), df = 3)1           37.61      10.78   3.491 0.000482 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2          109.13      32.30   3.379 0.000728 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3           22.49       6.62   3.398 0.000680 ***</span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)1    20.51      25.02   0.820 0.412340    </span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)2    59.93      74.00   0.810 0.417978    </span>
-<span class="co">#&gt; hormon:ns(log(time), df = 3)3    12.83      15.32   0.837 0.402550    </span>
+<span class="co">#&gt; (Intercept)                    -57.097     14.642  -3.899 9.64e-05 ***</span>
+<span class="co">#&gt; hormon                         -28.348     33.679  -0.842 0.399960    </span>
+<span class="co">#&gt; ns(log(time), df = 3)1          33.176      9.596   3.457 0.000546 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)2          95.332     28.626   3.330 0.000868 ***</span>
+<span class="co">#&gt; ns(log(time), df = 3)3          19.372      5.768   3.358 0.000784 ***</span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)1   18.538     22.260   0.833 0.404954    </span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)2   54.350     65.478   0.830 0.406512    </span>
+<span class="co">#&gt; hormon:ns(log(time), df = 3)3   11.333     13.344   0.849 0.395724    </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3275.1  on 30191  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3291.1</span>
+<span class="co">#&gt; Residual deviance: 3274.0  on 30191  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3290</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 11</span></code></pre></div>
 <p>Now we can easily plot the hazard function over time for each <code>hormon</code> group:</p>
@@ -319,26 +319,26 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1869  -0.1616  -0.1419  -0.1375   4.0169  </span>
+<span class="co">#&gt; -0.1863  -0.1619  -0.1420  -0.1360   4.0239  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                               Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                   -58.3014    15.4574  -3.772 0.000162 ***</span>
-<span class="co">#&gt; estrec                         -0.5283     0.2814  -1.878 0.060447 .  </span>
-<span class="co">#&gt; ns(log(time), df = 3)1         33.0935    10.0950   3.278 0.001045 ** </span>
-<span class="co">#&gt; ns(log(time), df = 3)2         98.7155    30.1825   3.271 0.001073 ** </span>
-<span class="co">#&gt; ns(log(time), df = 3)3         19.3726     6.1534   3.148 0.001642 ** </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)1   0.3610     0.1884   1.916 0.055383 .  </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)2   0.9996     0.5405   1.849 0.064386 .  </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)3   0.2241     0.1156   1.939 0.052518 .  </span>
+<span class="co">#&gt; (Intercept)                   -85.6883    24.2364  -3.536 0.000407 ***</span>
+<span class="co">#&gt; estrec                         -0.8276     0.4397  -1.882 0.059815 .  </span>
+<span class="co">#&gt; ns(log(time), df = 3)1         51.7118    16.0424   3.223 0.001267 ** </span>
+<span class="co">#&gt; ns(log(time), df = 3)2        151.2305    47.0434   3.215 0.001306 ** </span>
+<span class="co">#&gt; ns(log(time), df = 3)3         30.3825     9.6759   3.140 0.001689 ** </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)1   0.5662     0.2964   1.910 0.056107 .  </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)2   1.5671     0.8425   1.860 0.062866 .  </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)3   0.3488     0.1805   1.933 0.053231 .  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3263.1  on 30191  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3279.1</span>
+<span class="co">#&gt; Residual deviance: 3264.2  on 30191  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3280.2</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 13</span></code></pre></div>
 <p>There are now many ways to plot the time-varying effect of estrogen receptor on the hazard function. The default is to plot the 10th, 50th and 90th quantiles of the <code>by</code> variable:</p>
@@ -429,34 +429,34 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.7386  -0.1617  -0.1331  -0.0960   4.0292  </span>
+<span class="co">#&gt; -0.6743  -0.1621  -0.1339  -0.0963   4.0591  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                                 Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                   -1.187e+02  3.342e+01  -3.550 0.000385 ***</span>
-<span class="co">#&gt; estrec                        -8.497e-01  5.567e-01  -1.526 0.126954    </span>
-<span class="co">#&gt; ns(log(time), df = 3)1         7.384e+01  2.216e+01   3.333 0.000860 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)2         2.142e+02  6.467e+01   3.312 0.000927 ***</span>
-<span class="co">#&gt; ns(log(time), df = 3)3         4.482e+01  1.350e+01   3.320 0.000899 ***</span>
-<span class="co">#&gt; horThyes                      -3.647e-01  1.299e-01  -2.807 0.005002 ** </span>
-<span class="co">#&gt; age                           -1.035e-02  9.263e-03  -1.118 0.263689    </span>
-<span class="co">#&gt; menostatPost                   2.925e-01  1.838e-01   1.592 0.111420    </span>
-<span class="co">#&gt; tsize                          7.180e-03  3.929e-03   1.827 0.067629 .  </span>
-<span class="co">#&gt; tgrade.L                       5.498e-01  1.906e-01   2.885 0.003916 ** </span>
-<span class="co">#&gt; tgrade.Q                      -2.013e-01  1.226e-01  -1.641 0.100816    </span>
-<span class="co">#&gt; pnodes                         5.701e-02  8.153e-03   6.993 2.69e-12 ***</span>
-<span class="co">#&gt; progrec                       -2.148e-03  5.724e-04  -3.752 0.000176 ***</span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)1  5.807e-01  3.746e-01   1.550 0.121089    </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)2  1.609e+00  1.066e+00   1.510 0.130933    </span>
-<span class="co">#&gt; estrec:ns(log(time), df = 3)3  3.610e-01  2.303e-01   1.568 0.116885    </span>
+<span class="co">#&gt; (Intercept)                   -5.650e+01  1.528e+01  -3.698 0.000218 ***</span>
+<span class="co">#&gt; estrec                        -4.112e-01  2.564e-01  -1.604 0.108725    </span>
+<span class="co">#&gt; ns(log(time), df = 3)1         3.218e+01  9.983e+00   3.223 0.001268 ** </span>
+<span class="co">#&gt; ns(log(time), df = 3)2         9.490e+01  2.983e+01   3.181 0.001469 ** </span>
+<span class="co">#&gt; ns(log(time), df = 3)3         1.932e+01  6.080e+00   3.177 0.001486 ** </span>
+<span class="co">#&gt; horThyes                      -3.537e-01  1.298e-01  -2.726 0.006416 ** </span>
+<span class="co">#&gt; age                           -1.048e-02  9.296e-03  -1.127 0.259712    </span>
+<span class="co">#&gt; menostatPost                   2.640e-01  1.848e-01   1.429 0.153020    </span>
+<span class="co">#&gt; tsize                          7.158e-03  3.989e-03   1.795 0.072723 .  </span>
+<span class="co">#&gt; tgrade.L                       5.344e-01  1.912e-01   2.795 0.005185 ** </span>
+<span class="co">#&gt; tgrade.Q                      -2.152e-01  1.226e-01  -1.756 0.079143 .  </span>
+<span class="co">#&gt; pnodes                         5.266e-02  7.928e-03   6.642 3.09e-11 ***</span>
+<span class="co">#&gt; progrec                       -2.252e-03  5.802e-04  -3.882 0.000104 ***</span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)1  2.828e-01  1.717e-01   1.647 0.099502 .  </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)2  7.784e-01  4.926e-01   1.580 0.114080    </span>
+<span class="co">#&gt; estrec:ns(log(time), df = 3)3  1.749e-01  1.051e-01   1.663 0.096248 .  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     Null deviance: 3354.9  on 30198  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3160.5  on 30183  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3192.5</span>
+<span class="co">#&gt; Residual deviance: 3164.0  on 30183  degrees of freedom</span>
+<span class="co">#&gt; AIC: 3196</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Number of Fisher Scoring iterations: 13</span></code></pre></div>
 <p>In the following plot, we show the time-varying effect of <code>estrec</code> while controlling for all other variables. By default, the other terms in the model are set to their median if the term is numeric or the most common category if the term is a factor. The values of the other variables are shown in the output:</p>
@@ -475,7 +475,7 @@
 <span class="co">#&gt; tsize: 25</span>
 <span class="co">#&gt; tgrade: II</span>
 <span class="co">#&gt; pnodes: 3</span>
-<span class="co">#&gt; progrec: 48</span>
+<span class="co">#&gt; progrec: 51</span>
 <span class="co">#&gt; offset: 0</span></code></pre></div>
 <p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-1.png" width="700"></p>
 <p>You can of course set the values of the other covariates as before, i.e. by specifying the <code>cond</code> argument as a named list to the <code>hazard.params</code> argument:</p>
@@ -495,7 +495,7 @@
 <span class="co">#&gt; tsize: 25</span>
 <span class="co">#&gt; tgrade: III</span>
 <span class="co">#&gt; pnodes: 3</span>
-<span class="co">#&gt; progrec: 48</span>
+<span class="co">#&gt; progrec: 51</span>
 <span class="co">#&gt; offset: 0</span></code></pre></div>
 <p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-2-1.png" width="700"></p>
 </div>
@@ -541,14 +541,14 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Deviance Residuals: </span>
 <span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.1650  -0.1495  -0.1454  -0.1310   3.1789  </span>
+<span class="co">#&gt; -0.1679  -0.1490  -0.1453  -0.1316   3.1816  </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Coefficients:</span>
 <span class="co">#&gt;                      Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)          -6.08202    0.17496 -34.762   &lt;2e-16 ***</span>
-<span class="co">#&gt; treatmentestPro       0.61384    0.22426   2.737   0.0062 ** </span>
-<span class="co">#&gt; time                  0.10932    0.04754   2.299   0.0215 *  </span>
-<span class="co">#&gt; treatmentestPro:time -0.13097    0.06343  -2.065   0.0389 *  </span>
+<span class="co">#&gt; (Intercept)          -6.09132    0.17549 -34.710   &lt;2e-16 ***</span>
+<span class="co">#&gt; treatmentestPro       0.60864    0.22408   2.716   0.0066 ** </span>
+<span class="co">#&gt; time                  0.11562    0.04773   2.422   0.0154 *  </span>
+<span class="co">#&gt; treatmentestPro:time -0.13528    0.06331  -2.137   0.0326 *  </span>
 <span class="co">#&gt; ---</span>
 <span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
 <span class="co">#&gt; </span>
