@@ -636,11 +636,10 @@ plot.singleEventCB <- function(x, ...,
             ci = ci, ci.lvl = ci.lvl
         )
 
-        plotHazardRatio(
+        tt <- plotHazardRatio(
             x = x, newdata = newdata, newdata2 = newdata2, ci = ci,
             ci.lvl = ci.lvl, ci.col = ci.col, rug = rug, xvar = xvar, ...
         )
-        tt <- NULL
     }
     invisible(tt)
 }

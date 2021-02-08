@@ -1,3 +1,7 @@
+# casebase 0.9.1.9999
+
+* Fixed issue 143 and return the data invisibly with `plot.singleEventCB()` when `type = "hr"`.
+
 # casebase 0.9.1
 
 * Fixed issue with `plot.singleEventCB()` when `visreg` package is not loaded.
