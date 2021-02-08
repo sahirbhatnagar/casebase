@@ -75,7 +75,7 @@ function accounts for the possible time-varying exposure effects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1.9999</span>
       </span>
     </div>
 
@@ -379,7 +379,20 @@ visreg. The R Journal, 9: 56-71.</p>
 <span class='co'># see data used to create plot</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>result</span><span class='op'>)</span>
 <span class='op'>}</span>
-</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt; NULL</div></pre>
+</div><div class='img'><img src='plot.singleEventCB-1.png' alt='' width='700' height='433' /></div><div class='output co'>#&gt;         treat eventtime log_hazard_ratio standarderror hazard_ratio lowerbound
+#&gt; 5%  treatment 0.3488444        0.5617254     0.7422200     1.753696  0.4094260
+#&gt; 6%  treatment 0.3902785        0.6649501     0.7012281     1.944394  0.4919237
+#&gt; 7%  treatment 0.4148271        0.7239973     0.6788513     2.062662  0.5452413
+#&gt; 8%  treatment 0.4512202        0.8086798     0.6482910     2.244942  0.6300556
+#&gt; 9%  treatment 0.4636149        0.8367497     0.6385929     2.308850  0.6604266
+#&gt; 10% treatment 0.4862850        0.8870854     0.6217826     2.428043  0.7177844
+#&gt;     upperbound
+#&gt; 5%    7.511610
+#&gt; 6%    7.685473
+#&gt; 7%    7.803102
+#&gt; 8%    7.998922
+#&gt; 9%    8.071737
+#&gt; 10%   8.213317</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
