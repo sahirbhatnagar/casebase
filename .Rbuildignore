@@ -3,7 +3,6 @@
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
 ^README\.md$       # An Rmarkdown file used to generate README.md
 ^cran-comments\.md$ # Comments for CRAN submission
-^\.travis\.yml$
 ^cr\.R$
 ^exercises5\.R$
 ^newpoptime\.R$
@@ -41,3 +40,4 @@
 ^README\.Rmd$
 ^CRAN-RELEASE$
 ^tests/testthat/_snaps$
+^\.github$
