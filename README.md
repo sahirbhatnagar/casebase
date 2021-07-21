@@ -5,8 +5,6 @@
 
 <!-- badges: start -->
 
-[![Build
-Status](https://api.travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/github/sahirbhatnagar/casebase)
 [![Coverage
 Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
@@ -63,7 +61,7 @@ example usage of the functions. This includes
 6.  [Plot Cumulative Incidence and Survival
     Curves](http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html)
 
-## useR\! 2019 Toulouse - Presentation
+## useR! 2019 Toulouse - Presentation
 
 [![Jesse
 useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
@@ -128,26 +126,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2479  -0.1482  -0.1373  -0.1268   3.1490  
+#> -0.2560  -0.1483  -0.1385  -0.1264   3.1525  
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                       -5.85621    0.30013 -19.512  < 2e-16 ***
-#> treatmentestPro                    0.66414    0.37783   1.758   0.0788 .  
-#> ns(time, df = 3)1                 -0.41110    0.35944  -1.144   0.2527    
-#> ns(time, df = 3)2                  0.77792    0.73254   1.062   0.2883    
-#> ns(time, df = 3)3                  1.37771    0.34131   4.036 5.43e-05 ***
-#> treatmentestPro:ns(time, df = 3)1  0.07468    0.48613   0.154   0.8779    
-#> treatmentestPro:ns(time, df = 3)2 -1.40359    0.94189  -1.490   0.1362    
-#> treatmentestPro:ns(time, df = 3)3 -1.06823    0.48634  -2.196   0.0281 *  
+#> (Intercept)                        -5.8848     0.3020 -19.489  < 2e-16 ***
+#> treatmentestPro                     0.6340     0.3794   1.671   0.0947 .  
+#> ns(time, df = 3)1                  -0.4583     0.3639  -1.259   0.2079    
+#> ns(time, df = 3)2                   0.8832     0.7374   1.198   0.2311    
+#> ns(time, df = 3)3                   1.4435     0.3460   4.172 3.02e-05 ***
+#> treatmentestPro:ns(time, df = 3)1   0.1461     0.4913   0.297   0.7661    
+#> treatmentestPro:ns(time, df = 3)2  -1.3828     0.9460  -1.462   0.1438    
+#> treatmentestPro:ns(time, df = 3)3  -1.1537     0.4895  -2.357   0.0184 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3613.4  on 32716  degrees of freedom
-#> AIC: 3629.4
+#> Residual deviance: 3613.7  on 32716  degrees of freedom
+#> AIC: 3629.7
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
@@ -233,20 +231,20 @@ inherits from `vglm`.
 
 This package is makes use of several existing packages including:
 
-  - [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
+-   [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
     multinomial logistic regression models
-  - [`survival`](https://cran.r-project.org/package=survival) for
+-   [`survival`](https://cran.r-project.org/package=survival) for
     survival models
-  - [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
+-   [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
     the population time plots
-  - [`data.table`](https://cran.r-project.org/package=data.table) for
+-   [`data.table`](https://cran.r-project.org/package=data.table) for
     efficient handling of large datasets
 
 Other packages with similar objectives but different parametric forms:
 
-  - [`rstpm2`](https://cran.r-project.org/package=rstpm2)
-  - [`flexsurv`](https://cran.r-project.org/package=flexsurv)
-  - [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
+-   [`rstpm2`](https://cran.r-project.org/package=rstpm2)
+-   [`flexsurv`](https://cran.r-project.org/package=flexsurv)
+-   [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
 
 ## Citation
 
@@ -280,9 +278,9 @@ citation('casebase')
 
 ## Contact
 
-  - Issues: <https://github.com/sahirbhatnagar/casebase/issues>
-  - Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
-  - e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
+-   Issues: <https://github.com/sahirbhatnagar/casebase/issues>
+-   Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
+-   e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
 
 ## Latest news
 

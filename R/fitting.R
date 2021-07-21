@@ -138,7 +138,7 @@ fitSmoothHazard <- function(formula, data, time,
     }
   } else {
     # If class is cbData we no longer have the original data
-    originalData <- NULL
+    originalData <- data.frame() # Empty data.frame
     sampleData <- data
   }
 

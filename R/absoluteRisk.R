@@ -117,6 +117,7 @@ absoluteRisk <- function(object, time, newdata,
         if (missing(n.trees)) stop("n.trees is missing")
     } else n.trees <- NULL
     if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
+        check_original_data(object$originalData)
         newdata <- if (is.null(object$matrix.fit)) {
             get_typical(object$originalData)
         } else apply(object$originalData$x, 2, median, na.rm = TRUE)
@@ -137,6 +138,7 @@ absoluteRisk <- function(object, time, newdata,
         }
     } else {
         if (missing(time)) {
+            check_original_data(object$originalData)
             # If only time is missing, compute risk for each row of newdata
             # at equidistant points
             max_time <- if (is.null(object$matrix.fit)) {
@@ -155,6 +157,7 @@ absoluteRisk <- function(object, time, newdata,
 # Currently, this is only called when we want the survival probabilities
 # at failure times for the original data
 estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
+    check_original_data(object$originalData)
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
     # Create risk variable and make sure it doesn't already exist
@@ -222,11 +225,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                   s, n.trees, type, addZero, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if (is.null(object$originalData)) {
-            stop(paste("Cannot estimate the mean absolute risk without",
-                       "the original data. See documentation."),
-                 call. = FALSE)
-        }
+        check_original_data(object$originalData)
         newdata <- object$originalData
         unselectTime <- (names(newdata) != object$timeVar)
         newdata <- subset(newdata, select = unselectTime)
