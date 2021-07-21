@@ -362,6 +362,19 @@ detect_interaction <- function(formula) {
   any(orders > 1)
 }
 
+check_original_data <- function(data) {
+  if (is.list(data) && length(data) == 2) {
+    return(check_original_data(data$x))
+  }
+  if (is.null(data) || nrow(data) == 0) {
+    stop(paste("Cannot get typical value for",
+               deparse(substitute(data)),
+               "\nYou probably used sampleCaseBase directly."),
+         call. = FALSE)
+  }
+  invisible(TRUE)
+}
+
 # Get typical covariate profile from dataset
 #' @importFrom stats median
 get_typical <- function(data) {

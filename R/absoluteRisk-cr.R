@@ -11,11 +11,7 @@ absoluteRisk.CompRisk <- function(object, time, newdata,
 
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if (is.null(object@originalData)) {
-            stop(paste("Cannot estimate the mean absolute risk without",
-                       "the original data. See documentation."),
-                 call. = FALSE)
-        }
+        check_original_data(object@originalData)
         newdata <- object@originalData
         unselectTime <- (names(newdata) != object@timeVar)
         newdata <- subset(newdata, select = unselectTime)

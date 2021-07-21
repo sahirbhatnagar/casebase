@@ -47,3 +47,23 @@ test_that("Errors in fitting when family is not glm or glmnet", {
     expect_error(fitSmoothHazard(event ~ Z, data = DF, time = "ftime",
                                  family = "other_family"))
 })
+
+# Sample first then fit----
+# See issue 149
+dta <- data.frame(
+    time = exp(rnorm(100)),
+    event = sample(0:2, size = 100, replace = TRUE)
+)
+
+# create dataset with casebase samples
+cbdata <- sampleCaseBase(data = dta, time = "time", event = "event",
+                         comprisk = TRUE)
+
+#try to fit the smooth hazard model for competing events
+test_that("No error when sampling first then fitting", {
+    fit <- try(fitSmoothHazard(event ~ time, data = cbdata, time = "time"),
+               silent = TRUE)
+
+    expect_false(inherits(fit, "try-error"))
+})
+
