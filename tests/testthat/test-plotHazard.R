@@ -1,4 +1,3 @@
-context("plotHazard")
 skip_if_not_installed("glmnet")
 skip_if_not_installed("mgcv")
 skip_if_not_installed("gbm")

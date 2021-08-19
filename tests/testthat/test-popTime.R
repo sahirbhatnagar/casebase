@@ -1,5 +1,3 @@
-context("popTime methods")
-
 nobs <- 500
 
 # simulation parameters

@@ -1,5 +1,3 @@
-context("GAMs")
-
 # Skip tests if mgcv is not installed
 testthat::skip_if_not_installed("mgcv")
 

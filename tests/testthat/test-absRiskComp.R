@@ -1,5 +1,3 @@
-context("Absolute risk-Comp risk")
-
 # Handling warning messages coming from montecarlo integration
 handler_validmc <- function(msg) {
     if (any(grepl("out of range", msg))) invokeRestart("muffleWarning")

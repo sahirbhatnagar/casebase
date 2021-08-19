@@ -1,5 +1,3 @@
-context("Matrix interface")
-
 N <- 1000; p <- 30
 nzc <- 0.33 * p
 x <- matrix(rnorm(N * p), N, p)

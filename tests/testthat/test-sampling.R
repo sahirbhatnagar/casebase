@@ -1,5 +1,3 @@
-context("Sampling")
-
 # Create simulated data with competing risks----
 nobs <- 500
 tlim <- 10

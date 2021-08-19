@@ -1,5 +1,3 @@
-context("Fitting-Comp risk")
-
 n <- 100
 alp <- 0.05
 lambda10 <- 1

@@ -1,5 +1,3 @@
-context("glmnet")
-
 # Skip tests if gbm is not installed
 testthat::skip_if_not_installed("glmnet")
 

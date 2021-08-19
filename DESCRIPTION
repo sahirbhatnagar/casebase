@@ -45,7 +45,7 @@ Suggests:
     progress,
     rmarkdown,
     splines,
-    testthat,
+    testthat (>= 3.0.0),
     visreg
 VignetteBuilder: knitr
 URL: http://sahirbhatnagar.com/casebase/
