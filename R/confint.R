@@ -59,31 +59,29 @@ confint.absRiskCB <- function(object, parm, level = 0.95,
         return(abs_tmp[,-1])
     })
 
-    # Clean output
-    if (nrow(newdata) > 1) {
-        # Compute quantiles
-        quant_tmp <- lapply(seq_len(nrow(newdata)), function(i) {
-            mat <- sapply(abs_boot, function(elem) elem[,i])
-            extract_quantiles(mat, level)
-            })
-        lower_ci <- sapply(quant_tmp, function(elem) elem[1,])
-        lower_ci <- cbind(times, lower_ci)
-        colnames(lower_ci)[1] <- "time"
-        upper_ci <- sapply(quant_tmp, function(elem) elem[2,])
-        upper_ci <- cbind(times, upper_ci)
-        colnames(upper_ci)[1] <- "time"
-        lower_name <- create_perc(0.5 - 0.5*level)
-        upper_name <- create_perc(0.5 + 0.5*level)
+    # Clean output----
+    # Compute quantiles
+    out <- lapply(seq_len(nrow(newdata)), function(i) {
+        mat <- sapply(abs_boot, function(elem) {
+            # If dim is NULL, there is only one covariate profile
+            if (is.null(dim(elem))) elem else elem[,i]})
+        mat <- extract_quantiles(mat, level)
+        risk_est <- object[,c(1, 1 + i)]
+        colnames(risk_est)[2] <- "Estimate"
+        tmp <- data.frame(cbind(risk_est, t(mat)),
+                          row.names = NULL,
+                          check.names = FALSE)
+        # Add back covariate profile
+        cov_prof <- newdata[i,]
+        rownames(tmp) <- NULL
+        rownames(cov_prof) <- NULL
 
-        out <- list(object, lower_ci, upper_ci)
-        names(out) <- c("Estimate", lower_name, upper_name)
+        return(cbind(tmp, cov_prof))
+    })
 
-    } else {
-        # If only one row, add quantiles next to estimates
-        abs_boot <- simplify2array(abs_boot)
-        out <- extract_quantiles(abs_boot, level)
-        out <- cbind(object, t(out))
-    }
+    if (length(out) > 1) {
+        out <- do.call("rbind", out)
+    } else out <- out[[1]]
 
     return(out)
 }
@@ -109,8 +107,8 @@ extract_quantiles <- function(mat, level) {
     })
 }
 
-create_perc <- function(x) {
-    paste0(format(100*x, scientific = FALSE, trim = TRUE,
-                  digits = max(2L, getOption("digits"))),
-           "%")
-}
+# create_perc <- function(x) {
+#     paste0(format(100*x, scientific = FALSE, trim = TRUE,
+#                   digits = max(2L, getOption("digits"))),
+#            "%")
+# }
