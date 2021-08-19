@@ -10,7 +10,7 @@
 #' covariate profiles and/or time points).
 #'
 #' @param object Output of function \code{absoluteRisk}.
-#' @param fit_obj Output of function \code{fitSmoothHazard} that was used to
+#' @param parm Output of function \code{fitSmoothHazard} that was used to
 #'   compute \code{object}.
 #' @param level The confidence level required.
 #' @param nboot The number of bootstrap samples to use.
@@ -21,11 +21,11 @@
 #'   three components.
 #' @importFrom stats confint
 #' @export
-confint.absRiskCB <- function(object, fit_obj, level = 0.95,
+confint.absRiskCB <- function(object, parm, level = 0.95,
                               nboot = 500, ...) {
     # Relies on MLE theory for glm
-    if (!inherits(fit_obj, "glm")) {
-        stop(paste("fit_obj is of class", class(fit_obj)[1],
+    if (!inherits(parm, "glm")) {
+        stop(paste("fit_obj is of class", class(parm)[1],
                    "\naconfint should be used with a fit_obj of class glm"),
              call. = TRUE)
     }
@@ -38,8 +38,8 @@ confint.absRiskCB <- function(object, fit_obj, level = 0.95,
     } else message("Waiting for profiling to be done...")
 
     # Extract coef + vcov matrix
-    mu <- coef(fit_obj)
-    sigma <- vcov(fit_obj)
+    mu <- coef(parm)
+    sigma <- vcov(parm)
 
     # Sample from multivariate normal
     betas_boot <- generate_mvnorm(nboot, mu, sigma)
@@ -47,7 +47,7 @@ confint.absRiskCB <- function(object, fit_obj, level = 0.95,
     newdata <- attr(object, "newdata")
     times <- object[,"time"]
     # Create placeholder for replacing coeffs
-    fit_obj_tmp <- fit_obj
+    fit_obj_tmp <- parm
 
     # For each bootstrap sample, rerun absRisk computation
     abs_boot <- lapply(seq_len(nboot), function(b) {
@@ -72,8 +72,8 @@ confint.absRiskCB <- function(object, fit_obj, level = 0.95,
         upper_ci <- sapply(quant_tmp, function(elem) elem[2,])
         upper_ci <- cbind(times, upper_ci)
         colnames(upper_ci)[1] <- "time"
-        lower_name <- paste0(100*(0.5 - 0.5*level), "%")
-        upper_name <- paste0(100*(0.5 + 0.5*level), "%")
+        lower_name <- create_perc(0.5 - 0.5*level)
+        upper_name <- create_perc(0.5 + 0.5*level)
 
         out <- list(object, lower_ci, upper_ci)
         names(out) <- c("Estimate", lower_name, upper_name)
@@ -85,11 +85,11 @@ confint.absRiskCB <- function(object, fit_obj, level = 0.95,
         out <- cbind(object, t(out))
     }
 
-
     return(out)
 }
 
 # Helper Functions----
+#' @importFrom stats rnorm
 generate_mvnorm <- function(n, mu, sigma) {
     p <- ncol(sigma)
     # Compute sqrt of sigma
@@ -107,4 +107,10 @@ extract_quantiles <- function(mat, level) {
         quantile(row, probs = c(0.5 - 0.5*level,
                                 0.5 + 0.5*level))
     })
+}
+
+create_perc <- function(x) {
+    paste0(format(100*x, scientific = FALSE, trim = TRUE,
+                  digits = max(2L, getOption("digits"))),
+           "%")
 }

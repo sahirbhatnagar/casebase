@@ -4,12 +4,12 @@
 \alias{confint.absRiskCB}
 \title{Compute confidence intervals for risks}
 \usage{
-\method{confint}{absRiskCB}(object, fit_obj, level = 0.95, nboot = 500, ...)
+\method{confint}{absRiskCB}(object, parm, level = 0.95, nboot = 500, ...)
 }
 \arguments{
 \item{object}{Output of function \code{absoluteRisk}.}
 
-\item{fit_obj}{Output of function \code{fitSmoothHazard} that was used to
+\item{parm}{Output of function \code{fitSmoothHazard} that was used to
 compute \code{object}.}
 
 \item{level}{The confidence level required.}
