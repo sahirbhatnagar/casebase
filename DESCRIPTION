@@ -37,15 +37,16 @@ Imports:
 License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
+    colorspace,
     eha,
     gbm,
     glmnet,
     knitr,
+    progress,
     rmarkdown,
     splines,
-    colorspace,
-    visreg,
-    testthat
+    testthat,
+    visreg
 VignetteBuilder: knitr
 URL: http://sahirbhatnagar.com/casebase/
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
