@@ -23,11 +23,19 @@
 #' @export
 confint.absRiskCB <- function(object, parm, level = 0.95,
                               nboot = 500, ...) {
+    # Parse inputs----
+    if (length(level) > 1 && (level > 1 || level < 0)) {
+        stop("level must be between 0 and 1", call. = FALSE)
+    }
+    nboot <- floor(nboot)
+    if (!is.finite(nboot) || nboot < 1) {
+        stop("nboot must be a positive integer")
+    }
     # Relies on MLE theory for glm
     if (!inherits(parm, "glm")) {
         stop(paste("fit_obj is of class", class(parm)[1],
                    "\naconfint should be used with a fit_obj of class glm"),
-             call. = TRUE)
+             call. = FALSE)
     }
     # If available, add progress bar
     prog_bar <- requireNamespace("progress", quietly = TRUE)
@@ -37,6 +45,7 @@ confint.absRiskCB <- function(object, parm, level = 0.95,
                                          total = nboot)
     } else message("Waiting for profiling to be done...")
 
+    # Parametric bootstrap----
     # Extract coef + vcov matrix
     mu <- coef(parm)
     sigma <- vcov(parm)
@@ -66,8 +75,9 @@ confint.absRiskCB <- function(object, parm, level = 0.95,
             # If dim is NULL, there is only one covariate profile
             if (is.null(dim(elem))) elem else elem[,i]})
         mat <- extract_quantiles(mat, level)
+        rownames(mat) <- c("conf.low", "conf.high")
         risk_est <- object[,c(1, 1 + i)]
-        colnames(risk_est)[2] <- "Estimate"
+        colnames(risk_est)[2] <- "estimate"
         tmp <- data.frame(cbind(risk_est, t(mat)),
                           row.names = NULL,
                           check.names = FALSE)
@@ -79,6 +89,7 @@ confint.absRiskCB <- function(object, parm, level = 0.95,
         return(cbind(tmp, cov_prof))
     })
 
+    # If there is more than one covariate profile, bind rows
     if (length(out) > 1) {
         out <- do.call("rbind", out)
     } else out <- out[[1]]
