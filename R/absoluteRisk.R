@@ -316,5 +316,6 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     # Add class
     class(output) <- c("absRiskCB", class(output))
     attr(output, "type") <- type
+    attr(output, "newdata") <- newdata
     return(output)
 }

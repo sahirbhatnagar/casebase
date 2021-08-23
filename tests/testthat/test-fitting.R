@@ -1,5 +1,3 @@
-context("Fitting")
-
 n <- 100
 alp <- 0.05
 lambda_t0 <- 1
