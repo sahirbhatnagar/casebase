@@ -1,12 +1,7 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* Fixed redirected URL.
-
 ## Test environments
 
-* local macOS 10.16, R 4.0.2
-* ubuntu 16.04 (on travis-ci), R-release, R-devel
+* local macOS 11.5, R 4.1.0
+* ubuntu 20.04 (on GH-Actions), R-release, R-devel
 * appveyor Windows Server 2012 R2 x64, R-devel
 * win-builder (devel and release)
 

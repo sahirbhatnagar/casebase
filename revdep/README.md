@@ -18,13 +18,6 @@
 |:----------|:-----|:------|:--|
 |casebase   |0.9.1 |0.10.1 |*  |
 |data.table |NA    |1.14.2 |*  |
-|rlang      |NA    |0.4.11 |*  |
 
 # Revdeps
-
-## Failed to check (1)
-
-|package        |version    |error |warning |note |
-|:--------------|:----------|:-----|:-------|:----|
-|riskRegression |2021.10.10 |1     |        |1    |
 
