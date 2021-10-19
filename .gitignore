@@ -12,3 +12,5 @@ HR_ci.R
 doc
 Meta
 README.html
+revdep/checks.noindex
+revdep/library.noindex

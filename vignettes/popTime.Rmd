@@ -83,11 +83,7 @@ It is important to note that the red points are random distributed across the gr
 Often the observations in a study are in specific groups such as treatment arms. It may be of interest to compare the population time plots between these two groups. Here we compare the control group and the screening group. We create exposure stratified plots by specifying the `exposure` argument in the `popTime` function:
 
 ```{r}
-# Appropriately label the factor variable so that these labels appear in the 
 # stratified population time plot
-ERSPC$ScrArm <- factor(ERSPC$ScrArm, 
-                       levels = c(0,1), 
-                       labels = c("Control group", "Screening group"))
 pt_object_strat <- casebase::popTime(ERSPC, 
                                      event = "DeadOfPrCa", 
                                      exposure = "ScrArm")
@@ -130,8 +126,6 @@ plot(pt_object_strat,
 ```
 
 Note that the `theme.params` argument is a list of arguments passed to the [`ggplot2::theme()`](https://ggplot2.tidyverse.org/reference/theme.html) function. 
-
-
 
 # Stem Cell Data
 
@@ -199,7 +193,6 @@ plot(popTimeData,
      comprisk = TRUE)
 ```
 
-
 ## Plot the Competing event
 
 We specify the `add.competing.event = TRUE` in order to also plot the competing event. Note, that like the case series, the competing event is sampled randomly on the vertical axis in order to see the incidence density.  
@@ -222,7 +215,6 @@ plot(popTimeData,
      comprisk = TRUE)
 ```
 
-
 ## Stratified by Disease
 
 Next we stratify by disease; lymphoblastic or myeloblastic leukemia, abbreviated as ALL and AML, respectively. We must specify the `exposure` variable. Furthermore it is important to properly label the factor variable corresponding to the exposure variable; this will ensure proper labeling of the panels:
@@ -238,7 +230,6 @@ plot(popTimeData,
      add.competing.event = TRUE,
      comprisk = TRUE)
 ```
-
 
 ## Change color points and legend labels
 
@@ -261,7 +252,6 @@ plot(popTimeData,
      )
 ```
 
-
 # Veteran Data
 
 Below are the steps to create a population time plot for the Veterans' Administration Lung Cancer study (see `help("veteran", package = "survival")` for more details on this dataset). 
@@ -276,7 +266,6 @@ plot(popTimeData)
 ```
 
 We can see in this example that the dots are fairly evenly spread out. That is, we don't see any particular clusters of red dots indicating that perhaps a constant hazard assumption would be appropriate.
-
 
 ## Stratified by treatment population time plot
 
@@ -304,7 +293,6 @@ Again, we simply pass this object to the `plot` function to get an exposure stra
 plot(popTimeData)
 ```
 
-
 # Stanford Heart Transplant Data
 
 Population time plots also allow you to explain patterns in the data. We use the Stanford Heart Transplant Data to demonstrate this. See `help("heart", package = "survival")` for details about this dataset. For this example, we must create a time variable, because we only have the start and stop times. This is a good example to show that population time plots are also valid for this type of data (i.e. subjects who have different entry times) because we are only plotting the time spent in the study on the x-axis.
@@ -326,10 +314,7 @@ popTimeData <- popTime(data = heart, exposure = "transplant")
 plot(popTimeData)
 ```
 
-
 In the plot above we see that those who didn't receive transplant died very early (many red dots at the start of the x-axis). Those who did receive the transplant have much better survival (as indicated by the grey area). Does this show clear evidence that getting a heart transplant increases survival? Not exactly. This is a classic case of confounding by indication. In this study, the doctors only gave a transplant to the healthier patients because they had a better chance of surviving surgery.
-
-
 
 # NCCTG Lung Cancer Data
 
@@ -351,7 +336,6 @@ popTimeData <- popTime(data = cancer)
 plot(popTimeData)
 ```
 
-
 ## Stratified by gender
 
 We can also switch back to the default `ggplot2` theme by specifying `casebase.theme = FALSE`:
@@ -362,7 +346,6 @@ popTimeData <- popTime(data = cancer, exposure = "sex")
 plot(popTimeData,
      casebase.theme = FALSE)
 ```
-
 
 # Simulated Data Example
 
@@ -420,12 +403,8 @@ plot(popTimeData,
      facet.params = list(ncol = 2)) + theme_linedraw()
 ```
 
-
 # Session information
 
 ```{r echo=FALSE, eval=TRUE}
-print(sessionInfo(), locale = F)
+print(sessionInfo(), locale = FALSE)
 ```
-
-
-
