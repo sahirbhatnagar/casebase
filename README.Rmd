@@ -146,7 +146,6 @@ casebase:
   singleEventCB:
     - glm
     - gam
-    - gbm
     - cv.glmnet
   CompRisk:
     - vglm

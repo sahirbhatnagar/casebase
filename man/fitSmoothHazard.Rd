@@ -22,7 +22,7 @@ fitSmoothHazard.fit(
   formula_time,
   time,
   event,
-  family = c("glm", "gbm", "glmnet"),
+  family = c("glm", "glmnet"),
   censored.indicator,
   ratio = 100,
   ...

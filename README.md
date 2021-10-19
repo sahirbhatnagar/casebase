@@ -13,6 +13,7 @@ Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.s
 status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/sahirbhatnagar/casebase/workflows/R-CMD-check/badge.svg)](https://github.com/sahirbhatnagar/casebase/actions)
 <!-- badges: end -->
 
 `casebase` is an R package for fitting flexible and fully parametric
@@ -126,26 +127,35 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2560  -0.1483  -0.1385  -0.1264   3.1525  
+#> -0.2441  -0.1474  -0.1368  -0.1272   3.1398  
 #> 
 #> Coefficients:
-#>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                        -5.8848     0.3020 -19.489  < 2e-16 ***
-#> treatmentestPro                     0.6340     0.3794   1.671   0.0947 .  
-#> ns(time, df = 3)1                  -0.4583     0.3639  -1.259   0.2079    
-#> ns(time, df = 3)2                   0.8832     0.7374   1.198   0.2311    
-#> ns(time, df = 3)3                   1.4435     0.3460   4.172 3.02e-05 ***
-#> treatmentestPro:ns(time, df = 3)1   0.1461     0.4913   0.297   0.7661    
-#> treatmentestPro:ns(time, df = 3)2  -1.3828     0.9460  -1.462   0.1438    
-#> treatmentestPro:ns(time, df = 3)3  -1.1537     0.4895  -2.357   0.0184 *  
+#>                                   Estimate Std. Error z value
+#> (Intercept)                       -5.87406    0.30068 -19.536
+#> treatmentestPro                    0.65528    0.37780   1.734
+#> ns(time, df = 3)1                 -0.37685    0.36055  -1.045
+#> ns(time, df = 3)2                  0.82888    0.73435   1.129
+#> ns(time, df = 3)3                  1.33620    0.34430   3.881
+#> treatmentestPro:ns(time, df = 3)1  0.01662    0.48792   0.034
+#> treatmentestPro:ns(time, df = 3)2 -1.42088    0.94245  -1.508
+#> treatmentestPro:ns(time, df = 3)3 -1.04687    0.48685  -2.150
+#>                                   Pr(>|z|)    
+#> (Intercept)                        < 2e-16 ***
+#> treatmentestPro                   0.082832 .  
+#> ns(time, df = 3)1                 0.295935    
+#> ns(time, df = 3)2                 0.259015    
+#> ns(time, df = 3)3                 0.000104 ***
+#> treatmentestPro:ns(time, df = 3)1 0.972831    
+#> treatmentestPro:ns(time, df = 3)2 0.131645    
+#> treatmentestPro:ns(time, df = 3)3 0.031533 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3613.7  on 32716  degrees of freedom
-#> AIC: 3629.7
+#> Residual deviance: 3615.6  on 32716  degrees of freedom
+#> AIC: 3631.6
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
@@ -218,7 +228,6 @@ output of `fitSmoothHazard`:
       singleEventCB:
         - glm
         - gam
-        - gbm
         - cv.glmnet
       CompRisk:
         - vglm
@@ -253,23 +262,26 @@ citation('casebase')
 #> 
 #> To cite casebase in publications use:
 #> 
-#> Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020). _casebase:
-#> Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic
-#> and Multinomial Regression_. R package version 0.9.0, <URL:
+#> Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).
+#> _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk
+#> Functions via Logistic and Multinomial Regression_. R package
+#> version 0.9.0, <URL:
 #> https://CRAN.R-project.org/package=casebase>.
 #> 
-#>   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time
-#>   prognostic risk functions via logistic regression. International
-#>   Journal of Biostatistics 5.1 (2009): 1125-1125.
+#>   Hanley, James A., and Olli S. Miettinen. Fitting
+#>   smooth-in-time prognostic risk functions via logistic
+#>   regression. International Journal of Biostatistics 5.1
+#>   (2009): 1125-1125.
 #> 
-#>   Saarela, Olli. A case-base sampling method for estimating recurrent
-#>   event intensities. Lifetime data analysis 22.4 (2016): 589-605.
+#>   Saarela, Olli. A case-base sampling method for estimating
+#>   recurrent event intensities. Lifetime data analysis 22.4
+#>   (2016): 589-605.
 #> 
 #> If competing risks analyis is used, please also cite
 #> 
-#>   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian Hazard
-#>   Regression for Chronic Disease Risk Assessment. Scandinavian Journal
-#>   of Statistics 42.2 (2015): 609-626.
+#>   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian
+#>   Hazard Regression for Chronic Disease Risk Assessment.
+#>   Scandinavian Journal of Statistics 42.2 (2015): 609-626.
 #> 
 #> To see these entries in BibTeX format, use 'print(<citation>,
 #> bibtex=TRUE)', 'toBibtex(.)', or set

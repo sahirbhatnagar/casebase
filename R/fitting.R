@@ -100,11 +100,11 @@ fitSmoothHazard <- function(formula, data, time,
                             censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
   cl <- match.call()
-  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-    stop("Pkg gbm needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
+  # if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+  #   stop("Pkg gbm needed for this function to work. Please install it.",
+  #     call. = FALSE
+  #   )
+  # }
   if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
     stop("Pkg glmnet needed for this function to work. Please install it.",
       call. = FALSE
@@ -148,20 +148,21 @@ fitSmoothHazard <- function(formula, data, time,
       formula <- update(formula, ~ . + offset(offset))
   }
 
-    # gbm doesn't play nice with interactions and functions of time
-    if (family == "gbm") {
-        # So warn the user
-        if (detect_nonlinear_time(formula, timeVar)) {
-          warning(sprintf(paste("You may be using a nonlinear function",
-                                "of %s.\ngbm may throw an error."),
-                          timeVar),
-                  call. = FALSE)
-        }
-        if (detect_interaction(formula)) {
-            warning("gbm may throw an error when using interaction terms",
-                    call. = FALSE)
-        }
-    }
+  if (family == "gbm") {
+    stop("gbm is not implemented", call. = FALSE)
+    # # gbm doesn't play nice with interactions and functions of time
+    # # So warn the user
+    # if (detect_nonlinear_time(formula, timeVar)) {
+    #   warning(sprintf(paste("You may be using a nonlinear function",
+    #                         "of %s.\ngbm may throw an error."),
+    #                   timeVar),
+    #           call. = FALSE)
+    # }
+    # if (detect_interaction(formula)) {
+    #     warning("gbm may throw an error when using interaction terms",
+    #             call. = FALSE)
+    # }
+  }
 
   # Fit a binomial model if there are no competing risks
   if (length(typeEvents) == 2) {
@@ -171,9 +172,9 @@ fitSmoothHazard <- function(formula, data, time,
       "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData,
                                                      event = eventVar, ...),
       "gam" = function(formula) mgcv::gam(formula, sampleData,
-                                          family = "binomial", ...),
-      "gbm" = function(formula) gbm::gbm(formula, sampleData,
-                                         distribution = "bernoulli", ...)
+                                          family = "binomial", ...)
+      # "gbm" = function(formula) gbm::gbm(formula, sampleData,
+      #                                    distribution = "bernoulli", ...)
     )
 
     out <- fittingFunction(formula)
@@ -251,15 +252,15 @@ fitSmoothHazard <- function(formula, data, time,
 #' @param event a character string giving the name of the event variable.
 #' @importFrom stats glm.fit
 fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
-                                family = c("glm", "gbm", "glmnet"),
+                                family = c("glm", "glmnet"),
                                 censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
   if (family == "gam") stop("The matrix interface is not available for gam")
-  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-    stop("Pkg gbm needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
+  # if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+  #   stop("Pkg gbm needed for this function to work. Please install it.",
+  #     call. = FALSE
+  #   )
+  # }
   if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
     stop("Pkg glmnet needed for this function to work. Please install it.",
       call. = FALSE
@@ -286,20 +287,21 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
       eventVar <- event
   }
 
-    # gbm doesn't play nice with interactions and functions of time
-    if (family == "gbm") {
-        # So warn the user
-        if (detect_nonlinear_time(formula_time, timeVar)) {
-            warning(sprintf(paste("You may be using a nonlinear function",
-                                  "of %s.\ngbm may throw an error."),
-                            timeVar),
-                    call. = FALSE)
-        }
-        if (detect_interaction(formula_time)) {
-            warning("gbm may throw an error when using interaction terms",
-                    call. = FALSE)
-        }
-    }
+  if (family == "gbm") {
+    stop("gbm is not implemented", call. = FALSE)
+    # # gbm doesn't play nice with interactions and functions of time
+    # # So warn the user
+    # if (detect_nonlinear_time(formula_time, timeVar)) {
+    #     warning(sprintf(paste("You may be using a nonlinear function",
+    #                           "of %s.\ngbm may throw an error."),
+    #                     timeVar),
+    #             call. = FALSE)
+    # }
+    # if (detect_interaction(formula_time)) {
+    #     warning("gbm may throw an error when using interaction terms",
+    #             call. = FALSE)
+    # }
+  }
 
   typeEvents <- sort(unique(y[, eventVar]))
   # Call sampleCaseBase
@@ -348,12 +350,12 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
       "glmnet" = cv.glmnet_offset_hack(sample_time_x, sample_event,
         family = "binomial",
         offset = sample_offset, ...
-      ),
-      "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
-        distribution = "bernoulli",
-        offset = sample_offset,
-        verbose = FALSE, ...
       )
+      # "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
+      #   distribution = "bernoulli",
+      #   offset = sample_offset,
+      #   verbose = FALSE, ...
+      # )
     )
 
     out$originalData <- originalData

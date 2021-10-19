@@ -62,9 +62,6 @@
 #'   2009; 360:1320-8. \doi{10.1056/NEJMoa0810084}.
 #' @examples
 #' data("ERSPC")
-#' ERSPC$ScrArm <- factor(ERSPC$ScrArm,
-#'                        levels = c(0,1),
-#'                        labels = c("Control group", "Screening group"))
 #' set.seed(12345)
 #' pt_object_strat <- casebase::popTime(ERSPC[sample(1:nrow(ERSPC), 10000),],
 #'                                      event = "DeadOfPrCa",

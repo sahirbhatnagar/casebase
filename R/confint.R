@@ -117,9 +117,3 @@ extract_quantiles <- function(mat, level) {
                                 0.5 + 0.5*level))
     })
 }
-
-# create_perc <- function(x) {
-#     paste0(format(100*x, scientific = FALSE, trim = TRUE,
-#                   digits = max(2L, getOption("digits"))),
-#            "%")
-# }
