@@ -39,7 +39,6 @@
 #'   integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
-#' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
 #' @param s Value of the penalty parameter lambda at which predictions are
 #'   required (for class \code{cv.glmnet}).
 #' @param onlyMain Logical. For competing risks, should we return absolute risks
@@ -86,10 +85,10 @@
 absoluteRisk <- function(object, time, newdata,
                          method = c("numerical", "montecarlo"),
                          nsamp = 100, s = c("lambda.1se", "lambda.min"),
-                         n.trees, onlyMain = TRUE,
+                         onlyMain = TRUE,
                          type = c("CI", "survival"),
                          addZero = TRUE, ntimes = 100, ...) {
-    if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
+    if (!inherits(object, c("glm", "cv.glmnet", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
                    "\nabsoluteRisk should be used with an object of class glm,",
                    "cv.glmnet, gbm, or CompRisk"),
@@ -114,7 +113,8 @@ absoluteRisk <- function(object, time, newdata,
         s <- match.arg(s)
     }
     if (inherits(object, "gbm")) {
-        if (missing(n.trees)) stop("n.trees is missing")
+        # if (missing(n.trees)) stop("n.trees is missing")
+        stop("gbm is not supported", call. = FALSE)
     } else n.trees <- NULL
     if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
         check_original_data(object$originalData)

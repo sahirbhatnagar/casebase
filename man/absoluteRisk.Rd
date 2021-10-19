@@ -26,7 +26,6 @@ absoluteRisk(
   method = c("numerical", "montecarlo"),
   nsamp = 100,
   s = c("lambda.1se", "lambda.min"),
-  n.trees,
   onlyMain = TRUE,
   type = c("CI", "survival"),
   addZero = TRUE,
@@ -78,8 +77,6 @@ output? Defaults to \code{TRUE}.}
 
 \item{s}{Value of the penalty parameter lambda at which predictions are
 required (for class \code{cv.glmnet}).}
-
-\item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
 
 \item{ntimes}{Number of time points (only used if \code{time} is missing).}
 

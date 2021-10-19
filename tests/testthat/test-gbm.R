@@ -1,3 +1,6 @@
+# Skip these tests until we can properly test gbm
+testthat::skip("gbm not implemented")
+
 # Skip tests if gbm is not installed
 testthat::skip_if_not_installed("gbm")
 
