@@ -1,3 +1,9 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Removed non-standard files at top level
+
 ## Test environments
 
 * local macOS 11.5, R 4.1.0

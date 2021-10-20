@@ -41,3 +41,4 @@
 ^CRAN-RELEASE$
 ^tests/testthat/_snaps$
 ^\.github$
+^README\.html$
