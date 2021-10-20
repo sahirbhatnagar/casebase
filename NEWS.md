@@ -1,3 +1,5 @@
+# casebase 0.10.1.9999
+
 # casebase 0.10.1
 
 * Fixed issue 143 and return the data invisibly with `plot.singleEventCB()` when `type = "hr"`.
