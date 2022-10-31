@@ -52,6 +52,7 @@ License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
     colorspace,
+    covr,
     eha,
     glmnet,
     knitr,

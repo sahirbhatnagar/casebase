@@ -42,3 +42,4 @@
 ^tests/testthat/_snaps$
 ^\.github$
 ^README\.html$
+^codecov\.yml$
