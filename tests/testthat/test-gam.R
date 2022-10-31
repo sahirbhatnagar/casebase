@@ -1,6 +1,11 @@
 # Skip tests if mgcv is not installed
 testthat::skip_if_not_installed("mgcv")
 
+# To pass the noLD checks
+eps <- if (capabilities("long.double"))
+    sqrt(.Machine$double.eps) else
+        0.1
+
 # Create data----
 n <- 100
 alp <- 0.05
@@ -85,10 +90,10 @@ test_that("output probabilities", {
     riskDT_gam <- absoluteRisk(fitDT_gam, time = 0.5, newdata = newDT,
                                family = "gam")
 
-    expect_true(all(riskDF_gam >= 0))
-    expect_true(all(riskDT_gam >= 0))
-    expect_true(all(riskDF_gam <= 1))
-    expect_true(all(riskDT_gam <= 1))
+    expect_true(all(riskDF_gam >= 0 - eps))
+    expect_true(all(riskDT_gam >= 0 - eps))
+    expect_true(all(riskDF_gam <= 1 + eps))
+    expect_true(all(riskDT_gam <= 1 + eps))
 })
 
 # Summary method

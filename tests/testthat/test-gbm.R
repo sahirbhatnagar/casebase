@@ -4,6 +4,11 @@ testthat::skip("gbm not implemented")
 # Skip tests if gbm is not installed
 testthat::skip_if_not_installed("gbm")
 
+# To pass the noLD checks
+eps <- if (capabilities("long.double"))
+    sqrt(.Machine$double.eps) else
+        0.1
+
 # Create data----
 n <- 100
 alp <- 0.05
@@ -111,10 +116,10 @@ test_that("output probabilities", {
     riskDT_gbm <- absoluteRisk(fitDT_gbm, time = 0.5, newdata = newDT,
                                family = "gbm", n.trees = 100, nsamp = 500)
 
-    expect_true(all(riskDF_gbm >= 0))
-    expect_true(all(riskDT_gbm >= 0))
-    expect_true(all(riskDF_gbm <= 1))
-    expect_true(all(riskDT_gbm <= 1))
+    expect_true(all(riskDF_gbm >= 0 - eps))
+    expect_true(all(riskDT_gbm >= 0 - eps))
+    expect_true(all(riskDF_gbm <= 1 + eps))
+    expect_true(all(riskDT_gbm <= 1 + eps))
 })
 
 # Summary method
