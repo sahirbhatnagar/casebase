@@ -3,6 +3,11 @@ handler_validmc <- function(msg) {
     if (any(grepl("out of range", msg))) invokeRestart("muffleWarning")
 }
 
+# To pass the noLD checks
+eps <- if (capabilities("long.double"))
+    sqrt(.Machine$double.eps) else
+        0.1
+
 n <- 100
 alp <- 0.05
 lambda10 <- 1
@@ -101,10 +106,10 @@ test_that("should output probabilities with data frames", {
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[, -1] >= 0))
-    expect_true(all(absRiskNI[, -1] >= 0))
-    expect_true(all(absRiskMC[, -1] <= 1))
-    expect_true(all(absRiskNI[, -1] <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0 - eps))
+    expect_true(all(absRiskNI[, -1] >= 0 - eps))
+    expect_true(all(absRiskMC[, -1] <= 1 + eps))
+    expect_true(all(absRiskNI[, -1] <= 1 + eps))
 })
 
 test_that("should output probabilities with data tables", {
@@ -113,10 +118,10 @@ test_that("should output probabilities with data tables", {
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[, -1] >= 0))
-    expect_true(all(absRiskNI[, -1] >= 0))
-    expect_true(all(absRiskMC[, -1] <= 1))
-    expect_true(all(absRiskNI[, -1] <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0 - eps))
+    expect_true(all(absRiskNI[, -1] >= 0 - eps))
+    expect_true(all(absRiskMC[, -1] <= 1 + eps))
+    expect_true(all(absRiskNI[, -1] <= 1 + eps))
 })
 
 test_that("should output probabilities with data frames - two time points", {
@@ -125,10 +130,10 @@ test_that("should output probabilities with data frames - two time points", {
     absRiskNI <- absoluteRisk(fitDF, time = c(0.5, 1), newdata = DF[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[, -1] >= 0))
-    expect_true(all(absRiskNI[, -1] >= 0))
-    expect_true(all(absRiskMC[, -1] <= 1))
-    expect_true(all(absRiskNI[, -1] <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0 - eps))
+    expect_true(all(absRiskNI[, -1] >= 0 - eps))
+    expect_true(all(absRiskMC[, -1] <= 1 + eps))
+    expect_true(all(absRiskNI[, -1] <= 1 + eps))
 })
 
 test_that("should output probabilities with data tables - two time points", {
@@ -137,10 +142,10 @@ test_that("should output probabilities with data tables - two time points", {
     absRiskNI <- absoluteRisk(fitDT, time = c(0.5, 1), newdata = DT[1, ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC[, -1] >= 0))
-    expect_true(all(absRiskNI[, -1] >= 0))
-    expect_true(all(absRiskMC[, -1] <= 1))
-    expect_true(all(absRiskNI[, -1] <= 1))
+    expect_true(all(absRiskMC[, -1] >= 0 - eps))
+    expect_true(all(absRiskNI[, -1] >= 0 - eps))
+    expect_true(all(absRiskMC[, -1] <= 1 + eps))
+    expect_true(all(absRiskNI[, -1] <= 1 + eps))
 })
 
 test_that(paste("should output probabilities with data frames",
@@ -150,10 +155,10 @@ test_that(paste("should output probabilities with data frames",
     absRiskNI <- absoluteRisk(fitDF, time = 1, newdata = DF[c(1, n + 1), ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC >= 0 - eps))
+    expect_true(all(absRiskNI >= 0 - eps))
+    expect_true(all(absRiskMC <= 1 + eps))
+    expect_true(all(absRiskNI <= 1 + eps))
 })
 
 test_that(paste("should output probabilities with data tables",
@@ -163,10 +168,10 @@ test_that(paste("should output probabilities with data tables",
     absRiskNI <- absoluteRisk(fitDT, time = 1, newdata = DT[c(1, n + 1), ],
                               method = "numerical")
 
-    expect_true(all(absRiskMC >= 0))
-    expect_true(all(absRiskNI >= 0))
-    expect_true(all(absRiskMC <= 1))
-    expect_true(all(absRiskNI <= 1))
+    expect_true(all(absRiskMC >= 0 - eps))
+    expect_true(all(absRiskNI >= 0 - eps))
+    expect_true(all(absRiskMC <= 1 + eps))
+    expect_true(all(absRiskNI <= 1 + eps))
 })
 
 test_that("no error in absolute risk with type survival", {

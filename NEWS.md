@@ -1,4 +1,6 @@
-# casebase 0.10.1.9999
+# casebase 0.10.2
+
+* Fixed noLD checks issue as reported by CRAN (Issue 156).
 
 # casebase 0.10.1
 
