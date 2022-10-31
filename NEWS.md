@@ -1,6 +1,6 @@
 # casebase 0.10.2
 
-* Fixed noLD checks issue as reported by CRAN.
+* Fixed noLD checks issue as reported by CRAN (Issue 156).
 
 # casebase 0.10.1
 
