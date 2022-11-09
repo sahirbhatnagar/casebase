@@ -1,6 +1,6 @@
-## RCMD check results
+## Resubmission
 
-There were no ERRORs or WARNINGs.
+This is a resubmission. We corrected the maintainer email address and updated the data field in the DESCRIPTION file.
 
 ## Test environments
 
