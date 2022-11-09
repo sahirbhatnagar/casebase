@@ -43,3 +43,4 @@
 ^\.github$
 ^README\.html$
 ^codecov\.yml$
+^CRAN-SUBMISSION$

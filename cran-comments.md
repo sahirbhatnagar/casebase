@@ -1,15 +1,13 @@
-## Resubmission
+## RCMD check results
 
-This is a resubmission. In this version I have:
-
-* Removed non-standard files at top level
+There were no ERRORs or WARNINGs.
 
 ## Test environments
 
-* local macOS 11.5, R 4.1.0
-* ubuntu 20.04 (on GH-Actions), R-release, R-devel
-* appveyor Windows Server 2012 R2 x64, R-devel
-* win-builder (devel and release)
+* local macOS 13.0, R 4.2.1
+* ubuntu 20.04 (on GH-Actions), R-release, R-devel, R-oldrelease
+* Windows Server 2022 x64 (on GH-Actions), R-release
+* macOS 11.7 (on GH-Actions), R-release
 
 ## R CMD check results
 
