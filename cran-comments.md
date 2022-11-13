@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. We corrected the maintainer email address and updated the data field in the DESCRIPTION file.
+This is a resubmission. We corrected the maintainer email address, updated the data field in the DESCRIPTION file, and fixed a broken URL in our vignette.
 
 ## Test environments
 
