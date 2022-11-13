@@ -61,7 +61,7 @@ summary(mod_cb)
 
 ### Hazard functions on separate plots
 
-All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are `list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay = TRUE)`. For example, if you want a 95% confidence band, specify `hazard.params = list(alpha = 0.05)`. For a complete list of options, please see the [`visreg` vignettes](http://pbreheny.github.io/visreg/basic.html).
+All arguments needed for the hazard function plots are supplied through the `hazard.params` argument. This is a named list of arguments which will override the defaults passed to `visreg::visreg()`. The default arguments are `list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay = TRUE)`. For example, if you want a 95% confidence band, specify `hazard.params = list(alpha = 0.05)`. For a complete list of options, please see the [`visreg` vignettes](https://cran.r-project.org/package=visreg).
 
 We first plot the hazard as a function of time, for `hormon = 0` and `hormon = 1`. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
 
