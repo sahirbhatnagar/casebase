@@ -35,6 +35,7 @@ reference:
     - '`plot.singleEventCB`'
     - '`plot.absRiskCB`'
     - '`hazardPlot`'
+    - '`confint.absRiskCB`'
 - title: Datasets
   desc: >
     Datasets that ship with the package to illustrate usage
