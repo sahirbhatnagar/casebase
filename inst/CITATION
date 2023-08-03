@@ -1,12 +1,12 @@
 citHeader("To cite casebase in publications use:")
 
 bibentry(
-     bibtype = "Manual",
-     title = "casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression",
+     bibtype = "Article",
+     title = "casebase: An Alternative Framework for Survival Analysis and Comparison of Event Rates",
      author = c(
         person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
-        role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
-        person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
+        role = c("aut", "cre"), comment = "https://sahirbhatnagar.com/"),
+        person("Maxime", "Turgeon", email = "turgeon.maxime@gmail.com",
         role = c("aut"), comment = c(ORCID = "0000-0003-4863-6035")),
         person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
         role = c("aut"), comment = "https://www.jesseislam.com/"),
@@ -15,10 +15,10 @@ bibentry(
         person("James", "Hanley", email = "james.hanley@mcgill.ca",
         role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
   ),
-     year = "2020",
-     note = "R package version 0.9.0",
-     url = "https://CRAN.R-project.org/package=casebase",
-     key = "casebase-package"
+     journal = "The R Journal",
+     volume = 14,
+     number = 3,
+     year = "2022",
    )
 
 citEntry(entry = "Article",
