@@ -27,6 +27,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -39,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.2.9999</span>
       </span>
     </div>
 
@@ -52,7 +54,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -76,6 +78,9 @@
     <li>
       <a href="articles/customizingpopTime.html">Customizing Population Time Plots</a>
     </li>
+    <li>
+      <a href="articles/time-varying-covariates.html">Time-Varying Covariates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -87,7 +92,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sahirbhatnagar/casebase/">
+  <a href="https://github.com/sahirbhatnagar/casebase/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -104,239 +109,238 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="casebase" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#casebase" class="anchor"></a>casebase</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="casebase">casebase<a class="anchor" aria-label="anchor" href="#casebase"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p><code>casebase</code> is an R package for fitting flexible and fully parametric hazard regression models to survival data with single event type or multiple competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the fitted hazard model, we provide functions to readily calculate and plot cumulative incidence and survival curves for a given covariate profile. This approach accommodates any log-linear hazard function of prognostic time, treatment, and covariates, and readily allows for non-proportionality. We also provide a plot method for visualizing incidence density via population time plots.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the released version of casebase from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>You can install the released version of casebase from <a href="https://CRAN.R-project.org" class="external-link">CRAN</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"casebase"</span><span class="op">)</span></code></pre></div>
-<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"casebase"</span><span class="op">)</span></span></code></pre></div>
+<p>And the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"sahirbhatnagar/casebase"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"sahirbhatnagar/casebase"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="vignettes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h2>
-<p>See the <a href="http://sahirbhatnagar.com/casebase/">package website</a> for example usage of the functions. This includes</p>
-<ol>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/smoothHazard.html">Fitting Smooth Hazard Functions</a></li>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/competingRisk.html">Competing Risks Analysis</a></li>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/popTime.html">Population Time Plots</a></li>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html">Customizing Population Time Plots</a></li>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html">Plot Hazards and Hazard Ratios</a></li>
-<li><a href="http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html">Plot Cumulative Incidence and Survival Curves</a></li>
+<div class="section level2">
+<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+</h2>
+<p>See the <a href="http://sahirbhatnagar.com/casebase/" class="external-link">package website</a> for example usage of the functions. This includes</p>
+<ol style="list-style-type: decimal">
+<li><a href="http://sahirbhatnagar.com/casebase/articles/smoothHazard.html" class="external-link">Fitting Smooth Hazard Functions</a></li>
+<li><a href="http://sahirbhatnagar.com/casebase/articles/competingRisk.html" class="external-link">Competing Risks Analysis</a></li>
+<li><a href="http://sahirbhatnagar.com/casebase/articles/popTime.html" class="external-link">Population Time Plots</a></li>
+<li><a href="http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html" class="external-link">Customizing Population Time Plots</a></li>
+<li><a href="http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html" class="external-link">Plot Hazards and Hazard Ratios</a></li>
+<li><a href="http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html" class="external-link">Plot Cumulative Incidence and Survival Curves</a></li>
 </ol>
 </div>
-<div id="user-2019-toulouse---presentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#user-2019-toulouse---presentation" class="anchor"></a>useR! 2019 Toulouse - Presentation</h2>
-<p><a href="https://www.youtube.com/watch?v=DlppjRYVklQ"><img src="reference/figures/jesse-user.png" alt="Jesse useR"></a></p>
+<div class="section level2">
+<h2 id="user-2019-toulouse---presentation">useR! 2019 Toulouse - Presentation<a class="anchor" aria-label="anchor" href="#user-2019-toulouse---presentation"></a>
+</h2>
+<p><a href="https://www.youtube.com/watch?v=DlppjRYVklQ" class="external-link"><img src="reference/figures/jesse-user.png" alt="Jesse useR"></a></p>
 </div>
-<div id="quickstart" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quickstart" class="anchor"></a>Quickstart</h2>
-<p>This is a basic example which shows you some of the main functionalities of the <code>casebase</code> package. We use data from the estrogen plus progestin trial from the <a href="https://www.doi.org/10.1056/nejmoa030808">Women’s Health Initiative</a> (included in the <code>casebase</code> package). This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
+<div class="section level2">
+<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
+</h2>
+<p>This is a basic example which shows you some of the main functionalities of the <code>casebase</code> package. We use data from the estrogen plus progestin trial from the <a href="https://www.doi.org/10.1056/nejmoa030808" class="external-link">Women’s Health Initiative</a> (included in the <code>casebase</code> package). This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span>
-<span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg">visreg</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"eprchd"</span><span class="op">)</span></code></pre></div>
-<div id="population-time-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#population-time-plots" class="anchor"></a>Population Time Plots</h3>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg" class="external-link">visreg</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"eprchd"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="population-time-plots">Population Time Plots<a class="anchor" aria-label="anchor" href="#population-time-plots"></a>
+</h3>
 <p>We first visualize the data with a population time plot. For each treatment arm, we plot the observed person time in gray, and the case series as colored dots. It gives us a good visual representation of the incidence density:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/plot.popTime.html">popTime</a></span><span class="op">(</span><span class="va">eprchd</span>, exposure <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="reference/popTime.html">popTime</a></span><span class="op">(</span><span class="va">eprchd</span>, exposure <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-2-1.png" width="100%"></p>
 </div>
-<div id="fit-a-smooth-hazard-model" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fit-a-smooth-hazard-model" class="anchor"></a>Fit a Smooth Hazard Model</h3>
+<div class="section level3">
+<h3 id="fit-a-smooth-hazard-model">Fit a Smooth Hazard Model<a class="anchor" aria-label="anchor" href="#fit-a-smooth-hazard-model"></a>
+</h3>
 <p>We model the hazard as a function of time, treatment arm and their interaction:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">eprchd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html">transform</a></span><span class="op">(</span><span class="va">eprchd</span>, 
-                    treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>,<span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">treatment</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/splines/ns.html">ns</a></span><span class="op">(</span><span class="va">time</span>, df <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,
-                       data <span class="op">=</span> <span class="va">eprchd</span>,
-                       time <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span>
-<span class="fu"><a href="reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>
-<span class="co">#&gt; Fitting smooth hazards with case-base sampling</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Sample size: 16608 </span>
-<span class="co">#&gt; Number of events: 324 </span>
-<span class="co">#&gt; Number of base moments: 32400 </span>
-<span class="co">#&gt; ----</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Call:</span>
-<span class="co">#&gt; fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), </span>
-<span class="co">#&gt;     data = eprchd, time = "time")</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Deviance Residuals: </span>
-<span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span>
-<span class="co">#&gt; -0.2479  -0.1482  -0.1373  -0.1268   3.1490  </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Coefficients:</span>
-<span class="co">#&gt;                                   Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="co">#&gt; (Intercept)                       -5.85621    0.30013 -19.512  &lt; 2e-16 ***</span>
-<span class="co">#&gt; treatmentestPro                    0.66414    0.37783   1.758   0.0788 .  </span>
-<span class="co">#&gt; ns(time, df = 3)1                 -0.41110    0.35944  -1.144   0.2527    </span>
-<span class="co">#&gt; ns(time, df = 3)2                  0.77792    0.73254   1.062   0.2883    </span>
-<span class="co">#&gt; ns(time, df = 3)3                  1.37771    0.34131   4.036 5.43e-05 ***</span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)1  0.07468    0.48613   0.154   0.8779    </span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)2 -1.40359    0.94189  -1.490   0.1362    </span>
-<span class="co">#&gt; treatmentestPro:ns(time, df = 3)3 -1.06823    0.48634  -2.196   0.0281 *  </span>
-<span class="co">#&gt; ---</span>
-<span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     Null deviance: 3635.4  on 32723  degrees of freedom</span>
-<span class="co">#&gt; Residual deviance: 3613.4  on 32716  degrees of freedom</span>
-<span class="co">#&gt; AIC: 3629.4</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">eprchd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">eprchd</span>, </span>
+<span>                    treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">treatment</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"placebo"</span>,<span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">treatment</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/splines/ns.html" class="external-link">ns</a></span><span class="op">(</span><span class="va">time</span>, df <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
+<span>                       data <span class="op">=</span> <span class="va">eprchd</span>,</span>
+<span>                       time <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Fitting smooth hazards with case-base sampling</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Sample size: 16608 </span></span>
+<span><span class="co">#&gt; Number of events: 324 </span></span>
+<span><span class="co">#&gt; Number of base moments: 32400 </span></span>
+<span><span class="co">#&gt; ----</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:</span></span>
+<span><span class="co">#&gt; fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), </span></span>
+<span><span class="co">#&gt;     data = eprchd, time = "time")</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Deviance Residuals: </span></span>
+<span><span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span></span>
+<span><span class="co">#&gt; -0.2344  -0.1483  -0.1380  -0.1267   3.1466  </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Coefficients:</span></span>
+<span><span class="co">#&gt;                                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">#&gt; (Intercept)                       -5.80408    0.30090 -19.289  &lt; 2e-16 ***</span></span>
+<span><span class="co">#&gt; treatmentestPro                    0.59882    0.37743   1.587 0.112608    </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)1                 -0.36224    0.35878  -1.010 0.312654    </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)2                  0.58913    0.73465   0.802 0.422601    </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)3                  1.26391    0.34033   3.714 0.000204 ***</span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)1  0.05593    0.48546   0.115 0.908274    </span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)2 -1.19576    0.94034  -1.272 0.203506    </span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)3 -0.97627    0.48228  -2.024 0.042942 *  </span></span>
+<span><span class="co">#&gt; ---</span></span>
+<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     Null deviance: 3635.4  on 32723  degrees of freedom</span></span>
+<span><span class="co">#&gt; Residual deviance: 3615.2  on 32716  degrees of freedom</span></span>
+<span><span class="co">#&gt; AIC: 3631.2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></span></code></pre></div>
 <p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>.</p>
 </div>
-<div id="time-dependent-hazard-function" class="section level3">
-<h3 class="hasAnchor">
-<a href="#time-dependent-hazard-function" class="anchor"></a>Time-Dependent Hazard Function</h3>
+<div class="section level3">
+<h3 id="time-dependent-hazard-function">Time-Dependent Hazard Function<a class="anchor" aria-label="anchor" href="#time-dependent-hazard-function"></a>
+</h3>
 <p>The treatment effect on the hazard is somewhat difficult to interpret because of its interaction with the spline term on time. In these situations, it is often more instructive to visualize the relationship. For example, we can easily plot the hazard function for each treatment arm:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit</span>, hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>, by <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Conditions used in construction of plot</span>
-<span class="co">#&gt; treatment: placebo / estPro</span>
-<span class="co">#&gt; offset: 0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>, by <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Conditions used in construction of plot</span></span>
+<span><span class="co">#&gt; treatment: placebo / estPro</span></span>
+<span><span class="co">#&gt; offset: 0</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
 </div>
-<div id="time-dependent-hazard-ratio" class="section level3">
-<h3 class="hasAnchor">
-<a href="#time-dependent-hazard-ratio" class="anchor"></a>Time-Dependent Hazard Ratio</h3>
+<div class="section level3">
+<h3 id="time-dependent-hazard-ratio">Time-Dependent Hazard Ratio<a class="anchor" aria-label="anchor" href="#time-dependent-hazard-ratio"></a>
+</h3>
 <p>We can also plot the time-dependent hazard ratio and 95% confidence band:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">newtime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">eprchd</span><span class="op">$</span><span class="va">time</span>, 
-                    probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># reference category</span>
-<span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="st">"placebo"</span>, 
-                                         levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span>, 
-                      time <span class="op">=</span> <span class="va">newtime</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fit</span>, 
-     type <span class="op">=</span> <span class="st">"hr"</span>, 
-     newdata <span class="op">=</span> <span class="va">newdata</span>,
-     var <span class="op">=</span> <span class="st">"treatment"</span>,
-     increment <span class="op">=</span> <span class="fl">1</span>,
-     xvar <span class="op">=</span> <span class="st">"time"</span>,
-     ci <span class="op">=</span> <span class="cn">T</span>,
-     rug <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">newtime</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">eprchd</span><span class="op">$</span><span class="va">time</span>, </span>
+<span>                    probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># reference category</span></span>
+<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="st">"placebo"</span>, </span>
+<span>                                         levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                      time <span class="op">=</span> <span class="va">newtime</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, </span>
+<span>     type <span class="op">=</span> <span class="st">"hr"</span>, </span>
+<span>     newdata <span class="op">=</span> <span class="va">newdata</span>,</span>
+<span>     var <span class="op">=</span> <span class="st">"treatment"</span>,</span>
+<span>     increment <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>     xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
+<span>     ci <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>     rug <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-mason-1.png" width="100%"></p>
 </div>
-<div id="cumulative-incidence-function-cif" class="section level3">
-<h3 class="hasAnchor">
-<a href="#cumulative-incidence-function-cif" class="anchor"></a>Cumulative Incidence Function (CIF)</h3>
+<div class="section level3">
+<h3 id="cumulative-incidence-function-cif">Cumulative Incidence Function (CIF)<a class="anchor" aria-label="anchor" href="#cumulative-incidence-function-cif"></a>
+</h3>
 <p>We can also calculate and plot the cumulative incidence function:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, 
-                            newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, id.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">fit</span>, </span>
+<span>                            newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>treatment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, id.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"placebo"</span>, <span class="st">"estPro"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-4-1.png" width="100%"></p>
 </div>
 </div>
-<div id="class-structure" class="section level2">
-<h2 class="hasAnchor">
-<a href="#class-structure" class="anchor"></a>Class structure</h2>
+<div class="section level2">
+<h2 id="class-structure">Class structure<a class="anchor" aria-label="anchor" href="#class-structure"></a>
+</h2>
 <p>The <code>casebase</code> package uses the following hierarchy of classes for the output of <code>fitSmoothHazard</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">casebase<span class="op">:</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="st">  </span>singleEventCB<span class="op">:</span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">    </span><span class="op">-</span><span class="st"> </span>glm</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">    <span class="op">-</span><span class="st"> </span>gam</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5">    <span class="op">-</span><span class="st"> </span>gbm</a>
-<a class="sourceLine" id="cb9-6" data-line-number="6">    <span class="op">-</span><span class="st"> </span>cv.glmnet</a>
-<a class="sourceLine" id="cb9-7" data-line-number="7">  CompRisk<span class="op">:</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="st">    </span><span class="op">-</span><span class="st"> </span>vglm</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>casebase<span class="sc">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  singleEventCB<span class="sc">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> glm</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> gam</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> cv.glmnet</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  CompRisk<span class="sc">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> vglm</span></code></pre></div>
 <p>The class <code>singleEventCB</code> is an <code>S3</code> class, and we also keep track of the classes appearing below. The class <code>CompRisk</code> is an <code>S4</code> class that inherits from <code>vglm</code>.</p>
 </div>
-<div id="credit" class="section level2">
-<h2 class="hasAnchor">
-<a href="#credit" class="anchor"></a>Credit</h2>
+<div class="section level2">
+<h2 id="credit">Credit<a class="anchor" aria-label="anchor" href="#credit"></a>
+</h2>
 <p>This package is makes use of several existing packages including:</p>
 <ul>
 <li>
-<a href="https://cran.r-project.org/package=VGAM"><code>VGAM</code></a> for fitting multinomial logistic regression models</li>
+<a href="https://cran.r-project.org/package=VGAM" class="external-link"><code>VGAM</code></a> for fitting multinomial logistic regression models</li>
 <li>
-<a href="https://cran.r-project.org/package=survival"><code>survival</code></a> for survival models</li>
+<a href="https://cran.r-project.org/package=survival" class="external-link"><code>survival</code></a> for survival models</li>
 <li>
-<a href="https://cran.r-project.org/package=ggplot2"><code>ggplot2</code></a> for plotting the population time plots</li>
+<a href="https://cran.r-project.org/package=ggplot2" class="external-link"><code>ggplot2</code></a> for plotting the population time plots</li>
 <li>
-<a href="https://cran.r-project.org/package=data.table"><code>data.table</code></a> for efficient handling of large datasets</li>
+<a href="https://cran.r-project.org/package=data.table" class="external-link"><code>data.table</code></a> for efficient handling of large datasets</li>
 </ul>
 <p>Other packages with similar objectives but different parametric forms:</p>
 <ul>
-<li><a href="https://cran.r-project.org/package=rstpm2"><code>rstpm2</code></a></li>
-<li><a href="https://cran.r-project.org/package=flexsurv"><code>flexsurv</code></a></li>
-<li><a href="https://cran.r-project.org/package=SmoothHazard"><code>SmoothHazard</code></a></li>
+<li><a href="https://cran.r-project.org/package=rstpm2" class="external-link"><code>rstpm2</code></a></li>
+<li><a href="https://cran.r-project.org/package=flexsurv" class="external-link"><code>flexsurv</code></a></li>
+<li><a href="https://cran.r-project.org/package=SmoothHazard" class="external-link"><code>SmoothHazard</code></a></li>
 </ul>
 </div>
-<div id="citation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h2>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span><span class="st">'casebase'</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; To cite casebase in publications use:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020). _casebase:</span>
-<span class="co">#&gt; Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic</span>
-<span class="co">#&gt; and Multinomial Regression_. R package version 0.9.0, &lt;URL:</span>
-<span class="co">#&gt; https://CRAN.R-project.org/package=casebase&gt;.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time</span>
-<span class="co">#&gt;   prognostic risk functions via logistic regression. International</span>
-<span class="co">#&gt;   Journal of Biostatistics 5.1 (2009): 1125-1125.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Saarela, Olli. A case-base sampling method for estimating recurrent</span>
-<span class="co">#&gt;   event intensities. Lifetime data analysis 22.4 (2016): 589-605.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; If competing risks analyis is used, please also cite</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian Hazard</span>
-<span class="co">#&gt;   Regression for Chronic Disease Risk Assessment. Scandinavian Journal</span>
-<span class="co">#&gt;   of Statistics 42.2 (2015): 609-626.</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; To see these entries in BibTeX format, use 'print(&lt;citation&gt;,</span>
-<span class="co">#&gt; bibtex=TRUE)', 'toBibtex(.)', or set</span>
-<span class="co">#&gt; 'options(citation.bibtex.max=999)'.</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">'casebase'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; To cite casebase in publications use:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).</span></span>
+<span><span class="co">#&gt;   _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions</span></span>
+<span><span class="co">#&gt;   via Logistic and Multinomial Regression_. R package version 0.9.0,</span></span>
+<span><span class="co">#&gt;   &lt;https://CRAN.R-project.org/package=casebase&gt;.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time</span></span>
+<span><span class="co">#&gt;   prognostic risk functions via logistic regression. International</span></span>
+<span><span class="co">#&gt;   Journal of Biostatistics 5.1 (2009): 1125-1125.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Saarela, Olli. A case-base sampling method for estimating recurrent</span></span>
+<span><span class="co">#&gt;   event intensities. Lifetime data analysis 22.4 (2016): 589-605.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; If competing risks analyis is used, please also cite</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian Hazard</span></span>
+<span><span class="co">#&gt;   Regression for Chronic Disease Risk Assessment. Scandinavian Journal</span></span>
+<span><span class="co">#&gt;   of Statistics 42.2 (2015): 609-626.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; To see these entries in BibTeX format, use 'print(&lt;citation&gt;,</span></span>
+<span><span class="co">#&gt; bibtex=TRUE)', 'toBibtex(.)', or set</span></span>
+<span><span class="co">#&gt; 'options(citation.bibtex.max=999)'.</span></span></code></pre></div>
 </div>
-<div id="contact" class="section level2">
-<h2 class="hasAnchor">
-<a href="#contact" class="anchor"></a>Contact</h2>
+<div class="section level2">
+<h2 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
+</h2>
 <ul>
-<li>Issues: <a href="https://github.com/sahirbhatnagar/casebase/issues" class="uri">https://github.com/sahirbhatnagar/casebase/issues</a>
+<li>Issues: <a href="https://github.com/sahirbhatnagar/casebase/issues" class="external-link uri">https://github.com/sahirbhatnagar/casebase/issues</a>
 </li>
-<li>Pull Requests: <a href="https://github.com/sahirbhatnagar/casebase/" class="uri">https://github.com/sahirbhatnagar/casebase/</a>
+<li>Pull Requests: <a href="https://github.com/sahirbhatnagar/casebase/" class="external-link uri">https://github.com/sahirbhatnagar/casebase/</a>
 </li>
-<li>e-mail: <a href="mailto:sahir.bhatnagar@gmail.com">sahir.bhatnagar@gmail.com</a>, <a href="mailto:max.turgeon@umanitoba.ca">max.turgeon@umanitoba.ca</a>
+<li>e-mail: <a href="mailto:sahir.bhatnagar@gmail.com" class="email">sahir.bhatnagar@gmail.com</a>, <a href="mailto:max.turgeon@umanitoba.ca" class="email">max.turgeon@umanitoba.ca</a>
 </li>
 </ul>
 </div>
-<div id="latest-news" class="section level2">
-<h2 class="hasAnchor">
-<a href="#latest-news" class="anchor"></a>Latest news</h2>
+<div class="section level2">
+<h2 id="latest-news">Latest news<a class="anchor" aria-label="anchor" href="#latest-news"></a>
+</h2>
 <p>You can see the most recent changes to the package in the <a href="https://sahirbhatnagar.com/casebase/news/">NEWS file</a></p>
 </div>
-<div id="code-of-conduct" class="section level2">
-<h2 class="hasAnchor">
-<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
 <p>Please note that this project is released with a <a href="https://sahirbhatnagar.com/casebase/CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
 </div>
@@ -344,71 +348,62 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=casebase">https://​cloud.r-project.org/​package=casebase</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/sahirbhatnagar/casebase/">https://​github.com/​sahirbhatnagar/​casebase/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/sahirbhatnagar/casebase/issues">https://​github.com/​sahirbhatnagar/​casebase/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=casebase" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/sahirbhatnagar/casebase/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/sahirbhatnagar/casebase/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
-</ul>
-</div>
-<div class="citation">
-<h2>Citation</h2>
-<ul class="list-unstyled">
-<li><a href="authors.html">Citing casebase</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>
-<a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a> <br><small class="roles"> Author, maintainer </small>  <br><small>(http://sahirbhatnagar.com/)</small>
-</li>
-<li>
-<a href="https://maxturgeon.ca/">Maxime Turgeon</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4863-6035" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>
-<a href="https://www.jesseislam.com/">Jesse Islam</a> <br><small class="roles"> Author </small>  <br><small>(https://www.jesseislam.com/)</small>
-</li>
-<li>
-<a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a> <br><small class="roles"> Author </small>  <br><small>(http://individual.utoronto.ca/osaarela/)</small>
-</li>
-<li>
-<a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a> <br><small class="roles"> Author </small>  <br><small>(http://www.medicine.mcgill.ca/epidemiology/hanley/)</small>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/github/sahirbhatnagar/casebase"><img src="https://api.travis-ci.org/sahirbhatnagar/casebase.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://codecov.io/github/sahirbhatnagar/casebase?branch=master"><img src="https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg" alt="Coverage Status"></a></li>
-<li><a href="https://cran.r-project.org/package=casebase"><img src="https://www.r-pkg.org/badges/version/casebase?color=blue" alt="CRAN"></a></li>
-<li><a href="https://www.r-pkg.org/pkg/casebase"><img src="https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green" alt="Downloads"></a></li>
-<li><a href="https://ci.appveyor.com/project/sahirbhatnagar/casebase"><img src="https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
+<li><a href="authors.html#citation">Citing casebase</a></li>
 </ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>
+<a href="https://sahirbhatnagar.com/" class="external-link">Sahir Bhatnagar</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://maxturgeon.ca/" class="external-link">Maxime Turgeon</a> <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-4863-6035" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>
+<a href="https://www.jesseislam.com/" class="external-link">Jesse Islam</a> <br><small class="roles"> Author </small>  </li>
+<li>
+<a href="http://individual.utoronto.ca/osaarela/" class="external-link">Olli Saarela</a> <br><small class="roles"> Author </small>  </li>
+<li>
+<a href="http://www.medicine.mcgill.ca/epidemiology/hanley/" class="external-link">James Hanley</a> <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
 </div>
+
+
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="https://maxturgeon.ca/">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://sahirbhatnagar.com/" class="external-link">Sahir Bhatnagar</a>, <a href="https://maxturgeon.ca/" class="external-link">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/" class="external-link">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/" class="external-link">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/" class="external-link">James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -416,6 +411,8 @@
 
   
 
+
+  
 
   </body>
 </html>

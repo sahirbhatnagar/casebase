@@ -1,66 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/index.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/404.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/CompRisk-class.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/CONDUCT.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/ERSPC.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/absoluteRisk.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/competingRisk.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/bmtcrr.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/customizingpopTime.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/brcancer.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/index.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/checkArgsEventIndicator.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/plotabsRisk.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/eprchd.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/popTime.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/hazardPlot.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/smoothHazard.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/plot.singleEventCB.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/articles/time-varying-covariates.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/popTime.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/authors.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/sampleCaseBase.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/index.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/simdat.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/news/index.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/reference/support.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/CompRisk-class.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/competingRisk.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/ERSPC.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/absoluteRisk.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/bmtcrr.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/brcancer.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/popTime.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/checkArgsEventIndicator.html</loc>
   </url>
   <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/smoothHazard.html</loc>
+    <loc>https://sahirbhatnagar.com/casebase/reference/confint.absRiskCB.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/eprchd.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/hazardPlot.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/plot.singleEventCB.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/popTime.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/sampleCaseBase.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/simdat.html</loc>
+  </url>
+  <url>
+    <loc>https://sahirbhatnagar.com/casebase/reference/support.html</loc>
   </url>
 </urlset>

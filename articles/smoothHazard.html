@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.2.9999</span>
       </span>
     </div>
 
@@ -44,7 +46,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -68,6 +70,9 @@
     <li>
       <a href="../articles/customizingpopTime.html">Customizing Population Time Plots</a>
     </li>
+    <li>
+      <a href="../articles/time-varying-covariates.html">Time-Varying Covariates</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -79,7 +84,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sahirbhatnagar/casebase/">
+  <a href="https://github.com/sahirbhatnagar/casebase/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -98,415 +103,479 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to casebase sampling</h1>
-                        <h4 class="author">Maxime Turgeon</h4>
+                        <h4 data-toc-skip class="author">Maxime
+Turgeon</h4>
             
-            <h4 class="date">2021-02-08</h4>
+            <h4 data-toc-skip class="date">2023-08-03</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/smoothHazard.Rmd"><code>vignettes/smoothHazard.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/HEAD/vignettes/smoothHazard.Rmd" class="external-link"><code>vignettes/smoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>smoothHazard.Rmd</code></div>
 
     </div>
 
     
     
-<div id="methodological-details" class="section level2">
-<h2 class="hasAnchor">
-<a href="#methodological-details" class="anchor"></a>Methodological details</h2>
+<div class="section level2">
+<h2 id="methodological-details">Methodological details<a class="anchor" aria-label="anchor" href="#methodological-details"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">evaluate_vignette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"eha"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"visreg"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> 
-    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"splines"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>eval <span class="op">=</span> <span class="va">evaluate_vignette</span><span class="op">)</span></code></pre></div>
-<p>Case-base sampling was proposed by <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf">Hanley and Miettinen, 2009</a> as a way to fit smooth-in-time parametric hazard functions via logistic regression. The main idea, which was first proposed by Mantel, 1973 and then later developed by Efron, 1977, is to sample person-moments, i.e. discrete time points along an subject’s follow-up time, in order to construct a base series against which the case series can be compared.</p>
-<p>This approach allows the explicit inclusion of the time variable into the model, which enables the user to fit a wide class of parametric hazard functions. For example, including time linearly recovers the Gompertz hazard, whereas including time <em>logarithmically</em> recovers the Weibull hazard; not including time at all corresponds to the exponential hazard.</p>
-<p>The theoretical properties of this approach have been studied in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela_et_al-2015-Scandinavian_Journal_of_Statistics.pdf">Saarela and Arjas, 2015</a> and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf">Saarela, 2015</a>.</p>
+<code class="sourceCode R"><span><span class="va">evaluate_vignette</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"eha"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"visreg"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"splines"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/knitr/man/opts_chunk.html" class="external-link">opts_chunk</a></span><span class="op">$</span><span class="fu">set</span><span class="op">(</span>eval <span class="op">=</span> <span class="va">evaluate_vignette</span><span class="op">)</span></span></code></pre></div>
+<p>Case-base sampling was proposed by <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Hanley_Miettinen-2009-Inter_J_of_Biostats.pdf" class="external-link">Hanley
+and Miettinen, 2009</a> as a way to fit smooth-in-time parametric hazard
+functions via logistic regression. The main idea, which was first
+proposed by Mantel, 1973 and then later developed by Efron, 1977, is to
+sample person-moments, i.e. discrete time points along an subject’s
+follow-up time, in order to construct a base series against which the
+case series can be compared.</p>
+<p>This approach allows the explicit inclusion of the time variable into
+the model, which enables the user to fit a wide class of parametric
+hazard functions. For example, including time linearly recovers the
+Gompertz hazard, whereas including time <em>logarithmically</em>
+recovers the Weibull hazard; not including time at all corresponds to
+the exponential hazard.</p>
+<p>The theoretical properties of this approach have been studied in <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela_et_al-2015-Scandinavian_Journal_of_Statistics.pdf" class="external-link">Saarela
+and Arjas, 2015</a> and <a href="https://github.com/sahirbhatnagar/casebase/blob/master/references/Saarela-2015-Lifetime_Data_Analysis.pdf" class="external-link">Saarela,
+2015</a>.</p>
 </div>
-<div id="analysis-of-the-veteran-dataset" class="section level2">
-<h2 class="hasAnchor">
-<a href="#analysis-of-the-veteran-dataset" class="anchor"></a>Analysis of the <code>veteran</code> dataset</h2>
-<p>The first example we discuss uses the well-known <code>veteran</code> dataset, which is part of the <code>survival</code> package. As we can see below, there is almost no censoring, and therefore we can get a good visual representation of the survival function:</p>
+<div class="section level2">
+<h2 id="analysis-of-the-veteran-dataset">Analysis of the <code>veteran</code> dataset<a class="anchor" aria-label="anchor" href="#analysis-of-the-veteran-dataset"></a>
+</h2>
+<p>The first example we discuss uses the well-known <code>veteran</code>
+dataset, which is part of the <code>survival</code> package. As we can
+see below, there is almost no censoring, and therefore we can get a good
+visual representation of the survival function:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## See example usage at http://sahirbhatnagar.com/casebase/</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## See example usage at http://sahirbhatnagar.com/casebase/</span></span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></code></pre></div>
-<pre><code>## 
-##   0   1 
-##   9 128</code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning in data(veteran): data set 'veteran' not found</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">evtimes</span> <span class="op">&lt;-</span> <span class="va">veteran</span><span class="op">$</span><span class="va">time</span><span class="op">[</span><span class="va">veteran</span><span class="op">$</span><span class="va">status</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">evtimes</span>, nclass <span class="op">=</span> <span class="fl">30</span>, main <span class="op">=</span> <span class="st">''</span>, xlab <span class="op">=</span> <span class="st">'Survival time (days)'</span>, 
-     col <span class="op">=</span> <span class="st">'gray90'</span>, probability <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">tgrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">tgrid</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">dexp</a></span><span class="op">(</span><span class="va">tgrid</span>, rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">evtimes</span><span class="op">)</span><span class="op">)</span>, 
-      lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></code></pre></div>
-<p><img src="smoothHazard_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<p>As we can see, the empirical survival function resembles an exponential distribution.</p>
-<p>We will first try to estimate the hazard function parametrically using some well-known regression routines. But first, we will reformat the data slightly.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">veteran</span><span class="op">$</span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">prior</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"no"</span>,<span class="st">"yes"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">veteran</span><span class="op">$</span><span class="va">celltype</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">celltype</span>, 
-                           levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'large'</span>, <span class="st">'squamous'</span>, <span class="st">'smallcell'</span>, <span class="st">'adeno'</span><span class="op">)</span><span class="op">)</span>
-<span class="va">veteran</span><span class="op">$</span><span class="va">trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">trt</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"test"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>Using the <code>eha</code> package, we can fit a Weibull form, with different values of the shape parameter. For <code>shape = 1</code>, we get an exponential distribution:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">##   0   1 </span></span>
+<span><span class="co">##   9 128</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ehar.se/r/eha/">eha</a></span><span class="op">)</span>
-<span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">veteran</span>, <span class="fu"><a href="http://ehar.se/r/eha/reference/import_Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ehar.se/r/eha/reference/weibreg.html">weibreg</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, 
-                  data <span class="op">=</span> <span class="va">veteran</span>, shape <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## weibreg(formula = y ~ karno + diagtime + age + prior + celltype + 
-##     trt, data = veteran, shape = 1)
-## 
-## Covariate           Mean       Coef Exp(Coef)  se(Coef)    Wald p
-## karno              68.419    -0.031     0.970     0.005     0.000 
-## diagtime            8.139     0.000     1.000     0.009     0.974 
-## age                57.379    -0.006     0.994     0.009     0.505 
-## prior 
-##               no    0.653     0         1           (reference)
-##              yes    0.347     0.049     1.051     0.227     0.827 
-## celltype 
-##            large    0.269     0         1           (reference)
-##         squamous    0.421    -0.377     0.686     0.273     0.166 
-##        smallcell    0.206     0.443     1.557     0.261     0.090 
-##            adeno    0.104     0.736     2.087     0.294     0.012 
-## trt 
-##         standard    0.477     0         1           (reference)
-##             test    0.523     0.220     1.246     0.199     0.269 
-## 
-## log(scale)                    2.811    16.633     0.713     0.000 
-## 
-##  Shape is fixed at  1 
-## 
-## Events                    
-## Total time at risk         16663 
-## Max. log. likelihood      -716.16 
-## LR test statistic         70.1 
-## Degrees of freedom        8 
-## Overall p-value           4.64229e-12</code></pre>
-<p>If we take <code>shape = 0</code>, the shape parameter is estimated along with the regression coefficients:</p>
+<code class="sourceCode R"><span><span class="va">evtimes</span> <span class="op">&lt;-</span> <span class="va">veteran</span><span class="op">$</span><span class="va">time</span><span class="op">[</span><span class="va">veteran</span><span class="op">$</span><span class="va">status</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">evtimes</span>, nclass <span class="op">=</span> <span class="fl">30</span>, main <span class="op">=</span> <span class="st">''</span>, xlab <span class="op">=</span> <span class="st">'Survival time (days)'</span>, </span>
+<span>     col <span class="op">=</span> <span class="st">'gray90'</span>, probability <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">tgrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1000</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">tgrid</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">dexp</a></span><span class="op">(</span><span class="va">tgrid</span>, rate <span class="op">=</span> <span class="fl">1.0</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">evtimes</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>      lwd <span class="op">=</span> <span class="fl">2</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="smoothHazard_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
+<p>As we can see, the empirical survival function resembles an
+exponential distribution.</p>
+<p>We will first try to estimate the hazard function parametrically
+using some well-known regression routines. But first, we will reformat
+the data slightly.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">veteran</span><span class="op">$</span><span class="va">prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">prior</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"no"</span>,<span class="st">"yes"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">veteran</span><span class="op">$</span><span class="va">celltype</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">celltype</span>, </span>
+<span>                           levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'large'</span>, <span class="st">'squamous'</span>, <span class="st">'smallcell'</span>, <span class="st">'adeno'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">veteran</span><span class="op">$</span><span class="va">trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">trt</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"test"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Using the <code>eha</code> package, we can fit a Weibull form, with
+different values of the shape parameter. For <code>shape = 1</code>, we
+get an exponential distribution:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://ehar.se/r/eha/reference/weibreg.html">weibreg</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, 
-                  data <span class="op">=</span> <span class="va">veteran</span>, shape <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## weibreg(formula = y ~ karno + diagtime + age + prior + celltype + 
-##     trt, data = veteran, shape = 0)
-## 
-## Covariate           Mean       Coef Exp(Coef)  se(Coef)    Wald p
-## karno              68.419    -0.032     0.968     0.005     0.000 
-## diagtime            8.139     0.001     1.001     0.009     0.955 
-## age                57.379    -0.007     0.993     0.009     0.476 
-## prior 
-##               no    0.653     0         1           (reference)
-##              yes    0.347     0.047     1.048     0.229     0.836 
-## celltype 
-##            large    0.269     0         1           (reference)
-##         squamous    0.421    -0.428     0.651     0.278     0.123 
-##        smallcell    0.206     0.462     1.587     0.262     0.078 
-##            adeno    0.104     0.792     2.208     0.300     0.008 
-## trt 
-##         standard    0.477     0         1           (reference)
-##             test    0.523     0.246     1.279     0.203     0.224 
-## 
-## log(scale)                    2.864    17.537     0.671     0.000 
-## log(shape)                    0.075     1.077     0.066     0.261 
-## 
-## Events                    
-## Total time at risk         16663 
-## Max. log. likelihood      -715.55 
-## LR test statistic         65.1 
-## Degrees of freedom        8 
-## Overall p-value           4.65393e-11</code></pre>
-<p>Finally, we can also fit a Cox proportional hazard:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ehar.se/r/eha/" class="external-link">eha</a></span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">veteran</span>, <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ehar.se/r/eha/reference/weibreg.html" class="external-link">weibreg</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, </span>
+<span>                  data <span class="op">=</span> <span class="va">veteran</span>, shape <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Call:</span></span>
+<span><span class="co">## weibreg(formula = y ~ karno + diagtime + age + prior + celltype + </span></span>
+<span><span class="co">##     trt, data = veteran, shape = 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Covariate           Mean       Coef Exp(Coef)  se(Coef)    Wald p</span></span>
+<span><span class="co">## karno              68.419    -0.031     0.970     0.005     0.000 </span></span>
+<span><span class="co">## diagtime            8.139     0.000     1.000     0.009     0.974 </span></span>
+<span><span class="co">## age                57.379    -0.006     0.994     0.009     0.505 </span></span>
+<span><span class="co">## prior </span></span>
+<span><span class="co">##               no    0.653     0         1           (reference)</span></span>
+<span><span class="co">##              yes    0.347     0.049     1.051     0.227     0.827 </span></span>
+<span><span class="co">## celltype </span></span>
+<span><span class="co">##            large    0.269     0         1           (reference)</span></span>
+<span><span class="co">##         squamous    0.421    -0.377     0.686     0.273     0.166 </span></span>
+<span><span class="co">##        smallcell    0.206     0.443     1.557     0.261     0.090 </span></span>
+<span><span class="co">##            adeno    0.104     0.736     2.087     0.294     0.012 </span></span>
+<span><span class="co">## trt </span></span>
+<span><span class="co">##         standard    0.477     0         1           (reference)</span></span>
+<span><span class="co">##             test    0.523     0.220     1.246     0.199     0.269 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## log(scale)                    2.811    16.633     0.713     0.000 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##  Shape is fixed at  1 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Events                    </span></span>
+<span><span class="co">## Total time at risk         16663 </span></span>
+<span><span class="co">## Max. log. likelihood      -716.16 </span></span>
+<span><span class="co">## LR test statistic         70.1 </span></span>
+<span><span class="co">## Degrees of freedom        8 </span></span>
+<span><span class="co">## Overall p-value           4.64229e-12</span></span></code></pre>
+<p>If we take <code>shape = 0</code>, the shape parameter is estimated
+along with the regression coefficients:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, 
-                data <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span>
-<span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model3</span><span class="op">)</span></code></pre></div>
-<pre><code>## Call:
-## coxph(formula = y ~ karno + diagtime + age + prior + celltype + 
-##     trt, data = veteran)
-## 
-##   n= 137, number of events= 128 
-## 
-##                         coef  exp(coef)   se(coef)      z Pr(&gt;|z|)    
-## karno             -3.282e-02  9.677e-01  5.508e-03 -5.958 2.55e-09 ***
-## diagtime           8.132e-05  1.000e+00  9.136e-03  0.009  0.99290    
-## age               -8.706e-03  9.913e-01  9.300e-03 -0.936  0.34920    
-## prioryes           7.159e-02  1.074e+00  2.323e-01  0.308  0.75794    
-## celltypesquamous  -4.013e-01  6.695e-01  2.827e-01 -1.420  0.15574    
-## celltypesmallcell  4.603e-01  1.584e+00  2.662e-01  1.729  0.08383 .  
-## celltypeadeno      7.948e-01  2.214e+00  3.029e-01  2.624  0.00869 ** 
-## trttest            2.946e-01  1.343e+00  2.075e-01  1.419  0.15577    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-##                   exp(coef) exp(-coef) lower .95 upper .95
-## karno                0.9677     1.0334    0.9573    0.9782
-## diagtime             1.0001     0.9999    0.9823    1.0182
-## age                  0.9913     1.0087    0.9734    1.0096
-## prioryes             1.0742     0.9309    0.6813    1.6937
-## celltypesquamous     0.6695     1.4938    0.3847    1.1651
-## celltypesmallcell    1.5845     0.6311    0.9403    2.6699
-## celltypeadeno        2.2139     0.4517    1.2228    4.0084
-## trttest              1.3426     0.7448    0.8939    2.0166
-## 
-## Concordance= 0.736  (se = 0.021 )
-## Likelihood ratio test= 62.1  on 8 df,   p=2e-10
-## Wald test            = 62.37  on 8 df,   p=2e-10
-## Score (logrank) test = 66.74  on 8 df,   p=2e-11</code></pre>
-<p>As we can see, all three models are significant, and they give similar information: <code>karno</code> and <code>celltype</code> are significant predictors, both treatment is not.</p>
-<p>The method available in this package makes use of <em>case-base sampling</em>. That is, person-moments are randomly sampled across the entire follow-up time, with some moments corresponding to cases and others to controls. By sampling person-moments instead of individuals, we can then use logistic regression to fit smooth-in-time parametric hazard functions. See the previous section for more details.</p>
-<p>First, we will look at the follow-up time by using population-time plots:</p>
+<code class="sourceCode R"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ehar.se/r/eha/reference/weibreg.html" class="external-link">weibreg</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, </span>
+<span>                  data <span class="op">=</span> <span class="va">veteran</span>, shape <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model2</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Call:</span></span>
+<span><span class="co">## weibreg(formula = y ~ karno + diagtime + age + prior + celltype + </span></span>
+<span><span class="co">##     trt, data = veteran, shape = 0)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Covariate           Mean       Coef Exp(Coef)  se(Coef)    Wald p</span></span>
+<span><span class="co">## karno              68.419    -0.032     0.968     0.005     0.000 </span></span>
+<span><span class="co">## diagtime            8.139     0.001     1.001     0.009     0.955 </span></span>
+<span><span class="co">## age                57.379    -0.007     0.993     0.009     0.476 </span></span>
+<span><span class="co">## prior </span></span>
+<span><span class="co">##               no    0.653     0         1           (reference)</span></span>
+<span><span class="co">##              yes    0.347     0.047     1.048     0.229     0.836 </span></span>
+<span><span class="co">## celltype </span></span>
+<span><span class="co">##            large    0.269     0         1           (reference)</span></span>
+<span><span class="co">##         squamous    0.421    -0.428     0.651     0.278     0.123 </span></span>
+<span><span class="co">##        smallcell    0.206     0.462     1.587     0.262     0.078 </span></span>
+<span><span class="co">##            adeno    0.104     0.792     2.208     0.300     0.008 </span></span>
+<span><span class="co">## trt </span></span>
+<span><span class="co">##         standard    0.477     0         1           (reference)</span></span>
+<span><span class="co">##             test    0.523     0.246     1.279     0.203     0.224 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## log(scale)                    2.864    17.537     0.671     0.000 </span></span>
+<span><span class="co">## log(shape)                    0.075     1.077     0.066     0.261 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Events                    </span></span>
+<span><span class="co">## Total time at risk         16663 </span></span>
+<span><span class="co">## Max. log. likelihood      -715.55 </span></span>
+<span><span class="co">## LR test statistic         65.1 </span></span>
+<span><span class="co">## Degrees of freedom        8 </span></span>
+<span><span class="co">## Overall p-value           4.65393e-11</span></span></code></pre>
+<p>Finally, we can also fit a Cox proportional hazard:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># create popTime object</span>
-<span class="va">pt_veteran</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot.popTime.html">popTime</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'time' will be used as the time variable</code></pre>
-<pre><code>## 'status' will be used as the event variable</code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">pt_veteran</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "popTime"    "data.table" "data.frame"</code></pre>
+<code class="sourceCode R"><span><span class="va">model3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span> <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, </span>
+<span>                data <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model3</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Call:</span></span>
+<span><span class="co">## coxph(formula = y ~ karno + diagtime + age + prior + celltype + </span></span>
+<span><span class="co">##     trt, data = veteran)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##   n= 137, number of events= 128 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##                         coef  exp(coef)   se(coef)      z Pr(&gt;|z|)    </span></span>
+<span><span class="co">## karno             -3.282e-02  9.677e-01  5.508e-03 -5.958 2.55e-09 ***</span></span>
+<span><span class="co">## diagtime           8.132e-05  1.000e+00  9.136e-03  0.009  0.99290    </span></span>
+<span><span class="co">## age               -8.706e-03  9.913e-01  9.300e-03 -0.936  0.34920    </span></span>
+<span><span class="co">## prioryes           7.159e-02  1.074e+00  2.323e-01  0.308  0.75794    </span></span>
+<span><span class="co">## celltypesquamous  -4.013e-01  6.695e-01  2.827e-01 -1.420  0.15574    </span></span>
+<span><span class="co">## celltypesmallcell  4.603e-01  1.584e+00  2.662e-01  1.729  0.08383 .  </span></span>
+<span><span class="co">## celltypeadeno      7.948e-01  2.214e+00  3.029e-01  2.624  0.00869 ** </span></span>
+<span><span class="co">## trttest            2.946e-01  1.343e+00  2.075e-01  1.419  0.15577    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##                   exp(coef) exp(-coef) lower .95 upper .95</span></span>
+<span><span class="co">## karno                0.9677     1.0334    0.9573    0.9782</span></span>
+<span><span class="co">## diagtime             1.0001     0.9999    0.9823    1.0182</span></span>
+<span><span class="co">## age                  0.9913     1.0087    0.9734    1.0096</span></span>
+<span><span class="co">## prioryes             1.0742     0.9309    0.6813    1.6937</span></span>
+<span><span class="co">## celltypesquamous     0.6695     1.4938    0.3847    1.1651</span></span>
+<span><span class="co">## celltypesmallcell    1.5845     0.6311    0.9403    2.6699</span></span>
+<span><span class="co">## celltypeadeno        2.2139     0.4517    1.2228    4.0084</span></span>
+<span><span class="co">## trttest              1.3426     0.7448    0.8939    2.0166</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Concordance= 0.736  (se = 0.021 )</span></span>
+<span><span class="co">## Likelihood ratio test= 62.1  on 8 df,   p=2e-10</span></span>
+<span><span class="co">## Wald test            = 62.37  on 8 df,   p=2e-10</span></span>
+<span><span class="co">## Score (logrank) test = 66.74  on 8 df,   p=2e-11</span></span></code></pre>
+<p>As we can see, all three models are significant, and they give
+similar information: <code>karno</code> and <code>celltype</code> are
+significant predictors, both treatment is not.</p>
+<p>The method available in this package makes use of <em>case-base
+sampling</em>. That is, person-moments are randomly sampled across the
+entire follow-up time, with some moments corresponding to cases and
+others to controls. By sampling person-moments instead of individuals,
+we can then use logistic regression to fit smooth-in-time parametric
+hazard functions. See the previous section for more details.</p>
+<p>First, we will look at the follow-up time by using population-time
+plots:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># create popTime object</span></span>
+<span><span class="va">pt_veteran</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'time' will be used as the time variable</span></span></code></pre>
+<pre><code><span><span class="co">## 'status' will be used as the event variable</span></span></code></pre>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># plot method for objects of class 'popTime'</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">pt_veteran</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">pt_veteran</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "popTime"    "data.table" "data.frame"</span></span></code></pre>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># plot method for objects of class 'popTime'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pt_veteran</span><span class="op">)</span></span></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<p>Population-time plots are a useful way of visualizing the total follow-up experience, where individuals appear on the y-axis, and follow-up time on the x-axis; each individual’s follow-up time is represented by a gray line segment. For convenience, we have ordered the patients according to their time-to-event, and each event is represented by a red dot. The censored observations (of which there is only a few) correspond to the grey lines which do not end with a red dot.</p>
-<p>Next, we use case-base sampling to fit a parametric hazard function via logistic regression. First, we will include time as a linear term; as noted above, this corresponds to an Gompertz hazard.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span>
-             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'time' will be used as the time variable</code></pre>
+<p>Population-time plots are a useful way of visualizing the total
+follow-up experience, where individuals appear on the y-axis, and
+follow-up time on the x-axis; each individual’s follow-up time is
+represented by a gray line segment. For convenience, we have ordered the
+patients according to their time-to-event, and each event is represented
+by a red dot. The censored observations (of which there is only a few)
+correspond to the grey lines which do not end with a red dot.</p>
+<p>Next, we use case-base sampling to fit a parametric hazard function
+via logistic regression. First, we will include time as a linear term;
+as noted above, this corresponds to an Gompertz hazard.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model4</span><span class="op">)</span></code></pre></div>
-<pre><code>## Fitting smooth hazards with case-base sampling
-## 
-## Sample size: 137 
-## Number of events: 128 
-## Number of base moments: 12800 
-## ----
-## 
-## Call:
-## fitSmoothHazard(formula = status ~ time + karno + diagtime + 
-##     age + prior + celltype + trt, data = veteran, ratio = 100)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -0.4285  -0.1501  -0.1199  -0.1002   3.4177  
-## 
-## Coefficients:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -2.6888658  0.7213316  -3.728 0.000193 ***
-## time               0.0003337  0.0006450   0.517 0.604898    
-## karno             -0.0324322  0.0052911  -6.130 8.81e-10 ***
-## diagtime           0.0035611  0.0093088   0.383 0.702056    
-## age               -0.0066025  0.0092944  -0.710 0.477471    
-## prioryes           0.0089338  0.2313008   0.039 0.969190    
-## celltypesquamous  -0.4319329  0.2844682  -1.518 0.128917    
-## celltypesmallcell  0.3941374  0.2626738   1.500 0.133489    
-## celltypeadeno      0.7020877  0.2987435   2.350 0.018767 *  
-## trttest            0.2109057  0.2018479   1.045 0.296081    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1365.7  on 12918  degrees of freedom
-## AIC: 1385.7
-## 
-## Number of Fisher Scoring iterations: 8</code></pre>
-<p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>. We can quickly visualize the conditional association between each predictor and the hazard function using the <code>plot</code> method for objects that are fit with <code>fitSmoothHazard</code>. Specifically, if <span class="math inline">\(x\)</span> is the predictor of interest, <span class="math inline">\(h\)</span> is the hazard function, and <span class="math inline">\(\mathbf{x_{-j}}\)</span> the other predictors in the model, the conditional association plot represents the relationship <span class="math inline">\(f(x) = \mathbb{E}(h|x, \mathbf{x_{-j}})\)</span>. By default, the other terms in the model (<span class="math inline">\(\mathbf{x_{-j}}\)</span>) are set to their median if the term is numeric or the most common category if the term is a factor. Further details of customizing these plots are given in the <code>Plot Hazards and Hazard Ratios</code> vignette.</p>
+<code class="sourceCode R"><span><span class="va">model4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span></span>
+<span>             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'time' will be used as the time variable</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg">visreg</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">model4</span>, 
-     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## Conditions used in construction of plot
-## karno: 70
-## diagtime: 5
-## age: 60
-## prior: no
-## celltype: squamous
-## trt: test
-## offset: 0</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model4</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Fitting smooth hazards with case-base sampling</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Sample size: 137 </span></span>
+<span><span class="co">## Number of events: 128 </span></span>
+<span><span class="co">## Number of base moments: 12800 </span></span>
+<span><span class="co">## ----</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## fitSmoothHazard(formula = status ~ time + karno + diagtime + </span></span>
+<span><span class="co">##     age + prior + celltype + trt, data = veteran, ratio = 100)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##                     Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)       -2.6888658  0.7213316  -3.728 0.000193 ***</span></span>
+<span><span class="co">## time               0.0003337  0.0006450   0.517 0.604898    </span></span>
+<span><span class="co">## karno             -0.0324322  0.0052911  -6.130 8.81e-10 ***</span></span>
+<span><span class="co">## diagtime           0.0035611  0.0093088   0.383 0.702056    </span></span>
+<span><span class="co">## age               -0.0066025  0.0092944  -0.710 0.477471    </span></span>
+<span><span class="co">## prioryes           0.0089338  0.2313008   0.039 0.969190    </span></span>
+<span><span class="co">## celltypesquamous  -0.4319329  0.2844682  -1.518 0.128917    </span></span>
+<span><span class="co">## celltypesmallcell  0.3941374  0.2626738   1.500 0.133489    </span></span>
+<span><span class="co">## celltypeadeno      0.7020877  0.2987435   2.350 0.018767 *  </span></span>
+<span><span class="co">## trttest            0.2109057  0.2018479   1.045 0.296081    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1436.2  on 12927  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1365.7  on 12918  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1385.7</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 8</span></span></code></pre>
+<p>Since the output object from <code>fitSmoothHazard</code> inherits
+from the <code>glm</code> class, we see a familiar result when using the
+function <code>summary</code>. We can quickly visualize the conditional
+association between each predictor and the hazard function using the
+<code>plot</code> method for objects that are fit with
+<code>fitSmoothHazard</code>. Specifically, if <span class="math inline">\(x\)</span> is the predictor of interest, <span class="math inline">\(h\)</span> is the hazard function, and <span class="math inline">\(\mathbf{x_{-j}}\)</span> the other predictors in
+the model, the conditional association plot represents the relationship
+<span class="math inline">\(f(x) = \mathbb{E}(h|x,
+\mathbf{x_{-j}})\)</span>. By default, the other terms in the model
+(<span class="math inline">\(\mathbf{x_{-j}}\)</span>) are set to their
+median if the term is numeric or the most common category if the term is
+a factor. Further details of customizing these plots are given in the
+<code>Plot Hazards and Hazard Ratios</code> vignette.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg" class="external-link">visreg</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model4</span>, </span>
+<span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## diagtime: 5
-## age: 60
-## prior: no
-## celltype: squamous
-## trt: test
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## karno: 70
-## age: 60
-## prior: no
-## celltype: squamous
-## trt: test
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-3.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## karno: 70
-## diagtime: 5
-## prior: no
-## celltype: squamous
-## trt: test
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-4.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## karno: 70
-## diagtime: 5
-## age: 60
-## celltype: squamous
-## trt: test
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-5.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## karno: 70
-## diagtime: 5
-## age: 60
-## prior: no
-## trt: test
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## trt: test</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-6.png" width="700"></p>
-<pre><code>## Conditions used in construction of plot
-## time: 93.41294
-## karno: 70
-## diagtime: 5
-## age: 60
-## prior: no
-## celltype: squamous
-## offset: 0</code></pre>
+<pre><code><span><span class="co">## Conditions used in construction of plot</span></span>
+<span><span class="co">## time: 93.41294</span></span>
+<span><span class="co">## karno: 70</span></span>
+<span><span class="co">## diagtime: 5</span></span>
+<span><span class="co">## age: 60</span></span>
+<span><span class="co">## prior: no</span></span>
+<span><span class="co">## celltype: squamous</span></span>
+<span><span class="co">## offset: 0</span></span></code></pre>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-9-7.png" width="700"></p>
-<p>The main purpose of fitting smooth hazard functions is that it is then relatively easy to compute absolute risks. For example, we can use the function <code>absoluteRisk</code> to compute the mean absolute risk at 90 days, which can then be compared to the empirical measure.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">absRisk4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, time <span class="op">=</span> <span class="fl">90</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">absRisk4</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.6124916</code></pre>
+<p>The main purpose of fitting smooth hazard functions is that it is
+then relatively easy to compute absolute risks. For example, we can use
+the function <code>absoluteRisk</code> to compute the mean absolute risk
+at 90 days, which can then be compared to the empirical measure.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ftime</span> <span class="op">&lt;-</span> <span class="va">veteran</span><span class="op">$</span><span class="va">time</span>
-<span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">ftime</span> <span class="op">&lt;=</span> <span class="fl">90</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.5547445</code></pre>
-<p>We can also fit a Weibull hazard by using a logarithmic term for time:</p>
+<code class="sourceCode R"><span><span class="va">absRisk4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, time <span class="op">=</span> <span class="fl">90</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">absRisk4</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.6124916</span></span></code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span>
-             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'time' will be used as the time variable</code></pre>
+<code class="sourceCode R"><span><span class="va">ftime</span> <span class="op">&lt;-</span> <span class="va">veteran</span><span class="op">$</span><span class="va">time</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">ftime</span> <span class="op">&lt;=</span> <span class="fl">90</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 0.5547445</span></span></code></pre>
+<p>We can also fit a Weibull hazard by using a logarithmic term for
+time:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model5</span><span class="op">)</span></code></pre></div>
-<pre><code>## Fitting smooth hazards with case-base sampling
-## 
-## Sample size: 137 
-## Number of events: 128 
-## Number of base moments: 12800 
-## ----
-## 
-## Call:
-## fitSmoothHazard(formula = status ~ log(time) + karno + diagtime + 
-##     age + prior + celltype + trt, data = veteran, ratio = 100)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -0.4637  -0.1518  -0.1190  -0.0967   3.4205  
-## 
-## Coefficients:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -3.0686578  0.7552335  -4.063 4.84e-05 ***
-## log(time)          0.0721936  0.0718563   1.005   0.3150    
-## karno             -0.0328926  0.0055067  -5.973 2.33e-09 ***
-## diagtime          -0.0007996  0.0091842  -0.087   0.9306    
-## age               -0.0045541  0.0092918  -0.490   0.6240    
-## prioryes           0.0286398  0.2292875   0.125   0.9006    
-## celltypesquamous  -0.4170963  0.2799527  -1.490   0.1363    
-## celltypesmallcell  0.4495348  0.2634379   1.706   0.0879 .  
-## celltypeadeno      0.7776537  0.3036331   2.561   0.0104 *  
-## trttest            0.2740183  0.2046518   1.339   0.1806    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1365.1  on 12918  degrees of freedom
-## AIC: 1385.1
-## 
-## Number of Fisher Scoring iterations: 8</code></pre>
-<p>With case-base sampling, it is straightforward to fit a semi-parametric hazard function using splines, which can then be used to estimate the mean absolute risk.</p>
+<code class="sourceCode R"><span><span class="va">model5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span></span>
+<span>             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'time' will be used as the time variable</span></span></code></pre>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Fit a spline for time</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span>
-<span class="va">model6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html">bs</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span>
-             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
-<pre><code>## 'time' will be used as the time variable</code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model5</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Fitting smooth hazards with case-base sampling</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Sample size: 137 </span></span>
+<span><span class="co">## Number of events: 128 </span></span>
+<span><span class="co">## Number of base moments: 12800 </span></span>
+<span><span class="co">## ----</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## fitSmoothHazard(formula = status ~ log(time) + karno + diagtime + </span></span>
+<span><span class="co">##     age + prior + celltype + trt, data = veteran, ratio = 100)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##                     Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)       -3.0686578  0.7552335  -4.063 4.84e-05 ***</span></span>
+<span><span class="co">## log(time)          0.0721936  0.0718563   1.005   0.3150    </span></span>
+<span><span class="co">## karno             -0.0328926  0.0055067  -5.973 2.33e-09 ***</span></span>
+<span><span class="co">## diagtime          -0.0007996  0.0091842  -0.087   0.9306    </span></span>
+<span><span class="co">## age               -0.0045541  0.0092918  -0.490   0.6240    </span></span>
+<span><span class="co">## prioryes           0.0286398  0.2292875   0.125   0.9006    </span></span>
+<span><span class="co">## celltypesquamous  -0.4170963  0.2799527  -1.490   0.1363    </span></span>
+<span><span class="co">## celltypesmallcell  0.4495348  0.2634379   1.706   0.0879 .  </span></span>
+<span><span class="co">## celltypeadeno      0.7776537  0.3036331   2.561   0.0104 *  </span></span>
+<span><span class="co">## trttest            0.2740183  0.2046518   1.339   0.1806    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1436.2  on 12927  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1365.1  on 12918  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1385.1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 8</span></span></code></pre>
+<p>With case-base sampling, it is straightforward to fit a
+semi-parametric hazard function using splines, which can then be used to
+estimate the mean absolute risk.</p>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model6</span><span class="op">)</span></code></pre></div>
-<pre><code>## Fitting smooth hazards with case-base sampling
-## 
-## Sample size: 137 
-## Number of events: 128 
-## Number of base moments: 12800 
-## ----
-## 
-## Call:
-## fitSmoothHazard(formula = status ~ bs(time) + karno + diagtime + 
-##     age + prior + celltype + trt, data = veteran, ratio = 100)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -0.4551  -0.1535  -0.1198  -0.0952   3.5218  
-## 
-## Coefficients:
-##                     Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)       -2.9343444  0.7277306  -4.032 5.53e-05 ***
-## bs(time)1          1.6365070  1.0324136   1.585  0.11294    
-## bs(time)2         -2.5135557  1.7558703  -1.432  0.15228    
-## bs(time)3          1.6976154  0.9897559   1.715  0.08631 .  
-## karno             -0.0322573  0.0053904  -5.984 2.17e-09 ***
-## diagtime           0.0003886  0.0091607   0.042  0.96617    
-## age               -0.0065366  0.0093554  -0.699  0.48474    
-## prioryes           0.0162450  0.2356069   0.069  0.94503    
-## celltypesquamous  -0.4172317  0.2837950  -1.470  0.14151    
-## celltypesmallcell  0.4518275  0.2651004   1.704  0.08831 .  
-## celltypeadeno      0.8527251  0.3040353   2.805  0.00504 ** 
-## trttest            0.2622058  0.2073319   1.265  0.20599    
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 1436.2  on 12927  degrees of freedom
-## Residual deviance: 1363.0  on 12916  degrees of freedom
-## AIC: 1387
-## 
-## Number of Fisher Scoring iterations: 8</code></pre>
+<code class="sourceCode R"><span><span class="co"># Fit a spline for time</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
+<span><span class="va">model6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/splines/bs.html" class="external-link">bs</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> <span class="va">karno</span> <span class="op">+</span> <span class="va">diagtime</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">prior</span> <span class="op">+</span></span>
+<span>             <span class="va">celltype</span> <span class="op">+</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">veteran</span>, ratio <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## 'time' will be used as the time variable</span></span></code></pre>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model6</span>, time <span class="op">=</span> <span class="fl">90</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##  'absRiskCB' num [1:2, 1:138] 0 90 0 0.294 0 ...
-##  - attr(*, "dimnames")=List of 2
-##   ..$ : chr [1:2] "" ""
-##   ..$ : chr [1:138] "time" "" "" "" ...
-##  - attr(*, "type")= chr "CI"</code></pre>
-<p>As we can see from the summary, there is little evidence that splines actually improve the fit. Moreover, we can see that estimated individual absolute risks are essentially the same when using either a linear term or splines:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/CompRisk-class.html">summary</a></span><span class="op">(</span><span class="va">model6</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Fitting smooth hazards with case-base sampling</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Sample size: 137 </span></span>
+<span><span class="co">## Number of events: 128 </span></span>
+<span><span class="co">## Number of base moments: 12800 </span></span>
+<span><span class="co">## ----</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Call:</span></span>
+<span><span class="co">## fitSmoothHazard(formula = status ~ bs(time) + karno + diagtime + </span></span>
+<span><span class="co">##     age + prior + celltype + trt, data = veteran, ratio = 100)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Coefficients:</span></span>
+<span><span class="co">##                     Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span><span class="co">## (Intercept)       -2.9343444  0.7277306  -4.032 5.53e-05 ***</span></span>
+<span><span class="co">## bs(time)1          1.6365070  1.0324136   1.585  0.11294    </span></span>
+<span><span class="co">## bs(time)2         -2.5135557  1.7558703  -1.432  0.15228    </span></span>
+<span><span class="co">## bs(time)3          1.6976154  0.9897559   1.715  0.08631 .  </span></span>
+<span><span class="co">## karno             -0.0322573  0.0053904  -5.984 2.17e-09 ***</span></span>
+<span><span class="co">## diagtime           0.0003886  0.0091607   0.042  0.96617    </span></span>
+<span><span class="co">## age               -0.0065366  0.0093554  -0.699  0.48474    </span></span>
+<span><span class="co">## prioryes           0.0162450  0.2356069   0.069  0.94503    </span></span>
+<span><span class="co">## celltypesquamous  -0.4172317  0.2837950  -1.470  0.14151    </span></span>
+<span><span class="co">## celltypesmallcell  0.4518275  0.2651004   1.704  0.08831 .  </span></span>
+<span><span class="co">## celltypeadeno      0.8527251  0.3040353   2.805  0.00504 ** </span></span>
+<span><span class="co">## trttest            0.2622058  0.2073319   1.265  0.20599    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## (Dispersion parameter for binomial family taken to be 1)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     Null deviance: 1436.2  on 12927  degrees of freedom</span></span>
+<span><span class="co">## Residual deviance: 1363.0  on 12916  degrees of freedom</span></span>
+<span><span class="co">## AIC: 1387</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of Fisher Scoring iterations: 8</span></span></code></pre>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">linearRisk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, time <span class="op">=</span> <span class="fl">90</span>, newdata <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span>
-<span class="va">splineRisk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model6</span>, time <span class="op">=</span> <span class="fl">90</span>, newdata <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot.default</a></span><span class="op">(</span><span class="va">linearRisk</span>, <span class="va">splineRisk</span>,
-     xlab <span class="op">=</span> <span class="st">"Linear"</span>, ylab <span class="op">=</span> <span class="st">"Splines"</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model6</span>, time <span class="op">=</span> <span class="fl">90</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  'absRiskCB' num [1:2, 1:138] 0 90 0 0.294 0 ...</span></span>
+<span><span class="co">##  - attr(*, "dimnames")=List of 2</span></span>
+<span><span class="co">##   ..$ : chr [1:2] "" ""</span></span>
+<span><span class="co">##   ..$ : chr [1:138] "time" "" "" "" ...</span></span>
+<span><span class="co">##  - attr(*, "type")= chr "CI"</span></span>
+<span><span class="co">##  - attr(*, "newdata")='data.frame':  137 obs. of  7 variables:</span></span>
+<span><span class="co">##   ..$ trt     : Factor w/ 2 levels "standard","test": 1 1 1 1 1 1 1 1 1 1 ...</span></span>
+<span><span class="co">##   ..$ celltype: Factor w/ 4 levels "large","squamous",..: 2 2 2 2 2 2 2 2 2 2 ...</span></span>
+<span><span class="co">##   ..$ status  : num [1:137] 1 1 1 1 1 1 1 1 1 0 ...</span></span>
+<span><span class="co">##   ..$ karno   : num [1:137] 60 70 60 60 70 20 40 80 50 70 ...</span></span>
+<span><span class="co">##   ..$ diagtime: num [1:137] 7 5 3 9 11 5 10 29 18 6 ...</span></span>
+<span><span class="co">##   ..$ age     : num [1:137] 69 64 38 63 65 49 69 68 43 70 ...</span></span>
+<span><span class="co">##   ..$ prior   : Factor w/ 2 levels "no","yes": 1 2 1 2 2 1 2 1 1 1 ...</span></span></code></pre>
+<p>As we can see from the summary, there is little evidence that splines
+actually improve the fit. Moreover, we can see that estimated individual
+absolute risks are essentially the same when using either a linear term
+or splines:</p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">linearRisk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, time <span class="op">=</span> <span class="fl">90</span>, newdata <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></span>
+<span><span class="va">splineRisk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model6</span>, time <span class="op">=</span> <span class="fl">90</span>, newdata <span class="op">=</span> <span class="va">veteran</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot.default</a></span><span class="op">(</span><span class="va">linearRisk</span>, <span class="va">splineRisk</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Linear"</span>, ylab <span class="op">=</span> <span class="st">"Splines"</span>, pch <span class="op">=</span> <span class="fl">19</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">'red'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
-<p>These last three models give similar information as the first three, i.e. the main predictors for the hazard are <code>karno</code> and <code>celltype</code>, with treatment being non-significant. Moreover, by explicitly including the time variable in the formula, we see that it is not significant; this is evidence that the true hazard is exponential.</p>
-<p>Finally, we can look at the estimates of the coefficients for the Cox model, as well as the last three models (CB stands for “case-base”):</p>
+<p>These last three models give similar information as the first three,
+i.e. the main predictors for the hazard are <code>karno</code> and
+<code>celltype</code>, with treatment being non-significant. Moreover,
+by explicitly including the time variable in the formula, we see that it
+is not significant; this is evidence that the true hazard is
+exponential.</p>
+<p>Finally, we can look at the estimates of the coefficients for the Cox
+model, as well as the last three models (CB stands for “case-base”):</p>
 <table class="table">
 <thead><tr>
 <th style="text-align:left;">
@@ -664,141 +733,167 @@ trttest
 </tbody>
 </table>
 </div>
-<div id="cumulative-incidence-curves" class="section level2">
-<h2 class="hasAnchor">
-<a href="#cumulative-incidence-curves" class="anchor"></a>Cumulative Incidence Curves</h2>
-<p>Here we show how to calculate the cumulative incidence curves for a specific risk profile using the following equation:</p>
-<p><span class="math display">\[ CI(x, t) = 1 - exp\left[ - \int_0^t h(x, u) \textrm{d}u \right] \]</span> where \( h(x, t) \) is the hazard function, \( t \) denotes the numerical value (number of units) of a point in prognostic/prospective time and \( x \) is the realization of the vector \( X \) of variates based on the patient’s profile and intervention (if any).</p>
-<p>We compare the cumulative incidence functions from the fully-parametric fit using case base sampling, with those from the Cox model:</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># define a specific covariate profile</span>
-<span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>trt <span class="op">=</span> <span class="st">"test"</span>, 
-                       celltype <span class="op">=</span> <span class="st">"adeno"</span>, 
-                       karno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, 
-                       diagtime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>,
-                       age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,
-                       prior <span class="op">=</span> <span class="st">"no"</span><span class="op">)</span>
-
-<span class="co"># calculate cumulative incidence using casebase model</span>
-<span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, 
-                            time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span><span class="op">)</span>, 
-                            newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span>
-
-<span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#8E063B"</span>,<span class="st">"#023FA5"</span><span class="op">)</span>
-
-<span class="co"># cumulative incidence function for the Cox model</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="va">model3</span>, newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span>,
-     xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Cumulative Incidence (%)"</span>, fun <span class="op">=</span> <span class="st">"event"</span>,
-     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span>, conf.int <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, 
-     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"Estimated Cumulative Incidence (risk) of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>, 
-                    <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># add casebase curve with legend</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, gg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, 
-       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span><span class="op">)</span>, 
-       col <span class="op">=</span> <span class="va">cols</span>,
-       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, 
-       bg <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="cumulative-incidence-curves">Cumulative Incidence Curves<a class="anchor" aria-label="anchor" href="#cumulative-incidence-curves"></a>
+</h2>
+<p>Here we show how to calculate the cumulative incidence curves for a
+specific risk profile using the following equation:</p>
+<p><span class="math display">\[ CI(x, t) = 1 - exp\left[ - \int_0^t
+h(x, u) \textrm{d}u \right] \]</span> where \( h(x, t) \) is the hazard
+function, \( t \) denotes the numerical value (number of units) of a
+point in prognostic/prospective time and \( x \) is the realization of
+the vector \( X \) of variates based on the patient’s profile and
+intervention (if any).</p>
+<p>We compare the cumulative incidence functions from the
+fully-parametric fit using case base sampling, with those from the Cox
+model:</p>
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># define a specific covariate profile</span></span>
+<span><span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>trt <span class="op">=</span> <span class="st">"test"</span>, </span>
+<span>                       celltype <span class="op">=</span> <span class="st">"adeno"</span>, </span>
+<span>                       karno <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, </span>
+<span>                       diagtime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>,</span>
+<span>                       age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span>,</span>
+<span>                       prior <span class="op">=</span> <span class="st">"no"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># calculate cumulative incidence using casebase model</span></span>
+<span><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, </span>
+<span>                            time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>                            newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#8E063B"</span>,<span class="st">"#023FA5"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># cumulative incidence function for the Cox model</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html" class="external-link">survfit</a></span><span class="op">(</span><span class="va">model3</span>, newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Cumulative Incidence (%)"</span>, fun <span class="op">=</span> <span class="st">"event"</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span>, conf.int <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
+<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Estimated Cumulative Incidence (risk) of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>, </span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add casebase curve with legend</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, gg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, </span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span><span class="op">)</span>, </span>
+<span>       col <span class="op">=</span> <span class="va">cols</span>,</span>
+<span>       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>       bg <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<p>Note that by default, <code>absoulteRisk</code> calculated the cumulative incidence. Alternatively, you can calculate the survival curve by specifying <code>type = 'survival'</code> in the call to <code>absoulteRisk</code>:</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.CompRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, 
-                            time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span><span class="op">)</span>, 
-                            newdata <span class="op">=</span> <span class="va">new_data</span>, 
-                            type <span class="op">=</span> <span class="st">"survival"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="va">model3</span>, newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span>,
-     xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Survival Probability (%)"</span>, 
-     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span>, conf.int <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, 
-     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span><span class="op">(</span><span class="st">"Estimated Survival Probability of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>, 
-                    <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># add casebase curve with legend</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, gg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, 
-       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span><span class="op">)</span>, 
-       col <span class="op">=</span> <span class="va">cols</span>,
-       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, 
-       bg <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span></code></pre></div>
+<p>Note that by default, <code>absoulteRisk</code> calculated the
+cumulative incidence. Alternatively, you can calculate the survival
+curve by specifying <code>type = 'survival'</code> in the call to
+<code>absoulteRisk</code>:</p>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">smooth_risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/absoluteRisk.html">absoluteRisk</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">model4</span>, </span>
+<span>                            time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>                            newdata <span class="op">=</span> <span class="va">new_data</span>, </span>
+<span>                            type <span class="op">=</span> <span class="st">"survival"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html" class="external-link">survfit</a></span><span class="op">(</span><span class="va">model3</span>, newdata <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"Days"</span>, ylab <span class="op">=</span> <span class="st">"Survival Probability (%)"</span>, </span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">300</span><span class="op">)</span>, conf.int <span class="op">=</span> <span class="cn">F</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, </span>
+<span>     main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Estimated Survival Probability of Lung Cancer\ntrt = test, celltype = adeno, karno = %g,\ndiagtime = %g, age = %g, prior = no"</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">karno</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">diagtime</span><span class="op">)</span>, </span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/stats/median.html" class="external-link">median</a></span><span class="op">(</span><span class="va">veteran</span><span class="op">$</span><span class="va">age</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># add casebase curve with legend</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smooth_risk</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="va">cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, gg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, </span>
+<span>       legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"semi-parametric (Cox)"</span>, <span class="st">"parametric (casebase)"</span><span class="op">)</span>, </span>
+<span>       col <span class="op">=</span> <span class="va">cols</span>,</span>
+<span>       lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>       bg <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="smoothHazard_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
-<div id="session-information" class="section level2">
-<h2 class="hasAnchor">
-<a href="#session-information" class="anchor"></a>Session information</h2>
-<pre><code>## R version 4.0.2 (2020-06-22)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.04.6 LTS
-## 
-## Matrix products: default
-## BLAS:   /usr/lib/openblas-base/libblas.so.3
-## LAPACK: /usr/lib/libopenblasp-r0.2.18.so
-## 
-## attached base packages:
-## [1] splines   stats     graphics  grDevices utils     datasets  methods  
-## [8] base     
-## 
-## other attached packages:
-## [1] visreg_2.7.0        eha_2.8.5           survival_3.1-12    
-## [4] casebase_0.9.1.9999
-## 
-## loaded via a namespace (and not attached):
-##  [1] highr_0.8         pillar_1.4.7      compiler_4.0.2    tools_4.0.2      
-##  [5] digest_0.6.27     nlme_3.1-148      tibble_3.0.6      evaluate_0.14    
-##  [9] memoise_2.0.0     lifecycle_0.2.0   gtable_0.3.0      lattice_0.20-41  
-## [13] mgcv_1.8-31       pkgconfig_2.0.3   rlang_0.4.10      Matrix_1.2-18    
-## [17] yaml_2.2.1        pkgdown_1.6.1     xfun_0.20         fastmap_1.1.0    
-## [21] stringr_1.4.0     knitr_1.31        vctrs_0.3.6       desc_1.2.0       
-## [25] fs_1.5.0          systemfonts_1.0.0 stats4_4.0.2      rprojroot_2.0.2  
-## [29] grid_4.0.2        glue_1.4.2        data.table_1.13.6 R6_2.5.0         
-## [33] textshaping_0.2.1 VGAM_1.1-5        rmarkdown_2.6     farver_2.0.3     
-## [37] ggplot2_3.3.3     magrittr_2.0.1    ellipsis_0.3.1    scales_1.1.1     
-## [41] htmltools_0.5.1.1 assertthat_0.2.1  colorspace_2.0-0  labeling_0.4.2   
-## [45] ragg_0.4.1        stringi_1.5.3     munsell_0.5.0     cachem_1.0.3     
-## [49] crayon_1.4.0</code></pre>
+<div class="section level2">
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h2>
+<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.2 LTS</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Matrix products: default</span></span>
+<span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attached base packages:</span></span>
+<span><span class="co">## [1] splines   stats     graphics  grDevices utils     datasets  methods  </span></span>
+<span><span class="co">## [8] base     </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## other attached packages:</span></span>
+<span><span class="co">## [1] visreg_2.7.0         eha_2.10.3           survival_3.5-5      </span></span>
+<span><span class="co">## [4] casebase_0.10.2.9999</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## loaded via a namespace (and not attached):</span></span>
+<span><span class="co">##  [1] sass_0.4.7        utf8_1.2.3        generics_0.1.3    stringi_1.7.12   </span></span>
+<span><span class="co">##  [5] lattice_0.21-8    digest_0.6.33     magrittr_2.0.3    evaluate_0.21    </span></span>
+<span><span class="co">##  [9] grid_4.3.1        fastmap_1.1.1     rprojroot_2.0.3   jsonlite_1.8.7   </span></span>
+<span><span class="co">## [13] Matrix_1.5-4.1    mgcv_1.8-42       purrr_1.0.1       fansi_1.0.4      </span></span>
+<span><span class="co">## [17] scales_1.2.1      textshaping_0.3.6 jquerylib_0.1.4   cli_3.6.1        </span></span>
+<span><span class="co">## [21] rlang_1.1.1       munsell_0.5.0     withr_2.5.0       cachem_1.0.8     </span></span>
+<span><span class="co">## [25] yaml_2.3.7        tools_4.3.1       memoise_2.0.1     dplyr_1.1.2      </span></span>
+<span><span class="co">## [29] colorspace_2.1-0  ggplot2_3.4.2     VGAM_1.1-8        vctrs_0.6.3      </span></span>
+<span><span class="co">## [33] R6_2.5.1          stats4_4.3.1      lifecycle_1.0.3   stringr_1.5.0    </span></span>
+<span><span class="co">## [37] fs_1.6.3          ragg_1.2.5        pkgconfig_2.0.3   desc_1.4.2       </span></span>
+<span><span class="co">## [41] pkgdown_2.0.7     bslib_0.5.0       pillar_1.9.0      gtable_0.3.3     </span></span>
+<span><span class="co">## [45] glue_1.6.2        data.table_1.14.8 systemfonts_1.0.4 highr_0.10       </span></span>
+<span><span class="co">## [49] tidyselect_1.2.0  xfun_0.39         tibble_3.2.1      knitr_1.43       </span></span>
+<span><span class="co">## [53] farver_2.1.1      nlme_3.1-162      htmltools_0.5.5   labeling_0.4.2   </span></span>
+<span><span class="co">## [57] rmarkdown_2.23    compiler_4.3.1</span></span></code></pre>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ol>
 <li>
 <p>
-Efron, Bradley. 1977. “The Efficiency of Cox’s Likelihood Function for Censored Data.” <em>Journal of the American Statistical Association</em> 72 (359). Taylor &amp; Francis Group: 557–65.
+Efron, Bradley. 1977. “The Efficiency of Cox’s Likelihood Function for
+Censored Data.” <em>Journal of the American Statistical Association</em>
+72 (359). Taylor &amp; Francis Group: 557–65.
 </p>
 </li>
 <li>
 <p>
-Hanley, James A, and Olli S Miettinen. 2009. “Fitting Smooth-in-Time Prognostic Risk Functions via Logistic Regression.” <em>The International Journal of Biostatistics</em> 5 (1).
+Hanley, James A, and Olli S Miettinen. 2009. “Fitting Smooth-in-Time
+Prognostic Risk Functions via Logistic Regression.” <em>The
+International Journal of Biostatistics</em> 5 (1).
 </p>
 </li>
 <li>
 <p>
-Mantel, Nathan. 1973. “Synthetic Retrospective Studies and Related Topics.” <em>Biometrics</em>. JSTOR, 479–86.
+Mantel, Nathan. 1973. “Synthetic Retrospective Studies and Related
+Topics.” <em>Biometrics</em>. JSTOR, 479–86.
 </p>
 </li>
 <li>
 <p>
-Saarela, Olli. 2015. “A Case-Base Sampling Method for Estimating Recurrent Event Intensities.” <em>Lifetime Data Analysis</em>. Springer, 1–17.
+Saarela, Olli. 2015. “A Case-Base Sampling Method for Estimating
+Recurrent Event Intensities.” <em>Lifetime Data Analysis</em>. Springer,
+1–17.
 </p>
 </li>
 <li>
 <p>
-Saarela, Olli, and Elja Arjas. 2015. “Non-Parametric Bayesian Hazard Regression for Chronic Disease Risk Assessment.” <em>Scandinavian Journal of Statistics</em> 42 (2). Wiley Online Library: 609–26.
+Saarela, Olli, and Elja Arjas. 2015. “Non-Parametric Bayesian Hazard
+Regression for Chronic Disease Risk Assessment.” <em>Scandinavian
+Journal of Statistics</em> 42 (2). Wiley Online Library: 609–26.
 </p>
 </li>
 <li>
 <p>
-Scrucca, L, A Santucci, and F Aversa. 2010. “Regression Modeling of Competing Risk Using R: An in Depth Guide for Clinicians.” <em>Bone Marrow Transplantation</em> 45 (9). Nature Publishing Group: 1388–95.
+Scrucca, L, A Santucci, and F Aversa. 2010. “Regression Modeling of
+Competing Risk Using R: An in Depth Guide for Clinicians.” <em>Bone
+Marrow Transplantation</em> 45 (9). Nature Publishing Group: 1388–95.
 </p>
 </li>
 <li>
 <p>
-Kalbfleisch, John D., and Ross L. Prentice. The statistical analysis of failure time data. Vol. 360. John Wiley &amp; Sons, 2011.
+Kalbfleisch, John D., and Ross L. Prentice. The statistical analysis of
+failure time data. Vol. 360. John Wiley &amp; Sons, 2011.
 </p>
 </li>
 <li>
 <p>
-Cox, D. R. “Regression models and life tables.” <em>Journal of the Royal Statistical Society</em> 34 (1972): 187-220.
+Cox, D. R. “Regression models and life tables.” <em>Journal of the Royal
+Statistical Society</em> 34 (1972): 187-220.
 </p>
 </li>
 </ol>
@@ -816,11 +911,13 @@ Cox, D. R. “Regression models and life tables.” <em>Journal of the Royal Sta
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://sahirbhatnagar.com/">Sahir Bhatnagar</a>, <a href="https://maxturgeon.ca/">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/">James Hanley</a>.</p>
+  <p></p>
+<p>Developed by <a href="https://sahirbhatnagar.com/" class="external-link">Sahir Bhatnagar</a>, <a href="https://maxturgeon.ca/" class="external-link">Maxime Turgeon</a>, <a href="https://www.jesseislam.com/" class="external-link">Jesse Islam</a>, <a href="http://individual.utoronto.ca/osaarela/" class="external-link">Olli Saarela</a>, <a href="http://www.medicine.mcgill.ca/epidemiology/hanley/" class="external-link">James Hanley</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -828,6 +925,8 @@ Cox, D. R. “Regression models and life tables.” <em>Journal of the Royal Sta
 
   
 
+
+  
 
   </body>
 </html>
