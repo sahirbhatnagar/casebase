@@ -9,11 +9,11 @@
 Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
 [![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
 [![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![R-CMD-check](https://github.com/sahirbhatnagar/casebase/workflows/R-CMD-check/badge.svg)](https://github.com/sahirbhatnagar/casebase/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/sahirbhatnagar/casebase/branch/master/graph/badge.svg)](https://app.codecov.io/gh/sahirbhatnagar/casebase?branch=master)
 <!-- badges: end -->
 
 `casebase` is an R package for fitting flexible and fully parametric
@@ -127,35 +127,26 @@ summary(fit)
 #> 
 #> Deviance Residuals: 
 #>     Min       1Q   Median       3Q      Max  
-#> -0.2441  -0.1474  -0.1368  -0.1272   3.1398  
+#> -0.2344  -0.1483  -0.1380  -0.1267   3.1466  
 #> 
 #> Coefficients:
-#>                                   Estimate Std. Error z value
-#> (Intercept)                       -5.87406    0.30068 -19.536
-#> treatmentestPro                    0.65528    0.37780   1.734
-#> ns(time, df = 3)1                 -0.37685    0.36055  -1.045
-#> ns(time, df = 3)2                  0.82888    0.73435   1.129
-#> ns(time, df = 3)3                  1.33620    0.34430   3.881
-#> treatmentestPro:ns(time, df = 3)1  0.01662    0.48792   0.034
-#> treatmentestPro:ns(time, df = 3)2 -1.42088    0.94245  -1.508
-#> treatmentestPro:ns(time, df = 3)3 -1.04687    0.48685  -2.150
-#>                                   Pr(>|z|)    
-#> (Intercept)                        < 2e-16 ***
-#> treatmentestPro                   0.082832 .  
-#> ns(time, df = 3)1                 0.295935    
-#> ns(time, df = 3)2                 0.259015    
-#> ns(time, df = 3)3                 0.000104 ***
-#> treatmentestPro:ns(time, df = 3)1 0.972831    
-#> treatmentestPro:ns(time, df = 3)2 0.131645    
-#> treatmentestPro:ns(time, df = 3)3 0.031533 *  
+#>                                   Estimate Std. Error z value Pr(>|z|)    
+#> (Intercept)                       -5.80408    0.30090 -19.289  < 2e-16 ***
+#> treatmentestPro                    0.59882    0.37743   1.587 0.112608    
+#> ns(time, df = 3)1                 -0.36224    0.35878  -1.010 0.312654    
+#> ns(time, df = 3)2                  0.58913    0.73465   0.802 0.422601    
+#> ns(time, df = 3)3                  1.26391    0.34033   3.714 0.000204 ***
+#> treatmentestPro:ns(time, df = 3)1  0.05593    0.48546   0.115 0.908274    
+#> treatmentestPro:ns(time, df = 3)2 -1.19576    0.94034  -1.272 0.203506    
+#> treatmentestPro:ns(time, df = 3)3 -0.97627    0.48228  -2.024 0.042942 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3615.6  on 32716  degrees of freedom
-#> AIC: 3631.6
+#> Residual deviance: 3615.2  on 32716  degrees of freedom
+#> AIC: 3631.2
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
@@ -240,20 +231,20 @@ inherits from `vglm`.
 
 This package is makes use of several existing packages including:
 
--   [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
-    multinomial logistic regression models
--   [`survival`](https://cran.r-project.org/package=survival) for
-    survival models
--   [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
-    the population time plots
--   [`data.table`](https://cran.r-project.org/package=data.table) for
-    efficient handling of large datasets
+- [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
+  multinomial logistic regression models
+- [`survival`](https://cran.r-project.org/package=survival) for survival
+  models
+- [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
+  the population time plots
+- [`data.table`](https://cran.r-project.org/package=data.table) for
+  efficient handling of large datasets
 
 Other packages with similar objectives but different parametric forms:
 
--   [`rstpm2`](https://cran.r-project.org/package=rstpm2)
--   [`flexsurv`](https://cran.r-project.org/package=flexsurv)
--   [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
+- [`rstpm2`](https://cran.r-project.org/package=rstpm2)
+- [`flexsurv`](https://cran.r-project.org/package=flexsurv)
+- [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
 
 ## Citation
 
@@ -262,26 +253,23 @@ citation('casebase')
 #> 
 #> To cite casebase in publications use:
 #> 
-#> Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).
-#> _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk
-#> Functions via Logistic and Multinomial Regression_. R package
-#> version 0.9.0, <URL:
-#> https://CRAN.R-project.org/package=casebase>.
+#>   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).
+#>   _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions
+#>   via Logistic and Multinomial Regression_. R package version 0.9.0,
+#>   <https://CRAN.R-project.org/package=casebase>.
 #> 
-#>   Hanley, James A., and Olli S. Miettinen. Fitting
-#>   smooth-in-time prognostic risk functions via logistic
-#>   regression. International Journal of Biostatistics 5.1
-#>   (2009): 1125-1125.
+#>   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time
+#>   prognostic risk functions via logistic regression. International
+#>   Journal of Biostatistics 5.1 (2009): 1125-1125.
 #> 
-#>   Saarela, Olli. A case-base sampling method for estimating
-#>   recurrent event intensities. Lifetime data analysis 22.4
-#>   (2016): 589-605.
+#>   Saarela, Olli. A case-base sampling method for estimating recurrent
+#>   event intensities. Lifetime data analysis 22.4 (2016): 589-605.
 #> 
 #> If competing risks analyis is used, please also cite
 #> 
-#>   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian
-#>   Hazard Regression for Chronic Disease Risk Assessment.
-#>   Scandinavian Journal of Statistics 42.2 (2015): 609-626.
+#>   Saarela, Olli, and Elja Arjas. Non-parametric Bayesian Hazard
+#>   Regression for Chronic Disease Risk Assessment. Scandinavian Journal
+#>   of Statistics 42.2 (2015): 609-626.
 #> 
 #> To see these entries in BibTeX format, use 'print(<citation>,
 #> bibtex=TRUE)', 'toBibtex(.)', or set
@@ -290,9 +278,9 @@ citation('casebase')
 
 ## Contact
 
--   Issues: <https://github.com/sahirbhatnagar/casebase/issues>
--   Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
--   e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
+- Issues: <https://github.com/sahirbhatnagar/casebase/issues>
+- Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
+- e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
 
 ## Latest news
 
