@@ -18,10 +18,14 @@ editor_options:
 ---
 
 ```{r, include = FALSE}
+evaluate_vignette <- requireNamespace("dplyr", quietly = TRUE) && 
+    requireNamespace("lubridate", quietly = TRUE)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  message = FALSE
+  message = FALSE,
+  eval = evaluate_vignette
 )
 
 set.seed(20230802)
@@ -33,7 +37,7 @@ Recall the setting of Stanford Heart Transplant study: patients were admitted to
 
 As before, we can look at the population-time plot for a graphical summary of the event incidence. As we can see, most events occur early during the follow-up period, and therefore we do not expect the hazard to be constant.
 
-```{r stanford-poptime, eval = TRUE}
+```{r stanford-poptime}
 library(survival)
 library(casebase)
 
@@ -44,8 +48,8 @@ plot(stanford_popTime)
 
 Since the exposure is time-dependent, we need to manually define the exposure variable *after* case-base sampling and *before* fitting the hazard function. For this reason, we will use the `sampleCaseBase` function directly.
 
-```{r, eval = TRUE}
-library(tidyverse)
+```{r}
+library(dplyr)
 library(lubridate)
 
 cb_data <- sampleCaseBase(jasa, time = "futime", 
@@ -54,7 +58,7 @@ cb_data <- sampleCaseBase(jasa, time = "futime",
 
 Next, we will compute the number of days from acceptance into the program to transplant, and we use this variable to determine whether each population-moment is exposed or not.
 
-```{r, eval = TRUE}
+```{r}
 # Define exposure variable
 cb_data <- mutate(cb_data,
                   txtime = time_length(accept.dt %--% tx.date, 
@@ -68,7 +72,7 @@ cb_data <- mutate(cb_data,
 
 Finally, we can fit the hazard using various linear predictors.
 
-```{r, eval = TRUE, warning = FALSE}
+```{r, warning = FALSE}
 library(splines)
 # Fit several models
 fit1 <- fitSmoothHazard(fustat ~ exposure,
@@ -85,7 +89,7 @@ Note that the fourth model (i.e. `fit4`) includes an interaction term between ex
 
 We can then compare the goodness of fit of these four models using the Akaike Information Criterion (AIC).
 
-```{r, eval = TRUE}
+```{r}
 # Compute AIC
 c("Model1" = AIC(fit1),
   "Model2" = AIC(fit2),
@@ -97,7 +101,7 @@ As we can, the best fit is the third model.
 
 By visualizing the hazard functions for both exposed and unexposed individuals, we can visualize the non-proportionality of the fourth model.
 
-```{r stanford-hazard, eval = TRUE}
+```{r stanford-hazard}
 # Compute hazards---
 # First, create a list of time points for both exposure status
 hazard_data <- expand.grid(exposure = c(0, 1),

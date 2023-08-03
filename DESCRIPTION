@@ -53,9 +53,11 @@ LazyData: TRUE
 Suggests:
     colorspace,
     covr,
+    dplyr,
     eha,
     glmnet,
     knitr,
+    lubridate,
     progress,
     rmarkdown,
     splines,
