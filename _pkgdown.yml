@@ -82,6 +82,8 @@ navbar:
         href: articles/competingRisk.html
       - text: Customizing Population Time Plots
         href: articles/customizingpopTime.html
+      - text: Time-Varying Covariates
+        href: articles/time-varying-covariates.html
     reference:
       text: Reference
       href: reference/index.html

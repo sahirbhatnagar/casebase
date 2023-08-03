@@ -4,6 +4,7 @@
 inst/doc/*
 vignettes/*
 !vignettes/*.Rmd
+!vignettes/*.pdf
 test.rds
 references
 .DS_Store
