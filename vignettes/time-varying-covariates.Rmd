@@ -117,6 +117,7 @@ hazard_data$hazard = exp(predict(fit4, newdata = hazard_data,
 hazard_data$Status = factor(hazard_data$exposure,
                             labels = c("NoTrans", "Trans"))
 
+library(ggplot2)
 ggplot(hazard_data, aes(futime, hazard, colour = Status)) +
     geom_line() +
     theme_minimal() +
