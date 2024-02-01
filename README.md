@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
+Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://app.codecov.io/github/sahirbhatnagar/casebase?branch=master)
 [![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
 [![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
 [![Lifecycle:
@@ -72,13 +72,14 @@ useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
 This is a basic example which shows you some of the main functionalities
 of the `casebase` package. We use data from the estrogen plus progestin
 trial from the [Women’s Health
-Initiative](https://www.doi.org/10.1056/nejmoa030808) (included in the
-`casebase` package). This randomized clinical trial investigated the
-effect of estrogen plus progestin (`estPro`) on coronary heart disease
-(CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age
-at base line. Participants were randomly assigned to receive `estPro` or
-`placebo`. The primary efficacy outcome of the trial was CHD (nonfatal
-myocardial infarction or death due to CHD).
+Initiative](https://www.nejm.org/doi/full/10.1056/NEJMoa030808)
+(included in the `casebase` package). This randomized clinical trial
+investigated the effect of estrogen plus progestin (`estPro`) on
+coronary heart disease (CHD) risk in 16,608 postmenopausal women who
+were 50 to 79 years of age at base line. Participants were randomly
+assigned to receive `estPro` or `placebo`. The primary efficacy outcome
+of the trial was CHD (nonfatal myocardial infarction or death due to
+CHD).
 
 ``` r
 library(casebase)
@@ -125,28 +126,24 @@ summary(fit)
 #> fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), 
 #>     data = eprchd, time = "time")
 #> 
-#> Deviance Residuals: 
-#>     Min       1Q   Median       3Q      Max  
-#> -0.2344  -0.1483  -0.1380  -0.1267   3.1466  
-#> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                       -5.80408    0.30090 -19.289  < 2e-16 ***
-#> treatmentestPro                    0.59882    0.37743   1.587 0.112608    
-#> ns(time, df = 3)1                 -0.36224    0.35878  -1.010 0.312654    
-#> ns(time, df = 3)2                  0.58913    0.73465   0.802 0.422601    
-#> ns(time, df = 3)3                  1.26391    0.34033   3.714 0.000204 ***
-#> treatmentestPro:ns(time, df = 3)1  0.05593    0.48546   0.115 0.908274    
-#> treatmentestPro:ns(time, df = 3)2 -1.19576    0.94034  -1.272 0.203506    
-#> treatmentestPro:ns(time, df = 3)3 -0.97627    0.48228  -2.024 0.042942 *  
+#> (Intercept)                       -5.86338    0.29756 -19.705  < 2e-16 ***
+#> treatmentestPro                    0.65749    0.37542   1.751   0.0799 .  
+#> ns(time, df = 3)1                 -0.41771    0.36175  -1.155   0.2482    
+#> ns(time, df = 3)2                  0.80356    0.72806   1.104   0.2697    
+#> ns(time, df = 3)3                  1.37487    0.34356   4.002 6.29e-05 ***
+#> treatmentestPro:ns(time, df = 3)1  0.06151    0.48825   0.126   0.8997    
+#> treatmentestPro:ns(time, df = 3)2 -1.40446    0.93844  -1.497   0.1345    
+#> treatmentestPro:ns(time, df = 3)3 -1.10495    0.48794  -2.265   0.0235 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
 #> (Dispersion parameter for binomial family taken to be 1)
 #> 
 #>     Null deviance: 3635.4  on 32723  degrees of freedom
-#> Residual deviance: 3615.2  on 32716  degrees of freedom
-#> AIC: 3631.2
+#> Residual deviance: 3614.1  on 32716  degrees of freedom
+#> AIC: 3630.1
 #> 
 #> Number of Fisher Scoring iterations: 7
 ```
@@ -250,13 +247,11 @@ Other packages with similar objectives but different parametric forms:
 
 ``` r
 citation('casebase')
-#> 
 #> To cite casebase in publications use:
 #> 
-#>   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).
-#>   _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions
-#>   via Logistic and Multinomial Regression_. R package version 0.9.0,
-#>   <https://CRAN.R-project.org/package=casebase>.
+#>   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2022).
+#>   "casebase: An Alternative Framework for Survival Analysis and
+#>   Comparison of Event Rates." _The R Journal_, *14*(3).
 #> 
 #>   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time
 #>   prognostic risk functions via logistic regression. International

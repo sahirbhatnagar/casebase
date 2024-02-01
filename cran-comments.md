@@ -1,13 +1,14 @@
-## Resubmission
+## R CMD check results
 
-This is a resubmission. We corrected the maintainer email address, updated the data field in the DESCRIPTION file, and fixed a broken URL in our vignette.
+There were no ERRORs or WARNINGs
 
 ## Test environments
 
-* local macOS 13.0, R 4.2.1
-* ubuntu 20.04 (on GH-Actions), R-release, R-devel, R-oldrelease
+* local macOS 14.3, R 4.3.2
+* ubuntu 22.04 (on GH-Actions), R-release, R-devel, R-oldrelease
 * Windows Server 2022 x64 (on GH-Actions), R-release
-* macOS 11.7 (on GH-Actions), R-release
+* macOS 12.7 (on GH-Actions), R-release
+* Win-builder, R-devel
 
 ## R CMD check results
 
