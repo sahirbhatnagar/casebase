@@ -1,19 +1,19 @@
 Package: casebase
 Type: Package
 Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
-Version: 0.10.2.9999
+Version: 0.10.4
 Date: 2022-11-09
 Authors@R: 
     c(person(given = "Sahir",
              family = "Bhatnagar",
              role = c("aut", "cre"),
              email = "sahir.bhatnagar@gmail.com",
-             comment = "http://sahirbhatnagar.com/"),
+             comment = "https://sahirbhatnagar.com/"),
       person(given = "Maxime",
              family = "Turgeon",
              role = "aut",
              email = "max.turgeon@umanitoba.ca",
-             comment = c(ORCID = "0000-0003-4863-6035")),
+             comment = "https://www.maxturgeon.ca/"),
       person(given = "Jesse",
              family = "Islam",
              role = "aut",
@@ -23,12 +23,12 @@ Authors@R:
              family = "Saarela",
              role = "aut",
              email = "olli.saarela@utoronto.ca",
-             comment = "http://individual.utoronto.ca/osaarela/"),
+             comment = "https://www.dlsph.utoronto.ca/faculty-profile/saarela-olli/"),
       person(given = "James",
              family = "Hanley",
              role = "aut",
              email = "james.hanley@mcgill.ca",
-             comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/"))
+             comment = "https://jhanley.biostat.mcgill.ca/"))
 Description: Fit flexible and fully parametric hazard regression models to survival data with single event type or multiple 
     competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms 
     of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the 
@@ -66,6 +66,6 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://sahirbhatnagar.com/casebase/
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.0
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
