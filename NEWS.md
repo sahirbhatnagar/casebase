@@ -1,3 +1,7 @@
+# casebase 0.10.4
+
+* Fix bug with tangled outputs of vignettes.
+
 # casebase 0.10.3
 
 * Fixed broken links in vignette.

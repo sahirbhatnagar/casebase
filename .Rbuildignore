@@ -9,7 +9,6 @@
 ^risksets\.R$
 ^visreg\.R$
 ^vignettes\/bmtcrr\.csv$
-^inst\/doc\/.*R$
 ^inst\/doc\/.*md$
 ^casebase\.Rproj$
 ^_config\.yml$
@@ -44,3 +43,4 @@
 ^README\.html$
 ^codecov\.yml$
 ^CRAN-SUBMISSION$
+^pkgdown$

@@ -1,7 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://sahirbhatnagar.com/casebase/404.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/competingRisk.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/popTime.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/smoothHazard.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/articles/time-varying-covariates.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/authors.html</loc>
+  </url>
+  <url>
     <loc>http://sahirbhatnagar.com/casebase/index.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/news/index.html</loc>
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/CompRisk-class.html</loc>
@@ -22,10 +61,19 @@
     <loc>http://sahirbhatnagar.com/casebase/reference/checkArgsEventIndicator.html</loc>
   </url>
   <url>
+    <loc>http://sahirbhatnagar.com/casebase/reference/confint.absRiskCB.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/reference/eprchd.html</loc>
+  </url>
+  <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/fitSmoothHazard.html</loc>
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/hazardPlot.html</loc>
+  </url>
+  <url>
+    <loc>http://sahirbhatnagar.com/casebase/reference/index.html</loc>
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/masonTrialExtraction.html</loc>
@@ -44,20 +92,5 @@
   </url>
   <url>
     <loc>http://sahirbhatnagar.com/casebase/reference/support.html</loc>
-  </url>
-  <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/competingRisk.html</loc>
-  </url>
-  <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/customizingpopTime.html</loc>
-  </url>
-  <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/plotsmoothHazard.html</loc>
-  </url>
-  <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/popTime.html</loc>
-  </url>
-  <url>
-    <loc>http://sahirbhatnagar.com/casebase/articles/smoothHazard.html</loc>
   </url>
 </urlset>
