@@ -2,6 +2,10 @@
 
 * Fix bug with tangled outputs of vignettes.
 
+# casebase 0.10.3
+
+* Fixed broken links in vignette.
+
 # casebase 0.10.2
 
 * Fixed noLD checks issue as reported by CRAN (Issue 156).
