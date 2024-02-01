@@ -147,7 +147,7 @@
 <div class="section level2">
 <h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
 </h2>
-<p>This is a basic example which shows you some of the main functionalities of the <code>casebase</code> package. We use data from the estrogen plus progestin trial from the <a href="https://www.doi.org/10.1056/nejmoa030808" class="external-link">Women’s Health Initiative</a> (included in the <code>casebase</code> package). This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
+<p>This is a basic example which shows you some of the main functionalities of the <code>casebase</code> package. We use data from the estrogen plus progestin trial from the <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa030808" class="external-link">Women’s Health Initiative</a> (included in the <code>casebase</code> package). This randomized clinical trial investigated the effect of estrogen plus progestin (<code>estPro</code>) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive <code>estPro</code> or <code>placebo</code>. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span></span>
@@ -185,28 +185,24 @@
 <span><span class="co">#&gt; fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), </span></span>
 <span><span class="co">#&gt;     data = eprchd, time = "time")</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Deviance Residuals: </span></span>
-<span><span class="co">#&gt;     Min       1Q   Median       3Q      Max  </span></span>
-<span><span class="co">#&gt; -0.2344  -0.1483  -0.1380  -0.1267   3.1466  </span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Coefficients:</span></span>
 <span><span class="co">#&gt;                                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span><span class="co">#&gt; (Intercept)                       -5.80408    0.30090 -19.289  &lt; 2e-16 ***</span></span>
-<span><span class="co">#&gt; treatmentestPro                    0.59882    0.37743   1.587 0.112608    </span></span>
-<span><span class="co">#&gt; ns(time, df = 3)1                 -0.36224    0.35878  -1.010 0.312654    </span></span>
-<span><span class="co">#&gt; ns(time, df = 3)2                  0.58913    0.73465   0.802 0.422601    </span></span>
-<span><span class="co">#&gt; ns(time, df = 3)3                  1.26391    0.34033   3.714 0.000204 ***</span></span>
-<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)1  0.05593    0.48546   0.115 0.908274    </span></span>
-<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)2 -1.19576    0.94034  -1.272 0.203506    </span></span>
-<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)3 -0.97627    0.48228  -2.024 0.042942 *  </span></span>
+<span><span class="co">#&gt; (Intercept)                       -5.86338    0.29756 -19.705  &lt; 2e-16 ***</span></span>
+<span><span class="co">#&gt; treatmentestPro                    0.65749    0.37542   1.751   0.0799 .  </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)1                 -0.41771    0.36175  -1.155   0.2482    </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)2                  0.80356    0.72806   1.104   0.2697    </span></span>
+<span><span class="co">#&gt; ns(time, df = 3)3                  1.37487    0.34356   4.002 6.29e-05 ***</span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)1  0.06151    0.48825   0.126   0.8997    </span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)2 -1.40446    0.93844  -1.497   0.1345    </span></span>
+<span><span class="co">#&gt; treatmentestPro:ns(time, df = 3)3 -1.10495    0.48794  -2.265   0.0235 *  </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     Null deviance: 3635.4  on 32723  degrees of freedom</span></span>
-<span><span class="co">#&gt; Residual deviance: 3615.2  on 32716  degrees of freedom</span></span>
-<span><span class="co">#&gt; AIC: 3631.2</span></span>
+<span><span class="co">#&gt; Residual deviance: 3614.1  on 32716  degrees of freedom</span></span>
+<span><span class="co">#&gt; AIC: 3630.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Number of Fisher Scoring iterations: 7</span></span></code></pre></div>
 <p>Since the output object from <code>fitSmoothHazard</code> inherits from the <code>glm</code> class, we see a familiar result when using the function <code>summary</code>.</p>
@@ -296,13 +292,11 @@
 </h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">'casebase'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; To cite casebase in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020).</span></span>
-<span><span class="co">#&gt;   _casebase: Fitting Flexible Smooth-in-Time Hazards and Risk Functions</span></span>
-<span><span class="co">#&gt;   via Logistic and Multinomial Regression_. R package version 0.9.0,</span></span>
-<span><span class="co">#&gt;   &lt;https://CRAN.R-project.org/package=casebase&gt;.</span></span>
+<span><span class="co">#&gt;   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2022).</span></span>
+<span><span class="co">#&gt;   "casebase: An Alternative Framework for Survival Analysis and</span></span>
+<span><span class="co">#&gt;   Comparison of Event Rates." _The R Journal_, *14*(3).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time</span></span>
 <span><span class="co">#&gt;   prognostic risk functions via logistic regression. International</span></span>
