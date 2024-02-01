@@ -20,7 +20,7 @@ hazard using logistic regression."><!-- mathjax --><script src="https://cdnjs.cl
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.2.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.4</span>
       </span>
     </div>
 
@@ -235,52 +235,55 @@ encoding</p>
 <span class="r-in"><span><span class="co"># event type 0-censored, 1-event of interest, 2-competing event</span></span></span>
 <span class="r-in"><span><span class="co"># t observed time/endpoint</span></span></span>
 <span class="r-in"><span><span class="co"># z is a binary covariate</span></span></span>
-<span class="r-in"><span><span class="va">DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">DT</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"t_event"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="va">b1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"t_comp"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="va">b2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      z   t_event    t_comp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0 125.67322 53.090763</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0  27.92365 41.517160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 1 625.41749 23.956800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0 279.93382 62.361918</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1 315.90292 19.739612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 1 111.76799 57.900562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 1 153.70621 63.501104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 498: 0  38.02085 14.325562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 499: 0 109.52164 20.573577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 500: 0 575.37257  8.339102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          z   t_event    t_comp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;     &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     0 125.67322 53.090763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     0  27.92365 41.517160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     1 625.41749 23.956800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     0 279.93382 62.361918</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:     1 315.90292 19.739612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496:     1 111.76799 57.900562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497:     1 153.70621 63.501104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498:     0  38.02085 14.325562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499:     0 109.52164 20.573577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500:     0 575.37257  8.339102</span>
 <span class="r-in"><span><span class="va">DT</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"event"</span> <span class="op">=</span> <span class="fl">1</span> <span class="op">*</span> <span class="op">(</span><span class="va">t_event</span> <span class="op">&lt;</span> <span class="va">t_comp</span><span class="op">)</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">t_event</span> <span class="op">&gt;=</span> <span class="va">t_comp</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="st">"time"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmin</a></span><span class="op">(</span><span class="va">t_event</span>, <span class="va">t_comp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      z   t_event    t_comp event      time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0 125.67322 53.090763     2 53.090763</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0  27.92365 41.517160     1 27.923655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 1 625.41749 23.956800     2 23.956800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0 279.93382 62.361918     2 62.361918</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1 315.90292 19.739612     2 19.739612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 1 111.76799 57.900562     2 57.900562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 1 153.70621 63.501104     2 63.501104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 498: 0  38.02085 14.325562     2 14.325562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 499: 0 109.52164 20.573577     2 20.573577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 500: 0 575.37257  8.339102     2  8.339102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          z   t_event    t_comp event      time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;     &lt;num&gt;     &lt;num&gt; &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     0 125.67322 53.090763     2 53.090763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     0  27.92365 41.517160     1 27.923655</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     1 625.41749 23.956800     2 23.956800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     0 279.93382 62.361918     2 62.361918</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:     1 315.90292 19.739612     2 19.739612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496:     1 111.76799 57.900562     2 57.900562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497:     1 153.70621 63.501104     2 63.501104</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498:     0  38.02085 14.325562     2 14.325562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499:     0 109.52164 20.573577     2 20.573577</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500:     0 575.37257  8.339102     2  8.339102</span>
 <span class="r-in"><span><span class="va">DT</span><span class="op">[</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">tlim</span>, <span class="fu">`:=`</span><span class="op">(</span><span class="st">"event"</span> <span class="op">=</span> <span class="fl">0</span>, <span class="st">"time"</span> <span class="op">=</span> <span class="va">tlim</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      z   t_event    t_comp event      time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0 125.67322 53.090763     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0  27.92365 41.517160     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 1 625.41749 23.956800     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0 279.93382 62.361918     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1 315.90292 19.739612     2 19.739612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 1 111.76799 57.900562     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 1 153.70621 63.501104     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 498: 0  38.02085 14.325562     2 14.325562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 499: 0 109.52164 20.573577     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 500: 0 575.37257  8.339102     2  8.339102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          z   t_event    t_comp event      time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;     &lt;num&gt;     &lt;num&gt; &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     0 125.67322 53.090763     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     0  27.92365 41.517160     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     1 625.41749 23.956800     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     0 279.93382 62.361918     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:     1 315.90292 19.739612     2 19.739612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496:     1 111.76799 57.900562     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497:     1 153.70621 63.501104     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498:     0  38.02085 14.325562     2 14.325562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499:     0 109.52164 20.573577     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500:     0 575.37257  8.339102     2  8.339102</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">out_linear</span> <span class="op">&lt;-</span> <span class="fu">fitSmoothHazard</span><span class="op">(</span><span class="va">event</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="va">z</span>, <span class="va">DT</span>, ratio <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'time' will be used as the time variable</span>
@@ -290,20 +293,21 @@ encoding</p>
 <span class="r-in"><span><span class="co"># Use GAMs</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">mgcv</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: nlme</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> This is mgcv 1.8-42. For overview type 'help("mgcv-package")'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This is mgcv 1.9-0. For overview type 'help("mgcv-package")'.</span>
 <span class="r-in"><span><span class="va">DT</span><span class="op">[</span><span class="va">event</span> <span class="op">==</span> <span class="fl">2</span>, <span class="va">event</span> <span class="op">:=</span> <span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      z   t_event    t_comp event      time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 0 125.67322 53.090763     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0  27.92365 41.517160     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 1 625.41749 23.956800     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 0 279.93382 62.361918     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 1 315.90292 19.739612     1 19.739612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 1 111.76799 57.900562     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 1 153.70621 63.501104     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 498: 0  38.02085 14.325562     1 14.325562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 499: 0 109.52164 20.573577     0 20.000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 500: 0 575.37257  8.339102     1  8.339102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          z   t_event    t_comp event      time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt;int&gt;     &lt;num&gt;     &lt;num&gt; &lt;num&gt;     &lt;num&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:     0 125.67322 53.090763     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:     0  27.92365 41.517160     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:     1 625.41749 23.956800     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:     0 279.93382 62.361918     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:     1 315.90292 19.739612     1 19.739612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 496:     1 111.76799 57.900562     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 497:     1 153.70621 63.501104     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 498:     0  38.02085 14.325562     1 14.325562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 499:     0 109.52164 20.573577     0 20.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 500:     0 575.37257  8.339102     1  8.339102</span>
 <span class="r-in"><span><span class="va">out_gam</span> <span class="op">&lt;-</span> <span class="fu">fitSmoothHazard</span><span class="op">(</span><span class="va">event</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">+</span> <span class="va">z</span>, <span class="va">DT</span>,</span></span>
 <span class="r-in"><span>                           ratio <span class="op">=</span> <span class="fl">10</span>, family <span class="op">=</span> <span class="st">"gam"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'time' will be used as the time variable</span>
