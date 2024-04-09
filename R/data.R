@@ -62,9 +62,6 @@
 #'   2009; 360:1320-8. \doi{10.1056/NEJMoa0810084}.
 #' @examples
 #' data("ERSPC")
-#' ERSPC$ScrArm <- factor(ERSPC$ScrArm,
-#'                        levels = c(0,1),
-#'                        labels = c("Control group", "Screening group"))
 #' set.seed(12345)
 #' pt_object_strat <- casebase::popTime(ERSPC[sample(1:nrow(ERSPC), 10000),],
 #'                                      event = "DeadOfPrCa",
@@ -87,8 +84,8 @@
 #'   1=relapse, 2=competing event} \item{Source}{Source of stem cells: bone
 #'   marrow and peripheral blood, coded as BM+PB, or peripheral blood only,
 #'   coded as PB} \item{ftime}{Failure time in months} }
-#' @source Available at the following website:
-#'   \url{http://www.stat.unipg.it/luca/R/}
+# @source Available at the following website:
+#   \url{http://www.stat.unipg.it/luca/R/}
 #' @references Scrucca L, Santucci A, Aversa F. Competing risk analysis using R:
 #'   an easy guide for clinicians. Bone Marrow Transplant. 2007 Aug;40(4):381-7.
 #'   \doi{10.1038/sj.bmt.1705727}.
@@ -197,7 +194,7 @@
 #'   was used for a follow up.} \item{sps}{SUPPORT physiology score}
 #'   \item{aps}{Apache III physiology score} }
 #' @source Available at the following website:
-#'   \url{http://biostat.mc.vanderbilt.edu/wiki/pub/Main/DataSets/support2csv.zip}.
+#'   \url{https://biostat.app.vumc.org/wiki/Main/SupportDesc}.
 #'    note: must unzip and process this data before use.
 #' @examples
 #' data("support")

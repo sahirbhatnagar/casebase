@@ -39,7 +39,6 @@
 #'   integration.
 #' @param nsamp Maximal number of subdivisions (if \code{method = "numerical"})
 #'   or number of sampled points (if \code{method = "montecarlo"}).
-#' @param n.trees Number of trees used in the prediction (for class \code{gbm}).
 #' @param s Value of the penalty parameter lambda at which predictions are
 #'   required (for class \code{cv.glmnet}).
 #' @param onlyMain Logical. For competing risks, should we return absolute risks
@@ -86,10 +85,10 @@
 absoluteRisk <- function(object, time, newdata,
                          method = c("numerical", "montecarlo"),
                          nsamp = 100, s = c("lambda.1se", "lambda.min"),
-                         n.trees, onlyMain = TRUE,
+                         onlyMain = TRUE,
                          type = c("CI", "survival"),
                          addZero = TRUE, ntimes = 100, ...) {
-    if (!inherits(object, c("glm", "cv.glmnet", "gbm", "CompRisk"))) {
+    if (!inherits(object, c("glm", "cv.glmnet", "CompRisk"))) {
         stop(paste("object is of class", class(object)[1],
                    "\nabsoluteRisk should be used with an object of class glm,",
                    "cv.glmnet, gbm, or CompRisk"),
@@ -114,9 +113,11 @@ absoluteRisk <- function(object, time, newdata,
         s <- match.arg(s)
     }
     if (inherits(object, "gbm")) {
-        if (missing(n.trees)) stop("n.trees is missing")
+        # if (missing(n.trees)) stop("n.trees is missing")
+        stop("gbm is not supported", call. = FALSE)
     } else n.trees <- NULL
     if (!missing(newdata) && is.character(newdata) && newdata == "typical") {
+        check_original_data(object$originalData)
         newdata <- if (is.null(object$matrix.fit)) {
             get_typical(object$originalData)
         } else apply(object$originalData$x, 2, median, na.rm = TRUE)
@@ -137,6 +138,7 @@ absoluteRisk <- function(object, time, newdata,
         }
     } else {
         if (missing(time)) {
+            check_original_data(object$originalData)
             # If only time is missing, compute risk for each row of newdata
             # at equidistant points
             max_time <- if (is.null(object$matrix.fit)) {
@@ -155,6 +157,7 @@ absoluteRisk <- function(object, time, newdata,
 # Currently, this is only called when we want the survival probabilities
 # at failure times for the original data
 estimate_risk <- function(object, method, nsamp, s, n.trees, type, ...) {
+    check_original_data(object$originalData)
     newdata <- object$originalData
     if (inherits(newdata, "data.fit")) newdata <- newdata$x
     # Create risk variable and make sure it doesn't already exist
@@ -222,11 +225,7 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
                                   s, n.trees, type, addZero, ...) {
     if (missing(newdata)) {
         # Should we use the whole case-base dataset or the original one?
-        if (is.null(object$originalData)) {
-            stop(paste("Cannot estimate the mean absolute risk without",
-                       "the original data. See documentation."),
-                 call. = FALSE)
-        }
+        check_original_data(object$originalData)
         newdata <- object$originalData
         unselectTime <- (names(newdata) != object$timeVar)
         newdata <- subset(newdata, select = unselectTime)
@@ -317,5 +316,6 @@ estimate_risk_newtime <- function(object, time, newdata, method, nsamp,
     # Add class
     class(output) <- c("absRiskCB", class(output))
     attr(output, "type") <- type
+    attr(output, "newdata") <- newdata
     return(output)
 }

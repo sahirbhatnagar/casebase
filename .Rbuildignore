@@ -3,14 +3,12 @@
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
 ^README\.md$       # An Rmarkdown file used to generate README.md
 ^cran-comments\.md$ # Comments for CRAN submission
-^\.travis\.yml$
 ^cr\.R$
 ^exercises5\.R$
 ^newpoptime\.R$
 ^risksets\.R$
 ^visreg\.R$
 ^vignettes\/bmtcrr\.csv$
-^inst\/doc\/.*R$
 ^inst\/doc\/.*md$
 ^casebase\.Rproj$
 ^_config\.yml$
@@ -22,6 +20,7 @@
 ^images/$
 ^docs/images/$
 ^site/
+^revdep/
 ^CONDUCT\.md$
 ^mkdocs\.yml$
 ^references$
@@ -39,3 +38,9 @@
 ^original_erspc_hanley_popTime\.R$
 ^README\.Rmd$
 ^CRAN-RELEASE$
+^tests/testthat/_snaps$
+^\.github$
+^README\.html$
+^codecov\.yml$
+^CRAN-SUBMISSION$
+^pkgdown$

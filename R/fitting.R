@@ -17,21 +17,21 @@
 #' for a column named \code{"time"} in the data. Note that the event variable is
 #' inferred from \code{formula}, since it is the left hand side.
 #'
-#' For single-event survival analysis, it is possible to fit the hazard function
-#' using \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family
-#' is controlled by the parameter \code{family}. The default value is \code{glm},
+#' For single-event survival analysis, it is also possible to fit the hazard
+#' function using \code{glmnet} or \code{gam}. The choice of fitting family is
+#' controlled by the parameter \code{family}. The default value is \code{glm},
 #' which corresponds to logistic regression. For competing risk analysis, only
 #' \code{glm} and \code{glmnet} are allowed.
 #'
 #' We also provide a matrix interface through \code{fitSmoothHazard.fit}, which
-#' mimics \code{glm.fit} and \code{gbm.fit}. This is mostly convenient for
-#' \code{family = "glmnet"}, since a formula interface becomes quickly
-#' cumbersome as the number of variables increases. In this setting, the matrix
-#' \code{y} should have two columns and contain the time and event variables
-#' (e.g. like the output of \code{survival::Surv}). We need this linear function
-#' of time in order to perform case-base sampling. Therefore, nonlinear
-#' functions of time should be specified as a one-sided formula through the
-#' argument \code{formula_time} (the left-hand side is always ignored).
+#' mimics \code{glm.fit}. This is mostly convenient for \code{family =
+#' "glmnet"}, since a formula interface becomes quickly cumbersome as the number
+#' of variables increases. In this setting, the matrix \code{y} should have two
+#' columns and contain the time and event variables (e.g. like the output of
+#' \code{survival::Surv}). We need this linear function of time in order to
+#' perform case-base sampling. Therefore, nonlinear functions of time should be
+#' specified as a one-sided formula through the argument \code{formula_time}
+#' (the left-hand side is always ignored).
 #'
 #' @param formula an object of class "formula" (or one that can be coerced to
 #'   that class): a symbolic description of the model to be fitted. The details
@@ -96,14 +96,15 @@
 #' @importFrom VGAM vglm multinomial summaryvglm
 #' @importFrom mgcv s te ti t2
 fitSmoothHazard <- function(formula, data, time,
-                            family = c("glm", "gam", "gbm", "glmnet"),
+                            family = c("glm", "gam", "glmnet"),
                             censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
-  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-    stop("Pkg gbm needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
+  cl <- match.call()
+  # if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+  #   stop("Pkg gbm needed for this function to work. Please install it.",
+  #     call. = FALSE
+  #   )
+  # }
   if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
     stop("Pkg glmnet needed for this function to work. Please install it.",
       call. = FALSE
@@ -137,7 +138,7 @@ fitSmoothHazard <- function(formula, data, time,
     }
   } else {
     # If class is cbData we no longer have the original data
-    originalData <- NULL
+    originalData <- data.frame() # Empty data.frame
     sampleData <- data
   }
 
@@ -147,20 +148,21 @@ fitSmoothHazard <- function(formula, data, time,
       formula <- update(formula, ~ . + offset(offset))
   }
 
-    # gbm doesn't play nice with interactions and functions of time
-    if (family == "gbm") {
-        # So warn the user
-        if (detect_nonlinear_time(formula, timeVar)) {
-          warning(sprintf(paste("You may be using a nonlinear function",
-                                "of %s.\ngbm may throw an error."),
-                          timeVar),
-                  call. = FALSE)
-        }
-        if (detect_interaction(formula)) {
-            warning("gbm may throw an error when using interaction terms",
-                    call. = FALSE)
-        }
-    }
+  if (family == "gbm") {
+    stop("gbm is not implemented", call. = FALSE)
+    # # gbm doesn't play nice with interactions and functions of time
+    # # So warn the user
+    # if (detect_nonlinear_time(formula, timeVar)) {
+    #   warning(sprintf(paste("You may be using a nonlinear function",
+    #                         "of %s.\ngbm may throw an error."),
+    #                   timeVar),
+    #           call. = FALSE)
+    # }
+    # if (detect_interaction(formula)) {
+    #     warning("gbm may throw an error when using interaction terms",
+    #             call. = FALSE)
+    # }
+  }
 
   # Fit a binomial model if there are no competing risks
   if (length(typeEvents) == 2) {
@@ -170,16 +172,22 @@ fitSmoothHazard <- function(formula, data, time,
       "glmnet" = function(formula) cv.glmnet.formula(formula, sampleData,
                                                      event = eventVar, ...),
       "gam" = function(formula) mgcv::gam(formula, sampleData,
-                                          family = "binomial", ...),
-      "gbm" = function(formula) gbm::gbm(formula, sampleData,
-                                         distribution = "bernoulli", ...)
+                                          family = "binomial", ...)
+      # "gbm" = function(formula) gbm::gbm(formula, sampleData,
+      #                                    distribution = "bernoulli", ...)
     )
 
     out <- fittingFunction(formula)
+    out$lower_call <- out$call # Save lower call for plot method
+    out$call <- cl
     out$originalData <- originalData
     out$typeEvents <- typeEvents
     out$timeVar <- timeVar
     out$eventVar <- eventVar
+    # Count person-moment types
+    num_pm <- table(sampleData[[eventVar]])
+    out$num_cm <- num_pm[2]
+    out$num_bm <- num_pm[1]
     if (family == "glmnet") out$formula <- formula
     # Reset offset for absolute risk estimation, but keep track of it
     out$offset <- out$data$offset
@@ -229,6 +237,7 @@ fitSmoothHazard <- function(formula, data, time,
         class = c("CompRiskGlmnet", class(model))
       )
     )
+    out@call <- cl
   }
   return(out)
 }
@@ -243,15 +252,15 @@ fitSmoothHazard <- function(formula, data, time,
 #' @param event a character string giving the name of the event variable.
 #' @importFrom stats glm.fit
 fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
-                                family = c("glm", "gbm", "glmnet"),
+                                family = c("glm", "glmnet"),
                                 censored.indicator, ratio = 100, ...) {
   family <- match.arg(family)
   if (family == "gam") stop("The matrix interface is not available for gam")
-  if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
-    stop("Pkg gbm needed for this function to work. Please install it.",
-      call. = FALSE
-    )
-  }
+  # if (family == "gbm" && !requireNamespace("gbm", quietly = TRUE)) {
+  #   stop("Pkg gbm needed for this function to work. Please install it.",
+  #     call. = FALSE
+  #   )
+  # }
   if (family == "glmnet" && !requireNamespace("glmnet", quietly = TRUE)) {
     stop("Pkg glmnet needed for this function to work. Please install it.",
       call. = FALSE
@@ -278,20 +287,21 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
       eventVar <- event
   }
 
-    # gbm doesn't play nice with interactions and functions of time
-    if (family == "gbm") {
-        # So warn the user
-        if (detect_nonlinear_time(formula_time, timeVar)) {
-            warning(sprintf(paste("You may be using a nonlinear function",
-                                  "of %s.\ngbm may throw an error."),
-                            timeVar),
-                    call. = FALSE)
-        }
-        if (detect_interaction(formula_time)) {
-            warning("gbm may throw an error when using interaction terms",
-                    call. = FALSE)
-        }
-    }
+  if (family == "gbm") {
+    stop("gbm is not implemented", call. = FALSE)
+    # # gbm doesn't play nice with interactions and functions of time
+    # # So warn the user
+    # if (detect_nonlinear_time(formula_time, timeVar)) {
+    #     warning(sprintf(paste("You may be using a nonlinear function",
+    #                           "of %s.\ngbm may throw an error."),
+    #                     timeVar),
+    #             call. = FALSE)
+    # }
+    # if (detect_interaction(formula_time)) {
+    #     warning("gbm may throw an error when using interaction terms",
+    #             call. = FALSE)
+    # }
+  }
 
   typeEvents <- sort(unique(y[, eventVar]))
   # Call sampleCaseBase
@@ -340,12 +350,12 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
       "glmnet" = cv.glmnet_offset_hack(sample_time_x, sample_event,
         family = "binomial",
         offset = sample_offset, ...
-      ),
-      "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
-        distribution = "bernoulli",
-        offset = sample_offset,
-        verbose = FALSE, ...
       )
+      # "gbm" = gbm::gbm.fit(sample_time_x, sample_event,
+      #   distribution = "bernoulli",
+      #   offset = sample_offset,
+      #   verbose = FALSE, ...
+      # )
     )
 
     out$originalData <- originalData
@@ -361,4 +371,27 @@ fitSmoothHazard.fit <- function(x, y, formula_time, time, event,
     stop("The matrix interface is not available for competing risks")
   }
   return(out)
+}
+
+# Customise the summary method slightly----
+#' @method summary singleEventCB
+#' @export
+summary.singleEventCB <- function(object, ...) {
+  ans <- NextMethod()
+  class(ans) <- c("summary.singleEventCB", class(ans))
+  # Keep person moment stats
+  attr(ans, "num_cm") <- object$num_cm
+  attr(ans, "num_bm") <- object$num_bm
+  attr(ans, "sampsize") <- nrow(object$originalData)
+  return(ans)
+}
+
+#' @export
+print.summary.singleEventCB <- function(x, ...) {
+  cat("Fitting smooth hazards with case-base sampling\n\n")
+  cat(paste("Sample size:", attr(x, "sampsize"), "\n"))
+  cat(paste("Number of events:", attr(x, "num_cm"), "\n"))
+  cat(paste("Number of base moments:", attr(x, "num_bm"), "\n"))
+  cat("----\n")
+  NextMethod()
 }

@@ -18,9 +18,10 @@ knitr::opts_chunk$set(
 # casebase
  
 <!-- badges: start -->
-[![Build Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase) [![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master) [![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase) [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Coverage Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://app.codecov.io/github/sahirbhatnagar/casebase?branch=master) [![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase) [![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/sahirbhatnagar/casebase/workflows/R-CMD-check/badge.svg)](https://github.com/sahirbhatnagar/casebase/actions)
+[![Codecov test coverage](https://codecov.io/gh/sahirbhatnagar/casebase/branch/master/graph/badge.svg)](https://app.codecov.io/gh/sahirbhatnagar/casebase?branch=master)
 <!-- badges: end -->
 
 `casebase` is an R package for fitting flexible and fully parametric hazard regression models to survival data with single event type or multiple competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the fitted hazard model, we provide functions to readily calculate and plot cumulative incidence and survival curves for a given covariate profile. This approach accommodates any log-linear hazard function of prognostic time, treatment, and covariates, and readily allows for non-proportionality. We also provide a plot method for visualizing incidence density via population time plots.
@@ -61,7 +62,7 @@ See the [package website](http://sahirbhatnagar.com/casebase/) for example usage
 
 ## Quickstart
 
-This is a basic example which shows you some of the main functionalities of the `casebase` package. We use data from the estrogen plus progestin trial from the [Women's Health Initiative](https://www.doi.org/10.1056/nejmoa030808) (included in the `casebase` package). This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).  
+This is a basic example which shows you some of the main functionalities of the `casebase` package. We use data from the estrogen plus progestin trial from the [Women's Health Initiative](https://www.nejm.org/doi/full/10.1056/NEJMoa030808) (included in the `casebase` package). This randomized clinical trial investigated the effect of estrogen plus progestin (`estPro`) on coronary heart disease (CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age at base line. Participants were randomly assigned to receive `estPro` or `placebo`. The primary efficacy outcome of the trial was CHD (nonfatal myocardial infarction or death due to CHD).  
 
 ```{r example}
 library(casebase)
@@ -145,7 +146,6 @@ casebase:
   singleEventCB:
     - glm
     - gam
-    - gbm
     - cv.glmnet
   CompRisk:
     - vglm
@@ -189,7 +189,7 @@ citation('casebase')
 
 ## Latest news
 
-You can see the most recent changes to the package in the [NEWS file](https://sahirbhatnagar.com/casebase/news)
+You can see the most recent changes to the package in the [NEWS file](https://sahirbhatnagar.com/casebase/news/)
 
 ## Code of Conduct
  

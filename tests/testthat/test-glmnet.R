@@ -6,6 +6,11 @@ testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
 # Skip tests if gbm is not installed
 testthat::skip_if_not_installed("glmnet")
 
+# To pass the noLD checks
+eps <- if (capabilities("long.double"))
+    sqrt(.Machine$double.eps) else
+        0.1
+
 # Create data----
 n <- 100
 alp <- 0.05
@@ -122,10 +127,10 @@ test_that("output probabilities", {
     riskDT_glmnet <- absoluteRisk(fitDT_glmnet, time = 0.5, newdata = newDT_ext,
                                   family = "glmnet")
 
-    expect_true(all(riskDF_glmnet >= 0))
-    expect_true(all(riskDT_glmnet >= 0))
-    expect_true(all(riskDF_glmnet <= 1))
-    expect_true(all(riskDT_glmnet <= 1))
+    expect_true(all(riskDF_glmnet >= 0 - eps))
+    expect_true(all(riskDT_glmnet >= 0 - eps))
+    expect_true(all(riskDF_glmnet <= 1 + eps))
+    expect_true(all(riskDT_glmnet <= 1 + eps))
 })
 
 # Matrix interface----
@@ -187,17 +192,16 @@ risk_log <- try(absoluteRisk(fit_glmnet_log, time = 1,
                              newdata = new_x, nsamp = 100),
                 silent = TRUE)
 
-
 test_that("no error in absoluteRisk with glmnet", {
     expect_false(inherits(risk, "try-error"))
     expect_false(inherits(risk_log, "try-error"))
 })
 
 test_that("we get probabilities", {
-    expect_true(all(risk >= 0))
-    expect_true(all(risk <= 1))
-    expect_true(all(risk_log >= 0))
-    expect_true(all(risk_log <= 1))
+    expect_true(all(risk >= 0 - eps))
+    expect_true(all(risk <= 1 + eps))
+    expect_true(all(risk_log >= 0 - eps))
+    expect_true(all(risk_log <= 1 + eps))
 })
 
 test_that("should compute risk when time and newdata aren't provided", {
@@ -231,8 +235,8 @@ test_that("no error in absoluteRisk with glmnet", {
 })
 
 test_that("we get probabilities", {
-    expect_true(all(risk[, -1] >= 0))
-    expect_true(all(risk[, -1] <= 1))
-    expect_true(all(risk_log[, -1] >= 0))
-    expect_true(all(risk_log[, -1] <= 1))
+    expect_true(all(risk[, -1] >= 0 - eps))
+    expect_true(all(risk[, -1] <= 1 + eps))
+    expect_true(all(risk_log[, -1] >= 0 - eps))
+    expect_true(all(risk_log[, -1] <= 1 + eps))
 })

@@ -5,16 +5,15 @@
 
 <!-- badges: start -->
 
-[![Build
-Status](https://travis-ci.org/sahirbhatnagar/casebase.svg?branch=master)](https://travis-ci.org/sahirbhatnagar/casebase)
 [![Coverage
-Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://codecov.io/github/sahirbhatnagar/casebase?branch=master)
-[![CRAN](http://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
-[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](http://www.r-pkg.org/pkg/casebase)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/sahirbhatnagar/casebase?branch=master&svg=true)](https://ci.appveyor.com/project/sahirbhatnagar/casebase)
+Status](https://img.shields.io/codecov/c/github/sahirbhatnagar/casebase/master.svg)](https://app.codecov.io/github/sahirbhatnagar/casebase?branch=master)
+[![CRAN](https://www.r-pkg.org/badges/version/casebase?color=blue)](https://cran.r-project.org/package=casebase)
+[![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/casebase?color=green)](https://www.r-pkg.org/pkg/casebase)
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+[![R-CMD-check](https://github.com/sahirbhatnagar/casebase/workflows/R-CMD-check/badge.svg)](https://github.com/sahirbhatnagar/casebase/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/sahirbhatnagar/casebase/branch/master/graph/badge.svg)](https://app.codecov.io/gh/sahirbhatnagar/casebase?branch=master)
 <!-- badges: end -->
 
 `casebase` is an R package for fitting flexible and fully parametric
@@ -63,7 +62,7 @@ example usage of the functions. This includes
 6.  [Plot Cumulative Incidence and Survival
     Curves](http://sahirbhatnagar.com/casebase/articles/plotabsRisk.html)
 
-## useR\! 2019 Toulouse - Presentation
+## useR! 2019 Toulouse - Presentation
 
 [![Jesse
 useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
@@ -73,13 +72,14 @@ useR](man/figures/jesse-user.png)](https://www.youtube.com/watch?v=DlppjRYVklQ)
 This is a basic example which shows you some of the main functionalities
 of the `casebase` package. We use data from the estrogen plus progestin
 trial from the [Women’s Health
-Initiative](https://www.doi.org/10.1056/nejmoa030808) (included in the
-`casebase` package). This randomized clinical trial investigated the
-effect of estrogen plus progestin (`estPro`) on coronary heart disease
-(CHD) risk in 16,608 postmenopausal women who were 50 to 79 years of age
-at base line. Participants were randomly assigned to receive `estPro` or
-`placebo`. The primary efficacy outcome of the trial was CHD (nonfatal
-myocardial infarction or death due to CHD).
+Initiative](https://www.nejm.org/doi/full/10.1056/NEJMoa030808)
+(included in the `casebase` package). This randomized clinical trial
+investigated the effect of estrogen plus progestin (`estPro`) on
+coronary heart disease (CHD) risk in 16,608 postmenopausal women who
+were 50 to 79 years of age at base line. Participants were randomly
+assigned to receive `estPro` or `placebo`. The primary efficacy outcome
+of the trial was CHD (nonfatal myocardial infarction or death due to
+CHD).
 
 ``` r
 library(casebase)
@@ -115,24 +115,27 @@ fit <- fitSmoothHazard(status ~ treatment*ns(time, df = 3),
                        data = eprchd,
                        time = "time")
 summary(fit)
+#> Fitting smooth hazards with case-base sampling
+#> 
+#> Sample size: 16608 
+#> Number of events: 324 
+#> Number of base moments: 32400 
+#> ----
 #> 
 #> Call:
-#> glm(formula = formula, family = binomial, data = sampleData)
-#> 
-#> Deviance Residuals: 
-#>     Min       1Q   Median       3Q      Max  
-#> -0.2536  -0.1481  -0.1380  -0.1268   3.1490  
+#> fitSmoothHazard(formula = status ~ treatment * ns(time, df = 3), 
+#>     data = eprchd, time = "time")
 #> 
 #> Coefficients:
 #>                                   Estimate Std. Error z value Pr(>|z|)    
-#> (Intercept)                        -5.8604     0.3032 -19.326  < 2e-16 ***
-#> treatmentestPro                     0.6316     0.3796   1.664   0.0962 .  
-#> ns(time, df = 3)1                  -0.4202     0.3627  -1.158   0.2467    
-#> ns(time, df = 3)2                   0.8155     0.7404   1.101   0.2707    
-#> ns(time, df = 3)3                   1.4242     0.3474   4.100 4.13e-05 ***
-#> treatmentestPro:ns(time, df = 3)1   0.1292     0.4896   0.264   0.7919    
-#> treatmentestPro:ns(time, df = 3)2  -1.3944     0.9456  -1.475   0.1403    
-#> treatmentestPro:ns(time, df = 3)3  -1.1521     0.4883  -2.359   0.0183 *  
+#> (Intercept)                       -5.86338    0.29756 -19.705  < 2e-16 ***
+#> treatmentestPro                    0.65749    0.37542   1.751   0.0799 .  
+#> ns(time, df = 3)1                 -0.41771    0.36175  -1.155   0.2482    
+#> ns(time, df = 3)2                  0.80356    0.72806   1.104   0.2697    
+#> ns(time, df = 3)3                  1.37487    0.34356   4.002 6.29e-05 ***
+#> treatmentestPro:ns(time, df = 3)1  0.06151    0.48825   0.126   0.8997    
+#> treatmentestPro:ns(time, df = 3)2 -1.40446    0.93844  -1.497   0.1345    
+#> treatmentestPro:ns(time, df = 3)3 -1.10495    0.48794  -2.265   0.0235 *  
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 #> 
@@ -164,14 +167,6 @@ plot(fit, hazard.params = list(xvar = "time", by = "treatment"))
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
-
-    #> $fit
-    #>      treatment time offset status visregFit visregLwr visregUpr
-    #>  [ reached 'max' / getOption("max.print") -- omitted 202 rows ]
-    #> 
-    #>  [ reached getOption("max.print") -- omitted 2 entries ]
-    #> attr(,"class")
-    #> [1] "visreg"
 
 ### Time-Dependent Hazard Ratio
 
@@ -221,7 +216,6 @@ output of `fitSmoothHazard`:
       singleEventCB:
         - glm
         - gam
-        - gbm
         - cv.glmnet
       CompRisk:
         - vglm
@@ -234,32 +228,30 @@ inherits from `vglm`.
 
 This package is makes use of several existing packages including:
 
-  - [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
-    multinomial logistic regression models
-  - [`survival`](https://cran.r-project.org/package=survival) for
-    survival models
-  - [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
-    the population time plots
-  - [`data.table`](https://cran.r-project.org/package=data.table) for
-    efficient handling of large datasets
+- [`VGAM`](https://cran.r-project.org/package=VGAM) for fitting
+  multinomial logistic regression models
+- [`survival`](https://cran.r-project.org/package=survival) for survival
+  models
+- [`ggplot2`](https://cran.r-project.org/package=ggplot2) for plotting
+  the population time plots
+- [`data.table`](https://cran.r-project.org/package=data.table) for
+  efficient handling of large datasets
 
 Other packages with similar objectives but different parametric forms:
 
-  - [`rstpm2`](https://cran.r-project.org/package=rstpm2)
-  - [`flexsurv`](https://cran.r-project.org/package=flexsurv)
-  - [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
+- [`rstpm2`](https://cran.r-project.org/package=rstpm2)
+- [`flexsurv`](https://cran.r-project.org/package=flexsurv)
+- [`SmoothHazard`](https://cran.r-project.org/package=SmoothHazard)
 
 ## Citation
 
 ``` r
 citation('casebase')
-#> 
 #> To cite casebase in publications use:
 #> 
-#> Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2020). _casebase:
-#> Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic
-#> and Multinomial Regression_. R package version 0.9.0, <URL:
-#> https://CRAN.R-project.org/package=casebase>.
+#>   Bhatnagar S, Turgeon M, Islam J, Saarela O, Hanley J (2022).
+#>   "casebase: An Alternative Framework for Survival Analysis and
+#>   Comparison of Event Rates." _The R Journal_, *14*(3).
 #> 
 #>   Hanley, James A., and Olli S. Miettinen. Fitting smooth-in-time
 #>   prognostic risk functions via logistic regression. International
@@ -281,14 +273,14 @@ citation('casebase')
 
 ## Contact
 
-  - Issues: <https://github.com/sahirbhatnagar/casebase/issues>
-  - Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
-  - e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
+- Issues: <https://github.com/sahirbhatnagar/casebase/issues>
+- Pull Requests: <https://github.com/sahirbhatnagar/casebase/>
+- e-mail: <sahir.bhatnagar@gmail.com>, <max.turgeon@umanitoba.ca>
 
 ## Latest news
 
 You can see the most recent changes to the package in the [NEWS
-file](https://sahirbhatnagar.com/casebase/news)
+file](https://sahirbhatnagar.com/casebase/news/)
 
 ## Code of Conduct
 

@@ -95,7 +95,7 @@
 #'   This is done to avoid having all points along the upper edge of the plot
 #'   (because the subjects with the least amount of observation time are plotted
 #'   at the top of the y-axis). By randomly distributing them, we can get a
-#'   better sense of the inicidence density. The base series is sampled
+#'   better sense of the incidence density. The base series is sampled
 #'   horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 #' @importFrom data.table := copy
 #' @importFrom ggplot2 ggplot geom_point scale_fill_manual geom_ribbon aes
@@ -573,6 +573,9 @@ plot.singleEventCB <- function(x, ...,
                                ci.lvl = 0.95,
                                rug = !ci,
                                ci.col = "grey") {
+    # Switch back call slot
+    # otherwise we get an error from visreg
+    x$call <- x$lower_call
     type <- match.arg(type)
 
     if (type == "hazard") {
@@ -580,11 +583,11 @@ plot.singleEventCB <- function(x, ...,
             stop("visreg package needed for this function. please install it first.")
         }
 
-        tt <- do.call("visreg", utils::modifyList(
+        tt <- do.call(visreg::visreg, utils::modifyList(
             list(
                 fit = x,
                 trans = exp,
-                plot = T,
+                plot = TRUE,
                 rug = FALSE,
                 alpha = 1,
                 partial = FALSE,
@@ -593,10 +596,6 @@ plot.singleEventCB <- function(x, ...,
             ),
             hazard.params
         ))
-
-        invisible(tt)
-
-        return(tt)
     }
 
 
@@ -637,11 +636,12 @@ plot.singleEventCB <- function(x, ...,
             ci = ci, ci.lvl = ci.lvl
         )
 
-        plotHazardRatio(
+        tt <- plotHazardRatio(
             x = x, newdata = newdata, newdata2 = newdata2, ci = ci,
             ci.lvl = ci.lvl, ci.col = ci.col, rug = rug, xvar = xvar, ...
         )
     }
+    invisible(tt)
 }
 
 #' @title Plot Cumulative Incidence and Survival Curves

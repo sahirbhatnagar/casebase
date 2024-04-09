@@ -19,7 +19,9 @@ editor_options:
 
 ## Data
 
-We will use the same data that was used in Scrucca *et al* [-@scrucca2010regression]. The data is available on the main author's [website](http://www.stat.unipg.it/luca/R/); it is also available as part of this package.
+We will use the same data that was used in Scrucca *et al* [-@scrucca2010regression]. The data was downloaded from the main author's website; it is also available as part of this package.
+
+<!--Broken: http://www.stat.unipg.it/luca/R/ -->
 
 ```{r echo=TRUE, eval=TRUE}
 set.seed(12345)

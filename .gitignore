@@ -4,6 +4,7 @@
 inst/doc/*
 vignettes/*
 !vignettes/*.Rmd
+!vignettes/*.pdf
 test.rds
 references
 .DS_Store
@@ -11,3 +12,8 @@ tests/testthat/Rplots.pdf
 HR_ci.R
 doc
 Meta
+README.html
+revdep/checks.noindex
+revdep/library.noindex
+inst/doc
+docs

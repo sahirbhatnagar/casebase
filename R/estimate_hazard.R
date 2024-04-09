@@ -47,19 +47,19 @@ estimate_hazard.cv.glmnet <- function(object, newdata, ci = FALSE, plot = FALSE,
     return(pred)
 }
 
-estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE,
-                                ci.lvl = 0.95, n.trees, s = NULL, ...) {
-    check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
-    # If gbm was fitted with an offset, predict.gbm ignores it
-    # but still gives a warning. The following line silences this warning
-    attr(object$Terms, "offset") <- NULL
-    # Set offset to zero
-    newdata$offset <- 0
-    withCallingHandlers(pred <- predict(object, newdata, type = "link",
-                                        n.trees, ...),
-                        warning = handler_offset)
-    return(pred)
-}
+# estimate_hazard.gbm <- function(object, newdata, ci = FALSE, plot = FALSE,
+#                                 ci.lvl = 0.95, n.trees, s = NULL, ...) {
+#     check_arguments_hazard(object, newdata, plot, ci, ci.lvl)
+#     # If gbm was fitted with an offset, predict.gbm ignores it
+#     # but still gives a warning. The following line silences this warning
+#     attr(object$Terms, "offset") <- NULL
+#     # Set offset to zero
+#     newdata$offset <- 0
+#     withCallingHandlers(pred <- predict(object, newdata, type = "link",
+#                                         n.trees, ...),
+#                         warning = handler_offset)
+#     return(pred)
+# }
 
 check_arguments_hazard <- function(object, newdata, plot, ci, ci.lvl) {
     # For hazardPlot, we only want one row in newdata

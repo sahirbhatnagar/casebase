@@ -1,20 +1,34 @@
 Package: casebase
 Type: Package
 Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
-Version: 0.9.0.9000
-Date: 2020-06-23
-Authors@R: c(
-  person("Sahir", "Bhatnagar", email = "sahir.bhatnagar@gmail.com",
-  role = c("aut", "cre"), comment = "http://sahirbhatnagar.com/"),
-  person("Maxime", "Turgeon", email = "max.turgeon@umanitoba.ca",
-  role = c("aut"), comment = c(ORCID = "0000-0003-4863-6035")),
-  person("Jesse", "Islam", email = "jesse.islam@mail.mcgill.ca",
-  role = c("aut"), comment = "https://www.jesseislam.com/"),
-  person("Olli", "Saarela", email = "olli.saarela@utoronto.ca",
-  role = c("aut"), comment = "http://individual.utoronto.ca/osaarela/"),
-  person("James", "Hanley", email = "james.hanley@mcgill.ca",
-  role = c("aut"), comment = "http://www.medicine.mcgill.ca/epidemiology/hanley/")
-  )
+Version: 0.10.4
+Date: 2024-02-01
+Authors@R: 
+    c(person(given = "Sahir",
+             family = "Bhatnagar",
+             role = c("aut", "cre"),
+             email = "sahir.bhatnagar@gmail.com",
+             comment = "https://sahirbhatnagar.com/"),
+      person(given = "Maxime",
+             family = "Turgeon",
+             role = "aut",
+             email = "max.turgeon@umanitoba.ca",
+             comment = "https://www.maxturgeon.ca/"),
+      person(given = "Jesse",
+             family = "Islam",
+             role = "aut",
+             email = "jesse.islam@mail.mcgill.ca",
+             comment = "https://www.jesseislam.com/"),
+      person(given = "Olli",
+             family = "Saarela",
+             role = "aut",
+             email = "olli.saarela@utoronto.ca",
+             comment = "https://www.dlsph.utoronto.ca/faculty-profile/saarela-olli/"),
+      person(given = "James",
+             family = "Hanley",
+             role = "aut",
+             email = "james.hanley@mcgill.ca",
+             comment = "https://jhanley.biostat.mcgill.ca/"))
 Description: Fit flexible and fully parametric hazard regression models to survival data with single event type or multiple 
     competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms 
     of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the 
@@ -37,18 +51,21 @@ Imports:
 License: MIT + file LICENSE
 LazyData: TRUE
 Suggests:
+    colorspace,
+    covr,
+    dplyr,
     eha,
-    gbm,
     glmnet,
     knitr,
+    lubridate,
+    progress,
     rmarkdown,
     splines,
-    colorspace,
-    visreg,
-    testthat
+    testthat (>= 3.0.0),
+    visreg
 VignetteBuilder: knitr
-URL: http://sahirbhatnagar.com/casebase/
+URL: https://sahirbhatnagar.com/casebase/
 BugReports: https://github.com/sahirbhatnagar/casebase/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.3.0
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

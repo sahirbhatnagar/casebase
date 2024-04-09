@@ -206,7 +206,7 @@ plot the point at a randomly sampled y-coordinate along this vertical line.
 This is done to avoid having all points along the upper edge of the plot
 (because the subjects with the least amount of observation time are plotted
 at the top of the y-axis). By randomly distributing them, we can get a
-better sense of the inicidence density. The base series is sampled
+better sense of the incidence density. The base series is sampled
 horizontally on the plot using the \code{\link{sampleCaseBase}} function.
 
 It is assumed that \code{data} contains the two columns

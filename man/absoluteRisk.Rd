@@ -26,7 +26,6 @@ absoluteRisk(
   method = c("numerical", "montecarlo"),
   nsamp = 100,
   s = c("lambda.1se", "lambda.min"),
-  n.trees,
   onlyMain = TRUE,
   type = c("CI", "survival"),
   addZero = TRUE,
@@ -40,8 +39,7 @@ absoluteRisk(
   x,
   ...,
   xlab = "time",
-  ylab = ifelse(attr(x, "type") == "CI", "cumulative incidence",
-    "survival probability"),
+  ylab = ifelse(attr(x, "type") == "CI", "cumulative incidence", "survival probability"),
   type = "l",
   gg = TRUE,
   id.names,
@@ -79,15 +77,13 @@ output? Defaults to \code{TRUE}.}
 \item{s}{Value of the penalty parameter lambda at which predictions are
 required (for class \code{cv.glmnet}).}
 
-\item{n.trees}{Number of trees used in the prediction (for class \code{gbm}).}
-
 \item{ntimes}{Number of time points (only used if \code{time} is missing).}
 
 \item{...}{further arguments passed to \code{matplot}. Only used if
 \code{gg=FALSE}.}
 
 \item{x}{Fitted object of class \code{absRiskCB}. This is the result from the
-\code{\link[casebase:absoluteRisk]{casebase::absoluteRisk()}} function.}
+\code{\link[=absoluteRisk]{absoluteRisk()}} function.}
 
 \item{xlab}{xaxis label, Default: 'time'}
 

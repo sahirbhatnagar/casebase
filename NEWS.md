@@ -1,4 +1,27 @@
-# casebase (development version)
+# casebase 0.10.4
+
+* Fix bug with tangled outputs of vignettes.
+
+# casebase 0.10.3
+
+* Fixed broken links in vignette.
+
+# casebase 0.10.2
+
+* Fixed noLD checks issue as reported by CRAN (Issue 156).
+
+# casebase 0.10.1
+
+* Fixed issue 143 and return the data invisibly with `plot.singleEventCB()` when `type = "hr"`.
+* Removed `family = "gbm"` as it wasn't properly tested.
+* Added `confint.singleEventCB` to compute confidence bands for the risk (or survival) function.
+* Updated `ERSPC` data so that the exposure variable is categorical. This may break previous code explicitly making this conversion, or somehow relying on the numerical coding.
+
+# casebase 0.9.1
+
+* Fixed issue with `plot.singleEventCB()` when `visreg` package is not loaded.
+* Improved error message when using `family = "glmnet"` with a single covariate.
+* Introduced `summary` method for objects of class `singleEventCB`, and improved the output of `print` by displaying the appropriate function call.
 
 # casebase 0.9.0
 

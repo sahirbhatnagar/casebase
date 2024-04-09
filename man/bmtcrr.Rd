@@ -14,10 +14,6 @@ at the beginning of follow-up} \item{Status}{Status indicator: 0=censored,
 marrow and peripheral blood, coded as BM+PB, or peripheral blood only,
 coded as PB} \item{ftime}{Failure time in months} }
 }
-\source{
-Available at the following website:
-\url{http://www.stat.unipg.it/luca/R/}
-}
 \usage{
 bmtcrr
 }

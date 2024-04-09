@@ -1,12 +1,10 @@
-url: http://sahirbhatnagar.com/casebase
-
+url: https://sahirbhatnagar.com/casebase/
 template:
   params:
     bootswatch: cosmo
-
 authors:
   Sahir Bhatnagar:
-    href: http://sahirbhatnagar.com/
+    href: https://sahirbhatnagar.com/
   Maxime Turgeon:
     href: https://maxturgeon.ca/
   Jesse Islam:
@@ -15,44 +13,42 @@ authors:
     href: http://individual.utoronto.ca/osaarela/
   James Hanley:
     href: http://www.medicine.mcgill.ca/epidemiology/hanley/
-
 development:
   mode: release
-
 reference:
 - title: Data Visualization
-  desc: >
+  desc: |
     Visualizing survival data with population time plots
   contents:
-    - '`popTime`'
-    - '`plot.popTime`'
+  - '`popTime`'
+  - '`plot.popTime`'
 - title: Model Fitting
-  desc: >
+  desc: |
     Main functions for fitting smooth hazard functions and plotting them
   contents:
-    - '`fitSmoothHazard`'
-    - '`absoluteRisk`'
-    - '`plot.singleEventCB`'
-    - '`plot.absRiskCB`'
-    - '`hazardPlot`'
+  - '`fitSmoothHazard`'
+  - '`absoluteRisk`'
+  - '`plot.singleEventCB`'
+  - '`plot.absRiskCB`'
+  - '`hazardPlot`'
+  - '`confint.absRiskCB`'
 - title: Datasets
-  desc: >
+  desc: |
     Datasets that ship with the package to illustrate usage
   contents:
-    - '`ERSPC`'
-    - '`bmtcrr`'
-    - '`brcancer`'
-    - '`eprchd`'
-    - '`simdat`'
-    - '`support`'
+  - '`ERSPC`'
+  - '`bmtcrr`'
+  - '`brcancer`'
+  - '`eprchd`'
+  - '`simdat`'
+  - '`support`'
 - title: Internal Utility Functions
-  desc: >
+  desc: |
     Functions not really meant for the user
   contents:
-    - '`sampleCaseBase`'
-    - '`checkArgsEventIndicator`'
-    - '`CompRisk-class`'
-
+  - '`sampleCaseBase`'
+  - '`checkArgsEventIndicator`'
+  - '`CompRisk-class`'
 navbar:
   structure:
     left:
@@ -82,6 +78,8 @@ navbar:
         href: articles/competingRisk.html
       - text: Customizing Population Time Plots
         href: articles/customizingpopTime.html
+      - text: Time-Varying Covariates
+        href: articles/time-varying-covariates.html
     reference:
       text: Reference
       href: reference/index.html

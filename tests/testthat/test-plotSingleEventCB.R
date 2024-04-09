@@ -13,7 +13,6 @@ library(splines)
 library(visreg)
 data("simdat")
 data("brcancer")
-str(brcancer)
 
 mod_glm <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime), df = 3) +
                                          trt:ns(log(eventtime), df = 1),
@@ -109,8 +108,8 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
-                          ci = T,
-                          rug = T))
+                          ci = TRUE,
+                          rug = TRUE))
 
     # check that supplying only one row to newdata works
     # and that the dataset is returned invisibly
@@ -120,8 +119,8 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
-                          ci = F,
-                          rug = T, cex = 5))
+                          ci = FALSE,
+                          rug = TRUE, cex = 5))
 
     # check that supplying only one row to newdata works
     # and that the dataset is returned invisibly
@@ -132,8 +131,8 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
                           var = "tgrade",
                           increment = 1,
                           xvar = "time",
-                          ci = F,
-                          rug = T, cex = 5, pch = 22)
+                          ci = FALSE,
+                          rug = TRUE, cex = 5, pch = 22)
     )
 
 
@@ -171,4 +170,31 @@ test_that("no error in plot method for singleEventCB objects - hazard ratio with
     expect_false(inherits(outglm_hr, "try-error"))
     expect_false(inherits(outglm_hr_noci, "try-error"))
     expect_false(inherits(outglm_hr_exposed, "try-error"))
+})
+
+library(data.table)
+mod_brcancer2 <- fitSmoothHazard(cens ~ ns(time, df = 3) * tgrade,
+                                 data = as.data.table(brcancer),
+                                 time = "time")
+
+test_that("make sure the data is returned by plot.singleEventCB", {
+    plot1 <- plot(mod_brcancer,
+                  type = "hr",
+                  newdata = brcancer[1, ],
+                  var = "tgrade",
+                  increment = 1,
+                  xvar = "time",
+                  ci = TRUE,
+                  rug = TRUE)
+    plot2 <- plot(mod_brcancer2,
+                  type = "hr",
+                  newdata = as.data.table(brcancer[1, ]),
+                  var = "tgrade",
+                  increment = 1,
+                  xvar = "time",
+                  ci = TRUE,
+                  rug = TRUE)
+
+    expect_true(inherits(plot1, "data.frame"))
+    expect_true(inherits(plot2, "data.frame"))
 })

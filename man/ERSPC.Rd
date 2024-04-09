@@ -68,9 +68,6 @@ is a combination of deaths and staggered entries.
 }
 \examples{
 data("ERSPC")
-ERSPC$ScrArm <- factor(ERSPC$ScrArm,
-                       levels = c(0,1),
-                       labels = c("Control group", "Screening group"))
 set.seed(12345)
 pt_object_strat <- casebase::popTime(ERSPC[sample(1:nrow(ERSPC), 10000),],
                                      event = "DeadOfPrCa",

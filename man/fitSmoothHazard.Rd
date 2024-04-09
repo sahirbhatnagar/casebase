@@ -10,7 +10,7 @@ fitSmoothHazard(
   formula,
   data,
   time,
-  family = c("glm", "gam", "gbm", "glmnet"),
+  family = c("glm", "gam", "glmnet"),
   censored.indicator,
   ratio = 100,
   ...
@@ -22,7 +22,7 @@ fitSmoothHazard.fit(
   formula_time,
   time,
   event,
-  family = c("glm", "gbm", "glmnet"),
+  family = c("glm", "glmnet"),
   censored.indicator,
   ratio = 100,
   ...
@@ -92,21 +92,21 @@ series, and therefore it should represent the time variable on its original
 for a column named \code{"time"} in the data. Note that the event variable is
 inferred from \code{formula}, since it is the left hand side.
 
-For single-event survival analysis, it is possible to fit the hazard function
-using \code{glmnet}, \code{gam}, or \code{gbm}. The choice of fitting family
-is controlled by the parameter \code{family}. The default value is \code{glm},
+For single-event survival analysis, it is also possible to fit the hazard
+function using \code{glmnet} or \code{gam}. The choice of fitting family is
+controlled by the parameter \code{family}. The default value is \code{glm},
 which corresponds to logistic regression. For competing risk analysis, only
 \code{glm} and \code{glmnet} are allowed.
 
 We also provide a matrix interface through \code{fitSmoothHazard.fit}, which
-mimics \code{glm.fit} and \code{gbm.fit}. This is mostly convenient for
-\code{family = "glmnet"}, since a formula interface becomes quickly
-cumbersome as the number of variables increases. In this setting, the matrix
-\code{y} should have two columns and contain the time and event variables
-(e.g. like the output of \code{survival::Surv}). We need this linear function
-of time in order to perform case-base sampling. Therefore, nonlinear
-functions of time should be specified as a one-sided formula through the
-argument \code{formula_time} (the left-hand side is always ignored).
+mimics \code{glm.fit}. This is mostly convenient for \code{family =
+"glmnet"}, since a formula interface becomes quickly cumbersome as the number
+of variables increases. In this setting, the matrix \code{y} should have two
+columns and contain the time and event variables (e.g. like the output of
+\code{survival::Surv}). We need this linear function of time in order to
+perform case-base sampling. Therefore, nonlinear functions of time should be
+specified as a one-sided formula through the argument \code{formula_time}
+(the left-hand side is always ignored).
 
 \code{prepareX} is a slightly modified version of the same function from
 the \code{glmnet} package. It can be used to convert a data.frame to a matrix

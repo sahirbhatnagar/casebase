@@ -31,18 +31,18 @@ mod_glmnet <- casebase::fitSmoothHazard(status ~ trt + ns(log(eventtime),
                                     ratio = 10,
                                     family = "glmnet")
 
-mod_gbm <- casebase::fitSmoothHazard(status ~ trt + eventtime,
-                                     time = "eventtime",
-                                     interaction.depth = 2,
-                                     data = simdat,
-                                     ratio = 10,
-                                     family = "gbm")
+# mod_gbm <- casebase::fitSmoothHazard(status ~ trt + eventtime,
+#                                      time = "eventtime",
+#                                      interaction.depth = 2,
+#                                      data = simdat,
+#                                      ratio = 10,
+#                                      family = "gbm")
 
 
-test_that("no error in hazardPlot for glm, gbm, gam, glmnet using default times", {
-    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
-                             add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
-                             line.col = 1, lwd = 2))
+test_that("no error in hazardPlot for glm, gam, glmnet using default times", {
+    # outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
+    #                          add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
+    #                          line.col = 1, lwd = 2))
     outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),
                              add = FALSE, ci.lvl = 0.95, ci = FALSE, lty = 1,
                              line.col = 2, lwd = 2))
@@ -54,17 +54,17 @@ test_that("no error in hazardPlot for glm, gbm, gam, glmnet using default times"
                                 add = FALSE, s = "lambda.min", ci.lvl = 0.95,
                                 ci = FALSE, lty = 1, line.col = 4, lwd = 2))
 
-    expect_false(inherits(outgbm, "try-error"))
+    # expect_false(inherits(outgbm, "try-error"))
     expect_false(inherits(outglm, "try-error"))
     expect_false(inherits(outgam, "try-error"))
     expect_false(inherits(outglmnet, "try-error"))
 })
 
-test_that("no error in hazardPlot for glm, gbm, gam, glmnet using user-defined times", {
-    outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
-                             add = FALSE, times = runif(10, 0, 3),
-                             ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 1,
-                             lwd = 2))
+test_that("no error in hazardPlot for glm, gam, glmnet using user-defined times", {
+    # outgbm <- try(hazardPlot(object = mod_gbm, newdata = data.frame(trt = 0),
+    #                          add = FALSE, times = runif(10, 0, 3),
+    #                          ci.lvl = 0.95, ci = FALSE, lty = 1, line.col = 1,
+    #                          lwd = 2))
     outglm <- try(hazardPlot(object = mod_glm, newdata = data.frame(trt = 0),
                              add = FALSE, times = runif(10, 0, 3),
                              ci.lvl = 0.95, ci = TRUE, lty = 1, line.col = 2,
@@ -79,7 +79,7 @@ test_that("no error in hazardPlot for glm, gbm, gam, glmnet using user-defined t
                                 ci.lvl = 0.95, ci = FALSE, lty = 1,
                                 line.col = 4, lwd = 2))
 
-    expect_false(inherits(outgbm, "try-error"))
+    # expect_false(inherits(outgbm, "try-error"))
     expect_false(inherits(outglm, "try-error"))
     expect_false(inherits(outgam, "try-error"))
     expect_false(inherits(outglmnet, "try-error"))
