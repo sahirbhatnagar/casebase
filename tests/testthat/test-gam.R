@@ -1,4 +1,6 @@
 context("GAMs")
+# CRAN skip atlas check fix
+testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
 
 # Skip tests if mgcv is not installed
 testthat::skip_if_not_installed("mgcv")
