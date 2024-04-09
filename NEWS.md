@@ -1,3 +1,8 @@
+# casebase 0.10.5
+
+* Skip tests when R is compiled against ATLAS BLAS
+* Set seed for reproducible tests
+
 # casebase 0.10.4
 
 * Fix bug with tangled outputs of vignettes.

@@ -1,7 +1,9 @@
 context("Absolute risk plotting")
+set.seed(12345)
 
 # CRAN skip atlas check fix
-testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
+testthat::skip_if(grepl(pattern = "atlas", sessionInfo()$BLAS,
+                        ignore.case = TRUE))
 
 # Handling warning messages coming from montecarlo integration
 handler_validmc <- function(msg) {
