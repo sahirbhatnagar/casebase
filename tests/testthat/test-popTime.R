@@ -1,3 +1,8 @@
+context("popTime methods")
+
+# CRAN skip atlas check fix
+testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
+
 nobs <- 500
 
 # simulation parameters

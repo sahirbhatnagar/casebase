@@ -1,5 +1,6 @@
-# Skip these tests until we can properly test gbm
-testthat::skip("gbm not implemented")
+context("GBMs")
+# CRAN skip atlas check fix
+testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
 
 # Skip tests if gbm is not installed
 testthat::skip_if_not_installed("gbm")

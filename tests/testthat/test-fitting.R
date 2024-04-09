@@ -1,3 +1,8 @@
+context("Fitting")
+# CRAN skip atlas check fix
+testthat::skip_if(grepl(pattern = "atlas",sessionInfo()$BLAS,ignore.case=TRUE))
+
+
 n <- 100
 alp <- 0.05
 lambda_t0 <- 1
