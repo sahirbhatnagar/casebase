@@ -106,7 +106,7 @@
                         <h4 data-toc-skip class="author">Sahir R.
 Bhatnagar</h4>
             
-            <h4 data-toc-skip class="date">2024-02-01</h4>
+            <h4 data-toc-skip class="date">2024-04-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/HEAD/vignettes/customizingpopTime.Rmd" class="external-link"><code>vignettes/customizingpopTime.Rmd</code></a></small>
       <div class="hidden name"><code>customizingpopTime.Rmd</code></div>
@@ -331,6 +331,10 @@ the casebase package:</p>
 <span>     facet.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>labeller <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labeller.html" class="external-link">labeller</a></span><span class="op">(</span>ScrArm <span class="op">=</span> <span class="va">group_status</span><span class="op">)</span>, <span class="co"># change labels</span></span>
 <span>                         strip.position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span> <span class="co"># change facet position</span></span>
 <span>     <span class="op">)</span> </span></code></pre></div>
+<pre><code><span><span class="co">## Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">## data's <span style="color: #00BB00;">colour</span> values.</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">## data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre>
 <p><img src="customizingpopTime_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -350,7 +354,7 @@ the background color).</p>
 <p>The default fill colors for the case series, base series and
 competing event are given by the qualitative palette from the <a href="https://cran.r-project.org/package=colorspace" class="external-link"><code>colorspace</code></a>
 R package:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fill_cols</span> <span class="op">&lt;-</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/hcl_palettes.html" class="external-link">qualitative_hcl</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span>, palette <span class="op">=</span> <span class="st">"Dark3"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">fill_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case series"</span> <span class="op">=</span> <span class="va">fill_cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -361,7 +365,7 @@ R package:</p>
 <p>The corresponding default border colors are given by the
 <code><a href="https://colorspace.R-Forge.R-project.org/reference/lighten.html" class="external-link">colorspace::darken</a></code> function applied to the fill colors
 above:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">color_cols</span> <span class="op">&lt;-</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/lighten.html" class="external-link">darken</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">fill_cols</span>, amount <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">color_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case series"</span> <span class="op">=</span> <span class="va">color_cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -385,7 +389,7 @@ functions have been set to <code>Case series</code>,
 <code>Base Series</code> and <code>Competing event</code>. For example,
 the default call to <code>geom_point</code> for the case series is given
 by:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"geom_point"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">x</span><span class="op">[</span><span class="va">event</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span>,</span>
 <span>                     mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">yc</span>, </span>
 <span>                                   colour <span class="op">=</span> <span class="st">"Case series"</span>, fill <span class="op">=</span> <span class="st">"Case series"</span><span class="op">)</span>,</span>
@@ -395,7 +399,7 @@ by:</p>
 <p><img src="customizingpopTime_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>We define a new set of colors using a sequential (multi-hue)
 palette:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fill_cols</span> <span class="op">&lt;-</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/hcl_palettes.html" class="external-link">sequential_hcl</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span>, palette <span class="op">=</span> <span class="st">"Viridis"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">fill_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case series"</span> <span class="op">=</span> <span class="va">fill_cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -403,7 +407,7 @@ palette:</p>
 <span>                 <span class="st">"Base series"</span> <span class="op">=</span> <span class="va">fill_cols</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     Case series Competing event     Base series </span></span>
 <span><span class="co">##       "#4B0055"       "#FDE333"       "#009B95"</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">color_cols</span> <span class="op">&lt;-</span> <span class="fu">colorspace</span><span class="fu">::</span><span class="fu"><a href="https://colorspace.R-Forge.R-project.org/reference/lighten.html" class="external-link">darken</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">fill_cols</span>, amount <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="op">(</span><span class="va">color_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case series"</span> <span class="op">=</span> <span class="va">color_cols</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
@@ -416,7 +420,7 @@ the <code>fill.params</code> and <code>color.params</code> arguments,
 respectively. Internally, this gets passed to the <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link"><code>ggplot2::scale_fill_manual</code></a>
 and <a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link"><code>ggplot2::scale_color_manual</code></a>
 functions, respectively:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="st">"scale_fill_manual"</span>, <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/modifyList.html" class="external-link">modifyList</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>       breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Case series"</span>, <span class="st">"Competing event"</span>, <span class="st">"Base series"</span><span class="op">)</span>,</span>
@@ -429,13 +433,13 @@ functions, respectively:</p>
 <span>       values <span class="op">=</span> <span class="va">old_cols</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>values <span class="op">=</span> <span class="va">color_colors</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Here is the code to only change the colors:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this data ships with the casebase package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bmtcrr"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">popTimeData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bmtcrr</span>, time <span class="op">=</span> <span class="st">"ftime"</span>, exposure <span class="op">=</span> <span class="st">"D"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 'Status' will be used as the event variable</span></span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">popTimeData</span>,</span>
 <span>     add.case.series <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     add.base.series <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -447,7 +451,7 @@ functions, respectively:</p>
 <p>Note that if you only specify one of the <code>fill.params</code> or
 <code>color.params</code> arguments, the plot method will automatically
 set one equal to the other and return a warning message:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">popTimeData</span>,</span>
 <span>     add.case.series <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     add.base.series <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -467,13 +471,13 @@ set one equal to the other and return a warning message:</p>
 <p>In order to change both the point colors and legend labels, we must
 modify the aesthetic mapping of the <code>geom_point</code> calls as
 follows:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this data ships with the casebase package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bmtcrr"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">popTimeData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bmtcrr</span>, time <span class="op">=</span> <span class="st">"ftime"</span>, exposure <span class="op">=</span> <span class="st">"D"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## 'Status' will be used as the event variable</span></span></code></pre>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">popTimeData</span>,</span>
 <span>     add.case.series <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     add.base.series <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -492,11 +496,11 @@ follows:</p>
 <p>NOTE: the lists being passed to the <code>.params</code> arguments
 must be named arguments, otherwise they will give unexpected behavior.
 For example</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this will work because mapping is the name of the </span></span>
 <span><span class="co"># argument of the list </span></span>
 <span><span class="va">case.params</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">yc</span>, colour <span class="op">=</span> <span class="st">"Relapse"</span>, fill <span class="op">=</span> <span class="st">"Relapse"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># this will NOT work because the argument of the list has no name</span></span>
 <span><span class="co"># and therefore utils::modifyList, will not override the defaults. </span></span>
 <span><span class="va">case.params</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">yc</span>, colour <span class="op">=</span> <span class="st">"Relapse"</span>, fill <span class="op">=</span> <span class="st">"Relapse"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -505,9 +509,9 @@ For example</p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<pre><code><span><span class="co">## R version 4.3.2 (2023-10-31)</span></span>
+<pre><code><span><span class="co">## R version 4.3.3 (2024-02-29)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
-<span><span class="co">## Running under: Ubuntu 22.04.3 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 22.04.4 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -517,24 +521,24 @@ For example</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">## [1] colorspace_2.1-0  data.table_1.15.0 ggplot2_3.4.4     casebase_0.10.4  </span></span>
-<span><span class="co">## [5] survival_3.5-7   </span></span>
+<span><span class="co">## [1] colorspace_2.1-0  data.table_1.15.4 ggplot2_3.5.0     casebase_0.10.4  </span></span>
+<span><span class="co">## [5] survival_3.5-8   </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##  [1] sass_0.4.8        utf8_1.2.4        generics_0.1.3    stringi_1.8.3    </span></span>
-<span><span class="co">##  [5] lattice_0.21-9    digest_0.6.34     magrittr_2.0.3    evaluate_0.23    </span></span>
-<span><span class="co">##  [9] grid_4.3.2        fastmap_1.1.1     jsonlite_1.8.8    Matrix_1.6-1.1   </span></span>
-<span><span class="co">## [13] mgcv_1.9-0        purrr_1.0.2       fansi_1.0.6       scales_1.3.0     </span></span>
-<span><span class="co">## [17] textshaping_0.3.7 jquerylib_0.1.4   cli_3.6.2         rlang_1.1.3      </span></span>
-<span><span class="co">## [21] munsell_0.5.0     splines_4.3.2     withr_3.0.0       cachem_1.0.8     </span></span>
-<span><span class="co">## [25] yaml_2.3.8        tools_4.3.2       memoise_2.0.1     dplyr_1.1.4      </span></span>
-<span><span class="co">## [29] VGAM_1.1-9        vctrs_0.6.5       R6_2.5.1          stats4_4.3.2     </span></span>
-<span><span class="co">## [33] lifecycle_1.0.4   stringr_1.5.1     fs_1.6.3          ragg_1.2.7       </span></span>
-<span><span class="co">## [37] pkgconfig_2.0.3   desc_1.4.3        pkgdown_2.0.7     bslib_0.6.1      </span></span>
-<span><span class="co">## [41] pillar_1.9.0      gtable_0.3.4      glue_1.7.0        systemfonts_1.0.5</span></span>
-<span><span class="co">## [45] highr_0.10        xfun_0.41         tibble_3.2.1      tidyselect_1.2.0 </span></span>
-<span><span class="co">## [49] knitr_1.45        farver_2.1.1      htmltools_0.5.7   nlme_3.1-163     </span></span>
-<span><span class="co">## [53] labeling_0.4.3    rmarkdown_2.25    compiler_4.3.2</span></span></code></pre>
+<span><span class="co">##  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    lattice_0.22-5   </span></span>
+<span><span class="co">##  [5] digest_0.6.35     magrittr_2.0.3    evaluate_0.23     grid_4.3.3       </span></span>
+<span><span class="co">##  [9] fastmap_1.1.1     jsonlite_1.8.8    Matrix_1.6-5      mgcv_1.9-1       </span></span>
+<span><span class="co">## [13] purrr_1.0.2       fansi_1.0.6       scales_1.3.0      textshaping_0.3.7</span></span>
+<span><span class="co">## [17] jquerylib_0.1.4   cli_3.6.2         rlang_1.1.3       munsell_0.5.1    </span></span>
+<span><span class="co">## [21] splines_4.3.3     withr_3.0.0       cachem_1.0.8      yaml_2.3.8       </span></span>
+<span><span class="co">## [25] tools_4.3.3       memoise_2.0.1     dplyr_1.1.4       VGAM_1.1-10      </span></span>
+<span><span class="co">## [29] vctrs_0.6.5       R6_2.5.1          stats4_4.3.3      lifecycle_1.0.4  </span></span>
+<span><span class="co">## [33] fs_1.6.3          ragg_1.3.0        pkgconfig_2.0.3   desc_1.4.3       </span></span>
+<span><span class="co">## [37] pkgdown_2.0.7     bslib_0.7.0       pillar_1.9.0      gtable_0.3.4     </span></span>
+<span><span class="co">## [41] glue_1.7.0        systemfonts_1.0.6 xfun_0.43         tibble_3.2.1     </span></span>
+<span><span class="co">## [45] tidyselect_1.2.1  highr_0.10        knitr_1.46        farver_2.1.1     </span></span>
+<span><span class="co">## [49] htmltools_0.5.8.1 nlme_3.1-164      rmarkdown_2.26    labeling_0.4.3   </span></span>
+<span><span class="co">## [53] compiler_4.3.3</span></span></code></pre>
 </div>
   </div>
 

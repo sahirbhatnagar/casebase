@@ -257,13 +257,13 @@
 <h2 id="class-structure">Class structure<a class="anchor" aria-label="anchor" href="#class-structure"></a>
 </h2>
 <p>The <code>casebase</code> package uses the following hierarchy of classes for the output of <code>fitSmoothHazard</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>casebase<span class="sc">:</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  singleEventCB<span class="sc">:</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> glm</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> gam</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> cv.glmnet</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  CompRisk<span class="sc">:</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span> vglm</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>casebase<span class="sc">:</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  singleEventCB<span class="sc">:</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="sc">-</span> glm</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="sc">-</span> gam</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="sc">-</span> cv.glmnet</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  CompRisk<span class="sc">:</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="sc">-</span> vglm</span></code></pre></div>
 <p>The class <code>singleEventCB</code> is an <code>S3</code> class, and we also keep track of the classes appearing below. The class <code>CompRisk</code> is an <code>S4</code> class that inherits from <code>vglm</code>.</p>
 </div>
 <div class="section level2">
