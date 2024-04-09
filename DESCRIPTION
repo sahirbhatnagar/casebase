@@ -3,32 +3,18 @@ Type: Package
 Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
 Version: 0.10.5
 Date: 2024-04-09
-Authors@R: 
-    c(person(given = "Sahir",
-             family = "Bhatnagar",
-             role = c("aut", "cre"),
-             email = "sahir.bhatnagar@gmail.com",
-             comment = "https://sahirbhatnagar.com/"),
-      person(given = "Maxime",
-             family = "Turgeon",
-             role = "aut",
-             email = "max.turgeon@umanitoba.ca",
-             comment = "https://www.maxturgeon.ca/"),
-      person(given = "Jesse",
-             family = "Islam",
-             role = "aut",
-             email = "jesse.islam@mail.mcgill.ca",
-             comment = "https://www.jesseislam.com/"),
-      person(given = "Olli",
-             family = "Saarela",
-             role = "aut",
-             email = "olli.saarela@utoronto.ca",
-             comment = "https://www.dlsph.utoronto.ca/faculty-profile/saarela-olli/"),
-      person(given = "James",
-             family = "Hanley",
-             role = "aut",
-             email = "james.hanley@mcgill.ca",
-             comment = "https://jhanley.biostat.mcgill.ca/"))
+Authors@R: c(
+    person("Sahir", "Bhatnagar", , "sahir.bhatnagar@gmail.com", role = c("aut", "cre"),
+           comment = "https://sahirbhatnagar.com/"),
+    person("Maxime", "Turgeon", , "max.turgeon@umanitoba.ca", role = "aut",
+           comment = "https://www.maxturgeon.ca/"),
+    person("Jesse", "Islam", , "jesse.islam@mail.mcgill.ca", role = "aut",
+           comment = "https://www.jesseislam.com/"),
+    person("Olli", "Saarela", , "olli.saarela@utoronto.ca", role = "aut",
+           comment = "https://www.dlsph.utoronto.ca/faculty-profile/saarela-olli/"),
+    person("James", "Hanley", , "james.hanley@mcgill.ca", role = "aut",
+           comment = "https://jhanley.biostat.mcgill.ca/")
+  )
 Description: Fit flexible and fully parametric hazard regression models to survival data with single event type or multiple 
     competing causes via logistic and multinomial regression. Our formulation allows for arbitrary functional forms 
     of time and its interactions with other predictors for time-dependent hazards and hazard ratios. From the 
@@ -42,7 +28,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     data.table,
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     methods,
     mgcv,
     stats,

@@ -2,10 +2,11 @@
 
 * Skip tests when R is compiled against ATLAS BLAS
 * Set seed for reproducible tests
+* Addressed deprecation warning in ggplot2
 
 # casebase 0.10.4
 
-* Fix bug with tangled outputs of vignettes.
+* Fixed bug with tangled outputs of vignettes.
 
 # casebase 0.10.3
 

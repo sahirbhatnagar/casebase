@@ -130,9 +130,9 @@ test_that("output probabilities", {
 
 # Summary method
 test_that("no error in summary method for gbm", {
-    sumDF <- try(print(summary(fitDF_gbm)),
+    sumDF <- try(summary(fitDF_gbm),
                  silent = TRUE)
-    sumDT <- try(print(summary(fitDT_gbm)),
+    sumDT <- try(summary(fitDT_gbm),
                  silent = TRUE)
 
     expect_false(inherits(sumDF, "try-error"))

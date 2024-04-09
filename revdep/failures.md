@@ -6,7 +6,7 @@
 * GitHub: https://github.com/tagteam/riskRegression
 * Source code: https://github.com/cran/riskRegression
 * Date/Publication: 2023-12-19 17:00:02 UTC
-* Number of recursive dependencies: 188
+* Number of recursive dependencies: 186
 
 Run `revdepcheck::revdep_details(, "riskRegression")` for more info
 
@@ -30,7 +30,7 @@ Run `revdepcheck::revdep_details(, "riskRegression")` for more info
 ** using staged installation
 ** libs
 using C++ compiler: ‘Homebrew clang version 14.0.6’
-using SDK: ‘MacOSX14.2.sdk’
+using SDK: ‘MacOSX14.4.sdk’
 /opt/homebrew/opt/llvm/bin/clang++ -fopenmp -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include    -fPIC  -g -O3 -Wall -pedantic -std=c++11 -mtune=native -pipe -c IC-Nelson-Aalen-cens-time.cpp -o IC-Nelson-Aalen-cens-time.o
 In file included from IC-Nelson-Aalen-cens-time.cpp:2:
 In file included from ./IC-Nelson-Aalen-cens-time.h:1:
@@ -57,7 +57,7 @@ ERROR: compilation failed for package ‘riskRegression’
 ** using staged installation
 ** libs
 using C++ compiler: ‘Homebrew clang version 14.0.6’
-using SDK: ‘MacOSX14.2.sdk’
+using SDK: ‘MacOSX14.4.sdk’
 /opt/homebrew/opt/llvm/bin/clang++ -fopenmp -I"/Library/Frameworks/R.framework/Resources/include" -DNDEBUG  -I'/Users/maxturgeon/git_repos/casebase/revdep/library.noindex/riskRegression/Rcpp/include' -I'/Users/maxturgeon/git_repos/casebase/revdep/library.noindex/riskRegression/RcppArmadillo/include' -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/opt/llvm/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include    -fPIC  -g -O3 -Wall -pedantic -std=c++11 -mtune=native -pipe -c IC-Nelson-Aalen-cens-time.cpp -o IC-Nelson-Aalen-cens-time.o
 In file included from IC-Nelson-Aalen-cens-time.cpp:2:
 In file included from ./IC-Nelson-Aalen-cens-time.h:1:
