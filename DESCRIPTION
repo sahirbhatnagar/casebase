@@ -1,8 +1,8 @@
 Package: casebase
 Type: Package
 Title: Fitting Flexible Smooth-in-Time Hazards and Risk Functions via Logistic and Multinomial Regression
-Version: 0.10.5
-Date: 2024-04-09
+Version: 0.10.6
+Date: 2024-08-06
 Authors@R: c(
     person("Sahir", "Bhatnagar", , "sahir.bhatnagar@gmail.com", role = c("aut", "cre"),
            comment = "https://sahirbhatnagar.com/"),

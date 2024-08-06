@@ -9,7 +9,6 @@
 ^risksets\.R$
 ^visreg\.R$
 ^vignettes\/bmtcrr\.csv$
-^inst\/doc\/.*md$
 ^casebase\.Rproj$
 ^_config\.yml$
 ^test\.rds$
