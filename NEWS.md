@@ -1,3 +1,8 @@
+# casebase 0.10.6
+
+* Fix build directory WARNING.
+* Fix cross-reference NOTE.
+
 # casebase 0.10.5
 
 * Skip tests when R is compiled against ATLAS BLAS

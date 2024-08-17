@@ -57,16 +57,16 @@ to the plot. Default: FALSE}
 be added to the plot. Default: FALSE}
 
 \item{casebase.theme}{Logical indication if the casebase theme be used. The
-casebase theme uses \code{\link{theme_minimal}}. Default: TRUE.}
+casebase theme uses \code{\link[ggplot2:ggtheme]{ggplot2::theme_minimal()}}. Default: TRUE.}
 
 \item{ribbon.params}{A list containing arguments that are passed to
-\code{\link{geom_ribbon}} which is used to plot the
+\code{\link[ggplot2:geom_ribbon]{ggplot2::geom_ribbon()}} which is used to plot the
 population-time area. These arguments will override the function defaults.
 For example, you can set \code{ribbon.params = list(colour = 'green')} if
 you want the area to be green.}
 
 \item{case.params, base.params, competing.params}{A list containing arguments
-that are passed to \code{\link{geom_point}} which is used to plot
+that are passed to \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}} which is used to plot
 the case series, base series, competing events. These arguments will
 override the function defaults. For example, you can set \code{case.params
   = list(size = 1.5)} if you want to increase the point size for the case
@@ -76,23 +76,23 @@ points. Doing so will result in unexpected results for the legend. See the
 the color of the points.}
 
 \item{color.params}{A list containing arguments that are passed to
-\code{\link{scale_color_manual}} which is used to plot the legend.
+\code{\link[ggplot2:scale_manual]{ggplot2::scale_color_manual()}} which is used to plot the legend.
 Only used if \code{legend=TRUE}. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.}
 
 \item{fill.params}{A list containing arguments that are passed to
-\code{\link{scale_fill_manual}} which is used to plot the legend.
+\code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}} which is used to plot the legend.
 Only used if \code{legend=TRUE}. These arguments will override the function
 defaults. Use this argument if you want to change the color of the points.
 See examples for more details.}
 
 \item{theme.params}{A list containing arguments that are passed to
-\code{\link{theme}}. For example \code{theme.params =
+\code{\link[ggplot2:theme]{ggplot2::theme()}}. For example \code{theme.params =
   list(legend.position = 'none')}.}
 
 \item{facet.params}{A list containing arguments that are passed to
-\code{\link{facet_wrap}} which is used to create facet plots. Only
+\code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} which is used to create facet plots. Only
 used if plotting exposure stratified population time plots. These arguments
 will override the function defaults.}
 
@@ -264,8 +264,8 @@ popTimeData <- popTime(data = bmtcrr, time = "ftime", exposure = "D")
 attr(popTimeData, "exposure")
 }
 \seealso{
-\link{geom_point},\link{geom_ribbon},\link{theme},
-\link{scale_colour_manual}, \link{scale_fill_manual},
+\code{\link[ggplot2:geom_point]{ggplot2::geom_point()}},\code{\link[ggplot2:geom_ribbon]{ggplot2::geom_ribbon()}},\code{\link[ggplot2:theme]{ggplot2::theme()}},
+\code{\link[ggplot2:scale_manual]{ggplot2::scale_colour_manual()}}, \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual()}},
 \link{sampleCaseBase}
 
 \code{\link{plot.popTime}}

@@ -13,14 +13,14 @@
 #' @param add.competing.event Logical indicating if the competing event should
 #'   be added to the plot. Default: FALSE
 #' @param casebase.theme Logical indication if the casebase theme be used. The
-#'   casebase theme uses \code{\link{theme_minimal}}. Default: TRUE.
+#'   casebase theme uses [ggplot2::theme_minimal()]. Default: TRUE.
 #' @param ribbon.params A list containing arguments that are passed to
-#'   \code{\link{geom_ribbon}} which is used to plot the
+#'   [ggplot2::geom_ribbon()] which is used to plot the
 #'   population-time area. These arguments will override the function defaults.
 #'   For example, you can set \code{ribbon.params = list(colour = 'green')} if
 #'   you want the area to be green.
 #' @param case.params,base.params,competing.params A list containing arguments
-#'   that are passed to \code{\link{geom_point}} which is used to plot
+#'   that are passed to [ggplot2::geom_point()] which is used to plot
 #'   the case series, base series, competing events. These arguments will
 #'   override the function defaults. For example, you can set \code{case.params
 #'   = list(size = 1.5)} if you want to increase the point size for the case
@@ -29,20 +29,20 @@
 #'   \code{color.params} and \code{fill.params} arguments, if you want to change
 #'   the color of the points.
 #' @param color.params A list containing arguments that are passed to
-#'   \code{\link{scale_color_manual}} which is used to plot the legend.
+#'   [ggplot2::scale_color_manual()] which is used to plot the legend.
 #'   Only used if \code{legend=TRUE}. These arguments will override the function
 #'   defaults. Use this argument if you want to change the color of the points.
 #'   See examples for more details.
 #' @param fill.params A list containing arguments that are passed to
-#'   \code{\link{scale_fill_manual}} which is used to plot the legend.
+#'   [ggplot2::scale_fill_manual()] which is used to plot the legend.
 #'   Only used if \code{legend=TRUE}. These arguments will override the function
 #'   defaults. Use this argument if you want to change the color of the points.
 #'   See examples for more details.
 #' @param theme.params A list containing arguments that are passed to
-#'   \code{\link{theme}}. For example \code{theme.params =
+#'   [ggplot2::theme()]. For example \code{theme.params =
 #'   list(legend.position = 'none')}.
 #' @param facet.params A list containing arguments that are passed to
-#'   \code{\link{facet_wrap}} which is used to create facet plots. Only
+#'   [ggplot2::facet_wrap()] which is used to create facet plots. Only
 #'   used if plotting exposure stratified population time plots. These arguments
 #'   will override the function defaults.
 #' @param ratio If \code{add.base.series=TRUE}, integer, giving the ratio of the
@@ -102,8 +102,8 @@
 #' @importFrom ggplot2 scale_colour_manual element_blank facet_wrap
 #' @importFrom ggplot2 theme xlab ylab
 #' @seealso
-#' \link{geom_point},\link{geom_ribbon},\link{theme},
-#' \link{scale_colour_manual}, \link{scale_fill_manual},
+#' [ggplot2::geom_point()],[ggplot2::geom_ribbon()],[ggplot2::theme()],
+#' [ggplot2::scale_colour_manual()], [ggplot2::scale_fill_manual()],
 #' \link{sampleCaseBase}
 #' @examples
 #' # change color of points
