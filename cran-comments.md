@@ -1,14 +1,22 @@
+## Reason for submission
+
+CRAN check results for casebase 0.10.6 showed ERRORs on most platforms, caused
+by a breaking change in visreg 3.0 (print.cond renamed to print_cond, and
+main/xlab/ylab/gg no longer accepted via ...). This release fixes
+plot.singleEventCB() and the affected vignette/tests accordingly.
+
 ## R CMD check results
 
 There were no ERRORs or WARNINGs
 
 ## Test environments
 
-* local macOS 14.4, R 4.3.2
-* ubuntu 22.04 (on GH-Actions), R-release, R-devel, R-oldrelease
-* Windows Server 2022 x64 (on GH-Actions), R-release
-* macOS 12.7 (on GH-Actions), R-release
-* Win-builder, R-devel
+* ubuntu-latest (on GH-Actions), R-devel, R-release, R-oldrel-1
+* Windows Server (on GH-Actions), R-release
+* macOS (on GH-Actions), R-release
+* rocker/verse Docker image (R 4.6.1) with visreg 3.0.0, local
+* Win-builder, R-devel and R-release
+* mac-builder, R-release
 
 ## R CMD check results
 
