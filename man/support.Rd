@@ -38,7 +38,7 @@ was used for a follow up.} \item{sps}{SUPPORT physiology score}
 }
 \source{
 Available at the following website:
-\url{https://biostat.app.vumc.org/wiki/Main/SupportDesc}.
+\url{https://hbiostat.org/data/}.
 note: must unzip and process this data before use.
 }
 \usage{
