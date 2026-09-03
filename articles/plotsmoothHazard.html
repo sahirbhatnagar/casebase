@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.7</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
                         <h4 data-toc-skip class="author">Sahir Rai
 Bhatnagar</h4>
             
-            <h4 data-toc-skip class="date">2024-08-17</h4>
+            <h4 data-toc-skip class="date">2026-09-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/plotsmoothHazard.Rmd" class="external-link"><code>vignettes/plotsmoothHazard.Rmd</code></a></small>
       <div class="hidden name"><code>plotsmoothHazard.Rmd</code></div>
@@ -138,7 +138,9 @@ interactions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sahirbhatnagar.com/casebase/">casebase</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; See example usage at http://sahirbhatnagar.com/casebase/</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://pbreheny.github.io/visreg" class="external-link">visreg</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pbreheny.github.io/visreg/" class="external-link">visreg</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; visreg 3.0 includes breaking changes. For migration details, see:</span></span>
+<span><span class="co">#&gt; https://pbreheny.github.io/visreg/articles/migrating-to-3-0.html</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">splines</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"brcancer"</span><span class="op">)</span></span>
@@ -188,7 +190,7 @@ interactions.</p>
 <p>All arguments needed for the hazard function plots are supplied
 through the <code>hazard.params</code> argument. This is a named list of
 arguments which will override the defaults passed to
-<code><a href="http://pbreheny.github.io/visreg/reference/visreg.html" class="external-link">visreg::visreg()</a></code>. The default arguments are
+<code><a href="https://pbreheny.github.io/visreg/reference/visreg.html" class="external-link">visreg::visreg()</a></code>. The default arguments are
 <code>list(fit = x, trans = exp, plot = TRUE, rug = FALSE, alpha = 1, partial = FALSE, overlay = TRUE)</code>.
 For example, if you want a 95% confidence band, specify
 <code>hazard.params = list(alpha = 0.05)</code>. For a complete list of
@@ -204,46 +206,46 @@ filled in with the median/most common category. Note that even though we
 fit the <code>log(time)</code>, we must specify <code>time</code> in the
 <code>xvar</code> argument.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          cond <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>hormon <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
-<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                          main <span class="op">=</span> <span class="st">"No Hormonal Therapy Hazard Function"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
+<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"No Hormonal Therapy Hazard Function"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          cond <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>hormon <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                          main <span class="op">=</span> <span class="st">"Hormonal Therapy Hazard Function"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Hormonal Therapy Hazard Function"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level4">
 <h4 id="hazard-functions-on-same-plots">Hazard functions on same plots<a class="anchor" aria-label="anchor" href="#hazard-functions-on-same-plots"></a>
 </h4>
 <p>Alternatively, we can plot the hazard functions on the same plot.
 This is accomplished with the <code>by</code> argument:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"hormon"</span>,</span>
-<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="700"></p>
 <p>Note that if we want to extract the data used to construct the plot,
 e.g. to create our own, we simply assign the call to <code>plot</code>
 to an object (we may optionally set <code>plot=FALSE</code> in the
 <code>hazard.params</code> argument as to not print any plots):</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plot_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"hormon"</span>,</span>
 <span>                          alpha <span class="op">=</span> <span class="fl">0.10</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span>,</span>
 <span>                          plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">plot_results</span><span class="op">$</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           time hormon offset cens    visregFit    visregLwr    visregUpr</span></span>
+<span><span class="co">#&gt;           time hormon offset cens   visreg_fit   visreg_lwr   visreg_upr</span></span>
 <span><span class="co">#&gt; 1   0.01058959      0      0    0 7.816629e-39 5.775573e-53 1.057898e-24</span></span>
 <span><span class="co">#&gt; 2  26.39601667      0      0    0 2.928569e-07 1.817244e-08 4.719521e-06</span></span>
 <span><span class="co">#&gt; 3  52.78144375      0      0    0 7.300131e-06 1.572749e-06 3.388456e-05</span></span>
@@ -254,28 +256,28 @@ to an object (we may optionally set <code>plot=FALSE</code> in the
 <div class="section level4">
 <h4 id="ggplot2-version">ggplot2 version<a class="anchor" aria-label="anchor" href="#ggplot2-version"></a>
 </h4>
-<p>The function is flexible because you may leverage
-<code>ggplot2</code> just by specifying <code>gg = TRUE</code>, the plot
-will return a <code>ggplot</code> object:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The <code>visreg</code> package (&gt;= 3.0.0) always returns a
+<code>ggplot</code> object, so the hazard function plot can be leveraged
+directly with the <code>ggplot2</code> ecosystem:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gg_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb</span>,</span>
 <span>                  hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                                       by <span class="op">=</span> <span class="st">"hormon"</span>,</span>
-<span>                                       alpha <span class="op">=</span> <span class="fl">0.20</span>, <span class="co"># 80% CI</span></span>
-<span>                                       ylab <span class="op">=</span> <span class="st">"Hazard"</span>,</span>
-<span>                                       gg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<span>                                       alpha <span class="op">=</span> <span class="fl">0.20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="co"># 80% CI</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_object</span>,<span class="st">"class"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "gg"     "ggplot"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "ggplot2::ggplot" "ggplot"          "ggplot2::gg"     "S7_object"      </span></span>
+<span><span class="co">#&gt; [5] "gg"</span></span></code></pre></div>
 <p>Now we can use it downstream for any plot while leveraging the entire
 <code>ggplot2</code> ecosystem of packages and functions:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gg_object</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Casebase"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>n.breaks <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level3">
@@ -284,7 +286,7 @@ will return a <code>ggplot</code> object:</p>
 <p>Next, we fit an interaction model with a time-varying covariate,
 i.e. to test the hypothesis that the effect of hormonal therapy on the
 hazard varies with time.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_cb_tvc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">cens</span> <span class="op">~</span> <span class="va">hormon</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html" class="external-link">ns</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, df <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>                              data <span class="op">=</span> <span class="va">brcancer</span>,</span>
 <span>                              time <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
@@ -323,20 +325,20 @@ hazard varies with time.</p>
 <span><span class="co">#&gt; Number of Fisher Scoring iterations: 11</span></span></code></pre></div>
 <p>Now we can easily plot the hazard function over time for each
 <code>hormon</code> group:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"hormon"</span>,</span>
-<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<span>                          alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="one-continuous-predictor-with-interaction">One continuous predictor with interaction<a class="anchor" aria-label="anchor" href="#one-continuous-predictor-with-interaction"></a>
 </h3>
 <p>Now we fit a model with an interaction between a continuous variable,
 estrogen receptor (in <code>fmol</code>), and time.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_cb_tvc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">cens</span> <span class="op">~</span> <span class="va">estrec</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/splines/ns.html" class="external-link">ns</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span>, df <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>                              data <span class="op">=</span> <span class="va">brcancer</span>,</span>
 <span>                              time <span class="op">=</span> <span class="st">"time"</span><span class="op">)</span></span>
@@ -376,64 +378,37 @@ estrogen receptor (in <code>fmol</code>), and time.</p>
 <p>There are now many ways to plot the time-varying effect of estrogen
 receptor on the hazard function. The default is to plot the 10th, 50th
 and 90th quantiles of the <code>by</code> variable:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># computed at the 10th, 50th and 90th quantiles of estrec</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"estrec"</span>,</span>
-<span>                          alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<span>                          alpha <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="700"></p>
 <p>We can also show the quartiles of <code>estrec</code> by specifying
 the <code>breaks</code> argument. If <code>breaks</code> is a single
 number, that will be the used as the number of breaks:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># computed at quartiles of estrec</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span><span class="op">)</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"estrec"</span>,</span>
 <span>                          alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                          breaks <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<span>                          breaks <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
 <p>Alternatively, if <code>breaks</code> is a vector, it will be used as
 the actual values to be used:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># computed where I want</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>,</span>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"time"</span><span class="op">)</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"estrec"</span>,</span>
 <span>                          alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                          breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2200</span><span class="op">)</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<!-- ### Image and Perspective Plots -->
-<!-- Instead of taking a cross-section of the effect of `estrec` on the hazard, we can plot a surface using the `visreg2d` function: -->
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="http://pbreheny.github.io/visreg/reference/visreg2d.html" class="external-link">visreg2d</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>, </span>
-<span>         xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span>         yvar <span class="op">=</span> <span class="st">"estrec"</span>,</span>
-<span>         trans <span class="op">=</span> <span class="va">exp</span>,</span>
-<span>         print.cond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>         zlab <span class="op">=</span> <span class="st">"Hazard"</span>,</span>
-<span>         plot.type <span class="op">=</span> <span class="st">"image"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="http://pbreheny.github.io/visreg/reference/visreg2d.html" class="external-link">visreg2d</a></span><span class="op">(</span><span class="va">mod_cb_tvc</span>, </span>
-<span>         xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
-<span>         yvar <span class="op">=</span> <span class="st">"estrec"</span>,</span>
-<span>         trans <span class="op">=</span> <span class="va">exp</span>,</span>
-<span>         print.cond <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>         zlab <span class="op">=</span> <span class="st">"Hazard"</span>,</span>
-<span>         plot.type <span class="op">=</span> <span class="st">"persp"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># this can also work if 'rgl' is installed</span></span>
-<span><span class="co"># visreg2d(mod_cb_tvc, </span></span>
-<span><span class="co">#          xvar = "time",</span></span>
-<span><span class="co">#          yvar = "estrec",</span></span>
-<span><span class="co">#          trans = exp,</span></span>
-<span><span class="co">#          print.cond = TRUE,</span></span>
-<span><span class="co">#          zlab = "Hazard",</span></span>
-<span><span class="co">#          plot.type = "rgl")</span></span></code></pre></div>
+<span>                          breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">2200</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-15-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="one-continuous-predictor-with-interaction-and-several-other-predictors">One continuous predictor with interaction and several other
@@ -505,8 +480,8 @@ values of the other variables are shown in the output:</p>
 <span>     hazard.params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>                          by <span class="op">=</span> <span class="st">"estrec"</span>,</span>
 <span>                          alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                          breaks <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                          breaks <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Conditions used in construction of plot</span></span>
 <span><span class="co">#&gt; estrec: 8 / 174</span></span>
 <span><span class="co">#&gt; horTh: no</span></span>
@@ -517,7 +492,7 @@ values of the other variables are shown in the output:</p>
 <span><span class="co">#&gt; pnodes: 3</span></span>
 <span><span class="co">#&gt; progrec: 53</span></span>
 <span><span class="co">#&gt; offset: 0</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-1.png" class="r-plt" alt="" width="700"></p>
 <p>You can of course set the values of the other covariates as before,
 i.e. by specifying the <code>cond</code> argument as a named list to the
 <code>hazard.params</code> argument:</p>
@@ -527,8 +502,8 @@ i.e. by specifying the <code>cond</code> argument as a named list to the
 <span>                          by <span class="op">=</span> <span class="st">"estrec"</span>,</span>
 <span>                          cond <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>tgrade <span class="op">=</span> <span class="st">"III"</span>, age <span class="op">=</span> <span class="fl">49</span><span class="op">)</span>,</span>
 <span>                          alpha <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                          breaks <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                          ylab <span class="op">=</span> <span class="st">"Hazard"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                          breaks <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Hazard"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Conditions used in construction of plot</span></span>
 <span><span class="co">#&gt; estrec: 8 / 174</span></span>
 <span><span class="co">#&gt; horTh: no</span></span>
@@ -539,7 +514,7 @@ i.e. by specifying the <code>cond</code> argument as a named list to the
 <span><span class="co">#&gt; pnodes: 3</span></span>
 <span><span class="co">#&gt; progrec: 53</span></span>
 <span><span class="co">#&gt; offset: 0</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-2-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/many-predictors-plot-2-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
 <div class="section level2">
@@ -553,10 +528,10 @@ function. Note that these function have only been thoroughly tested with
 <p>In what follows, the hazard ratio for a variable
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 is defined as</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>h</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mi>X</mi><mo>=</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>𝐙</mi><mo>=</mo><msub><mi>𝐳</mi><mn>𝟏</mn></msub><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>h</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mi>X</mi><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>𝐙</mi><mo>=</mo><msub><mi>𝐳</mi><mn>𝟎</mn></msub><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mfrac><mrow><mi>h</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mi>X</mi><mo>=</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>𝐙</mi><mo>=</mo><msub><mi>𝐳</mi><mn>𝟏</mn></msub><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>h</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mi>X</mi><mo>=</mo><msub><mi>x</mi><mn>0</mn></msub><mo>,</mo><mi>𝐙</mi><mo>=</mo><msub><mi>𝐳</mi><mn>𝟎</mn></msub><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><annotation encoding="application/x-tex">
 \frac{h\left(t | X=x_1, \mathbf{Z}=\mathbf{z_1} ; \hat{\beta}\right)}{h(t | X=x_0, \mathbf{Z}=\mathbf{z_0} ; \hat{\beta})}
 </annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mo>⋅</mo><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">h(t|\cdot;\hat{\beta})</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="prefix">|</mo><mi>⋅</mi><mo>;</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">h(t|\cdot;\hat{\beta})</annotation></semantics></math>
 is the hazard rate as a function of the variable
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
 (which is usually time, but can be any other continuous variable),
@@ -666,7 +641,7 @@ of times at which we would like to calculate the hazard ratio.</p>
 <span>     xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>     ci <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>     rug <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/plot-mason-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/plot-mason-1.png" class="r-plt" alt="" width="700"></p>
 <p>In the call to <code>plot</code> we specify the <code>xvar</code>
 which is the variable plotted on the x-axis, the <code>var</code>
 argument which specified the variable for which we want the hazard
@@ -684,7 +659,7 @@ is equivalent to the one above:</p>
 <span>     xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>     ci <span class="op">=</span> <span class="cn">T</span>,</span>
 <span>     rug <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
 <p>Alternatively, if we want the <code>placebo</code> group to be the
 exposed group, we can change the <code>newdata</code> argument to the
 following:</p>
@@ -711,7 +686,7 @@ in order to get the <code>exposed</code> dataset:</p>
 <span>     xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>     ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>     rug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-18-1.png" class="r-plt" alt="" width="700"></p>
 <p>If the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
 variable has more than two levels, than, <code>increment</code> works
@@ -734,7 +709,7 @@ useful if you want to really customize the plot aesthetics:</p>
 <span>               xvar <span class="op">=</span> <span class="st">"time"</span>,</span>
 <span>               ci <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>               rug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
+<p><img src="plotsmoothHazard_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    treatment      time log_hazard_ratio standarderror hazard_ratio lowerbound</span></span>
@@ -774,7 +749,7 @@ useful if you want to really customize the plot aesthetics:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>

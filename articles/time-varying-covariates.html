@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.7</span>
       </span>
     </div>
 
@@ -105,7 +105,7 @@
                         <h4 data-toc-skip class="author">Maxime
 Turgeon</h4>
             
-            <h4 data-toc-skip class="date">2024-08-17</h4>
+            <h4 data-toc-skip class="date">2026-09-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/sahirbhatnagar/casebase/blob/master/vignettes/time-varying-covariates.Rmd" class="external-link"><code>vignettes/time-varying-covariates.Rmd</code></a></small>
       <div class="hidden name"><code>time-varying-covariates.Rmd</code></div>
@@ -143,8 +143,9 @@ to be constant.</p>
 <span></span>
 <span><span class="va">stanford_popTime</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/popTime.html">popTime</a></span><span class="op">(</span><span class="va">jasa</span>, time <span class="op">=</span> <span class="st">"futime"</span>, </span>
 <span>                            event <span class="op">=</span> <span class="st">"fustat"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">stanford_popTime</span><span class="op">)</span></span></code></pre></div>
-<p><img src="time-varying-covariates_files/figure-html/stanford-poptime-1.png" width="700"></p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">stanford_popTime</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `label` cannot be a <span style="color: #0000BB;">&lt;ggplot2::element_blank&gt;</span> object.</span></span></code></pre></div>
+<p><img src="time-varying-covariates_files/figure-html/stanford-poptime-1.png" class="r-plt" alt="" width="700"></p>
 <p>Since the exposure is time-dependent, we need to manually define the
 exposure variable <em>after</em> case-base sampling and <em>before</em>
 fitting the hazard function. For this reason, we will use the
@@ -163,7 +164,7 @@ each population-moment is exposed or not.</p>
 <span><span class="va">cb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">cb_data</span>,</span>
 <span>                  txtime <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/time_length.html" class="external-link">time_length</a></span><span class="op">(</span><span class="va">accept.dt</span> <span class="op"><a href="https://lubridate.tidyverse.org/reference/interval.html" class="external-link">%--%</a></span> <span class="va">tx.date</span>, </span>
 <span>                                       unit <span class="op">=</span> <span class="st">"days"</span><span class="op">)</span>,</span>
-<span>                  exposure <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>                  exposure <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case-and-replace-when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">txtime</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0L</span>,</span>
 <span>                    <span class="va">txtime</span> <span class="op">&gt;</span> <span class="va">futime</span> <span class="op">~</span> <span class="fl">0L</span>,</span>
 <span>                    <span class="va">txtime</span> <span class="op">&lt;=</span> <span class="va">futime</span> <span class="op">~</span> <span class="fl">1L</span></span>
@@ -221,13 +222,13 @@ model.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">'top'</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">'Hazard'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">'Follow-up time'</span><span class="op">)</span></span></code></pre></div>
-<p><img src="time-varying-covariates_files/figure-html/stanford-hazard-1.png" width="700"></p>
+<p><img src="time-varying-covariates_files/figure-html/stanford-hazard-1.png" class="r-plt" alt="" width="700"></p>
 <p>The non-proportionality seems to be more pronounced at the beginning
 of follow-up than the end.</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-arjas1988graphical" class="csl-entry">
 Arjas, Elja. 1988. <span>“A Graphical Method for Assessing Goodness of
 Fit in Cox’s Proportional Hazards Model.”</span> <em>Journal of the
@@ -268,7 +269,7 @@ Recurrent Event Intensities.”</span> <em>Lifetime Data Analysis</em>,
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>

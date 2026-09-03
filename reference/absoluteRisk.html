@@ -22,7 +22,7 @@ functions."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">casebase</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.10.7</span>
       </span>
     </div>
 
@@ -260,14 +260,19 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/graphics/matplot.html" class="external-link">matplot</a></code>,
 <code>absoluteRisk</code>,
-<code><a href="https://rdatatable.gitlab.io/data.table/reference/as.data.table.html" class="external-link">as.data.table</a></code>, <code><a href="https://rdatatable.gitlab.io/data.table/reference/setattr.html" class="external-link">setattr</a></code>,
-<code><a href="https://rdatatable.gitlab.io/data.table/reference/melt.data.table.html" class="external-link">melt.data.table</a></code></p></div>
+<code><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html" class="external-link">as.data.table</a></code>, <code><a href="https://rdrr.io/pkg/data.table/man/setattr.html" class="external-link">setattr</a></code>,
+<code><a href="https://rdrr.io/pkg/data.table/man/melt.data.table.html" class="external-link">melt.data.table</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Simulate censored survival data for two outcome types</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘data.table’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     %notin%</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">nobs</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="va">tlim</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
@@ -279,7 +284,7 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 <span class="r-in"><span><span class="co"># event type 0-censored, 1-event of interest, 2-competing event</span></span></span>
 <span class="r-in"><span><span class="co"># t observed time/endpoint</span></span></span>
 <span class="r-in"><span><span class="co"># z is a binary covariate</span></span></span>
-<span class="r-in"><span><span class="va">DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">DT</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">DT</span><span class="op">[</span>,<span class="fu">`:=`</span> <span class="op">(</span><span class="st">"t_event"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="va">b1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          <span class="st">"t_comp"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Weibull.html" class="external-link">rweibull</a></span><span class="op">(</span><span class="va">nobs</span>, <span class="fl">1</span>, <span class="va">b2</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           z   t_event      t_comp</span>
@@ -327,9 +332,10 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">out_linear</span> <span class="op">&lt;-</span> <span class="fu"><a href="fitSmoothHazard.html">fitSmoothHazard</a></span><span class="op">(</span><span class="va">event</span> <span class="op">~</span> <span class="va">time</span> <span class="op">+</span> <span class="va">z</span>, <span class="va">DT</span>, ratio <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'time' will be used as the time variable</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>type= 'mstate' is deprecated, use a factor variable as status</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">linear_risk</span> <span class="op">&lt;-</span> <span class="fu">absoluteRisk</span><span class="op">(</span><span class="va">out_linear</span>, time <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>                            newdata <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="st">"z"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            newdata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="st">"z"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Plot CI curves----</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"brcancer"</span><span class="op">)</span></span></span>
@@ -364,7 +370,7 @@ is not smooth (e.g. when modeling with time-varying covariates).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
