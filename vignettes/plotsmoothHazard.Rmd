@@ -66,18 +66,17 @@ All arguments needed for the hazard function plots are supplied through the `haz
 We first plot the hazard as a function of time, for `hormon = 0` and `hormon = 1`. This is achieved by specifying the `xvar` argument, as well as the `cond` argument. The `cond` argument must be provided as a named list. Each element of that list specifies the value for one of the terms in the model; any elements left unspecified are filled in with the median/most common category. Note that even though we fit the `log(time)`, we must specify `time` in the `xvar` argument. 
 
 ```{r, results='hide', fig.show='all'}
-par(mfrow = c(1, 2))
 plot(mod_cb,
      hazard.params = list(xvar = "time",
                           cond = list(hormon = 0),
-                          alpha = 0.05,
-                          main = "No Hormonal Therapy Hazard Function"))
+                          alpha = 0.05)) +
+  ggplot2::ggtitle("No Hormonal Therapy Hazard Function")
 
 plot(mod_cb,
      hazard.params = list(xvar = "time",
                           cond = list(hormon = 1),
-                          alpha = 0.05,
-                          main = "Hormonal Therapy Hazard Function"))
+                          alpha = 0.05)) +
+  ggplot2::ggtitle("Hormonal Therapy Hazard Function")
 ```
 
 ### Hazard functions on same plots
@@ -88,8 +87,8 @@ Alternatively, we can plot the hazard functions on the same plot. This is accomp
 plot(mod_cb,
      hazard.params = list(xvar = "time",
                           by = "hormon",
-                          alpha = 0.05,
-                          ylab = "Hazard"))
+                          alpha = 0.05)) +
+  ggplot2::ylab("Hazard")
 ```
 
 
@@ -100,7 +99,6 @@ plot_results <- plot(mod_cb,
      hazard.params = list(xvar = "time",
                           by = "hormon",
                           alpha = 0.10,
-                          ylab = "Hazard",
                           plot = FALSE))
 ```
 
@@ -108,17 +106,16 @@ plot_results <- plot(mod_cb,
 head(plot_results$fit)
 ```
 
-### ggplot2 version 
+### ggplot2 version
 
-The function is flexible because you may leverage `ggplot2` just by specifying `gg = TRUE`, the plot will return a `ggplot` object:
+The `visreg` package (>= 3.0.0) always returns a `ggplot` object, so the hazard function plot can be leveraged directly with the `ggplot2` ecosystem:
 
 ```{r}
 gg_object <- plot(mod_cb,
                   hazard.params = list(xvar = "time",
                                        by = "hormon",
-                                       alpha = 0.20, # 80% CI
-                                       ylab = "Hazard",
-                                       gg = TRUE)) 
+                                       alpha = 0.20)) + # 80% CI
+  ggplot2::ylab("Hazard")
 ```
 
 ```{r, results='show'}
@@ -152,8 +149,8 @@ Now we can easily plot the hazard function over time for each `hormon` group:
 plot(mod_cb_tvc,
      hazard.params = list(xvar = "time",
                           by = "hormon",
-                          alpha = 0.05,
-                          ylab = "Hazard")) 
+                          alpha = 0.05)) +
+  ggplot2::ylab("Hazard")
 ```
 
 ## One continuous predictor with interaction
@@ -174,8 +171,8 @@ There are now many ways to plot the time-varying effect of estrogen receptor on 
 plot(mod_cb_tvc,
      hazard.params = list(xvar = "time",
                           by = "estrec",
-                          alpha = 1,
-                          ylab = "Hazard")) 
+                          alpha = 1)) +
+  ggplot2::ylab("Hazard")
 ```
 
 We can also show the quartiles of `estrec` by specifying the `breaks` argument. If `breaks` is a single number, that will be the used as the number of breaks:
@@ -186,8 +183,8 @@ plot(mod_cb_tvc,
      hazard.params = list(xvar = c("time"),
                           by = "estrec",
                           alpha = 1,
-                          breaks = 4,
-                          ylab = "Hazard")) 
+                          breaks = 4)) +
+  ggplot2::ylab("Hazard")
 ```
 
 Alternatively, if `breaks` is a vector, it will be used as the actual values to be used:
@@ -198,39 +195,8 @@ plot(mod_cb_tvc,
      hazard.params = list(xvar = c("time"),
                           by = "estrec",
                           alpha = 1,
-                          breaks = c(3,2200),
-                          ylab = "Hazard")) 
-```
-
-<!-- ### Image and Perspective Plots -->
-
-<!-- Instead of taking a cross-section of the effect of `estrec` on the hazard, we can plot a surface using the `visreg2d` function: -->
-
-```{r perspective-plots, eval = FALSE}
-visreg2d(mod_cb_tvc, 
-         xvar = "time",
-         yvar = "estrec",
-         trans = exp,
-         print.cond = TRUE,
-         zlab = "Hazard",
-         plot.type = "image")
-
-visreg2d(mod_cb_tvc, 
-         xvar = "time",
-         yvar = "estrec",
-         trans = exp,
-         print.cond = TRUE,
-         zlab = "Hazard",
-         plot.type = "persp")
-
-# this can also work if 'rgl' is installed
-# visreg2d(mod_cb_tvc, 
-#          xvar = "time",
-#          yvar = "estrec",
-#          trans = exp,
-#          print.cond = TRUE,
-#          zlab = "Hazard",
-#          plot.type = "rgl")
+                          breaks = c(3,2200))) +
+  ggplot2::ylab("Hazard")
 ```
 
 ## One continuous predictor with interaction and several other predictors
@@ -258,8 +224,8 @@ plot(mod_cb_tvc,
      hazard.params = list(xvar = "time",
                           by = "estrec",
                           alpha = 1,
-                          breaks = 2,
-                          ylab = "Hazard"))
+                          breaks = 2)) +
+  ggplot2::ylab("Hazard")
 ```
 
 You can of course set the values of the other covariates as before, i.e. by specifying the `cond` argument as a named list to the `hazard.params` argument:
@@ -270,8 +236,8 @@ plot(mod_cb_tvc,
                           by = "estrec",
                           cond = list(tgrade = "III", age = 49),
                           alpha = 1,
-                          breaks = 2,
-                          ylab = "Hazard"))
+                          breaks = 2)) +
+  ggplot2::ylab("Hazard")
 ```
 
 # Hazard Ratio

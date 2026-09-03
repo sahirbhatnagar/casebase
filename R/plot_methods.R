@@ -592,7 +592,7 @@ plot.singleEventCB <- function(x, ...,
                 alpha = 1,
                 partial = FALSE,
                 overlay = TRUE,
-                print.cond = TRUE
+                print_cond = TRUE
             ),
             hazard.params
         ))
@@ -640,6 +640,12 @@ plot.singleEventCB <- function(x, ...,
             x = x, newdata = newdata, newdata2 = newdata2, ci = ci,
             ci.lvl = ci.lvl, ci.col = ci.col, rug = rug, xvar = xvar, ...
         )
+    }
+
+    # visreg (>= 3.0.0) always returns a ggplot object rather than drawing
+    # directly, so it must be returned visibly to auto-print/render.
+    if (inherits(tt, "gg")) {
+        return(tt)
     }
     invisible(tt)
 }

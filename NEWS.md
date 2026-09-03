@@ -1,3 +1,12 @@
+# casebase 0.10.7
+
+* Fix CRAN check errors caused by `visreg` 3.0's breaking argument rename:
+  `print.cond` is now `print_cond` in `plot.singleEventCB(type = "hazard")`.
+* `visreg` is now required to be `>= 3.0.0` in `Suggests`.
+* Updated the "Plot Hazards and Hazard Ratios" vignette to drop the now-removed
+  `gg` argument (`visreg` 3.0 always returns a `ggplot` object) and to remove
+  the obsolete `visreg2d` perspective/image plot example.
+
 # casebase 0.10.6
 
 * Fix build directory WARNING.

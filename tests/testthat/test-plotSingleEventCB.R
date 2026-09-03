@@ -32,8 +32,7 @@ test_that("no error in plot method for singleEventCB objects - hazard function",
     outglm <- try(plot(mod_glm,
                        hazard.params = list(xvar = "eventtime",
                                             by = "trt",
-                                            alpha = 0.05,
-                                            ylab = "Hazard")),
+                                            alpha = 0.05)),
                   silent = TRUE)
 
     expect_false(inherits(outglm, "try-error"))
